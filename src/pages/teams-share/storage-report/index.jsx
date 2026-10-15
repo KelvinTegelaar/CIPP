@@ -343,6 +343,13 @@ const Page = () => {
   )
 
   const isFetching = spUsage.isFetching || odUsage.isFetching
+  const usageRefreshedAt = useMemo(() => {
+    const latest = [...rawSpRows, ...odRowsBase].reduce(
+      (max, row) => Math.max(max, Date.parse(row?.CacheTimestamp) || 0),
+      0
+    )
+    return latest ? new Date(latest) : null
+  }, [rawSpRows, odRowsBase])
   const teamsRows = useMemo(() => rawSpRows.filter((row) => row.teamsConnected), [rawSpRows])
   const classicSpRows = useMemo(() => rawSpRows.filter((row) => !row.teamsConnected), [rawSpRows])
   const teamsGb = useMemo(() => Math.round(sumGb(teamsRows) * 100) / 100, [teamsRows])
@@ -424,6 +431,9 @@ const Page = () => {
   )
   const hasScanned = Boolean(cleanupSummary.cleanupSynced) || Object.keys(cleanupScans).length > 0
   const needsCleanupScan = cleanupScan.isSuccess && !cleanupSummary.cleanupSynced
+  const cleanupRefreshedAt = cleanupSummary.lastDataRefresh
+    ? new Date(cleanupSummary.lastDataRefresh.UtcDateTime ?? cleanupSummary.lastDataRefresh)
+    : null
 
   const opportunityByUrl = useMemo(() => {
     const map = new Map()
@@ -714,6 +724,17 @@ const Page = () => {
                       not a separate pool. File-level M365 Archive usage is included after usage
                       sync when SharePoint admin access is available.
                     </Typography>
+                    {(usageRefreshedAt || cleanupRefreshedAt) && (
+                      <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                        {`Last data refresh: ${[
+                          usageRefreshedAt && `usage ${usageRefreshedAt.toLocaleString()}`,
+                          cleanupRefreshedAt &&
+                            `cleanup scan ${cleanupRefreshedAt.toLocaleString()}`,
+                        ]
+                          .filter(Boolean)
+                          .join(' · ')}`}
+                      </Typography>
+                    )}
                   </Stack>
                   <Stack direction="row" spacing={1} alignItems="center" useFlexGap flexWrap="wrap">
                     <CippQueryRefreshButton
