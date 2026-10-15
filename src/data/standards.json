@@ -1675,6 +1675,22 @@
     "recommendedBy": ["CIS", "CIPP"]
   },
   {
+    "name": "standards.DisableAgentBlueprintCreation",
+    "cat": "Entra (AAD) Standards",
+    "tag": [],
+    "appliesToTest": [],
+    "helpText": "Disables the ability for users to register agent identity blueprints in the tenant. This is a separate setting from 'Users can register applications'; disabling app registrations does not stop users from creating agent identity blueprints.",
+    "docsDescription": "Sets the Entra default user role permission 'Users can register agent identity blueprints' to No. Microsoft enables this for all users by default, and the creator of a blueprint becomes its owner and can manage its credentials. This setting is independent of 'Users can register applications', so apply both standards to keep application and agent identity creation limited to the Agent ID Developer and Agent ID Administrator roles.",
+    "executiveText": "Prevents regular employees from creating AI agent identity blueprints, which are the templates that agent identities are issued from. Restricting this to designated roles keeps agent identities and their credentials under IT governance and avoids a sprawl of unmanaged agent registrations.",
+    "addedComponent": [],
+    "label": "Disable agent identity blueprint creation by users",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "addedDate": "2026-10-15",
+    "powershellEquivalent": "Update-MgBetaPolicyAuthorizationPolicy",
+    "recommendedBy": ["CIPP"]
+  },
+  {
     "name": "standards.BitLockerKeysForOwnedDevice",
     "cat": "Entra (AAD) Standards",
     "tag": ["CIS M365 7.0.0 (5.1.4.6)"],
