@@ -75,7 +75,12 @@ const statusColour = (status) => {
  * invalidated once, so the page showing the data refreshes itself rather than leaving the admin
  * looking at pre-sync numbers.
  */
-export const CippMultiQueueTracker = ({ queueIds = [], relatedQueryKeys = [], label = 'Sync' }) => {
+export const CippMultiQueueTracker = ({
+  queueIds = [],
+  relatedQueryKeys = [],
+  label = 'Sync',
+  details = null,
+}) => {
   const queryClient = useQueryClient()
   const [canvasVisible, setCanvasVisible] = useState(false)
   const [hasInvalidated, setHasInvalidated] = useState(false)
@@ -247,6 +252,8 @@ export const CippMultiQueueTracker = ({ queueIds = [], relatedQueryKeys = [], la
               </Typography>
             )}
           </Stack>
+
+          {details}
 
           {summary?.TotalQueues > summary?.FoundQueues && (
             <Typography variant="caption" sx={{
