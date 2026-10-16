@@ -208,7 +208,15 @@ export const CIPPTableToptoolbar = React.memo(
       } else if (data && !getRequestData.isFetched) {
         // do nothing because data was sent native.
       } else if (getRequestData) {
-        getRequestData.refetch()
+        // refetch() on an infinite query re-requests every cached page in sequence and only
+        // renders once all of them are back. Reset the query instead so it starts from page
+        // one again and the table's auto-pager streams the rest in page by page, exactly like
+        // the initial load. The key must be the effective one: an active graph filter preset
+        // keys the query on `${queryKey}-${presetName}` rather than the base key.
+        queryClient.resetQueries({
+          queryKey: [currentEffectiveQueryKey],
+          exact: true,
+        })
       }
     }
 
