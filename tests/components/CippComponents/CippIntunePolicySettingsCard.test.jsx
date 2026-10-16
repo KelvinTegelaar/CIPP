@@ -13,13 +13,16 @@ const wanted = new Set([forceListIdsDefinition.id])
 vi.mock(
   '../../../src/components/CippComponents/CippIntuneSettingPicker',
   () => ({
-    CippIntuneSettingPicker: ({ onAdd }) => (
-      <button
-        type="button"
-        onClick={() => onAdd(forceListDefinition, forceListChildren, wanted)}
-      >
-        pick nested
-      </button>
+    CippIntuneSettingPicker: ({ onAdd, existingIds }) => (
+      <>
+        <button
+          type="button"
+          onClick={() => onAdd(forceListDefinition, forceListChildren, wanted)}
+        >
+          pick nested
+        </button>
+        <output>{[...existingIds].join(' ')}</output>
+      </>
     ),
   })
 )
@@ -44,5 +47,35 @@ describe('CippIntunePolicySettingsCard', () => {
       forceListChildren,
       wanted
     )
+  })
+
+  it('tells the picker about nested settings too, so they are not offered again', () => {
+    const policy = {
+      settings: [
+        {
+          settingInstance: {
+            settingDefinitionId: forceListDefinition.id,
+            choiceSettingValue: {
+              value: forceListDefinition.options[1].id,
+              children: [{ settingDefinitionId: forceListIdsDefinition.id }],
+            },
+          },
+        },
+      ],
+    }
+    renderWithTheme(
+      <CippIntunePolicySettingsCard
+        policy={policy}
+        editor={{ getDefinition: () => undefined, addSetting: () => true }}
+        platform="windows10"
+        technology="mdm"
+        emptyText="No settings yet."
+      />
+    )
+
+    expect(screen.getByRole('status').textContent.split(' ')).toEqual([
+      forceListDefinition.id,
+      forceListIdsDefinition.id,
+    ])
   })
 })

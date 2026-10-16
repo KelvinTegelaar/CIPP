@@ -18,6 +18,7 @@ import {
 import {
   fetchIntuneDefinitions,
   fetchIntuneDescendants,
+  useIntuneCategories,
   useIntuneSettingIndex,
 } from '../../hooks/use-intune-collection'
 
@@ -94,6 +95,7 @@ export const CippIntuneSettingPicker = ({
   const { rows, isLoading, isError } = useIntuneSettingIndex(platform, {
     enabled: open,
   })
+  const categories = useIntuneCategories({ enabled: open })
   const rowsById = useMemo(
     () => new Map(rows.map((row) => [row.id, row])),
     [rows]
@@ -188,44 +190,50 @@ export const CippIntuneSettingPicker = ({
                 </Alert>
               )}
               <List dense sx={{ maxHeight: 420, overflowY: 'auto' }}>
-                {results.map((row) => (
-                  <ListItemButton
-                    key={row.id}
-                    disabled={!!pendingId}
-                    onClick={() => handleSelect(row.id)}
-                    alignItems="flex-start"
-                  >
-                    <ListItemText
-                      primary={
-                        <Stack
-                          direction="row"
-                          spacing={1}
-                          useFlexGap
-                          sx={{ alignItems: 'center', flexWrap: 'wrap' }}
-                        >
-                          <Typography variant="body2">
-                            {row.displayName || row.id}
-                          </Typography>
-                          {row.categoryName && (
-                            <Chip
-                              label={row.categoryName}
-                              size="small"
-                              variant="outlined"
-                            />
-                          )}
-                          {pendingId === row.id && (
-                            <CircularProgress size={14} />
-                          )}
-                        </Stack>
-                      }
-                      secondary={
-                        row.parentId
-                          ? `Under ${rowsById.get(row.parentId)?.displayName ?? row.parentId}. ${row.description ?? ''}`
-                          : row.description || row.id
-                      }
-                    />
-                  </ListItemButton>
-                ))}
+                {results.map((row) => {
+                  // The path tells same-named categories apart, e.g. Edge's and Chrome's Extensions.
+                  const category =
+                    categories.get(row.categoryId)?.description ||
+                    row.categoryName
+                  return (
+                    <ListItemButton
+                      key={row.id}
+                      disabled={!!pendingId}
+                      onClick={() => handleSelect(row.id)}
+                      alignItems="flex-start"
+                    >
+                      <ListItemText
+                        primary={
+                          <Stack
+                            direction="row"
+                            spacing={1}
+                            useFlexGap
+                            sx={{ alignItems: 'center', flexWrap: 'wrap' }}
+                          >
+                            <Typography variant="body2">
+                              {row.displayName || row.id}
+                            </Typography>
+                            {category && (
+                              <Chip
+                                label={category}
+                                size="small"
+                                variant="outlined"
+                              />
+                            )}
+                            {pendingId === row.id && (
+                              <CircularProgress size={14} />
+                            )}
+                          </Stack>
+                        }
+                        secondary={
+                          row.parentId
+                            ? `Under ${rowsById.get(row.parentId)?.displayName ?? row.parentId}. ${row.description ?? ''}`
+                            : row.description || row.id
+                        }
+                      />
+                    </ListItemButton>
+                  )
+                })}
               </List>
             </>
           )}

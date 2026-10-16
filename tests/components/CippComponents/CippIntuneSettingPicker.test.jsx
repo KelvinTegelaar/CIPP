@@ -6,6 +6,7 @@ import {
 } from '../../../src/components/CippComponents/CippIntuneSettingPicker'
 import { renderWithTheme } from '../../test-utils'
 import {
+  forceListCategory,
   forceListChildren,
   forceListDefinition,
   forceListIdsDefinition,
@@ -18,6 +19,8 @@ vi.mock('../../../src/hooks/use-intune-collection', () => ({
     isLoading: false,
     isError: false,
   }),
+  useIntuneCategories: () =>
+    new Map([[forceListCategory.id, forceListCategory]]),
   fetchIntuneDefinitions: vi.fn(async (ids) =>
     ids.map((id) =>
       id === forceListDefinition.id ? forceListDefinition : null
@@ -123,5 +126,26 @@ describe('CippIntuneSettingPicker', () => {
         exact: false,
       })
     ).toBeInTheDocument()
+  })
+
+  it('labels results with the category path, which tells Edge and Chrome settings apart', async () => {
+    renderWithTheme(
+      <CippIntuneSettingPicker
+        open
+        onClose={() => {}}
+        onAdd={() => true}
+        platform="windows10"
+        technology="mdm"
+      />
+    )
+
+    fireEvent.change(screen.getByLabelText('Search settings'), {
+      target: { value: 'silently installed' },
+    })
+
+    expect(
+      await screen.findByText(forceListCategory.description)
+    ).toBeInTheDocument()
+    expect(screen.queryByText(forceListCategory.displayName)).toBeNull()
   })
 })

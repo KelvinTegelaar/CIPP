@@ -190,14 +190,17 @@ export const buildIntuneSettingLeaves = (policy, getDefinition) => {
     }
 
     if (Array.isArray(instance.simpleSettingCollectionValue)) {
+      // An empty list has no entry to copy the type from, so it comes from the definition.
+      const itemType =
+        instance.simpleSettingCollectionValue[0]?.[ODATA] ??
+        definition?.valueDefinition?.[ODATA]?.replace(/Definition$/, '')
       pushLeaf({
         ...common,
         kind: 'simpleCollection',
         path: [...path, 'simpleSettingCollectionValue'],
         items: instance.simpleSettingCollectionValue,
-        valueType: valueTypeFromODataType(
-          instance.simpleSettingCollectionValue[0]?.[ODATA]
-        ),
+        itemType,
+        valueType: valueTypeFromODataType(itemType),
         value: instance.simpleSettingCollectionValue.map((item) => item?.value),
       })
       return
@@ -471,7 +474,10 @@ export const applyIntuneSettingEdits = (originalPolicy, leaves, formValues) => {
       const next = entries.map((entry, entryIndex) => {
         // Reuse the original item so its @odata.type and any other properties carry over; new
         // entries inherit the shape of the first existing one.
-        const template = leaf.items?.[entryIndex] ?? leaf.items?.[0] ?? {}
+        const template =
+          leaf.items?.[entryIndex] ??
+          leaf.items?.[0] ??
+          (leaf.itemType ? { [ODATA]: leaf.itemType } : {})
         return {
           ...structuredClone(template),
           value: coerceScalar(entry, leaf.valueType, unwrap(entry)),

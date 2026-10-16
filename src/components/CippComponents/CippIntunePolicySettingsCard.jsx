@@ -22,6 +22,7 @@ import {
   canRemoveCollectionEntry,
   isGroupCollectionInstance,
 } from '../../utils/intune-setting-builder'
+import { collectSettingDefinitionIds } from '../../utils/intune-setting-definition-ids'
 
 // The list of settings in a settings catalog policy, with add/remove for settings and group rows.
 // `editor` is the object returned by useIntunePolicyEditor.
@@ -179,9 +180,7 @@ export const CippIntunePolicySettingsCard = ({
         }}
         platform={platform}
         technology={technology}
-        existingIds={settings
-          .map((setting) => setting?.settingInstance?.settingDefinitionId)
-          .filter(Boolean)}
+        existingIds={collectSettingDefinitionIds(policy)}
       />
     </Card>
   )

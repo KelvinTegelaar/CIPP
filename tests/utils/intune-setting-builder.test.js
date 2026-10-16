@@ -139,7 +139,7 @@ describe('buildSettingInstance', () => {
     expect(instance.simpleSettingValue.valueState).toBe('notEncrypted')
   })
 
-  it('gives a simple collection one entry, so there is something to type into', () => {
+  it('starts a simple collection empty, so no blank entry deploys if it is left untouched', () => {
     const instance = buildSettingInstance({
       ...stringDefinition,
       '@odata.type': `${PREFIX}SimpleSettingCollectionDefinition`,
@@ -147,10 +147,7 @@ describe('buildSettingInstance', () => {
     expect(instance['@odata.type']).toBe(
       `${PREFIX}SimpleSettingCollectionInstance`
     )
-    expect(instance.simpleSettingCollectionValue).toHaveLength(1)
-    expect(instance.simpleSettingCollectionValue[0]['@odata.type']).toBe(
-      `${PREFIX}StringSettingValue`
-    )
+    expect(instance.simpleSettingCollectionValue).toEqual([])
   })
 
   it('refuses a group with no children, because Intune rejects an empty group', () => {
@@ -376,9 +373,7 @@ describe('building towards a nested setting', () => {
       {
         '@odata.type': `${PREFIX}SimpleSettingCollectionInstance`,
         settingDefinitionId: forceListIdsDefinition.id,
-        simpleSettingCollectionValue: [
-          { '@odata.type': `${PREFIX}StringSettingValue`, value: '' },
-        ],
+        simpleSettingCollectionValue: [],
       },
     ])
   })
@@ -409,8 +404,12 @@ describe('mergeSettingInstance', () => {
 
   it('keeps values already entered when the option is unchanged', () => {
     const filled = structuredClone(enabled)
-    filled.choiceSettingValue.children[0].simpleSettingCollectionValue[0].value =
-      'abcdefghijklmnop'
+    filled.choiceSettingValue.children[0].simpleSettingCollectionValue = [
+      {
+        '@odata.type': `${PREFIX}StringSettingValue`,
+        value: 'abcdefghijklmnop',
+      },
+    ]
     expect(mergeSettingInstance(filled, enabled)).toEqual(filled)
   })
 

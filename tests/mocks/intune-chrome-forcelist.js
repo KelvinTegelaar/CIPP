@@ -42,15 +42,26 @@ export const forceListChildren = {
   [forceListIdsDefinition.id]: forceListIdsDefinition,
 }
 
+// Edge's Extensions category has the same display name; the description is the path that tells them apart.
+export const forceListCategory = {
+  id: '216de445-a80d-4981-b151-3b4466edc808',
+  displayName: 'Extensions',
+  description: 'Google Google Chrome Extensions',
+}
+
 export const forceListIndexRows = [
   {
     id: forceListDefinition.id,
     displayName: forceListDefinition.displayName,
+    categoryName: forceListCategory.displayName,
+    categoryId: forceListCategory.id,
     technologies: 'mdm',
   },
   {
     id: forceListIdsDefinition.id,
     displayName: forceListIdsDefinition.displayName,
+    categoryName: forceListCategory.displayName,
+    categoryId: forceListCategory.id,
     technologies: 'mdm',
     parentId: forceListDefinition.id,
   },

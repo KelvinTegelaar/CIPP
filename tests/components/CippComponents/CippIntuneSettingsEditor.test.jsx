@@ -257,6 +257,39 @@ describe('applyIntuneSettingEdits', () => {
     )
   })
 
+  it('types entries added to an empty collection from the setting definition', () => {
+    const original = catalogPolicy()
+    original.settings[2].settingInstance.simpleSettingCollectionValue = []
+    const withValueType = (id) =>
+      id === 'collection_setting'
+        ? {
+            ...definitions.collection_setting,
+            valueDefinition: {
+              '@odata.type':
+                '#microsoft.graph.deviceManagementConfigurationIntegerSettingValueDefinition',
+            },
+          }
+        : getDefinition(id)
+    const leaves = buildIntuneSettingLeaves(original, withValueType)
+    const collectionLeaf = leaves.find(
+      (leaf) => leaf.kind === 'simpleCollection'
+    )
+
+    const values = leaves.map(defaultValueForLeaf)
+    values[collectionLeaf.index] = [{ value: '5' }]
+
+    const edited = applyIntuneSettingEdits(original, leaves, values)
+    expect(
+      edited.settings[2].settingInstance.simpleSettingCollectionValue
+    ).toEqual([
+      {
+        '@odata.type':
+          '#microsoft.graph.deviceManagementConfigurationIntegerSettingValue',
+        value: 5,
+      },
+    ])
+  })
+
   it('leaves the policy untouched when the form is submitted unchanged', () => {
     const original = catalogPolicy()
     const leaves = buildIntuneSettingLeaves(original, getDefinition)

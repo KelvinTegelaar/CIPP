@@ -160,10 +160,10 @@ export const buildSettingInstance = (
       ]
       return instance
     }
+    // Starts empty rather than with a blank entry Intune would deploy; saving it empty is refused by validation.
     case `${PREFIX}SimpleSettingCollectionInstance`: {
-      const value = simpleValueFor(definition)
-      if (!value) return null
-      instance.simpleSettingCollectionValue = [value]
+      if (!simpleValueFor(definition)) return null
+      instance.simpleSettingCollectionValue = []
       return instance
     }
     // Intune rejects an empty group ("SettingGroupValue should not be empty").
