@@ -8,6 +8,7 @@ import { resetOverlayHistory } from '../../../src/utils/overlay-history'
 
 vi.mock('../../../src/api/ApiCall', async () => (await import('../../mocks/api-call')).apiCallMock())
 import { api, paginatedResult } from '../../mocks/api-call'
+import { ApiGetCallWithPagination } from '../../../src/api/ApiCall'
 
 // idle keeps static-data tables on their data prop; the nested result is re-wrapped per call like react-query's tracked copy, the memo'd toolbar needs it to see selection
 const nestedRows = [{ id: 'child-1', displayName: 'Jane Doe' }]
@@ -1094,4 +1095,29 @@ describe('CippDataTable preset filterFn overrides', () => {
       expect(screen.getByText('1-3 of 3')).toBeInTheDocument()
     })
   }, 30000)
+})
+
+describe('CippDataTable AllTenants Graph paging', () => {
+  const sentData = (data) => {
+    ApiGetCallWithPagination.mockClear()
+    renderWithProviders(<CippDataTable api={{ url: '/api/ListGraphRequest', data }} noCard />)
+    return ApiGetCallWithPagination.mock.calls.find(([opts]) => opts.url === '/api/ListGraphRequest')[0]
+      .data
+  }
+
+  it('pages AllTenants Graph cache reads', () => {
+    expect(sentData({ tenantFilter: 'AllTenants', Endpoint: 'servicePrincipals' }).manualPagination).toBe(
+      true
+    )
+  })
+
+  it('leaves single-tenant reads and explicit opt-outs alone', () => {
+    expect(
+      sentData({ tenantFilter: 'contoso.com', Endpoint: 'servicePrincipals' }).manualPagination
+    ).toBeUndefined()
+    expect(
+      sentData({ tenantFilter: 'AllTenants', Endpoint: 'servicePrincipals', manualPagination: false })
+        .manualPagination
+    ).toBe(false)
+  })
 })

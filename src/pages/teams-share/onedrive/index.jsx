@@ -20,6 +20,7 @@ const Page = () => {
     allowToggle: true,
     defaultCached: false,
     allowAllTenantSync: true,
+    serverPagination: true,
   })
 
   const actions = [
@@ -209,6 +210,7 @@ const Page = () => {
         title={pageTitle}
         apiUrl={reportDB.resolvedApiUrl}
         apiData={reportDB.resolvedApiData}
+        apiDataKey={reportDB.apiDataKey}
         queryKey={reportDB.resolvedQueryKey}
         actions={actions}
         simpleColumns={simpleColumns}

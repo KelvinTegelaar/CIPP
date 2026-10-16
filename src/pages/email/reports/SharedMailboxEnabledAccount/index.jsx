@@ -11,6 +11,7 @@ const Page = () => {
     syncTitle: "Sync Shared Mailbox Cache",
     allowToggle: true,
     defaultCached: false,
+    serverPagination: true,
   });
 
   const simpleColumns = [
@@ -28,6 +29,8 @@ const Page = () => {
       <CippTablePage
         title="Shared Mailbox with Enabled Account"
         apiUrl={reportDB.resolvedApiUrl}
+        apiData={reportDB.resolvedApiData}
+        apiDataKey={reportDB.apiDataKey}
         queryKey={reportDB.resolvedQueryKey}
         dataSourceControls={reportDB.controls}
         actions={[

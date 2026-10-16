@@ -18,6 +18,7 @@ const Page = () => {
     allowToggle: false,
     defaultCached: true,
     cacheColumns: ['MailboxCacheTimestamp', 'PermissionCacheTimestamp'],
+    serverPagination: true,
   })
 
   const columns = byUser
@@ -69,6 +70,7 @@ const Page = () => {
         apiUrl={reportDB.resolvedApiUrl}
         queryKey={`${reportDB.resolvedQueryKey}-${byUser}`}
         apiData={{ ...reportDB.resolvedApiData, ByUser: byUser }}
+        apiDataKey={reportDB.apiDataKey}
         simpleColumns={columns}
         cardButton={pageActions}
         dataSourceControls={reportDB.controls}

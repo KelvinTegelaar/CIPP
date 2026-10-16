@@ -61,6 +61,7 @@ const Page = () => {
     syncTitle: 'Sync Intune Applications Report',
     allowToggle: true,
     defaultCached: false,
+    serverPagination: true,
   })
 
   const getAssignmentFilterFields = () => [
@@ -377,6 +378,8 @@ const Page = () => {
       <CippTablePage
         title={pageTitle}
         apiUrl={reportDB.resolvedApiUrl}
+        apiData={reportDB.resolvedApiData}
+        apiDataKey={reportDB.apiDataKey}
         actions={actions}
         offCanvas={offCanvas}
         simpleColumns={simpleColumns}

@@ -74,6 +74,7 @@ const Page = () => {
     syncTitle: 'Sync Intune Scripts Report',
     allowToggle: true,
     defaultCached: false,
+    serverPagination: true,
   })
 
   const dispatch = useDispatch()
@@ -491,6 +492,8 @@ const Page = () => {
       <CippTablePage
         title={pageTitle}
         apiUrl={reportDB.resolvedApiUrl}
+        apiData={reportDB.resolvedApiData}
+        apiDataKey={reportDB.apiDataKey}
         queryKey={reportDB.resolvedQueryKey}
         actions={actions}
         offCanvas={offCanvas}

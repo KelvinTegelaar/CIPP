@@ -13,6 +13,7 @@ const Page = () => {
     syncTitle: "Sync Teams Business Voice Report",
     allowToggle: true,
     defaultCached: false,
+    serverPagination: true,
   });
 
   const actions = [
@@ -119,6 +120,8 @@ const Page = () => {
       <CippTablePage
         title={pageTitle}
         apiUrl={reportDB.resolvedApiUrl}
+        apiData={reportDB.resolvedApiData}
+        apiDataKey={reportDB.apiDataKey}
         queryKey={reportDB.resolvedQueryKey}
         actions={actions}
         offCanvas={offCanvas}

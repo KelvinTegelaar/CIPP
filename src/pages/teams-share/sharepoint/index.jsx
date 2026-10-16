@@ -161,6 +161,7 @@ const Page = () => {
     allowToggle: true,
     defaultCached: true,
     allowAllTenantSync: true,
+    serverPagination: true,
   })
 
   // Anonymization: M365 "conceal names in reports" hashes owner fields in Graph usage reports.
@@ -169,6 +170,7 @@ const Page = () => {
   const anonymizedReport = useReportAnonymized({
     url: reportDB.resolvedApiUrl,
     data: reportDB.resolvedApiData,
+    dataKey: reportDB.apiDataKey,
     queryKey: reportDB.resolvedQueryKey,
     check: (rows) => isReportAnonymized(rows, ['ownerPrincipalName', 'ownerDisplayName']),
   })
@@ -179,6 +181,7 @@ const Page = () => {
   const noUsageMetrics = useReportAnonymized({
     url: reportDB.resolvedApiUrl,
     data: reportDB.resolvedApiData,
+    dataKey: reportDB.apiDataKey,
     queryKey: reportDB.resolvedQueryKey,
     check: (rows) =>
       rows.length > 0 &&
@@ -772,6 +775,7 @@ const Page = () => {
         title={pageTitle}
         apiUrl={reportDB.resolvedApiUrl}
         apiData={reportDB.resolvedApiData}
+        apiDataKey={reportDB.apiDataKey}
         queryKey={reportDB.resolvedQueryKey}
         actions={actions}
         offCanvas={offCanvas}
