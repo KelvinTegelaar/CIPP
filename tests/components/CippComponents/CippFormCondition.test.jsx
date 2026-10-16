@@ -263,6 +263,51 @@ describe('CippFormCondition', () => {
     })
   })
 
+  it('clears fields whose component name was minified away', async () => {
+    // production builds empty function names, so fields must be found by their props
+    const Minified = (props) => <CippFormComponent {...props} />
+    Object.defineProperty(Minified, 'name', { value: '' })
+    let capturedFormControl
+    renderWithTheme(
+      <FormWrapper defaultValues={{ status: 'active', extra: 'keep-me' }}>
+        {(formControl) => {
+          capturedFormControl = formControl
+          return (
+            <>
+              <CippFormComponent
+                type="textField"
+                name="status"
+                label="Status"
+                disableVariables={true}
+                formControl={formControl}
+              />
+              <CippFormCondition
+                field="status"
+                compareType="is"
+                compareValue="active"
+                formControl={formControl}
+              >
+                <Minified
+                  type="textField"
+                  name="extra"
+                  label="Extra"
+                  disableVariables={true}
+                  formControl={formControl}
+                />
+              </CippFormCondition>
+            </>
+          )
+        }}
+      </FormWrapper>
+    )
+    expect(capturedFormControl.getValues('extra')).toBe('keep-me')
+
+    await userEvent.type(screen.getByRole('textbox', { name: 'Status' }), 'x')
+    await waitFor(() => {
+      expect(capturedFormControl.getValues('extra')).toBeNull()
+    })
+  })
+
   it('shows children when "valueEq" matches an option wrapper', () => {
     renderWithTheme(
       <FormWrapper defaultValues={{ state: { label: 'Enabled', value: true } }}>
