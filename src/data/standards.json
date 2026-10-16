@@ -6894,7 +6894,8 @@
         "type": "switch",
         "name": "standards.AutopilotProfile.SelfDeployingMode",
         "label": "Enable Self-deploying Mode",
-        "defaultValue": true
+        "defaultValue": true,
+        "helperText": "Self-deploying (shared) profiles cannot use White Glove / pre-provisioned deployment, so pre-provisioning is always off while this is enabled."
       },
       {
         "type": "switch",
@@ -6924,7 +6925,13 @@
         "type": "switch",
         "name": "standards.AutopilotProfile.AllowWhiteGlove",
         "label": "Allow White Glove OOBE",
-        "defaultValue": true
+        "defaultValue": true,
+        "helperText": "Only available for user-driven profiles. Self-deploying mode always sets this to off.",
+        "condition": {
+          "field": "standards.AutopilotProfile.SelfDeployingMode",
+          "compareType": "isNot",
+          "compareValue": true
+        }
       },
       {
         "type": "switch",
