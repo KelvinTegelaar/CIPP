@@ -561,6 +561,21 @@ const AlertWizard = () => {
     }
   }, [commandValue, editAlert])
 
+  // Seed catalog defaults for the chosen alert's inputs. Only for a new alert: an existing one
+  // is reset from its stored parameters, which must win over the catalog.
+  useEffect(() => {
+    const command = commandValue?.value
+    if (!command?.requiresInput || editAlert) return
+    const inputs = command.multipleInput ? command.inputs || [] : [command]
+    inputs.forEach((input) => {
+      if (input.inputName && input.defaultValue !== undefined) {
+        formControl.setValue(input.inputName, input.defaultValue, {
+          shouldDirty: true,
+        })
+      }
+    })
+  }, [commandValue, editAlert])
+
   useEffect(() => {
     if (!selectedPreset) return
     setIsLoadingPreset(true)
