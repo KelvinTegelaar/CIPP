@@ -505,6 +505,65 @@
     "description": "Checks app registrations for client secrets or certificates that are valid longer than the Microsoft UI currently allows. Set a threshold from 1 to 24 months."
   },
   {
+    "name": "NewServicePrincipalCredentials",
+    "label": "Alert on newly added service principal credentials",
+    "recommendedRunInterval": "1d",
+    "requiresInput": true,
+    "inputType": "number",
+    "inputLabel": "Days to look back (default: 6)",
+    "inputName": "LookbackDays",
+    "defaultValue": 6,
+    "description": "Reports every client secret or certificate added to a service principal (enterprise application) within the look-back window. A credential on a service principal grants its holder the application's permissions in your tenant, so a new one on a multi-tenant app usually means someone other than the vendor added it."
+  },
+  {
+    "name": "SpecificAppIds",
+    "label": "Alert on presence of specific app ids",
+    "recommendedRunInterval": "4h",
+    "requiresInput": true,
+    "inputType": "autoComplete",
+    "inputLabel": "Application (client) ids to alert on",
+    "inputName": "AppIds",
+    "creatable": true,
+    "multiple": true,
+    "options": [
+      {
+        "label": "ConnectWise Cloud Management - Exchange Online (b78f6a77-d4e5-46fb-87e5-d1648bd02519)",
+        "value": "b78f6a77-d4e5-46fb-87e5-d1648bd02519"
+      },
+      {
+        "label": "ConnectWise Cloud Management - MS Teams (24205314-2b89-4e07-a2a4-579e898a5640)",
+        "value": "24205314-2b89-4e07-a2a4-579e898a5640"
+      },
+      {
+        "label": "ConnectWise Cloud Management - SharePoint Online (b2b55f5b-7758-4719-8d8f-88ae172e6bdb)",
+        "value": "b2b55f5b-7758-4719-8d8f-88ae172e6bdb"
+      },
+      {
+        "label": "506e08f9-6e9a-4da4-942b-a099a03644ae",
+        "value": "506e08f9-6e9a-4da4-942b-a099a03644ae"
+      }
+    ],
+    "defaultValue": [
+      {
+        "label": "ConnectWise Cloud Management - Exchange Online (b78f6a77-d4e5-46fb-87e5-d1648bd02519)",
+        "value": "b78f6a77-d4e5-46fb-87e5-d1648bd02519"
+      },
+      {
+        "label": "ConnectWise Cloud Management - MS Teams (24205314-2b89-4e07-a2a4-579e898a5640)",
+        "value": "24205314-2b89-4e07-a2a4-579e898a5640"
+      },
+      {
+        "label": "ConnectWise Cloud Management - SharePoint Online (b2b55f5b-7758-4719-8d8f-88ae172e6bdb)",
+        "value": "b2b55f5b-7758-4719-8d8f-88ae172e6bdb"
+      },
+      {
+        "label": "506e08f9-6e9a-4da4-942b-a099a03644ae",
+        "value": "506e08f9-6e9a-4da4-942b-a099a03644ae"
+      }
+    ],
+    "description": "Alerts when a service principal for any of the listed application ids exists in the tenant. Pick from the list or type any application (client) id. The defaults are the ConnectWise Cloud Management applications named in the ConnectWise breach disclosure."
+  },
+  {
     "name": "ApnCertExpiry",
     "label": "Alert on expiring APN certificates",
     "recommendedRunInterval": "1d",

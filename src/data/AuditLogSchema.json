@@ -21,7 +21,8 @@
     "CIPPUserKey": "String",
     "CIPPUsername": "String",
     "CIPPAddedKeyTypes": "String",
-    "CIPPAddedKeys": "String"
+    "CIPPAddedKeys": "String",
+    "CIPPActor": "String"
   },
   "Audit.Exchange": {
     "Id": "Combination GUID",
@@ -107,6 +108,10 @@
     {
       "value": "add member to role.",
       "label": "added member to role"
+    },
+    {
+      "value": "add eligible member to role.",
+      "label": "made a user eligible for a role in PIM"
     },
     {
       "value": "add partner to company.",
@@ -335,42 +340,6 @@
     {
       "value": "Update StsRefreshTokenValidFrom Timestamp.",
       "label": "Update StsRefreshTokenValidFrom Timestamp."
-    },
-    {
-      "value": "Add member to role in PIM completed (permanent)",
-      "label": "added a permanent role member in PIM"
-    },
-    {
-      "value": "Add member to role in PIM completed (timebound)",
-      "label": "added a time-bound role member in PIM"
-    },
-    {
-      "value": "Add eligible member to role in PIM completed (permanent)",
-      "label": "added a permanent eligible role member in PIM"
-    },
-    {
-      "value": "Add eligible member to role in PIM completed (timebound)",
-      "label": "added a time-bound eligible role member in PIM"
-    },
-    {
-      "value": "Add member to role completed (PIM activation)",
-      "label": "activated a role in PIM"
-    },
-    {
-      "value": "Remove member from role completed (PIM activation expired)",
-      "label": "PIM role activation expired"
-    },
-    {
-      "value": "Remove member from role in PIM completed (permanent)",
-      "label": "removed a permanent role member in PIM"
-    },
-    {
-      "value": "Remove eligible member from role in PIM completed (permanent)",
-      "label": "removed a permanent eligible role member in PIM"
-    },
-    {
-      "value": "Update role setting in PIM",
-      "label": "updated a PIM role setting"
     }
   ],
   "List:LogonType": [

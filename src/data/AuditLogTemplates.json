@@ -268,8 +268,8 @@
           "Property": { "value": "List:Operation", "label": "Operation" },
           "Operator": { "value": "EQ", "label": "Equals to" },
           "Input": {
-            "value": "Remove Member from a role.",
-            "label": "Remove Member from a role."
+            "value": "Remove member from role.",
+            "label": "Remove member from role."
           }
         }
       ]
@@ -581,6 +581,11 @@
           "Property": { "value": "String", "label": "UserId" },
           "Operator": { "value": "like", "label": "Like" },
           "Input": { "value": "ServicePrincipal_*" }
+        },
+        {
+          "Property": { "value": "String", "label": "CIPPActor" },
+          "Operator": { "value": "notlike", "label": "Not like" },
+          "Input": { "value": "*MS-PIM*" }
         }
       ]
     }
@@ -939,87 +944,47 @@
     }
   },
   {
-    "value": "PIMPermanentAssignmentAdded",
-    "name": "A permanent role assignment was added in PIM (no end date)",
+    "value": "PIMRoleAssigned",
+    "name": "A directory role was assigned or activated through PIM",
     "template": {
       "preset": {
-        "value": "PIMPermanentAssignmentAdded",
-        "label": "A permanent role assignment was added in PIM (no end date)"
+        "value": "PIMRoleAssigned",
+        "label": "A directory role was assigned or activated through PIM"
       },
-      "logbook": {
-        "value": "Audit.AzureActiveDirectory",
-        "label": "Azure AD"
-      },
+      "logbook": { "value": "Audit.AzureActiveDirectory", "label": "Azure AD" },
       "conditions": [
         {
-          "Property": {
-            "value": "String",
-            "label": "Operation"
-          },
-          "Operator": {
-            "value": "like",
-            "label": "Like"
-          },
+          "Property": { "value": "List:Operation", "label": "Operation" },
+          "Operator": { "value": "EQ", "label": "Equals to" },
           "Input": {
-            "value": "*role in PIM completed (permanent)*"
+            "value": "Add member to role.",
+            "label": "Add member to role."
           }
+        },
+        {
+          "Property": { "value": "String", "label": "CIPPActor" },
+          "Operator": { "value": "like", "label": "Like" },
+          "Input": { "value": "*MS-PIM*" }
         }
       ]
     }
   },
   {
-    "value": "PIMRoleActivated",
-    "name": "A PIM role was activated",
+    "value": "PIMEligibleRoleAssigned",
+    "name": "A user was made eligible for a directory role in PIM",
     "template": {
       "preset": {
-        "value": "PIMRoleActivated",
-        "label": "A PIM role was activated"
+        "value": "PIMEligibleRoleAssigned",
+        "label": "A user was made eligible for a directory role in PIM"
       },
-      "logbook": {
-        "value": "Audit.AzureActiveDirectory",
-        "label": "Azure AD"
-      },
+      "logbook": { "value": "Audit.AzureActiveDirectory", "label": "Azure AD" },
       "conditions": [
         {
-          "Property": {
-            "value": "String",
-            "label": "Operation"
-          },
-          "Operator": {
-            "value": "like",
-            "label": "Like"
-          },
+          "Property": { "value": "List:Operation", "label": "Operation" },
+          "Operator": { "value": "EQ", "label": "Equals to" },
           "Input": {
-            "value": "*Add member to role completed (PIM activation)*"
-          }
-        }
-      ]
-    }
-  },
-  {
-    "value": "PIMRoleSettingChanged",
-    "name": "A PIM role setting was changed",
-    "template": {
-      "preset": {
-        "value": "PIMRoleSettingChanged",
-        "label": "A PIM role setting was changed"
-      },
-      "logbook": {
-        "value": "Audit.AzureActiveDirectory",
-        "label": "Azure AD"
-      },
-      "conditions": [
-        {
-          "Property": {
-            "value": "String",
-            "label": "Operation"
-          },
-          "Operator": {
-            "value": "like",
-            "label": "Like"
-          },
-          "Input": {
-            "value": "*Update role setting in PIM*"
+            "value": "Add eligible member to role.",
+            "label": "Add eligible member to role."
           }
         }
       ]

@@ -90,6 +90,15 @@
     "isBuiltin": true
   },
   {
+    "name": "Connectwise Breached Apps",
+    "id": "e74cd043-a9d9-49db-923f-30d063999c91",
+    "params": {
+      "endpoint": "servicePrincipals",
+      "$filter": "appId in ('b78f6a77-d4e5-46fb-87e5-d1648bd02519','24205314-2b89-4e07-a2a4-579e898a5640','b2b55f5b-7758-4719-8d8f-88ae172e6bdb','506e08f9-6e9a-4da4-942b-a099a03644ae')"
+    },
+    "isBuiltin": true
+  },
+  {
     "name": "Applications signed in in last 30 days",
     "id": "a9ec9f2d-c102-4b4f-9b9d-c2bc57155990",
     "params": {
