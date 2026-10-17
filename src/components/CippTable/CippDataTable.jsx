@@ -1906,6 +1906,16 @@ export const CippDataTable = (props) => {
           },
         },
       }),
+    // inside a dialog only the rows scroll: the container is sized to the dialog paper
+    // (viewport minus dialog margins, title, toolbar, pagination and actions) so the
+    // DialogContent never grows its own scrollbar on top of the table's
+    ...(isInDialog && {
+      enableStickyHeader: true,
+      muiTableContainerProps: {
+        ...modeInfo.muiTableContainerProps,
+        sx: { ...modeInfo.muiTableContainerProps?.sx, maxHeight: 'calc(100vh - 420px)' },
+      },
+    }),
     renderRowActionMenuItems,
     renderTopToolbar,
     sortingFns: SORTING_FNS,

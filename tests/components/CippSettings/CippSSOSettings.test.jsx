@@ -132,3 +132,24 @@ describe('CippSSOSettings sign-in URL state', () => {
     )
   })
 })
+
+describe('CippSSOSettings client secret expiry', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+    api.get = null
+  })
+
+  it('warns when the SSO secret expires within 30 days and notes auto-rotation', () => {
+    seedStatus(statusResults({ secretExpires: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000).toISOString() }))
+    renderWithProviders(<CippSSOSettings />)
+    expect(chipRoot('Expiring soon')).toHaveClass('MuiChip-colorWarning')
+    expect(screen.getByText('Auto-rotates 30 days before expiry.')).toBeInTheDocument()
+  })
+
+  it('shows no warning for a secret well inside its lifetime', () => {
+    seedStatus(statusResults({ secretExpires: new Date(Date.now() + 300 * 24 * 60 * 60 * 1000).toISOString() }))
+    renderWithProviders(<CippSSOSettings />)
+    expect(screen.getByText('Auto-rotates 30 days before expiry.')).toBeInTheDocument()
+    expect(screen.queryByText('Expiring soon')).not.toBeInTheDocument()
+  })
+})

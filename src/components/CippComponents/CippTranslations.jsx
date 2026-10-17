@@ -90,6 +90,7 @@ export const CippTranslations = {
   linkUrl: 'Link URL',
   hasPassword: 'Password Protected',
   expirationDateTime: 'Expires',
+  ownerLabel: 'Owner',
   RemoveAfter: 'Remove After (Days of Last Use)',
   applicationId: 'Application ID',
   signInsLast7Days: 'Sign-ins (7 Days)',

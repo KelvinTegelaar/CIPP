@@ -16,7 +16,7 @@ import { ApiPostCall } from '../../api/ApiCall'
 
 const DISMISS_KEY = 'cipp_sso_migration_dismissed'
 const ERROR_DISMISS_KEY = 'cipp_sso_migration_error_dismissed'
-const SSO_SETTINGS_PATH = '/cipp/advanced/authentication/sso'
+const SSO_SETTINGS_PATH = '/cipp/advanced/authentication/credentials'
 
 export const SsoMigrationDialog = ({ meData }) => {
   const router = useRouter()

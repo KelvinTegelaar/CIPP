@@ -10,9 +10,9 @@
     "icon": "Group"
   },
   {
-    "label": "SSO",
-    "path": "/cipp/advanced/authentication/sso",
-    "icon": "Shield"
+    "label": "Credentials",
+    "path": "/cipp/advanced/authentication/credentials",
+    "icon": "Key"
   },
   {
     "label": "SAM App Roles",

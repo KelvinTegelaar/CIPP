@@ -24,6 +24,8 @@ export const CippTableDialog = (props) => {
             data={other.data}
             simpleColumns={simpleColumns}
             simple={false}
+            // DialogTitle already names the table; a second header only adds height.
+            hideTitle={true}
             isInDialog={true} // Flag to indicate table is inside a dialog
           />
         </Stack>
