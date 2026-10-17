@@ -438,7 +438,7 @@
         {
           "Property": { "value": "String", "label": "Operation" },
           "Operator": { "value": "like", "label": "Like" },
-          "Input": { "value": "Update application*Certificates and secrets management*" }
+          "Input": { "value": "*application*Certificates and secrets management*" }
         },
         {
           "Property": { "value": "String", "label": "UserId" },
@@ -466,7 +466,7 @@
         {
           "Property": { "value": "String", "label": "Operation" },
           "Operator": { "value": "like", "label": "Like" },
-          "Input": { "value": "Update application*Certificates and secrets management*" }
+          "Input": { "value": "*application*Certificates and secrets management*" }
         },
         {
           "Property": { "value": "String", "label": "UserId" },
@@ -660,7 +660,7 @@
         {
           "Property": { "value": "String", "label": "Operation" },
           "Operator": { "value": "like", "label": "Like" },
-          "Input": { "value": "Update application*Certificates and secrets management*" }
+          "Input": { "value": "*application*Certificates and secrets management*" }
         },
         {
           "Property": { "value": "String", "label": "UserId" },
@@ -688,7 +688,7 @@
         {
           "Property": { "value": "String", "label": "Operation" },
           "Operator": { "value": "like", "label": "Like" },
-          "Input": { "value": "Update application*Certificates and secrets management*" }
+          "Input": { "value": "*application*Certificates and secrets management*" }
         },
         {
           "Property": { "value": "String", "label": "UserId" },
