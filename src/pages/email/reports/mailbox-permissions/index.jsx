@@ -18,6 +18,7 @@ const Page = () => {
     allowToggle: false,
     defaultCached: true,
     cacheColumns: ['MailboxCacheTimestamp', 'PermissionCacheTimestamp'],
+    serverPagination: true,
   })
 
   // Refetch both views after a removal — the endpoint now syncs the cached report
@@ -194,6 +195,7 @@ const Page = () => {
         apiUrl={reportDB.resolvedApiUrl}
         queryKey={`${reportDB.resolvedQueryKey}-${byUser}`}
         apiData={{ ...reportDB.resolvedApiData, ByUser: byUser }}
+        apiDataKey={reportDB.apiDataKey}
         simpleColumns={columns}
         actions={byUser ? byUserActions : byMailboxActions}
         cardButton={pageActions}

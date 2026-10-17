@@ -343,6 +343,13 @@ const Page = () => {
   )
 
   const isFetching = spUsage.isFetching || odUsage.isFetching
+  const usageRefreshedAt = useMemo(() => {
+    const latest = [...rawSpRows, ...odRowsBase].reduce(
+      (max, row) => Math.max(max, Date.parse(row?.CacheTimestamp) || 0),
+      0
+    )
+    return latest ? new Date(latest) : null
+  }, [rawSpRows, odRowsBase])
   const teamsRows = useMemo(() => rawSpRows.filter((row) => row.teamsConnected), [rawSpRows])
   const classicSpRows = useMemo(() => rawSpRows.filter((row) => !row.teamsConnected), [rawSpRows])
   const teamsGb = useMemo(() => Math.round(sumGb(teamsRows) * 100) / 100, [teamsRows])
@@ -406,6 +413,7 @@ const Page = () => {
   const [cleanupFocus, setCleanupFocus] = useState(null)
 
   const canWriteSite = checkPermissions(['Sharepoint.Site.ReadWrite'])
+  const canSync = checkPermissions(['Sharepoint.Reports.ReadWrite'])
 
   const cleanupSummary = cleanupScan.data?.summary ?? {}
   const cleanupScans = useMemo(() => {
@@ -424,6 +432,9 @@ const Page = () => {
   )
   const hasScanned = Boolean(cleanupSummary.cleanupSynced) || Object.keys(cleanupScans).length > 0
   const needsCleanupScan = cleanupScan.isSuccess && !cleanupSummary.cleanupSynced
+  const cleanupRefreshedAt = cleanupSummary.lastDataRefresh
+    ? new Date(cleanupSummary.lastDataRefresh.UtcDateTime ?? cleanupSummary.lastDataRefresh)
+    : null
 
   const opportunityByUrl = useMemo(() => {
     const map = new Map()
@@ -714,6 +725,17 @@ const Page = () => {
                       not a separate pool. File-level M365 Archive usage is included after usage
                       sync when SharePoint admin access is available.
                     </Typography>
+                    {(usageRefreshedAt || cleanupRefreshedAt) && (
+                      <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                        {`Last data refresh: ${[
+                          usageRefreshedAt && `usage ${usageRefreshedAt.toLocaleString()}`,
+                          cleanupRefreshedAt &&
+                            `cleanup scan ${cleanupRefreshedAt.toLocaleString()}`,
+                        ]
+                          .filter(Boolean)
+                          .join(' · ')}`}
+                      </Typography>
+                    )}
                   </Stack>
                   <Stack direction="row" spacing={1} alignItems="center" useFlexGap flexWrap="wrap">
                     <CippQueryRefreshButton
@@ -730,6 +752,7 @@ const Page = () => {
                         <Button
                           size="small"
                           variant="outlined"
+                          disabled={!canSync}
                           onClick={() => {
                             newSyncRunRef.current = true
                             syncDialog.handleOpen()
@@ -754,7 +777,7 @@ const Page = () => {
                         <Button
                           size="small"
                           variant="outlined"
-                          disabled={spRows.length === 0}
+                          disabled={!canSync || spRows.length === 0}
                           onClick={() => {
                             setInventoryTab(0)
                             newCleanupRunRef.current = true
@@ -1040,7 +1063,7 @@ const Page = () => {
                 title="Sync usage data"
                 api={{
                   type: 'GET',
-                  url: '/api/ExecCIPPDBCache',
+                  url: '/api/ExecSharePointStorageSync',
                   data: { Name: 'Name' },
                   confirmText:
                     'Queue a refresh of SharePoint site usage (including file-level archive metrics) and OneDrive usage for this tenant? This updates charts and tables. Progress shows next to Sync usage.',
@@ -1066,7 +1089,7 @@ const Page = () => {
                 title="Scan cleanup signals"
                 api={{
                   type: 'GET',
-                  url: '/api/ExecCIPPDBCache',
+                  url: '/api/ExecSharePointStorageSync',
                   data: { Name: 'Name' },
                   confirmText:
                     'Queue a cleanup scan for this tenant? This collects library version estimates and recycle-bin totals for reclaim columns only — it does not refresh usage sizes. Progress shows next to Scan cleanup.',

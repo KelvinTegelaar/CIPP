@@ -30,7 +30,6 @@ const Page = () => {
       apiDataKey="Results"
       simpleColumns={simpleColumns}
       apiData={apiData} // Corrected API data passed here
-      dynamicColumns={false} // No dynamic column toggling
     />
   );
 };

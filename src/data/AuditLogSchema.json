@@ -19,7 +19,9 @@
     "CIPPIPDetected": "String",
     "CIPPUserId": "String",
     "CIPPUserKey": "String",
-    "CIPPUsername": "String"
+    "CIPPUsername": "String",
+    "CIPPAddedKeyTypes": "String",
+    "CIPPAddedKeys": "String"
   },
   "Audit.Exchange": {
     "Id": "Combination GUID",
@@ -117,6 +119,22 @@
     {
       "value": "add service principal credentials.",
       "label": "added credentials to a service principal"
+    },
+    {
+      "value": "add app role assignment to service principal.",
+      "label": "granted an application permission to a service principal"
+    },
+    {
+      "value": "add delegated permission grant.",
+      "label": "granted a delegated permission"
+    },
+    {
+      "value": "add owner to application.",
+      "label": "added owner to application"
+    },
+    {
+      "value": "add owner to service principal.",
+      "label": "added owner to service principal"
     },
     {
       "value": "add user.",

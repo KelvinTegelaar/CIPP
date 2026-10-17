@@ -29,7 +29,7 @@ const AddPolicy = () => {
     <CippFormPage
       formControl={formControl}
       queryKey="AddTransportRule"
-      title="Add Spamfilter Rule"
+      title="Spamfilter Rule"
       backButtonTitle="Spamfilter Overview"
       postUrl="/api/AddSpamFilter"
     >

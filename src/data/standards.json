@@ -1675,6 +1675,22 @@
     "recommendedBy": ["CIS", "CIPP"]
   },
   {
+    "name": "standards.DisableAgentBlueprintCreation",
+    "cat": "Entra (AAD) Standards",
+    "tag": [],
+    "appliesToTest": [],
+    "helpText": "Disables the ability for users to register agent identity blueprints in the tenant. This is a separate setting from 'Users can register applications'; disabling app registrations does not stop users from creating agent identity blueprints.",
+    "docsDescription": "Sets the Entra default user role permission 'Users can register agent identity blueprints' to No. Microsoft enables this for all users by default, and the creator of a blueprint becomes its owner and can manage its credentials. This setting is independent of 'Users can register applications', so apply both standards to keep application and agent identity creation limited to the Agent ID Developer and Agent ID Administrator roles.",
+    "executiveText": "Prevents regular employees from creating AI agent identity blueprints, which are the templates that agent identities are issued from. Restricting this to designated roles keeps agent identities and their credentials under IT governance and avoids a sprawl of unmanaged agent registrations.",
+    "addedComponent": [],
+    "label": "Disable agent identity blueprint creation by users",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "addedDate": "2026-10-15",
+    "powershellEquivalent": "Update-MgBetaPolicyAuthorizationPolicy",
+    "recommendedBy": ["CIPP"]
+  },
+  {
     "name": "standards.BitLockerKeysForOwnedDevice",
     "cat": "Entra (AAD) Standards",
     "tag": ["CIS M365 7.0.0 (5.1.4.6)"],
@@ -6229,8 +6245,8 @@
     "name": "standards.PlannerBlockTaskDelete",
     "cat": "Teams Standards",
     "tag": [],
-    "helpText": "Sets the Planner user policy that blocks each in-scope member from deleting Planner tasks they did not create. Applies across all basic Planner plans for that user (not a single board). Only enabled members with an enabled Microsoft Planner (PROJECTWORKMANAGEMENT) service plan are touched. Optionally limit the sweep to members of named groups or skip members of named groups. The remediate wash is limited to once per 24 hours per tenant because there is no list API and every user needs its own write. Alert and report still run every time. May also prevent those users from deleting plans. Requires CIPP-SAM consent for ProjectWorkManagement OrgSettings-Planner permissions.",
-    "docsDescription": "Uses the Planner tenant admin UserPolicy API (tasks.office.com) to set blockDeleteTasksNotCreatedBySelf to true for each in-scope enabled member account that has an enabled PROJECTWORKMANAGEMENT (Microsoft Planner) service plan in the user cache. Guest accounts, disabled accounts, and members without that plan are ignored. Group names are resolved per tenant by display name and expanded to their transitive user members: include groups restrict the sweep to those members, exclude groups remove them from it. A configured group that does not exist in a tenant, or a failed membership lookup, skips the run rather than sweeping the wrong accounts. When no include group is named, every Planner-licensed enabled member account is in scope. Remediate is an idempotent PUT per candidate with no preflight GET; a 24-hour rerun guard (Test-CIPPRerun) skips repeating that write sweep for the same settings, while alert and report still GET live state each run. The policy is per user and applies to all basic plans that user can access; it is not board-scoped. Known side effect: the same policy can also block plan deletion. Requires application permissions OrgSettings-Planner.ReadWrite.All on ProjectWorkManagement (tasks.office.com), consented via CIPP-SAM repair and CPV refresh.",
+    "helpText": "Stops users from deleting Planner tasks that someone else created. Applies to all of a user's plans, and may also stop them from deleting plans. Use the group fields to limit who it applies to.",
+    "docsDescription": "Sets Planner's per-user policy that blocks deleting tasks created by someone else. The policy covers every plan the user can access (not a single board) and can also block deleting plans. Only enabled member accounts with a Planner license are changed; guests and disabled accounts are skipped. Use include groups to apply it to specific people only, and exclude groups to leave people out. If a named group can't be found, the run is skipped. Because each user is set one at a time, remediation runs at most once a day per tenant; alerts and reports check every run.",
     "executiveText": "Stops employees from deleting Planner tasks they did not create, reducing accidental loss on boards used as shared work queues. Can be limited to a department security group so only those staff are locked down.",
     "addedComponent": [
       {
@@ -6239,7 +6255,7 @@
         "creatable": true,
         "required": false,
         "name": "standards.PlannerBlockTaskDelete.includeGroups",
-        "label": "Only apply to members of these groups (display names; blank = all Planner-licensed enabled members)"
+        "label": "Only apply to members of these groups (leave blank for all users)"
       },
       {
         "type": "autoComplete",
@@ -6878,7 +6894,8 @@
         "type": "switch",
         "name": "standards.AutopilotProfile.SelfDeployingMode",
         "label": "Enable Self-deploying Mode",
-        "defaultValue": true
+        "defaultValue": true,
+        "helperText": "Self-deploying (shared) profiles cannot use White Glove / pre-provisioned deployment, so pre-provisioning is always off while this is enabled."
       },
       {
         "type": "switch",
@@ -6908,7 +6925,13 @@
         "type": "switch",
         "name": "standards.AutopilotProfile.AllowWhiteGlove",
         "label": "Allow White Glove OOBE",
-        "defaultValue": true
+        "defaultValue": true,
+        "helperText": "Only available for user-driven profiles. Self-deploying mode always sets this to off.",
+        "condition": {
+          "field": "standards.AutopilotProfile.SelfDeployingMode",
+          "compareType": "isNot",
+          "compareValue": true
+        }
       },
       {
         "type": "switch",

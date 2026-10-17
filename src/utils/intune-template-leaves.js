@@ -159,8 +159,8 @@ export const buildIntuneSettingLeaves = (policy, getDefinition) => {
         path: [...path, 'choiceSettingValue', 'value'],
         options: optionsFromDefinition(definition),
         value: instance.choiceSettingValue.value,
-        // Intune swaps the child settings when the selected option changes. CIPP has no dependency
-        // data to do the same, so the children below stay as they were and the field says so.
+        // use-intune-policy-editor swaps the children when another option is picked. A variable
+        // cannot be resolved to an option there, so the children stay as they were and the field says so.
         hasDependentChildren: children.length > 0,
       })
 
@@ -190,14 +190,17 @@ export const buildIntuneSettingLeaves = (policy, getDefinition) => {
     }
 
     if (Array.isArray(instance.simpleSettingCollectionValue)) {
+      // An empty list has no entry to copy the type from, so it comes from the definition.
+      const itemType =
+        instance.simpleSettingCollectionValue[0]?.[ODATA] ??
+        definition?.valueDefinition?.[ODATA]?.replace(/Definition$/, '')
       pushLeaf({
         ...common,
         kind: 'simpleCollection',
         path: [...path, 'simpleSettingCollectionValue'],
         items: instance.simpleSettingCollectionValue,
-        valueType: valueTypeFromODataType(
-          instance.simpleSettingCollectionValue[0]?.[ODATA]
-        ),
+        itemType,
+        valueType: valueTypeFromODataType(itemType),
         value: instance.simpleSettingCollectionValue.map((item) => item?.value),
       })
       return
@@ -389,8 +392,11 @@ export const defaultValueForLeaf = (leaf) => {
       return undefined
     default:
       // Numbers are handed over as text: the shared text field renders `value || ''`, which would
-      // blank out a legitimate 0. Coercion converts it back on save.
-      return typeof leaf.value === 'number' ? String(leaf.value) : leaf.value
+      // blank out a legitimate 0. Coercion converts it back on save. A null stays out of the form so
+      // an untouched field does not save as "".
+      return typeof leaf.value === 'number'
+        ? String(leaf.value)
+        : (leaf.value ?? undefined)
   }
 }
 
@@ -468,7 +474,10 @@ export const applyIntuneSettingEdits = (originalPolicy, leaves, formValues) => {
       const next = entries.map((entry, entryIndex) => {
         // Reuse the original item so its @odata.type and any other properties carry over; new
         // entries inherit the shape of the first existing one.
-        const template = leaf.items?.[entryIndex] ?? leaf.items?.[0] ?? {}
+        const template =
+          leaf.items?.[entryIndex] ??
+          leaf.items?.[0] ??
+          (leaf.itemType ? { [ODATA]: leaf.itemType } : {})
         return {
           ...structuredClone(template),
           value: coerceScalar(entry, leaf.valueType, unwrap(entry)),

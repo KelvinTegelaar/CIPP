@@ -349,7 +349,7 @@ export const CippExchangeActions = () => {
       label: "Set Mailbox Locale",
       type: "POST",
       url: "/api/ExecSetMailboxLocale",
-      data: { user: "UPN", ProhibitSendQuota: true },
+      data: { user: "UPN" },
       confirmText: "Enter a locale, e.g. en-US",
       icon: <CippIcons.Language />,
       fields: [

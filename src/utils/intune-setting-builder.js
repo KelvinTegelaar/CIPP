@@ -66,21 +66,31 @@ const simpleValueFor = (definition) => {
   return value
 }
 
-const defaultOptionFor = (definition) => {
+const EMPTY_WANTED = new Set()
+
+// The option a choice is built with: the one leading to a setting the caller asked for, else the default.
+export const optionFor = (definition, wanted = EMPTY_WANTED) => {
   const options = Array.isArray(definition?.options) ? definition.options : []
   return (
+    options.find((option) =>
+      (option.dependedOnBy ?? []).some((link) => wanted.has(link?.dependedOnBy))
+    ) ??
     options.find((option) => option.id === definition.defaultOptionId) ??
     options[0] ??
     null
   )
 }
 
-// Settings an option requires. The link is recorded only on the parent's option.
-export const requiredChildIds = (definition, optionId) => {
+// Settings an option requires, plus any optional ones the caller asked for. The link is recorded only on the parent's option.
+export const requiredChildIds = (
+  definition,
+  optionId,
+  wanted = EMPTY_WANTED
+) => {
   const options = Array.isArray(definition?.options) ? definition.options : []
   const option = options.find((candidate) => candidate.id === optionId)
   return (option?.dependedOnBy ?? [])
-    .filter((link) => link?.required)
+    .filter((link) => link?.required || wanted.has(link?.dependedOnBy))
     .map((link) => link?.dependedOnBy)
     .filter(Boolean)
 }
@@ -97,14 +107,23 @@ export const childDefinitionIds = (definition) => {
     .filter(Boolean)
 }
 
-const buildChildren = (ids, childDefinitionsById) =>
+const buildChildren = (ids, childDefinitionsById, wanted) =>
   ids
     .map((childId) =>
-      buildSettingInstance(childDefinitionsById[childId], childDefinitionsById)
+      buildSettingInstance(
+        childDefinitionsById[childId],
+        childDefinitionsById,
+        wanted
+      )
     )
     .filter(Boolean)
 
-export const buildSettingInstance = (definition, childDefinitionsById = {}) => {
+// `wanted` holds settings beneath this one to include, choosing the options that lead to them.
+export const buildSettingInstance = (
+  definition,
+  childDefinitionsById = {},
+  wanted = EMPTY_WANTED
+) => {
   const instanceType = definitionInstanceType(definition)
   if (!instanceType || !definition?.id) return null
 
@@ -115,13 +134,14 @@ export const buildSettingInstance = (definition, childDefinitionsById = {}) => {
 
   switch (instanceType) {
     case `${PREFIX}ChoiceSettingInstance`: {
-      const option = defaultOptionFor(definition)
+      const option = optionFor(definition, wanted)
       if (!option) return null
       instance.choiceSettingValue = {
         value: option.id,
         children: buildChildren(
-          requiredChildIds(definition, option.id),
-          childDefinitionsById
+          requiredChildIds(definition, option.id, wanted),
+          childDefinitionsById,
+          wanted
         ),
       }
       return instance
@@ -133,24 +153,25 @@ export const buildSettingInstance = (definition, childDefinitionsById = {}) => {
       return instance
     }
     case `${PREFIX}ChoiceSettingCollectionInstance`: {
-      const option = defaultOptionFor(definition)
+      const option = optionFor(definition)
       if (!option) return null
       instance.choiceSettingCollectionValue = [
         { value: option.id, children: [] },
       ]
       return instance
     }
+    // Starts empty rather than with a blank entry Intune would deploy; saving it empty is refused by validation.
     case `${PREFIX}SimpleSettingCollectionInstance`: {
-      const value = simpleValueFor(definition)
-      if (!value) return null
-      instance.simpleSettingCollectionValue = [value]
+      if (!simpleValueFor(definition)) return null
+      instance.simpleSettingCollectionValue = []
       return instance
     }
     // Intune rejects an empty group ("SettingGroupValue should not be empty").
     case `${PREFIX}GroupSettingInstance`: {
       const children = buildChildren(
         childDefinitionIds(definition),
-        childDefinitionsById
+        childDefinitionsById,
+        wanted
       )
       if (children.length === 0) return null
       instance.groupSettingValue = { children }
@@ -159,7 +180,8 @@ export const buildSettingInstance = (definition, childDefinitionsById = {}) => {
     case `${PREFIX}GroupSettingCollectionInstance`: {
       const children = buildChildren(
         childDefinitionIds(definition),
-        childDefinitionsById
+        childDefinitionsById,
+        wanted
       )
       if (children.length === 0) return null
       instance.groupSettingCollectionValue = [{ children }]
@@ -170,17 +192,87 @@ export const buildSettingInstance = (definition, childDefinitionsById = {}) => {
   }
 }
 
-export const buildSetting = (definition, childDefinitionsById = {}) => {
-  const instance = buildSettingInstance(definition, childDefinitionsById)
+export const buildSetting = (
+  definition,
+  childDefinitionsById = {},
+  wanted = EMPTY_WANTED
+) => {
+  const instance = buildSettingInstance(
+    definition,
+    childDefinitionsById,
+    wanted
+  )
   return instance
     ? { '@odata.type': `${PREFIX}Setting`, settingInstance: instance }
     : null
 }
 
-export const policyHasSetting = (policy, definitionId) =>
-  (policy?.settings ?? []).some(
-    (setting) => setting?.settingInstance?.settingDefinitionId === definitionId
-  )
+const mergeChildren = (current = [], fresh = []) => [
+  ...current.map((child) => {
+    const match = fresh.find(
+      (entry) => entry.settingDefinitionId === child.settingDefinitionId
+    )
+    return match ? mergeSettingInstance(child, match) : child
+  }),
+  ...fresh.filter(
+    (entry) =>
+      !current.some(
+        (child) => child.settingDefinitionId === entry.settingDefinitionId
+      )
+  ),
+]
+
+// Lays a freshly built instance over one already in the policy. Values already set are kept; a choice
+// moved to another option takes that option's children, keeping any of them that were already set.
+export const mergeSettingInstance = (existing, built) => {
+  if (!existing || existing.settingDefinitionId !== built?.settingDefinitionId)
+    return built
+  if (existing.choiceSettingValue && built.choiceSettingValue) {
+    const { value, children = [] } = existing.choiceSettingValue
+    const fresh = built.choiceSettingValue.children ?? []
+    const kept =
+      value === built.choiceSettingValue.value
+        ? children
+        : children.filter((child) =>
+            fresh.some(
+              (entry) => entry.settingDefinitionId === child.settingDefinitionId
+            )
+          )
+    return {
+      ...existing,
+      choiceSettingValue: {
+        ...existing.choiceSettingValue,
+        value: built.choiceSettingValue.value,
+        children: mergeChildren(kept, fresh),
+      },
+    }
+  }
+  if (existing.groupSettingValue && built.groupSettingValue) {
+    return {
+      ...existing,
+      groupSettingValue: {
+        ...existing.groupSettingValue,
+        children: mergeChildren(
+          existing.groupSettingValue.children,
+          built.groupSettingValue.children
+        ),
+      },
+    }
+  }
+  if (
+    Array.isArray(existing.groupSettingCollectionValue) &&
+    Array.isArray(built.groupSettingCollectionValue)
+  ) {
+    const fresh = built.groupSettingCollectionValue[0]?.children
+    return {
+      ...existing,
+      groupSettingCollectionValue: existing.groupSettingCollectionValue.map(
+        (row) => ({ ...row, children: mergeChildren(row.children, fresh) })
+      ),
+    }
+  }
+  return existing
+}
 
 // Intune rejects the whole policy when a collection exceeds its bounds (the ASR rules group allows one row).
 export const collectionCountBounds = (definition) => ({

@@ -335,6 +335,7 @@ const Page = () => {
     syncTitle: "Sync MDE Onboarding Status",
     allowToggle: false,
     defaultCached: true,
+    serverPagination: true,
   });
 
   if (!isAllTenants) {
@@ -347,6 +348,7 @@ const Page = () => {
         title="MDE Onboarding Status"
         apiUrl={reportDB.resolvedApiUrl}
         apiData={reportDB.resolvedApiData}
+        apiDataKey={reportDB.apiDataKey}
         queryKey={reportDB.resolvedQueryKey}
         simpleColumns={[
           "Tenant",

@@ -180,6 +180,19 @@ export const getIntuneDeviceActions = ({ tenantFilter } = {}) => [
     confirmText: 'Are you sure you want to retrieve the local admin password for [deviceName]?',
   },
   {
+    label: 'Retrieve LAPS password',
+    type: 'POST',
+    icon: <CippIcons.Password />,
+    url: '/api/ExecGetLocalAdminPassword',
+    data: {
+      // macOS LAPS is keyed on the Intune managedDevice id, not azureADDeviceId.
+      GUID: 'id',
+      Platform: '!macOS',
+    },
+    hideCondition: (row) => row.operatingSystem !== 'macOS',
+    confirmText: 'Are you sure you want to retrieve the local admin password for [deviceName]?',
+  },
+  {
     label: 'Rotate Local Admin Password',
     type: 'POST',
     icon: <CippIcons.PasswordOutlined />,

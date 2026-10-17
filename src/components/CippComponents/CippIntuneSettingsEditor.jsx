@@ -151,7 +151,18 @@ const LeafDetails = ({ leaf, fieldPrefix, formControl, variableOptions }) => {
           flexWrap: "wrap"
         }}>
         <Tooltip
-          title={leaf.helpText || leaf.definitionId || ''}
+          title={
+            <>
+              <Box component="span" sx={{ display: 'block', wordBreak: 'break-all' }}>
+                {leaf.definitionId}
+              </Box>
+              {leaf.helpText && (
+                <Box component="span" sx={{ display: 'block', mt: 1, whiteSpace: 'pre-line' }}>
+                  {leaf.helpText}
+                </Box>
+              )}
+            </>
+          }
           placement="top"
           arrow
         >
@@ -532,7 +543,7 @@ const CippIntuneSettingsEditor = ({
         <Typography variant="caption" sx={{
           color: "text.secondary"
         }}>
-          {sections.length} categories, {leaves.length} settings
+          {sections.length} categories, {leaves.length} fields
         </Typography>
         <Link
           component="button"

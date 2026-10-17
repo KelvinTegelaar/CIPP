@@ -19,6 +19,7 @@ const Page = () => {
     syncTitle: 'Sync App Protection Policies Report',
     allowToggle: true,
     defaultCached: false,
+    serverPagination: true,
   })
 
   // Route create-template / clone by each row's own URLName (the concrete @odata.type for app
@@ -55,6 +56,8 @@ const Page = () => {
       <CippTablePage
         title={pageTitle}
         apiUrl={reportDB.resolvedApiUrl}
+        apiData={reportDB.resolvedApiData}
+        apiDataKey={reportDB.apiDataKey}
         queryKey={reportDB.resolvedQueryKey}
         actions={actions}
         offCanvas={offCanvas}

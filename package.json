@@ -1,6 +1,6 @@
 {
   "name": "cipp",
-  "version": "11.1.0",
+  "version": "11.2.0",
   "author": "CIPP Contributors",
   "homepage": "https://cipp.app/",
   "bugs": {
@@ -8,7 +8,7 @@
   },
   "license": "AGPL-3.0",
   "engines": {
-    "node": "^22.22.0"
+    "node": "^22.22.2"
   },
   "repository": {
     "type": "git",
@@ -44,7 +44,7 @@
     "@mui/icons-material": "9.4.0",
     "@mui/lab": "9.0.0-beta.9",
     "@mui/material": "9.4.0",
-    "@mui/system": "9.4.0",
+    "@mui/system": "9.5.0",
     "@mui/x-date-pickers": "^9.12.0",
     "@musement/iso-duration": "^1.0.0",
     "@nivo/core": "^0.99.0",
@@ -52,7 +52,7 @@
     "@react-pdf/renderer": "4.5.1",
     "@reduxjs/toolkit": "^2.12.0",
     "@tanstack/query-sync-storage-persister": "^5.102.8",
-    "@tanstack/react-query": "^5.104.0",
+    "@tanstack/react-query": "^5.104.1",
     "@tanstack/react-query-devtools": "^5.101.2",
     "@tanstack/react-query-persist-client": "^5.101.2",
     "@tanstack/react-table": "^8.19.2",
@@ -62,7 +62,7 @@
     "@tiptap/extension-table": "^3.31.3",
     "@tiptap/pm": "^3.31.3",
     "@tiptap/react": "^3.31.3",
-    "@tiptap/starter-kit": "^3.31.3",
+    "@tiptap/starter-kit": "^3.31.4",
     "@vvo/tzdb": "^6.198.0",
     "apexcharts": "7.1.0",
     "axios": "1.20.0",
@@ -106,7 +106,7 @@
     "react-redux": "9.3.0",
     "react-syntax-highlighter": "^16.1.0",
     "react-time-ago": "^7.3.3",
-    "react-virtuoso": "^4.18.7",
+    "react-virtuoso": "^4.18.16",
     "recharts": "^3.10.1",
     "redux": "5.0.1",
     "redux-persist": "^6.0.0",
@@ -115,7 +115,7 @@
     "remark-parse": "^11.0.0",
     "simplebar": "6.3.3",
     "simplebar-react": "3.3.2",
-    "stylis": "4.2.0",
+    "stylis": "4.4.0",
     "stylis-plugin-rtl": "2.1.1",
     "swagger-ui-dist": "5.33.1",
     "unified": "^11.0.5",
@@ -139,7 +139,7 @@
     "eslint": "^9.39.4",
     "eslint-config-next": "^16.3.8",
     "eslint-config-prettier": "^10.1.8",
-    "jsdom": "29.0.1",
+    "jsdom": "30.0.1",
     "msw": "2.15.0",
     "msw-storybook-addon": "3.0.3",
     "playwright": "1.63.0",

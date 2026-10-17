@@ -352,7 +352,6 @@ const Page = () => {
       simpleColumns={simpleColumns}
       offCanvas={offCanvas}
       actions={actions}
-      dynamicColumns={false}
     />
   );
 };

@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { CippIcons } from "../utils/icon-registry";
 import NextLink from "next/link";
 import PropTypes from "prop-types";
@@ -25,10 +25,38 @@ export const SideNavItem = (props) => {
 
   const [open, setOpen] = useState(openImmediately);
   const [hovered, setHovered] = useState(false);
+  const itemRef = useRef(null);
   const { isBookmarked: isPathBookmarked, toggleBookmark } = useUserBookmarks();
   const settings = useSettings();
   const compactNav = settings.compactNav ?? false;
   const isBookmarked = isPathBookmarked(path);
+
+  // useState only reads openImmediately on mount, client-side navigation (Ctrl+K, breadcrumbs)
+  // keeps the nav mounted, so expand the section when the route moves into it. Never auto-closes.
+  const [prevOpenImmediately, setPrevOpenImmediately] = useState(openImmediately);
+  if (openImmediately !== prevOpenImmediately) {
+    setPrevOpenImmediately(openImmediately);
+    if (openImmediately) setOpen(true);
+  }
+
+  // leaf only (the ref sits on the leaf <li>), waits out the parent Collapse expand (300ms).
+  // "nearest" would park it under the sticky sponsor footer, so center it when it's out of view
+  useEffect(() => {
+    if (!active) return;
+    const timer = setTimeout(() => {
+      const el = itemRef.current;
+      const paper = el?.closest(".MuiDrawer-paper");
+      if (!paper || !el.scrollIntoView) return;
+      const item = el.getBoundingClientRect();
+      const view = paper.getBoundingClientRect();
+      const footer = paper.querySelector("[data-side-nav-footer]");
+      const visibleBottom = footer ? footer.getBoundingClientRect().top : view.bottom;
+      if (item.top < view.top || item.bottom > visibleBottom) {
+        el.scrollIntoView({ block: "center" });
+      }
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [active]);
 
   const handleToggle = useCallback(() => {
     setOpen((prevOpen) => !prevOpen);
@@ -144,7 +172,7 @@ export const SideNavItem = (props) => {
     : {};
 
   return (
-    <li>
+    <li ref={itemRef}>
       <Stack
         direction="row"
         onMouseEnter={() => setHovered(true)}

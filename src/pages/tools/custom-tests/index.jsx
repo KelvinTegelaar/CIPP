@@ -126,7 +126,7 @@ const Page = () => {
           icon: <CippIcons.Delete />,
           url: "/api/RemoveCustomScript",
           type: "POST",
-          relatedquerykeys: ["ListAvailableTests"],
+          relatedQueryKeys: ["ListAvailableTests"],
           data: {
             ScriptGuid: "ScriptGuid",
           },

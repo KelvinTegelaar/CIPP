@@ -66,6 +66,7 @@ const Page = () => {
         queryKey={["ListGDAPRoleTemplates", "ListGDAPRoles"]}
         formControl={formControl}
         title="GDAP Role Template"
+        formPageType="Edit"
         backButtonTitle="Role Templates"
         postUrl="/api/ExecGDAPRoleTemplate?Action=Save"
         customDataformatter={(values) =>

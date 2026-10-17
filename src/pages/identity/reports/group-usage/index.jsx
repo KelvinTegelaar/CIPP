@@ -17,6 +17,7 @@ const Page = () => {
       'Refresh all cached data sources for the group usage report (groups, Conditional Access, Intune, roles, applications, licenses, transport rules)? This can take a few minutes.',
     allowToggle: false,
     defaultCached: true,
+    serverPagination: true,
   })
 
   const simpleColumns = [
@@ -72,6 +73,7 @@ const Page = () => {
         title={pageTitle}
         apiUrl={reportDB.resolvedApiUrl}
         apiData={reportDB.resolvedApiData}
+        apiDataKey={reportDB.apiDataKey}
         queryKey={reportDB.resolvedQueryKey}
         simpleColumns={simpleColumns}
         filters={filters}

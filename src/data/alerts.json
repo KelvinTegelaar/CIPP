@@ -16,7 +16,7 @@
   },
   {
     "name": "MFAAdmins",
-    "label": "Alert on admins without any form of MFA",
+    "label": "Alert on admins without any form of MFA (Entra P1 Required)",
     "recommendedRunInterval": "1d",
     "requiresInput": true,
     "inputType": "switch",

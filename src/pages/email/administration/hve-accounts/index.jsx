@@ -15,6 +15,7 @@ const Page = () => {
     syncTitle: 'Sync HVE Accounts',
     allowToggle: true,
     defaultCached: true,
+    serverPagination: true,
   })
 
   const actions = [
@@ -176,6 +177,8 @@ const Page = () => {
       <CippTablePage
         title={pageTitle}
         apiUrl={reportDB.resolvedApiUrl}
+        apiData={reportDB.resolvedApiData}
+        apiDataKey={reportDB.apiDataKey}
         queryKey={reportDB.resolvedQueryKey}
         actions={actions}
         offCanvas={offCanvas}

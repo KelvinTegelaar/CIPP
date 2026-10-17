@@ -78,7 +78,7 @@ const RetentionPolicy = () => {
     <CippFormPage
       formControl={formControl}
       queryKey={isEdit ? `RetentionPolicy-${name}` : "AddRetentionPolicy"}
-      title={isEdit ? `Edit Retention Policy: ${name}` : "Add Retention Policy"}
+      title={isEdit ? `Retention Policy: ${name}` : "Retention Policy"}
       backButtonTitle="Retention Policies"
       formPageType={isEdit ? "Edit" : "Add"}
       postUrl="/api/ExecManageRetentionPolicies"

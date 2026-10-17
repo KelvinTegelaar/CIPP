@@ -18,6 +18,7 @@ const Page = () => {
     syncTitle: "Sync Reusable Settings Report",
     allowToggle: true,
     defaultCached: false,
+    serverPagination: true,
   });
   const isAllTenants = reportDB.isAllTenants;
 
@@ -83,6 +84,8 @@ const Page = () => {
         }
         dataSourceControls={reportDB.controls}
         apiUrl={reportDB.resolvedApiUrl}
+        apiData={reportDB.resolvedApiData}
+        apiDataKey={reportDB.apiDataKey}
         queryKey={reportDB.resolvedQueryKey}
         actions={actions}
         offCanvas={offCanvas}

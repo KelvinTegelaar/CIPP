@@ -257,6 +257,39 @@ describe('applyIntuneSettingEdits', () => {
     )
   })
 
+  it('types entries added to an empty collection from the setting definition', () => {
+    const original = catalogPolicy()
+    original.settings[2].settingInstance.simpleSettingCollectionValue = []
+    const withValueType = (id) =>
+      id === 'collection_setting'
+        ? {
+            ...definitions.collection_setting,
+            valueDefinition: {
+              '@odata.type':
+                '#microsoft.graph.deviceManagementConfigurationIntegerSettingValueDefinition',
+            },
+          }
+        : getDefinition(id)
+    const leaves = buildIntuneSettingLeaves(original, withValueType)
+    const collectionLeaf = leaves.find(
+      (leaf) => leaf.kind === 'simpleCollection'
+    )
+
+    const values = leaves.map(defaultValueForLeaf)
+    values[collectionLeaf.index] = [{ value: '5' }]
+
+    const edited = applyIntuneSettingEdits(original, leaves, values)
+    expect(
+      edited.settings[2].settingInstance.simpleSettingCollectionValue
+    ).toEqual([
+      {
+        '@odata.type':
+          '#microsoft.graph.deviceManagementConfigurationIntegerSettingValue',
+        value: 5,
+      },
+    ])
+  })
+
   it('leaves the policy untouched when the form is submitted unchanged', () => {
     const original = catalogPolicy()
     const leaves = buildIntuneSettingLeaves(original, getDefinition)
@@ -549,6 +582,29 @@ describe('settings with no value yet', () => {
       'value' in edited.settings[0].settingInstance.simpleSettingValue
     ).toBe(false)
   })
+
+  // Captures from before Intune's stricter validation store the empty value as null.
+  it.each([
+    ['string', 'StringSettingValue'],
+    ['secret', 'SecretSettingValue'],
+  ])(
+    'keeps a %s value captured as null as null when the field is not edited',
+    (_, valueType) => {
+      const original = emptyPolicy()
+      original.settings[0].settingInstance.simpleSettingValue = {
+        '@odata.type': `#microsoft.graph.deviceManagementConfiguration${valueType}`,
+        value: null,
+      }
+      const leaves = buildIntuneSettingLeaves(original, getDefinition)
+      const edited = applyIntuneSettingEdits(
+        original,
+        leaves,
+        leaves.map(defaultValueForLeaf)
+      )
+
+      expect(edited).toEqual(original)
+    }
+  )
 
   it('writes a value into the empty field once one is entered', () => {
     const original = emptyPolicy()

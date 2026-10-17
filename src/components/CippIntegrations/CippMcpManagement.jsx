@@ -16,6 +16,38 @@ import { CippApiResults } from "../CippComponents/CippApiResults";
 import { CippCopyToClipBoard } from "../CippComponents/CippCopyToClipboard";
 import { CippFormComponent } from "../CippComponents/CippFormComponent";
 import { CippPropertyListCard } from "../CippCards/CippPropertyListCard";
+import Link from "next/link";
+
+// MCP setup works while the MCPServer flag is off, but every connector call is then refused, so
+// flag it wherever MCP is configured.
+export const McpFeatureDisabledAlert = ({ sx }) => {
+  const featureFlags = ApiGetCall({
+    url: "/api/ListFeatureFlags",
+    queryKey: "featureFlags",
+    staleTime: 600000,
+  });
+
+  const mcpFlag = Array.isArray(featureFlags.data)
+    ? featureFlags.data.find((flag) => flag.Id === "MCPServer")
+    : null;
+  if (mcpFlag?.Enabled !== false) return null;
+
+  return (
+    <Alert
+      severity="error"
+      sx={sx}
+      action={
+        <Button color="inherit" size="small" component={Link} href="/cipp/settings/features">
+          Open Features
+        </Button>
+      }
+    >
+      <strong>The MCP Server feature is disabled.</strong> MCP clients can be set up here, but
+      every connector call is refused until it is enabled in{" "}
+      <strong>CIPP &gt; Application Settings &gt; Features</strong>.
+    </Alert>
+  );
+};
 
 // One self-contained section per MCP-enabled client: its connector (sign-in) URL, its pre-auth
 // status, and its own redirect-URI boxes. Each client has its own form + save so multiple MCP

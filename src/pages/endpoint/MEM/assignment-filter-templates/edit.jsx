@@ -55,7 +55,8 @@ const Page = () => {
         resetForm={false}
         queryKey={[`ListAssignmentFilterTemplates`, `AssignmentFilterTemplate-${id}`]}
         formControl={formControl}
-        title="Edit Assignment Filter Template"
+        title="Assignment Filter Template"
+        formPageType="Edit"
         backButtonTitle="Assignment Filter Overview"
         postUrl="/api/AddAssignmentFilterTemplate"
         isFetching={isFetching}

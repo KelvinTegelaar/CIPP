@@ -179,6 +179,46 @@ describe('CippQuarantineDetails', () => {
   })
 })
 
+// On the header fallback the URLs and attachments come from the exported message, not from
+// Defender, so a missing verdict is "not analysed", not "unknown" (GitHub #873).
+describe('CippQuarantineDetails verdict chips without a verdict', () => {
+  const withoutVerdicts = {
+    ...analyzed,
+    urls: [
+      { url: 'https://example.com/a', threatType: null, detectionMethod: null },
+    ],
+    attachments: [
+      {
+        fileName: 'image.png',
+        threatType: null,
+        malwareFamily: null,
+        fileSize: 1024,
+      },
+    ],
+  }
+  const noVerdictResult = (source) =>
+    getResult({
+      data: {
+        Results: [withoutVerdicts],
+        Metadata: { Available: true, Source: source },
+      },
+    })
+
+  it('says Not analysed on the header fallback', () => {
+    api.get = () => noVerdictResult('Headers')
+    renderWithProviders(<CippQuarantineDetails row={quarantineRow} />)
+    expect(screen.getAllByText('Not analysed')).toHaveLength(2)
+    expect(screen.queryByText('Unknown')).toBeNull()
+  })
+
+  it('still says Unknown when Defender answered without a verdict', () => {
+    api.get = () => noVerdictResult('Defender')
+    renderWithProviders(<CippQuarantineDetails row={quarantineRow} />)
+    expect(screen.getAllByText('Unknown')).toHaveLength(2)
+    expect(screen.queryByText('Not analysed')).toBeNull()
+  })
+})
+
 // Metadata.PermissionError marks a missing SecurityAnalyzedMessage.Read.All grant, which is a
 // consent gap the operator can repair - it must render its own caption pointing at the Permission
 // Check page and win over the two Defender-licence captions.

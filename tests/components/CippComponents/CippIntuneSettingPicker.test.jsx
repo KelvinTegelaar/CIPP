@@ -1,5 +1,33 @@
-import { describe, expect, it } from 'vitest'
-import { searchSettingIndex } from '../../../src/components/CippComponents/CippIntuneSettingPicker'
+import { describe, expect, it, vi } from 'vitest'
+import { fireEvent, screen, waitFor } from '@testing-library/react'
+import {
+  CippIntuneSettingPicker,
+  searchSettingIndex,
+} from '../../../src/components/CippComponents/CippIntuneSettingPicker'
+import { renderWithTheme } from '../../test-utils'
+import {
+  forceListCategory,
+  forceListChildren,
+  forceListDefinition,
+  forceListIdsDefinition,
+  forceListIndexRows,
+} from '../../mocks/intune-chrome-forcelist'
+
+vi.mock('../../../src/hooks/use-intune-collection', () => ({
+  useIntuneSettingIndex: () => ({
+    rows: forceListIndexRows,
+    isLoading: false,
+    isError: false,
+  }),
+  useIntuneCategories: () =>
+    new Map([[forceListCategory.id, forceListCategory]]),
+  fetchIntuneDefinitions: vi.fn(async (ids) =>
+    ids.map((id) =>
+      id === forceListDefinition.id ? forceListDefinition : null
+    )
+  ),
+  fetchIntuneDescendants: vi.fn(async () => forceListChildren),
+}))
 
 const rows = [
   {
@@ -50,5 +78,74 @@ describe('searchSettingIndex', () => {
         excludeIds: ['bitlocker_os'],
       }).map((r) => r.id)
     ).toEqual(['bitlocker_require'])
+  })
+})
+
+describe('CippIntuneSettingPicker', () => {
+  it('adds a nested setting through its parent, on the option that leads to it', async () => {
+    const onAdd = vi.fn(() => true)
+    renderWithTheme(
+      <CippIntuneSettingPicker
+        open
+        onClose={() => {}}
+        onAdd={onAdd}
+        platform="windows10"
+        technology="mdm"
+      />
+    )
+
+    fireEvent.change(screen.getByLabelText('Search settings'), {
+      target: { value: 'silently installed' },
+    })
+    fireEvent.click(await screen.findByText(forceListIdsDefinition.displayName))
+
+    await waitFor(() => expect(onAdd).toHaveBeenCalled())
+    const [definition, children, wanted] = onAdd.mock.calls[0]
+    expect(definition).toBe(forceListDefinition)
+    expect(children).toBe(forceListChildren)
+    expect([...wanted]).toEqual([forceListIdsDefinition.id])
+  })
+
+  it('names the setting a nested result sits under', async () => {
+    renderWithTheme(
+      <CippIntuneSettingPicker
+        open
+        onClose={() => {}}
+        onAdd={() => true}
+        platform="windows10"
+        technology="mdm"
+      />
+    )
+
+    fireEvent.change(screen.getByLabelText('Search settings'), {
+      target: { value: 'silently installed' },
+    })
+
+    expect(
+      await screen.findByText(`Under ${forceListDefinition.displayName}.`, {
+        exact: false,
+      })
+    ).toBeInTheDocument()
+  })
+
+  it('labels results with the category path, which tells Edge and Chrome settings apart', async () => {
+    renderWithTheme(
+      <CippIntuneSettingPicker
+        open
+        onClose={() => {}}
+        onAdd={() => true}
+        platform="windows10"
+        technology="mdm"
+      />
+    )
+
+    fireEvent.change(screen.getByLabelText('Search settings'), {
+      target: { value: 'silently installed' },
+    })
+
+    expect(
+      await screen.findByText(forceListCategory.description)
+    ).toBeInTheDocument()
+    expect(screen.queryByText(forceListCategory.displayName)).toBeNull()
   })
 })

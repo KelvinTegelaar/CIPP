@@ -118,6 +118,9 @@ const ADHOC_CACHE_TYPES = new Set([
   'OneDriveRootPermissions',
 ])
 
+// Collections that are no longer cached. Their old rows stay in the table and never refresh.
+const RETIRED_CACHE_TYPES = new Set(['CredentialUserRegistrationDetails', 'DeviceSettings'])
+
 // The nightly orchestrator runs at 03:00, so a tenant that collected yesterday is still healthy;
 // past 30 hours it has missed a run, and past 72 it has missed three.
 const STALE_HOURS = 30
@@ -141,6 +144,7 @@ export const deriveCacheSummary = (rows, tenants) => {
 
   rows.forEach((row) => {
     const type = row?.Type
+    if (RETIRED_CACHE_TYPES.has(type)) return
     const count = Number(row?.Count ?? 0)
     // Scale totals still count every collection — only the age judgement is scoped.
     if (type) totals.set(type, (totals.get(type) ?? 0) + count)

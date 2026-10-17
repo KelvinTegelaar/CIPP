@@ -20,6 +20,7 @@ const Page = () => {
     syncTitle: 'Sync Intune Policy Report',
     allowToggle: true,
     defaultCached: false,
+    serverPagination: true,
   })
 
   const actions = useCippIntunePolicyActions(tenant, 'URLName', {
@@ -58,6 +59,8 @@ const Page = () => {
       <CippTablePage
         title={pageTitle}
         apiUrl={reportDB.resolvedApiUrl}
+        apiData={reportDB.resolvedApiData}
+        apiDataKey={reportDB.apiDataKey}
         actions={actions}
         offCanvas={offCanvas}
         simpleColumns={simpleColumns}

@@ -261,6 +261,7 @@ export const SideNav = (props) => {
             {/* Add this closing tag */}
             {profile?.clientPrincipal && (
               <Box
+                data-side-nav-footer
                 sx={{ position: 'sticky', bottom: 0, backgroundColor: 'background.default', pt: 1 }}
               >
                 <CippSponsor />

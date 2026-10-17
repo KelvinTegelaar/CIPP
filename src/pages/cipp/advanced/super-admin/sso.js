@@ -1,4 +1,4 @@
-// Legacy redirect: this page moved to /cipp/advanced/authentication/sso when the
+// Legacy redirect: this page moved to /cipp/advanced/authentication/credentials when the
 // Super Admin area was split into Super Admin / Container Management / Authentication.
 // Safe to delete once bookmarks and docs links have aged out.
 import { useEffect } from "react";
@@ -9,7 +9,7 @@ const Page = () => {
 
   useEffect(() => {
     if (!router.isReady) return;
-    router.replace({ pathname: "/cipp/advanced/authentication/sso", query: router.query });
+    router.replace({ pathname: "/cipp/advanced/authentication/credentials", query: router.query });
   }, [router.isReady]);
 
   return null;

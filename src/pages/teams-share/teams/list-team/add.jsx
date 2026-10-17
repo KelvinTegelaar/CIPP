@@ -25,7 +25,7 @@ const TeamsAddTeamForm = () => {
     <CippFormPage
       formControl={formControl}
       queryKey="Teams-AddTeam"
-      title="Add Team"
+      title="Team"
       backButtonTitle="Teams Overview"
       postUrl="/api/AddTeam"
       resetForm={true}

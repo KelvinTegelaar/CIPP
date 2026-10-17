@@ -31,7 +31,7 @@ const AddContactTemplates = () => {
     <CippFormPage
       formControl={formControl}
       queryKey="AddContactTemplates"
-      title="Add Contact Template"
+      title="Contact Template"
       backButtonTitle="Contact Templates"
       postUrl="/api/AddContactTemplates"
       resetForm={true}

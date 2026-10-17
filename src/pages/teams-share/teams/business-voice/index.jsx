@@ -13,6 +13,7 @@ const Page = () => {
     syncTitle: "Sync Teams Business Voice Report",
     allowToggle: true,
     defaultCached: false,
+    serverPagination: true,
   });
 
   const actions = [
@@ -119,6 +120,8 @@ const Page = () => {
       <CippTablePage
         title={pageTitle}
         apiUrl={reportDB.resolvedApiUrl}
+        apiData={reportDB.resolvedApiData}
+        apiDataKey={reportDB.apiDataKey}
         queryKey={reportDB.resolvedQueryKey}
         actions={actions}
         offCanvas={offCanvas}
@@ -136,11 +139,14 @@ const Page = () => {
           "IsOperatorConnect",
           "AcquisitionDate",
         ]}
-        filterlist={[
+        filters={[
           {
             filterName: "Unassigned User Numbers",
-            filter:
-              "Complex: AssignmentStatus eq Unassigned; AcquiredCapabilities like UserAssignment",
+            value: [
+              { id: "AssignmentStatus", value: "Unassigned" },
+              { id: "AcquiredCapabilities", value: "UserAssignment" },
+            ],
+            type: "column",
           },
         ]}
         dataSourceControls={reportDB.controls}

@@ -50,7 +50,10 @@ vi.mock('next/router', () => ({
 vi.mock('../../../src/hooks/use-permissions', () => ({
   // the page index filters by permission; 'Identity.User.Read' satisfies the config's
   // 'Identity.User.*' requirement so the Users pages exist to be found
-  usePermissions: () => ({ userPermissions: ['Identity.User.Read'], userRoles: ['superadmin'] }),
+  usePermissions: () => ({
+    userPermissions: ['Identity.User.Read', 'CIPP.Extension.Read'],
+    userRoles: ['superadmin'],
+  }),
 }))
 
 import { CippUniversalSearchV2 } from '../../../src/components/CippCards/CippUniversalSearchV2'
@@ -179,6 +182,20 @@ describe('CippUniversalSearchV2 keyboard selection', () => {
     await user.keyboard('{ArrowDown}{Enter}')
 
     expect(routerState.push).toHaveBeenCalledTimes(1)
+  })
+
+  it('finds an individual integration and opens its configure page', async () => {
+    const user = userEvent.setup()
+    renderWithProviders(<CippUniversalSearchV2 defaultSearchType="Pages" />)
+
+    await user.type(screen.getByPlaceholderText(/search pages/i), 'halo psa')
+    expect(await screen.findAllByRole('menuitem')).toHaveLength(1)
+
+    await user.keyboard('{Enter}')
+
+    expect(routerState.push).toHaveBeenCalledWith('/cipp/integrations/configure?id=HaloPSA', undefined, {
+      shallow: true,
+    })
   })
 })
 

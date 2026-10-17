@@ -1,26 +1,16 @@
-import { Container } from "@mui/material";
-import { Grid } from "@mui/system";
-import { TabbedLayout } from "../../../../layouts/TabbedLayout";
-import { Layout as DashboardLayout } from "../../../../layouts/index";
-import tabOptions from "./tabOptions";
-import { CippSSOSettings } from "../../../../components/CippSettings/CippSSOSettings";
+// Legacy redirect: SSO settings now live on the Credentials tab.
+import { useEffect } from "react";
+import { useRouter } from "next/router";
 
 const Page = () => {
-  return (
-    <Container sx={{ pt: { xs: 0, md: 3 } }} maxWidth="xl">
-      <Grid container spacing={2}>
-        <Grid size={{ lg: 6, md: 8, sm: 12, xs: 12 }}>
-          <CippSSOSettings />
-        </Grid>
-      </Grid>
-    </Container>
-  );
-};
+  const router = useRouter();
 
-Page.getLayout = (page) => (
-  <DashboardLayout>
-    <TabbedLayout tabOptions={tabOptions}>{page}</TabbedLayout>
-  </DashboardLayout>
-);
+  useEffect(() => {
+    if (!router.isReady) return;
+    router.replace({ pathname: "/cipp/advanced/authentication/credentials", query: router.query });
+  }, [router.isReady]);
+
+  return null;
+};
 
 export default Page;
