@@ -2592,8 +2592,8 @@
     "name": "standards.SetDefaultMailboxFont",
     "cat": "Exchange Standards",
     "tag": [],
-    "helpText": "Sets the default compose font name, size and colour for all user and shared mailboxes. Font size is the 1-7 scale Exchange stores, not a point size. Applies to Outlook on the web and new Outlook only - classic Outlook for Windows/Mac uses its own local font settings and is not affected.",
-    "docsDescription": "Loops through all UserMailbox and SharedMailbox recipients and sets the Outlook on the web default compose font using `Set-MailboxMessageConfiguration`. Mailboxes already matching the configured font are skipped, so steady-state runs make no writes. Font size is the integer 1-7 scale Exchange stores rather than a point size: 3 is the Exchange default and corresponds to 12pt. Note that these settings apply to Outlook on the web and the new Outlook client only; classic Outlook for Windows and Mac read their compose font from local client settings. See [Microsoft's documentation.](https://learn.microsoft.com/powershell/module/exchangepowershell/set-mailboxmessageconfiguration)",
+    "helpText": "Sets the default compose font name, size and colour for all user and shared mailboxes. Font size is either the legacy 1-7 scale Exchange stores (3 is 12pt) or a point size from 8 to 72. Applies to Outlook on the web and new Outlook only - classic Outlook for Windows/Mac uses its own local font settings and is not affected.",
+    "docsDescription": "Loops through all UserMailbox and SharedMailbox recipients and sets the Outlook on the web default compose font using `Set-MailboxMessageConfiguration`. Mailboxes already matching the configured font are skipped, so steady-state runs make no writes. Font size accepts the legacy integer 1-7 scale (3 is the Exchange default and corresponds to 12pt) or a point size from 8 to 72; Outlook on the web renders values above 7 as that point size, so 11 gives 11pt. Note that these settings apply to Outlook on the web and the new Outlook client only; classic Outlook for Windows and Mac read their compose font from local client settings. See [Microsoft's documentation.](https://learn.microsoft.com/powershell/module/exchangepowershell/set-mailboxmessageconfiguration)",
     "executiveText": "Applies a consistent default font, size and colour to outgoing email so that messages from across the organisation look uniform and on-brand. This affects the web and new Outlook clients; users can still change the font on an individual message.",
     "addedComponent": [
       {
@@ -2622,12 +2622,12 @@
         "type": "number",
         "required": true,
         "name": "standards.SetDefaultMailboxFont.DefaultFontSize",
-        "label": "Default font size (1-7)",
+        "label": "Default font size (1-7 scale or 8-72 pt)",
         "defaultValue": 3,
-        "helperText": "Exchange stores a 1-7 size scale, not a point size. 3 is the Exchange default and corresponds to 12pt; lower is smaller, higher is larger.",
+        "helperText": "1-7 is the legacy Exchange scale where 3 is the default and corresponds to 12pt. Values from 8 to 72 are treated as point sizes, so 11 gives 11pt.",
         "validators": {
           "min": { "value": 1, "message": "Minimum value is 1" },
-          "max": { "value": 7, "message": "Maximum value is 7" }
+          "max": { "value": 72, "message": "Maximum value is 72" }
         }
       },
       {
@@ -8835,7 +8835,7 @@
         "defaultValue": 1,
         "validators": {
           "min": { "value": 0, "message": "Minimum value is 0" },
-          "max": { "value": 7, "message": "Maximum value is 7" }
+          "max": { "value": 72, "message": "Maximum value is 72" }
         }
       },
       {
@@ -8919,7 +8919,7 @@
         "defaultValue": 2,
         "validators": {
           "min": { "value": 0, "message": "Minimum value is 0" },
-          "max": { "value": 7, "message": "Maximum value is 7" }
+          "max": { "value": 72, "message": "Maximum value is 72" }
         }
       },
       {
