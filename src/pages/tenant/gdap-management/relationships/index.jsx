@@ -38,6 +38,14 @@ const filters = [
     value: [{ id: "status", value: "terminated" }],
     type: "column",
   },
+  {
+    filterName: "Active without Auto Extend",
+    value: [
+      { id: "status", value: "active" },
+      { id: "autoExtendDuration", value: "PT0S", filterFn: "equals" },
+    ],
+    type: "column",
+  },
 ];
 
 const offCanvas = {
