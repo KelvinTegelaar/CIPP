@@ -1714,7 +1714,7 @@ export const CIPPTableToptoolbar = React.memo(
             <Stack spacing={2}>
               <CippCodeBlock
                 type="editor"
-                code={JSON.stringify(usedData, null, 2)}
+                code={offcanvasVisible ? JSON.stringify(usedData, null, 2) : ''}
                 editorHeight="1000px"
                 showLineNumbers={!mdDown}
                 readOnly={true}
@@ -1816,7 +1816,7 @@ export const CIPPTableToptoolbar = React.memo(
             <DialogContent>
               <CippCodeBlock
                 type="editor"
-                code={JSON.stringify(usedData, null, 2)}
+                code={jsonDialogOpen ? JSON.stringify(usedData, null, 2) : ''}
                 editorHeight="600px"
                 showLineNumbers={!mdDown}
               />
