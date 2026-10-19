@@ -8835,7 +8835,7 @@
         "defaultValue": 1,
         "validators": {
           "min": { "value": 0, "message": "Minimum value is 0" },
-          "max": { "value": 72, "message": "Maximum value is 72" }
+          "max": { "value": 7, "message": "Maximum value is 7" }
         }
       },
       {
@@ -8919,7 +8919,7 @@
         "defaultValue": 2,
         "validators": {
           "min": { "value": 0, "message": "Minimum value is 0" },
-          "max": { "value": 72, "message": "Maximum value is 72" }
+          "max": { "value": 7, "message": "Maximum value is 7" }
         }
       },
       {
