@@ -569,6 +569,22 @@ const computeSchemaKey = (data) => {
   return [...keys].sort().join(',') + '|' + data.length
 }
 
+const mergeCaseInsensitive = (obj1, obj2) => {
+  const merged = { ...obj1 }
+  for (const key in obj2) {
+    const lowerCaseKey = key.toLowerCase()
+    const existingKey = Object.keys(merged).find(
+      (k) => k.toLowerCase() === lowerCaseKey
+    )
+    if (existingKey) {
+      merged[existingKey] = obj2[key]
+    } else {
+      merged[key] = obj2[key]
+    }
+  }
+  return merged
+}
+
 // ── Module-level render helpers for filter mode menus ──────────────────────
 function renderGlobalFilterModeMenuItemsFn({
   internalFilterOptions,
@@ -803,17 +819,23 @@ export const CippDataTable = (props) => {
   // Ref to track previous data reference for the static-data sync effect.
   const prevDataRef = useRef(data)
 
+  // A graph preset is layered over the current request, so a tenant switch keeps it applied
+  // under the new tenant's key.
+  const baseQueryKey = queryKey ? queryKey : title
   const getRequestData = ApiGetCallWithPagination({
     url: api.url,
     data: {
       // AllTenants Graph cache reads are served in bounded pages; a page can still opt out with manualPagination: false.
       ...(api.url === '/api/ListGraphRequest' &&
         api.data?.tenantFilter === 'AllTenants' && { manualPagination: true }),
-      ...api.data,
+      ...(graphFilterData.filter
+        ? mergeCaseInsensitive(api.data, graphFilterData.filter)
+        : api.data),
     },
-    queryKey: queryKey ? queryKey : title,
+    queryKey: graphFilterData.name
+      ? `${baseQueryKey}-${graphFilterData.name}`
+      : baseQueryKey,
     waiting: waitingBool,
-    ...graphFilterData,
   })
 
   useEffect(() => {
@@ -1048,35 +1070,8 @@ export const CippDataTable = (props) => {
   // Previous-value refs for the guards below: CippDataTable is the single owner of this
   // state across both toolbar instances, so an effect can compare against the last value
   // it actually saw rather than firing unconditionally on every render.
-  const prevTenantRef = useRef(settings?.currentTenant)
-  const prevQueryKeyRef = useRef(queryKey || title)
   const prevPageNameRef = useRef(pageName)
   const appliedColumnDefaultsRef = useRef({})
-
-  // if the currentTenant switches, remove graph filters and the active-filter highlight
-  useEffect(() => {
-    const currentTenant = settings?.currentTenant
-    if (prevTenantRef.current === currentTenant) {
-      return
-    }
-    prevTenantRef.current = currentTenant
-    if (currentTenant) {
-      setGraphFilterData({})
-      setActiveFilters({ graph: null, table: null })
-      restoredFiltersRef.current.delete(`${pageName}-graph`)
-    }
-  }, [settings?.currentTenant, pageName])
-
-  // clear the active-filter highlight when the effective query key changes (tenant swap,
-  // different queryKey/title)
-  useEffect(() => {
-    const effectiveKey = queryKey || title
-    if (prevQueryKeyRef.current === effectiveKey) {
-      return
-    }
-    prevQueryKeyRef.current = effectiveKey
-    setActiveFilters({ graph: null, table: null })
-  }, [queryKey, title])
 
   // clear persisted-filter restoration tracking only when the page actually changes
   useEffect(() => {

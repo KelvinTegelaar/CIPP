@@ -75,6 +75,7 @@ export const CIPPTableToptoolbar = React.memo(
     refreshFunction,
     queryKeys,
     data,
+    graphFilterData = {},
     setGraphFilterData,
     setConfiguredSimpleColumns,
     queueMetadata,
@@ -130,9 +131,9 @@ export const CIPPTableToptoolbar = React.memo(
     const [offcanvasVisible, setOffcanvasVisible] = useState(false)
     const [jsonDialogOpen, setJsonDialogOpen] = useState(false) // For dialog-based JSON view
     const [filterList, setFilterList] = useState(filters)
-    const [currentEffectiveQueryKey, setCurrentEffectiveQueryKey] = useState(
-      queryKey || title
-    )
+    const currentEffectiveQueryKey = graphFilterData.name
+      ? `${queryKey || title}-${graphFilterData.name}`
+      : queryKey || title
     const [originalSimpleColumns, setOriginalSimpleColumns] =
       useState(simpleColumns)
     const [filterCanvasVisible, setFilterCanvasVisible] = useState(false)
@@ -273,12 +274,6 @@ export const CIPPTableToptoolbar = React.memo(
       closeMenu()
     }
 
-    // Sync currentEffectiveQueryKey with queryKey prop changes (e.g., tenant changes) — a
-    // plain re-derivation from the same props this instance was given, harmless on remount
-    useEffect(() => {
-      setCurrentEffectiveQueryKey(queryKey || title)
-    }, [queryKey, title])
-
     useEffect(() => {
       setOriginalSimpleColumns(simpleColumns)
     }, [simpleColumns])
@@ -320,14 +315,10 @@ export const CIPPTableToptoolbar = React.memo(
             }
             return acc
           }, {})
-          const resolvedGraphFilter = resolveFilterVariables(graphFilter)
-
-          const newQueryKey = `${queryKey ? queryKey : title}-${last.name}`
           setGraphFilterData({
-            data: { ...mergeCaseInsensitive(api.data, resolvedGraphFilter) },
-            queryKey: newQueryKey,
+            name: last.name,
+            filter: resolveFilterVariables(graphFilter),
           })
-          setCurrentEffectiveQueryKey(newQueryKey)
           setActiveFilters((prev) => ({
             ...prev,
             graph: { id: last.id, name: last.name },
@@ -593,22 +584,6 @@ export const CIPPTableToptoolbar = React.memo(
       setColumnsAnchor(null)
     }
 
-    const mergeCaseInsensitive = (obj1, obj2) => {
-      const merged = { ...obj1 }
-      for (const key in obj2) {
-        const lowerCaseKey = key.toLowerCase()
-        const existingKey = Object.keys(merged).find(
-          (k) => k.toLowerCase() === lowerCaseKey
-        )
-        if (existingKey) {
-          merged[existingKey] = obj2[key]
-        } else {
-          merged[key] = obj2[key]
-        }
-      }
-      return merged
-    }
-
     // Resolve variable placeholders in filter objects.
     // Supported: {DaysAgo:N} → ISO date string N days in the past
     const resolveFilterVariables = (obj) => {
@@ -812,7 +787,6 @@ export const CIPPTableToptoolbar = React.memo(
           setGraphFilterData({})
           resetToDefaultVisibility()
         }
-        setCurrentEffectiveQueryKey(queryKey || title) // Reset to original query key
         setActiveFilters({ graph: null, table: null }) // Clear active filters
         if (settings.persistFilters && settings.setLastUsedFilter) {
           settings.setLastUsedFilter(pageName, { graph: null, table: null })
@@ -837,13 +811,7 @@ export const CIPPTableToptoolbar = React.memo(
           }
           return acc
         }, {})
-        //get api.data, merge with graphFilter, set api.data
-        const newQueryKey = `${queryKey ? queryKey : title}-${filterName}`
-        setGraphFilterData({
-          data: { ...mergeCaseInsensitive(api.data, graphFilter) },
-          queryKey: newQueryKey,
-        })
-        setCurrentEffectiveQueryKey(newQueryKey)
+        setGraphFilterData({ name: filterName, filter: graphFilter })
         setActiveFilters((prev) => ({
           ...prev,
           graph: { id: presetId ?? filterName, name: filterName },
@@ -879,7 +847,6 @@ export const CIPPTableToptoolbar = React.memo(
           setGraphFilterData({})
           resetToDefaultVisibility()
         }
-        setCurrentEffectiveQueryKey(queryKey || title)
         setConfiguredSimpleColumns(originalSimpleColumns)
       }
       if (layer === 'table') {
