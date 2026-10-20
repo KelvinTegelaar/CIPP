@@ -27,6 +27,7 @@ import { Scrollbar } from '../scrollbar'
 import { useCallback, useEffect, useMemo, useState, useRef } from 'react'
 import { useRouter } from 'next/router'
 import { ApiGetCallWithPagination } from '../../api/ApiCall'
+import { CippTenantCoverage } from './CippTenantCoverage'
 import { useQueryClient } from '@tanstack/react-query'
 import { utilTableMode } from './util-tablemode'
 import {
@@ -851,6 +852,32 @@ export const CippDataTable = (props) => {
       queryClient.resetQueries({ queryKey: [requestQueryKey], exact: true })
     }
   }, [cacheAction, queryClient, requestQueryKey])
+
+  // An AllTenants Graph cache's coverage and sync sit with any report DB controls, in the Data source slot.
+  const responseMetadata = getRequestData.data?.pages?.[0]?.Metadata
+  const tenantCoverage = useMemo(
+    () =>
+      responseMetadata?.ExpectedTenants ? (
+        <CippTenantCoverage
+          metadata={responseMetadata}
+          onCacheAction={setCacheAction}
+          queryKey={requestQueryKey}
+          title={title}
+        />
+      ) : null,
+    [responseMetadata, requestQueryKey, title]
+  )
+  const sourceControls = useMemo(
+    () =>
+      dataSourceControls || tenantCoverage ? (
+        <>
+          {dataSourceControls}
+          {tenantCoverage}
+        </>
+      ) : null,
+    [dataSourceControls, tenantCoverage]
+  )
+  const headerShowsSource = !noCard && Boolean(cardButton || !hideTitle)
 
   useEffect(() => {
     // Only set initial filters if they haven't been set yet OR if the filters prop has actually changed
@@ -1854,7 +1881,7 @@ export const CippDataTable = (props) => {
               exportEnabled={exportEnabled}
               refreshFunction={refreshFunction}
               pagingStopped={pagingStopped}
-              onCacheAction={setCacheAction}
+              tenantCoverage={headerShowsSource ? null : tenantCoverage}
               setPagingStopped={setPagingStopped}
               setColumnVisibility={setColumnVisibility}
               filters={filters}
@@ -1871,7 +1898,7 @@ export const CippDataTable = (props) => {
               tableViewActive={toggleAllowed ? tableViewActive : undefined}
               showReturnToCards={showReturnToCards}
               bulkActionsSlot={isNarrowViewport && !isInDialog ? headerBulkSlot : null}
-              dataSourceControls={dataSourceControls}
+              dataSourceControls={sourceControls}
               activeFilters={activeFilters}
               setActiveFilters={setActiveFilters}
               searchValue={searchValue}
@@ -1908,7 +1935,9 @@ export const CippDataTable = (props) => {
       showReturnToCards,
       isNarrowViewport,
       headerBulkSlot,
-      dataSourceControls,
+      sourceControls,
+      tenantCoverage,
+      headerShowsSource,
       activeFilters,
       searchValue,
       pagingStopped,
@@ -2204,7 +2233,7 @@ export const CippDataTable = (props) => {
                 exportEnabled={exportEnabled}
                 refreshFunction={refreshFunction}
                 pagingStopped={pagingStopped}
-                onCacheAction={setCacheAction}
+                tenantCoverage={headerShowsSource ? null : tenantCoverage}
                 setPagingStopped={setPagingStopped}
                 setColumnVisibility={setColumnVisibility}
                 filters={filters}
@@ -2226,7 +2255,7 @@ export const CippDataTable = (props) => {
                 selectModeLocked={hasOnChange}
                 onViewToggle={toggleAllowed ? handleViewToggle : undefined}
                 tableViewActive={toggleAllowed ? tableViewActive : undefined}
-                dataSourceControls={dataSourceControls}
+                dataSourceControls={sourceControls}
                 activeFilters={activeFilters}
                 setActiveFilters={setActiveFilters}
                 searchValue={searchValue}
@@ -2291,11 +2320,11 @@ export const CippDataTable = (props) => {
                         sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
                       />
                       {/* narrow viewports carry these in the Table options sheet */}
-                      {dataSourceControls && !isNarrowViewport ? (
+                      {sourceControls && !isNarrowViewport ? (
                         <Stack direction='row' spacing={1} sx={{
                           alignItems: 'center'
                         }}>
-                          {dataSourceControls}
+                          {sourceControls}
                           {headerAction}
                         </Stack>
                       ) : (

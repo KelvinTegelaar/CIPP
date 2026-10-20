@@ -84,7 +84,8 @@ export const CippQueueTracker = ({ queueId, queryKey, title, onQueueComplete }) 
         return false;
       }
 
-      return queueConnected ? false : 3000;
+      // A tenant-restricted caller gets no live events for the run, so it polls the narrowed status.
+      return queueConnected && !currentData?.Polled ? false : 3000;
     },
     refetchOnMount: true,
     refetchOnWindowFocus: false,
@@ -97,6 +98,9 @@ export const CippQueueTracker = ({ queueId, queryKey, title, onQueueComplete }) 
     url: "/api/ListCippQueue",
     queryKey: "CippQueue-own",
     waiting: queueCanvasVisible,
+    // These runs have no live events here, so the open panel polls them.
+    staleTime: 0,
+    refetchInterval: 5000,
   });
   const otherOwnQueues = (Array.isArray(ownQueues.data) ? ownQueues.data : []).filter(
     (queue) => queue.Cancellable && queue.QueueId !== effectiveQueueId,
@@ -382,7 +386,10 @@ export const CippQueueTracker = ({ queueId, queryKey, title, onQueueComplete }) 
                             {queue.Name}
                           </Typography>
                           <Typography variant="caption" sx={{ color: "text.secondary" }}>
-                            {aheadText(queue) ?? `${queue.PercentComplete?.toFixed(1)}% complete`}
+                            {aheadText(queue) ??
+                              `${queue.Status} - ${queue.CompletedTasks ?? 0} of ${
+                                queue.TotalTasks ?? 0
+                              } tasks done`}
                           </Typography>
                         </Box>
                         <Button size="small" color="error" onClick={() => openCancel(queue)}>

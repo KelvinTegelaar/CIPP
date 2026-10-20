@@ -611,8 +611,10 @@ export const LoadMissingTenants = {
     const canvas = within(canvasElement)
     const body = within(document.body)
 
-    await step('load the missing tenants from the coverage chip', async () => {
-      await userEvent.click(await canvas.findByText('2 of 3 tenants', {}, { timeout: 5000 }))
+    await step('load the missing tenants from the Data source controls', async () => {
+      await canvas.findByText('2 of 3 tenants', {}, { timeout: 5000 })
+      expect(canvas.getAllByText('2 of 3 tenants')).toHaveLength(1)
+      await userEvent.click(canvas.getByRole('button', { name: 'Sync' }))
       await userEvent.click(await body.findByRole('menuitem', { name: 'Load missing tenants' }))
     })
 
@@ -622,6 +624,18 @@ export const LoadMissingTenants = {
       await waitFor(() => expect(fillMissingRequests.at(-1)).toBeNull(), { timeout: 5000 })
       expect(fillMissingRequests.filter((fill) => fill === 'true')).toHaveLength(1)
     })
+  },
+}
+
+// Without a card header the coverage stays in the toolbar rather than disappearing.
+export const TenantCoverageWithoutHeader = {
+  beforeEach: LoadMissingTenants.beforeEach,
+  args: { ...LoadMissingTenants.args, noCard: true, queryKey: 'storybook-TestPartialCacheNoCard' },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    await canvas.findByText('2 of 3 tenants', {}, { timeout: 5000 })
+    expect(canvas.getAllByText('2 of 3 tenants')).toHaveLength(1)
+    expect(canvas.getByRole('button', { name: 'Sync' })).toBeInTheDocument()
   },
 }
 

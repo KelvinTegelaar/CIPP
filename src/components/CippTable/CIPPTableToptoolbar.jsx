@@ -33,7 +33,6 @@ import { CSVExportButton, exportRowsToCsv } from '../csvExportButton'
 import { getCippTranslation } from '../../utils/get-cipp-translation'
 import { useMediaQuery } from '@mui/material'
 import { CippQueueTracker } from './CippQueueTracker'
-import { CippTenantCoverage } from './CippTenantCoverage'
 import { usePopover } from '../../hooks/use-popover'
 import { useDialog } from '../../hooks/use-dialog'
 import { CippApiDialog } from '../CippComponents/CippApiDialog'
@@ -76,7 +75,7 @@ export const CIPPTableToptoolbar = React.memo(
     refreshFunction,
     pagingStopped,
     setPagingStopped,
-    onCacheAction,
+    tenantCoverage,
     queryKeys,
     data,
     graphFilterData = {},
@@ -1065,15 +1064,13 @@ export const CIPPTableToptoolbar = React.memo(
             fixedChrome={!isInDialog}
             embedded={embedded}
             queueTracker={
-              queueMetadata?.QueueId || queueMetadata?.ExpectedTenants ? (
-                <>
-                  <CippTenantCoverage metadata={queueMetadata} onCacheAction={onCacheAction} />
-                  <CippQueueTracker
-                    queueId={queueMetadata?.QueueId}
-                    queryKey={currentEffectiveQueryKey}
-                    title={title}
-                  />
-                </>
+              // An AllTenants cache's run is tracked in the Data source section instead.
+              queueMetadata?.QueueId && !queueMetadata?.ExpectedTenants ? (
+                <CippQueueTracker
+                  queueId={queueMetadata?.QueueId}
+                  queryKey={currentEffectiveQueryKey}
+                  title={title}
+                />
               ) : undefined
             }
             dataSourceControls={dataSourceControls}
@@ -1601,13 +1598,16 @@ export const CIPPTableToptoolbar = React.memo(
             {/* Selected rows indicator + Bulk Actions - inline, unless portaled into the header */}
             {!bulkActionsSlot && bulkActionsContent}
 
-            {/* Tenant coverage and queue tracker */}
-            <CippTenantCoverage metadata={queueMetadata} onCacheAction={onCacheAction} />
-            <CippQueueTracker
-              queueId={queueMetadata?.QueueId}
-              queryKey={currentEffectiveQueryKey}
-              title={title}
-            />
+            {/* Queue tracker; an AllTenants cache's sits with its coverage, here only when the table has no header */}
+            {queueMetadata?.ExpectedTenants ? (
+              tenantCoverage
+            ) : (
+              <CippQueueTracker
+                queueId={queueMetadata?.QueueId}
+                queryKey={currentEffectiveQueryKey}
+                title={title}
+              />
+            )}
           </Box>
 
         </Box>

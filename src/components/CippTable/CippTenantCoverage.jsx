@@ -1,8 +1,23 @@
 import { useState } from 'react'
-import { Chip, Menu, MenuItem, Tooltip } from '@mui/material'
+import {
+  Button,
+  Chip,
+  Menu,
+  MenuItem,
+  Stack,
+  SvgIcon,
+  Tooltip,
+} from '@mui/material'
+import { CippIcons } from '../../utils/icon-registry'
+import { CippQueueTracker } from './CippQueueTracker'
 
-// How many tenants an AllTenants cache covers, with the actions that fill or rebuild it.
-export const CippTenantCoverage = ({ metadata, onCacheAction }) => {
+// An AllTenants cache's run, sync actions and tenant coverage, laid out like the report DB controls.
+export const CippTenantCoverage = ({
+  metadata,
+  onCacheAction,
+  queryKey,
+  title,
+}) => {
   const [anchor, setAnchor] = useState(null)
   const expected = metadata?.ExpectedTenants
   if (!expected || !onCacheAction) return null
@@ -16,7 +31,36 @@ export const CippTenantCoverage = ({ metadata, onCacheAction }) => {
   }
 
   return (
-    <>
+    <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+      <CippQueueTracker
+        queueId={metadata.QueueId}
+        queryKey={queryKey}
+        title={title}
+      />
+      <Button
+        startIcon={
+          <SvgIcon fontSize="small">
+            <CippIcons.Sync />
+          </SvgIcon>
+        }
+        size="xs"
+        disabled={filling}
+        onClick={(event) => setAnchor(event.currentTarget)}
+      >
+        Sync
+      </Button>
+      <Menu
+        anchorEl={anchor}
+        open={Boolean(anchor)}
+        onClose={() => setAnchor(null)}
+      >
+        <MenuItem disabled={!partial} onClick={() => run('FillMissing')}>
+          Load missing tenants
+        </MenuItem>
+        <MenuItem onClick={() => run('RefreshCache')}>
+          Reload all tenants
+        </MenuItem>
+      </Menu>
       <Tooltip
         title={
           partial
@@ -25,30 +69,15 @@ export const CippTenantCoverage = ({ metadata, onCacheAction }) => {
         }
       >
         <Chip
-          size="small"
-          variant="outlined"
-          color={partial ? 'warning' : 'default'}
+          icon={<CippIcons.CloudDone />}
           label={
             partial ? `${cached} of ${expected} tenants` : `${expected} tenants`
           }
-          onClick={(event) => setAnchor(event.currentTarget)}
+          color={partial ? 'warning' : 'primary'}
+          size="small"
+          variant="outlined"
         />
       </Tooltip>
-      <Menu
-        anchorEl={anchor}
-        open={Boolean(anchor)}
-        onClose={() => setAnchor(null)}
-      >
-        <MenuItem
-          disabled={!partial || filling}
-          onClick={() => run('FillMissing')}
-        >
-          Load missing tenants
-        </MenuItem>
-        <MenuItem disabled={filling} onClick={() => run('RefreshCache')}>
-          Reload all tenants
-        </MenuItem>
-      </Menu>
-    </>
+    </Stack>
   )
 }
