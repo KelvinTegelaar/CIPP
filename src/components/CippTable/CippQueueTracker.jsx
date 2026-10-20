@@ -1,11 +1,32 @@
 import React, { useState, useEffect } from "react";
 import { CippIcons } from "../../utils/icon-registry";
-import { IconButton, Tooltip, Badge, Typography, LinearProgress, Box, Stack } from "@mui/material";
+import {
+  IconButton,
+  Tooltip,
+  Badge,
+  Typography,
+  LinearProgress,
+  Box,
+  Stack,
+  Button,
+} from "@mui/material";
 import { CippOffCanvas } from "../CippComponents/CippOffCanvas";
 import { ApiGetCall } from "../../api/ApiCall";
 import { useQueryClient } from "@tanstack/react-query";
 import { useCraftJobEvents } from "../../hooks/use-craft-events";
 import { fromCraftRun } from "../../utils/craft-run";
+import { CippApiDialog } from "../CippComponents/CippApiDialog";
+import { useDialog } from "../../hooks/use-dialog";
+
+const isQueueDone = (status) =>
+  ["Completed", "Failed", "Completed (with errors)", "Cancelled"].includes(status);
+
+const aheadText = (queue) =>
+  queue?.QueuedAhead > 0
+    ? `Waiting behind ${queue.QueuedAhead} task${queue.QueuedAhead === 1 ? "" : "s"} from ${
+        queue.RunsAhead
+      } other queue${queue.RunsAhead === 1 ? "" : "s"}`
+    : null;
 
 export const CippQueueTracker = ({ queueId, queryKey, title, onQueueComplete }) => {
   const queryClient = useQueryClient();
@@ -14,6 +35,8 @@ export const CippQueueTracker = ({ queueId, queryKey, title, onQueueComplete }) 
   const [lastProcessedQueueId, setLastProcessedQueueId] = useState(null);
   const [queueQueryKey, setQueueQueryKey] = useState(null);
   const [hasAutoRefreshed, setHasAutoRefreshed] = useState(false);
+  const [cancelRow, setCancelRow] = useState(null);
+  const cancelDialog = useDialog();
 
   const hasQueueData = !!queueId;
   const currentQueryKey = queryKey || title;
@@ -24,10 +47,7 @@ export const CippQueueTracker = ({ queueId, queryKey, title, onQueueComplete }) 
     hasQueueData || (!!persistentQueueData && queueQueryKey === currentQueryKey);
 
   // Check if queue is in a completed state based on persistent data only (to avoid circular dependency)
-  const isQueueCompleted =
-    persistentQueueData?.Status === "Completed" ||
-    persistentQueueData?.Status === "Failed" ||
-    persistentQueueData?.Status === "Completed (with errors)";
+  const isQueueCompleted = isQueueDone(persistentQueueData?.Status);
 
   const effectiveQueueId = queueId || lastProcessedQueueId;
 
@@ -37,9 +57,11 @@ export const CippQueueTracker = ({ queueId, queryKey, title, onQueueComplete }) 
       queuePolling.refetch();
       return;
     }
-    queryClient.setQueryData([`CippQueue-${effectiveQueueId}`], (old) => [
-      { ...(Array.isArray(old) ? old[0] : old), ...fromCraftRun(frame.data) },
-    ]);
+    queryClient.setQueryData([`CippQueue-${effectiveQueueId}`], (old) => {
+      const entry = Array.isArray(old) ? old[0] : old;
+      // Craft does not know a run was cancelled; the status set by the cancel stands.
+      return entry?.Status === "Cancelled" ? old : [{ ...entry, ...fromCraftRun(frame.data) }];
+    });
   });
 
   const queuePolling = ApiGetCall({
@@ -51,19 +73,14 @@ export const CippQueueTracker = ({ queueId, queryKey, title, onQueueComplete }) 
       // TanStack Query v5 hands this callback the Query object, not the data - the response
       // has to be read off query.state or the completion check below never matches.
       const currentData = query?.state?.data?.[0];
-      const isCurrentCompleted =
-        currentData?.Status === "Completed" ||
-        currentData?.Status === "Failed" ||
-        currentData?.Status === "Completed (with errors)";
-
-      // Also check persistent data
-      const isPersistentCompleted =
-        persistentQueueData?.Status === "Completed" ||
-        persistentQueueData?.Status === "Failed" ||
-        persistentQueueData?.Status === "Completed (with errors)";
 
       // Stop polling if either shows completion
-      if (isCurrentCompleted || isPersistentCompleted || !shouldShowQueue || !effectiveQueueId) {
+      if (
+        isQueueDone(currentData?.Status) ||
+        isQueueCompleted ||
+        !shouldShowQueue ||
+        !effectiveQueueId
+      ) {
         return false;
       }
 
@@ -74,6 +91,30 @@ export const CippQueueTracker = ({ queueId, queryKey, title, onQueueComplete }) 
   });
 
   const queueData = queuePolling.data?.[0];
+  const current = persistentQueueData || queueData;
+
+  const ownQueues = ApiGetCall({
+    url: "/api/ListCippQueue",
+    queryKey: "CippQueue-own",
+    waiting: queueCanvasVisible,
+  });
+  const otherOwnQueues = (Array.isArray(ownQueues.data) ? ownQueues.data : []).filter(
+    (queue) => queue.Cancellable && queue.QueueId !== effectiveQueueId,
+  );
+
+  const openCancel = (queue) => {
+    setCancelRow(queue);
+    cancelDialog.handleOpen();
+  };
+
+  const markCancelled = (cancelledId) => {
+    queryClient.setQueryData([`CippQueue-${cancelledId}`], (old) =>
+      Array.isArray(old) ? [{ ...old[0], Status: "Cancelled", Cancellable: false }] : old,
+    );
+    if (cancelledId === effectiveQueueId) {
+      setPersistentQueueData((data) => data && { ...data, Status: "Cancelled", Cancellable: false });
+    }
+  };
 
   // Handle queue data persistence - only update persistent queue data when we get a new QueueId
   // and ensure it's pinned to the current query key
@@ -122,11 +163,11 @@ export const CippQueueTracker = ({ queueId, queryKey, title, onQueueComplete }) 
 
     // Only auto-refresh if we're on the same query key where the queue was initiated
     // and we haven't already auto-refreshed for this queue completion
+    // A cancelled queue with no tenant done has nothing cached: reloading would only start it again.
     if (
       !hasAutoRefreshed &&
-      (persistentQueueData?.Status === "Completed" ||
-        persistentQueueData?.Status === "Failed" ||
-        persistentQueueData?.Status === "Completed (with errors)") &&
+      isQueueDone(persistentQueueData?.Status) &&
+      (persistentQueueData.Status !== "Cancelled" || persistentQueueData.CompletedTasks > 0) &&
       queueQueryKey === currentQueryKey
     ) {
       // Queue is complete, invalidate the table query to refresh data
@@ -143,6 +184,7 @@ export const CippQueueTracker = ({ queueId, queryKey, title, onQueueComplete }) 
     hasAutoRefreshed,
     persistentQueueData?.PercentComplete,
     persistentQueueData?.Status,
+    persistentQueueData?.CompletedTasks,
     queryKey,
     title,
     queryClient,
@@ -160,42 +202,46 @@ export const CippQueueTracker = ({ queueId, queryKey, title, onQueueComplete }) 
     <>
       <Tooltip
         title={
-          (persistentQueueData || queueData)?.Status === "Completed"
-            ? `Queue Complete - ${(persistentQueueData || queueData)?.PercentComplete?.toFixed(
+          current?.Status === "Completed"
+            ? `Queue Complete - ${current?.PercentComplete?.toFixed(
                 1,
-              )}% (${(persistentQueueData || queueData)?.CompletedTasks}/${
-                (persistentQueueData || queueData)?.TotalTasks
+              )}% (${current?.CompletedTasks}/${
+                current?.TotalTasks
               } tasks)`
-            : (persistentQueueData || queueData)?.Status === "Completed (with errors)"
+            : current?.Status === "Completed (with errors)"
               ? `Queue Completed with Errors - ${(
                   persistentQueueData || queueData
                 )?.PercentFailed?.toFixed(1)}% failed (${
-                  (persistentQueueData || queueData)?.FailedTasks
-                }/${(persistentQueueData || queueData)?.TotalTasks} tasks)`
-              : (persistentQueueData || queueData)?.Status === "Failed"
-                ? `Queue Failed - ${(persistentQueueData || queueData)?.PercentFailed?.toFixed(
+                  current?.FailedTasks
+                }/${current?.TotalTasks} tasks)`
+              : current?.Status === "Failed"
+                ? `Queue Failed - ${current?.PercentFailed?.toFixed(
                     1,
-                  )}% failed (${(persistentQueueData || queueData)?.FailedTasks}/${
-                    (persistentQueueData || queueData)?.TotalTasks
+                  )}% failed (${current?.FailedTasks}/${
+                    current?.TotalTasks
                   } tasks)`
-                : (persistentQueueData || queueData)?.Status
-                  ? `Queue ${(persistentQueueData || queueData).Status} - ${(
+                : current?.Status === "Cancelled"
+                  ? `Queue Cancelled - ${current?.CompletedTasks}/${current?.TotalTasks} tasks done`
+                  : aheadText(current)
+                    ? aheadText(current)
+                    : current?.Status
+                  ? `Queue ${current.Status} - ${(
                       persistentQueueData || queueData
                     )?.PercentComplete?.toFixed(1)}% complete (${
-                      (persistentQueueData || queueData)?.CompletedTasks
-                    }/${(persistentQueueData || queueData)?.TotalTasks} tasks)`
+                      current?.CompletedTasks
+                    }/${current?.TotalTasks} tasks)`
                   : "View Queue Status"
         }
       >
         <Badge
           badgeContent={
-            (persistentQueueData || queueData)?.Status === "Completed" ? (
+            current?.Status === "Completed" ? (
               <CippIcons.Circle sx={{ fontSize: 8, color: "success.main" }} />
-            ) : (persistentQueueData || queueData)?.Status === "Completed (with errors)" ? (
+            ) : current?.Status === "Completed (with errors)" ? (
               <CippIcons.Circle sx={{ fontSize: 8, color: "warning.main" }} />
-            ) : (persistentQueueData || queueData)?.Status === "Failed" ? (
+            ) : current?.Status === "Failed" ? (
               <CippIcons.Circle sx={{ fontSize: 8, color: "error.main" }} />
-            ) : (persistentQueueData || queueData)?.RunningTasks > 0 ? (
+            ) : current?.RunningTasks > 0 ? (
               <CippIcons.Circle sx={{ fontSize: 8, color: "warning.main" }} />
             ) : (
               <CippIcons.Circle sx={{ fontSize: 8, color: "info.main" }} />
@@ -211,9 +257,7 @@ export const CippQueueTracker = ({ queueId, queryKey, title, onQueueComplete }) 
             onClick={() => setQueueCanvasVisible(true)}
             sx={{
               animation:
-                (persistentQueueData || queueData)?.Status !== "Completed" &&
-                (persistentQueueData || queueData)?.Status !== "Completed (with errors)" &&
-                (persistentQueueData || queueData)?.Status !== "Failed"
+                !isQueueDone(current?.Status)
                   ? "pulse 2s infinite"
                   : "none",
               "@keyframes pulse": {
@@ -231,13 +275,13 @@ export const CippQueueTracker = ({ queueId, queryKey, title, onQueueComplete }) 
                 },
               },
               color:
-                (persistentQueueData || queueData)?.Status === "Completed"
+                current?.Status === "Completed"
                   ? "success.main"
-                  : (persistentQueueData || queueData)?.Status === "Completed (with errors)"
+                  : current?.Status === "Completed (with errors)"
                     ? "warning.main"
-                    : (persistentQueueData || queueData)?.Status === "Failed"
+                    : current?.Status === "Failed"
                       ? "error.main"
-                      : (persistentQueueData || queueData)?.RunningTasks > 0
+                      : current?.RunningTasks > 0
                         ? "warning.main"
                         : "primary.main",
             }}
@@ -257,18 +301,18 @@ export const CippQueueTracker = ({ queueId, queryKey, title, onQueueComplete }) 
         <Stack spacing={3} sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
           {persistentQueueData || queueData ? (
             <>
-              <Typography variant="h6">{(persistentQueueData || queueData).Name}</Typography>
+              <Typography variant="h6">{current.Name}</Typography>
 
               <Box>
                 <Typography variant="body2" gutterBottom sx={{
                   color: "text.secondary"
                 }}>
-                  Progress: {(persistentQueueData || queueData).PercentComplete?.toFixed(1)}%
+                  Progress: {current.PercentComplete?.toFixed(1)}%
                   complete
                 </Typography>
                 <LinearProgress
                   variant="determinate"
-                  value={(persistentQueueData || queueData).PercentComplete || 0}
+                  value={current.PercentComplete || 0}
                   sx={{ height: 8, borderRadius: 4 }}
                 />
               </Box>
@@ -282,26 +326,76 @@ export const CippQueueTracker = ({ queueId, queryKey, title, onQueueComplete }) 
                   flexWrap: "wrap"
                 }}>
                 <Typography variant="body2">
-                  <strong>Total Tasks:</strong> {(persistentQueueData || queueData).TotalTasks || 0}
+                  <strong>Total Tasks:</strong> {current.TotalTasks || 0}
                 </Typography>
                 <Typography variant="body2">
                   <strong>Completed:</strong>{" "}
-                  {(persistentQueueData || queueData).CompletedTasks || 0}
+                  {current.CompletedTasks || 0}
                 </Typography>
                 <Typography variant="body2">
-                  <strong>Running:</strong> {(persistentQueueData || queueData).RunningTasks || 0}
+                  <strong>Running:</strong> {current.RunningTasks || 0}
                 </Typography>
                 <Typography variant="body2">
-                  <strong>Failed:</strong> {(persistentQueueData || queueData).FailedTasks || 0}
+                  <strong>Failed:</strong> {current.FailedTasks || 0}
                 </Typography>
               </Stack>
 
               <Typography variant="body2">
-                <strong>Status:</strong> {(persistentQueueData || queueData).Status}
+                <strong>Status:</strong> {current.Status}
               </Typography>
 
-              {(persistentQueueData || queueData).Tasks &&
-                (persistentQueueData || queueData).Tasks.length > 0 && (
+              {!isQueueDone(current.Status) && aheadText(current) && (
+                <Typography variant="body2" sx={{ color: "text.secondary" }}>
+                  {aheadText(current)}
+                </Typography>
+              )}
+
+              {current.Cancellable && !isQueueDone(current.Status) && (
+                <Box>
+                  <Button
+                    size="small"
+                    color="error"
+                    variant="outlined"
+                    startIcon={<CippIcons.XMarkIcon />}
+                    onClick={() => openCancel(current)}
+                  >
+                    Cancel queue
+                  </Button>
+                </Box>
+              )}
+
+              {otherOwnQueues.length > 0 && (
+                <Box>
+                  <Typography variant="subtitle2" gutterBottom>
+                    Your other running queues
+                  </Typography>
+                  <Stack spacing={1}>
+                    {otherOwnQueues.map((queue) => (
+                      <Stack
+                        key={queue.QueueId}
+                        direction="row"
+                        spacing={1}
+                        sx={{ alignItems: "center", justifyContent: "space-between" }}
+                      >
+                        <Box sx={{ minWidth: 0 }}>
+                          <Typography variant="body2" sx={{ overflowWrap: "anywhere" }}>
+                            {queue.Name}
+                          </Typography>
+                          <Typography variant="caption" sx={{ color: "text.secondary" }}>
+                            {aheadText(queue) ?? `${queue.PercentComplete?.toFixed(1)}% complete`}
+                          </Typography>
+                        </Box>
+                        <Button size="small" color="error" onClick={() => openCancel(queue)}>
+                          Cancel
+                        </Button>
+                      </Stack>
+                    ))}
+                  </Stack>
+                </Box>
+              )}
+
+              {current.Tasks &&
+                current.Tasks.length > 0 && (
                   <>
                     <Typography variant="h6" sx={{ mt: 2, mb: 1 }}>
                       Task Details
@@ -345,7 +439,7 @@ export const CippQueueTracker = ({ queueId, queryKey, title, onQueueComplete }) 
                           },
                         }}
                       >
-                        {(persistentQueueData || queueData).Tasks.map((task, index) => (
+                        {current.Tasks.map((task, index) => (
                           <Box
                             key={index}
                             sx={(theme) => ({
@@ -473,6 +567,20 @@ export const CippQueueTracker = ({ queueId, queryKey, title, onQueueComplete }) 
           )}
         </Stack>
       </CippOffCanvas>
+      <CippApiDialog
+        title="Cancel Queue"
+        createDialog={cancelDialog}
+        row={cancelRow ?? {}}
+        relatedQueryKeys={["CippQueue-own"]}
+        api={{
+          url: "/api/ExecCancelCippQueue",
+          type: "POST",
+          data: { QueueId: "QueueId" },
+          confirmText:
+            "Cancel [Name]? Tenants that have not started are skipped; tenants already running finish.",
+          onSuccess: () => markCancelled(cancelRow?.QueueId),
+        }}
+      />
     </>
   );
 };

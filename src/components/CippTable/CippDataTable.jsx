@@ -822,6 +822,8 @@ export const CippDataTable = (props) => {
   // A graph preset is layered over the current request, so a tenant switch keeps it applied
   // under the new tenant's key.
   const baseQueryKey = queryKey ? queryKey : title
+  // Set by the toolbar's stop button: the pages loaded so far stay and no further page is fetched.
+  const [pagingStopped, setPagingStopped] = useState(false)
   const getRequestData = ApiGetCallWithPagination({
     url: api.url,
     data: {
@@ -891,11 +893,17 @@ export const CippDataTable = (props) => {
       const lastPage =
         getRequestData.data?.pages[getRequestData.data.pages.length - 1]
       const nextLinkExists = lastPage?.Metadata?.nextLink
-      if (nextLinkExists) {
+      if (nextLinkExists && !pagingStopped) {
         getRequestData.fetchNextPage()
       }
     }
-  }, [api?.url, getRequestData.data?.pages?.length, getRequestData.isFetching, queryKey])
+  }, [
+    api?.url,
+    getRequestData.data?.pages?.length,
+    getRequestData.isFetching,
+    queryKey,
+    pagingStopped,
+  ])
 
   // While pages stream in, the rows are handed to the table again only once they have grown by
   // half, so a long AllTenants load re-renders a handful of times instead of once per page.
@@ -908,6 +916,7 @@ export const CippDataTable = (props) => {
       if (allPages[0] !== firstPageRef.current) {
         firstPageRef.current = allPages[0]
         shownRowCountRef.current = 0
+        setPagingStopped(false)
         setGeneration((count) => count + 1)
       }
 
@@ -923,6 +932,7 @@ export const CippDataTable = (props) => {
       if (
         getRequestData.hasNextPage &&
         !getRequestData.isFetchNextPageError &&
+        !pagingStopped &&
         combinedResults.length > shown &&
         combinedResults.length < shown * 1.5
       ) {
@@ -944,6 +954,7 @@ export const CippDataTable = (props) => {
     getRequestData.data,
     getRequestData.hasNextPage,
     getRequestData.isFetchNextPageError,
+    pagingStopped,
     api.dataKey,
     queryKey,
     dataFilter,
@@ -1829,6 +1840,8 @@ export const CippDataTable = (props) => {
               actions={actions}
               exportEnabled={exportEnabled}
               refreshFunction={refreshFunction}
+              pagingStopped={pagingStopped}
+              setPagingStopped={setPagingStopped}
               setColumnVisibility={setColumnVisibility}
               filters={filters}
               queryKeys={queryKey ? queryKey : title}
@@ -1884,6 +1897,7 @@ export const CippDataTable = (props) => {
       dataSourceControls,
       activeFilters,
       searchValue,
+      pagingStopped,
     ]
   )
 
@@ -2175,6 +2189,8 @@ export const CippDataTable = (props) => {
                 actions={actions}
                 exportEnabled={exportEnabled}
                 refreshFunction={refreshFunction}
+                pagingStopped={pagingStopped}
+                setPagingStopped={setPagingStopped}
                 setColumnVisibility={setColumnVisibility}
                 filters={filters}
                 queryKeys={queryKey ? queryKey : title}

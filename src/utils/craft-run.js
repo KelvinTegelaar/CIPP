@@ -30,6 +30,8 @@ export const fromCraftRun = (run) => {
     PercentComplete: percent(done, divisor),
     PercentFailed: percent(failed, divisor),
     PercentRunning: percent(running, divisor),
+    QueuedAhead: Number(run.ahead) || 0,
+    RunsAhead: Number(run.runsAhead) || 0,
     // Craft names a task by its job name; CIPP's are Function_Tenant and the tracker shows the tenant.
     Tasks: (run.tasks ?? []).map((task) => ({
       Timestamp: task.at,

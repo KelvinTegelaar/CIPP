@@ -52,6 +52,13 @@ describe('fromCraftRun', () => {
     ])
   })
 
+  it('carries how much work from other queues waits ahead of it', () => {
+    expect(fromCraftRun({ ...run, ahead: 340, runsAhead: 3 })).toMatchObject({
+      QueuedAhead: 340,
+      RunsAhead: 3,
+    })
+  })
+
   it('turns a status-only end into just a status, so the counts already shown survive', () => {
     expect(fromCraftRun({ status: 'NotFound' })).toEqual({
       Status: 'Not found',

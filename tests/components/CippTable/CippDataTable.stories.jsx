@@ -528,6 +528,59 @@ export const SearchKeepsFocusWhileLoading = {
   },
 }
 
+// Page 2 is too small to pass the row-growth throttle on its own, so it only shows once paging stops.
+let stopPagingPage3Requests = 0
+export const StopPagingKeepsLoadedRows = {
+  beforeEach({ msw }) {
+    stopPagingPage3Requests = 0
+    msw.use(
+      http.get('/api/TestStopPaging', async ({ request }) => {
+        const nextLink = new URL(request.url).searchParams.get('nextLink')
+        if (nextLink === 'page3') {
+          stopPagingPage3Requests++
+          await delay(30000)
+          return HttpResponse.json({ Results: [{ displayName: 'Never Shown' }], Metadata: {} })
+        }
+        if (nextLink === 'page2') {
+          return HttpResponse.json({
+            Results: [{ displayName: 'Erin Page2' }],
+            Metadata: { nextLink: 'page3' },
+          })
+        }
+        return HttpResponse.json({
+          Results: ['Alice', 'Bob', 'Carol', 'Dave'].map((name) => ({ displayName: `${name} Page1` })),
+          Metadata: { nextLink: 'page2' },
+        })
+      })
+    )
+  },
+  args: {
+    title: 'Stop Paging',
+    api: { url: '/api/TestStopPaging', dataKey: 'Results' },
+    queryKey: 'storybook-TestStopPaging',
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement)
+
+    await step('stop while the last page is loading', async () => {
+      await waitFor(() => expect(stopPagingPage3Requests).toBe(1), { timeout: 5000 })
+      const stop = await canvas.findByRole('button', { name: 'Stop loading' }, { timeout: 5000 })
+      await userEvent.click(stop)
+    })
+
+    await step('the rows already retrieved show and no further page is asked for', async () => {
+      await waitFor(() => expect(canvasElement.textContent).toContain('Erin Page2'), {
+        timeout: 5000,
+      })
+      expect(canvasElement.textContent).toContain('Alice Page1')
+      await canvas.findByRole('button', { name: 'Refresh data' })
+      await new Promise((resolve) => setTimeout(resolve, 500))
+      expect(stopPagingPage3Requests).toBe(1)
+      expect(canvasElement.textContent).not.toContain('Never Shown')
+    })
+  },
+}
+
 // cached report column (membersCsv) wears the subTable header, no nested-table button. MRT renders no header cells in jsdom
 export const CachedReportColumns = {
   args: {
