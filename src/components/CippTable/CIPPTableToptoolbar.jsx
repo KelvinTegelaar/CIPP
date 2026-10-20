@@ -33,6 +33,7 @@ import { CSVExportButton, exportRowsToCsv } from '../csvExportButton'
 import { getCippTranslation } from '../../utils/get-cipp-translation'
 import { useMediaQuery } from '@mui/material'
 import { CippQueueTracker } from './CippQueueTracker'
+import { CippTenantCoverage } from './CippTenantCoverage'
 import { usePopover } from '../../hooks/use-popover'
 import { useDialog } from '../../hooks/use-dialog'
 import { CippApiDialog } from '../CippComponents/CippApiDialog'
@@ -75,6 +76,7 @@ export const CIPPTableToptoolbar = React.memo(
     refreshFunction,
     pagingStopped,
     setPagingStopped,
+    onCacheAction,
     queryKeys,
     data,
     graphFilterData = {},
@@ -1063,12 +1065,15 @@ export const CIPPTableToptoolbar = React.memo(
             fixedChrome={!isInDialog}
             embedded={embedded}
             queueTracker={
-              queueMetadata?.QueueId ? (
-                <CippQueueTracker
-                  queueId={queueMetadata?.QueueId}
-                  queryKey={currentEffectiveQueryKey}
-                  title={title}
-                />
+              queueMetadata?.QueueId || queueMetadata?.ExpectedTenants ? (
+                <>
+                  <CippTenantCoverage metadata={queueMetadata} onCacheAction={onCacheAction} />
+                  <CippQueueTracker
+                    queueId={queueMetadata?.QueueId}
+                    queryKey={currentEffectiveQueryKey}
+                    title={title}
+                  />
+                </>
               ) : undefined
             }
             dataSourceControls={dataSourceControls}
@@ -1596,7 +1601,8 @@ export const CIPPTableToptoolbar = React.memo(
             {/* Selected rows indicator + Bulk Actions - inline, unless portaled into the header */}
             {!bulkActionsSlot && bulkActionsContent}
 
-            {/* Queue tracker */}
+            {/* Tenant coverage and queue tracker */}
+            <CippTenantCoverage metadata={queueMetadata} onCacheAction={onCacheAction} />
             <CippQueueTracker
               queueId={queueMetadata?.QueueId}
               queryKey={currentEffectiveQueryKey}

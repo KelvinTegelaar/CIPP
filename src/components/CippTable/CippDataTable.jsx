@@ -27,6 +27,7 @@ import { Scrollbar } from '../scrollbar'
 import { useCallback, useEffect, useMemo, useState, useRef } from 'react'
 import { useRouter } from 'next/router'
 import { ApiGetCallWithPagination } from '../../api/ApiCall'
+import { useQueryClient } from '@tanstack/react-query'
 import { utilTableMode } from './util-tablemode'
 import {
   utilColumnsFromAPI,
@@ -824,6 +825,12 @@ export const CippDataTable = (props) => {
   const baseQueryKey = queryKey ? queryKey : title
   // Set by the toolbar's stop button: the pages loaded so far stay and no further page is fetched.
   const [pagingStopped, setPagingStopped] = useState(false)
+  // FillMissing or RefreshCache from the tenant coverage chip: sent with one reload, dropped once it lands.
+  const [cacheAction, setCacheAction] = useState(null)
+  const requestQueryKey = graphFilterData.name
+    ? `${baseQueryKey}-${graphFilterData.name}`
+    : baseQueryKey
+  const queryClient = useQueryClient()
   const getRequestData = ApiGetCallWithPagination({
     url: api.url,
     data: {
@@ -833,12 +840,17 @@ export const CippDataTable = (props) => {
       ...(graphFilterData.filter
         ? mergeCaseInsensitive(api.data, graphFilterData.filter)
         : api.data),
+      ...(cacheAction && { [cacheAction]: true }),
     },
-    queryKey: graphFilterData.name
-      ? `${baseQueryKey}-${graphFilterData.name}`
-      : baseQueryKey,
+    queryKey: requestQueryKey,
     waiting: waitingBool,
   })
+
+  useEffect(() => {
+    if (cacheAction) {
+      queryClient.resetQueries({ queryKey: [requestQueryKey], exact: true })
+    }
+  }, [cacheAction, queryClient, requestQueryKey])
 
   useEffect(() => {
     // Only set initial filters if they haven't been set yet OR if the filters prop has actually changed
@@ -917,6 +929,7 @@ export const CippDataTable = (props) => {
         firstPageRef.current = allPages[0]
         shownRowCountRef.current = 0
         setPagingStopped(false)
+        setCacheAction(null)
         setGeneration((count) => count + 1)
       }
 
@@ -1841,6 +1854,7 @@ export const CippDataTable = (props) => {
               exportEnabled={exportEnabled}
               refreshFunction={refreshFunction}
               pagingStopped={pagingStopped}
+              onCacheAction={setCacheAction}
               setPagingStopped={setPagingStopped}
               setColumnVisibility={setColumnVisibility}
               filters={filters}
@@ -2190,6 +2204,7 @@ export const CippDataTable = (props) => {
                 exportEnabled={exportEnabled}
                 refreshFunction={refreshFunction}
                 pagingStopped={pagingStopped}
+                onCacheAction={setCacheAction}
                 setPagingStopped={setPagingStopped}
                 setColumnVisibility={setColumnVisibility}
                 filters={filters}

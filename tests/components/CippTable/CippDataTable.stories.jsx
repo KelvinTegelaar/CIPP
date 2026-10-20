@@ -581,6 +581,50 @@ export const StopPagingKeepsLoadedRows = {
   },
 }
 
+// The coverage chip's action rides on exactly one reload; later reloads must not start another run.
+let fillMissingRequests = []
+export const LoadMissingTenants = {
+  beforeEach({ msw }) {
+    fillMissingRequests = []
+    msw.use(
+      http.get('/api/TestPartialCache', ({ request }) => {
+        const fill = new URL(request.url).searchParams.get('FillMissing')
+        fillMissingRequests.push(fill)
+        return HttpResponse.json({
+          Results: [{ displayName: 'Cached Row' }],
+          Metadata: fill
+            ? { CachedTenants: 2, ExpectedTenants: 3, QueueId: 'q-fill' }
+            : { CachedTenants: 2, ExpectedTenants: 3 },
+        })
+      }),
+      http.get('*/api/ListCippQueue', () =>
+        HttpResponse.json([{ QueueId: 'q-fill', Name: 'Users (1 missing tenants)', Status: 'Running' }])
+      )
+    )
+  },
+  args: {
+    title: 'Partial Cache',
+    api: { url: '/api/TestPartialCache', dataKey: 'Results' },
+    queryKey: 'storybook-TestPartialCache',
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement)
+    const body = within(document.body)
+
+    await step('load the missing tenants from the coverage chip', async () => {
+      await userEvent.click(await canvas.findByText('2 of 3 tenants', {}, { timeout: 5000 }))
+      await userEvent.click(await body.findByRole('menuitem', { name: 'Load missing tenants' }))
+    })
+
+    await step('one reload carries the flag and the run it started is tracked', async () => {
+      await waitFor(() => expect(fillMissingRequests).toContain('true'), { timeout: 5000 })
+      await userEvent.click(await canvas.findByRole('button', { name: 'Refresh data' }, { timeout: 5000 }))
+      await waitFor(() => expect(fillMissingRequests.at(-1)).toBeNull(), { timeout: 5000 })
+      expect(fillMissingRequests.filter((fill) => fill === 'true')).toHaveLength(1)
+    })
+  },
+}
+
 // cached report column (membersCsv) wears the subTable header, no nested-table button. MRT renders no header cells in jsdom
 export const CachedReportColumns = {
   args: {
