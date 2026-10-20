@@ -27,7 +27,7 @@ describe('impersonation store', () => {
     expect(getImpersonatedRole()).toBe('helpdesk')
   })
 
-  it('enterImpersonation lowercases, stores, clears caches and reloads', () => {
+  it('enterImpersonation lowercases, stores, clears caches and reloads', async () => {
     window.localStorage.setItem('REACT_QUERY_OFFLINE_CACHE', 'x')
     window.localStorage.setItem('REACT_QUERY_OFFLINE_CACHE_extra', 'y')
     window.localStorage.setItem('app.settings', 'keep-me')
@@ -40,10 +40,10 @@ describe('impersonation store', () => {
     expect(window.localStorage.getItem('REACT_QUERY_OFFLINE_CACHE')).toBeNull()
     expect(window.localStorage.getItem('REACT_QUERY_OFFLINE_CACHE_extra')).toBeNull()
     expect(window.localStorage.getItem('app.settings')).toBe('keep-me')
-    expect(reloadSpy).toHaveBeenCalledTimes(1)
+    await vi.waitFor(() => expect(reloadSpy).toHaveBeenCalledTimes(1))
   })
 
-  it('exitImpersonation removes the key, clears caches and reloads', () => {
+  it('exitImpersonation removes the key, clears caches and reloads', async () => {
     window.localStorage.setItem(KEY, 'helpdesk')
     window.localStorage.setItem('REACT_QUERY_OFFLINE_CACHE', 'x')
     const queryClient = { clear: vi.fn() }
@@ -52,7 +52,7 @@ describe('impersonation store', () => {
 
     expect(window.localStorage.getItem(KEY)).toBeNull()
     expect(window.localStorage.getItem('REACT_QUERY_OFFLINE_CACHE')).toBeNull()
-    expect(reloadSpy).toHaveBeenCalledTimes(1)
+    await vi.waitFor(() => expect(reloadSpy).toHaveBeenCalledTimes(1))
   })
 
   it('notifies subscribers on enter and exit, and unsubscribe works', () => {

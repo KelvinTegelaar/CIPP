@@ -28,6 +28,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { usePathname } from "next/navigation";
 import { Divider } from "@mui/material";
 import { getHelpLinks, clearCippCache } from "../utils/help-links";
+import { clearPersistedQueries } from "../utils/query-persister";
 
 export const AccountPopover = (props) => {
   const {
@@ -68,13 +69,14 @@ export const AccountPopover = (props) => {
   // through the standard confirm dialog, which also renders the API result.
   const refreshAccessDialog = useDialog();
 
-  const handleLogout = useCallback(() => {
+  const handleLogout = useCallback(async () => {
     const logoutUrl =
       "/.auth/logout?post_logout_redirect_uri=" + encodeURIComponent(paths.index);
     try {
       popover.handleClose();
-      // delete query cache and persisted data
+      // delete query cache and persisted data; a throttled save would not run before the page unloads
       queryClient.clear();
+      await clearPersistedQueries();
 
       router.push(logoutUrl);
     } catch (err) {

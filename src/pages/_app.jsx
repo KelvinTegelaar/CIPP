@@ -14,7 +14,7 @@ import '../libs/nprogress'
 import 'driver.js/dist/driver.css'
 import '../styles/tutorial-overrides.css'
 import { PrivateRoute } from '../components/PrivateRoute'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { QueryClient } from '@tanstack/react-query'
 import { useSystemPrefersDark } from '../hooks/use-system-prefers-dark'
 import Error500 from './500'
 import { ErrorBoundary } from 'react-error-boundary'
@@ -51,8 +51,8 @@ import { Chip, SvgIcon } from '@mui/material'
 import React, { useEffect, useState, useRef } from 'react'
 import { usePathname } from 'next/navigation'
 import { useRouter } from 'next/router'
-import { persistQueryClient } from '@tanstack/react-query-persist-client'
-import { createSyncStoragePersister } from '@tanstack/query-sync-storage-persister'
+import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client'
+import { persistOptions } from '../utils/query-persister'
 import { TutorialProvider } from '../contexts/tutorial-context'
 import CippTutorialDialog from '../components/CippComponents/CippTutorialDialog'
 import CippSupportBundleDialog from '../components/CippComponents/CippSupportBundleDialog'
@@ -152,46 +152,6 @@ const App = (props) => {
     setDateLocale(resolvedLocale)
   }, [])
 
-  // authmecipp not persisted, stale clientPrincipal:null flashes 401 on post-login reload.
-  // Log queries page through tens of thousands of rows; persisting them re-stringifies the
-  // whole cache on every page (far past the localStorage quota) and OOMs the tab.
-  const excludeQueryKeys = ['authmeswa', 'authmecipp', 'alertsDashboard', 'Listlogs', 'APILogs']
-
-  // 👇 Persist TanStack Query cache to localStorage
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const localStoragePersister = createSyncStoragePersister({
-        storage: window.localStorage,
-      })
-
-      persistQueryClient({
-        queryClient,
-        persister: localStoragePersister,
-        maxAge: 1000 * 60 * 60 * 24, // 24 hours
-        staleTime: 1000 * 60 * 5, // optional: 5 minutes
-        buster: 'v2',
-        dehydrateOptions: {
-          shouldDehydrateQuery: (query) => {
-            const queryIsReadyForPersistence = query.state.status === 'success'
-            if (queryIsReadyForPersistence) {
-              const { queryKey } = query
-              // Check if queryKey exists and has elements before accessing index 0
-              if (!queryKey || !queryKey.length) {
-                return false
-              }
-              const queryKeyString = String(queryKey[0] || '')
-              const excludeFromPersisting = excludeQueryKeys.some((key) =>
-                queryKeyString.includes(key)
-              )
-              return !excludeFromPersisting
-            }
-            return queryIsReadyForPersistence
-          },
-        },
-      })
-    }
-  }, [])
-
   // Link/cache destinations are shared with AccountPopover's mobile help section — see
   // utils/help-links.js. Only the icons and SpeedDial-specific actions live here.
   const helpLinkIcons = {
@@ -241,7 +201,7 @@ const App = (props) => {
         <meta name="viewport" content="initial-scale=1, width=device-width, viewport-fit=cover" />
       </Head>
       <ReduxProvider store={store}>
-        <QueryClientProvider client={queryClient}>
+        <PersistQueryClientProvider client={queryClient} persistOptions={persistOptions}>
           <SettingsProvider>
             <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={dateLocale}>
               <SettingsConsumer>
@@ -321,7 +281,7 @@ const App = (props) => {
               </SettingsConsumer>
             </LocalizationProvider>
           </SettingsProvider>
-        </QueryClientProvider>
+        </PersistQueryClientProvider>
       </ReduxProvider>
     </CacheProvider>
   )

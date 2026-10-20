@@ -897,9 +897,19 @@ export const CippDataTable = (props) => {
     }
   }, [api?.url, getRequestData.data?.pages?.length, getRequestData.isFetching, queryKey])
 
+  // While pages stream in, the rows are handed to the table again only once they have grown by
+  // half, so a long AllTenants load re-renders a handful of times instead of once per page.
+  const shownRowCountRef = useRef(0)
+  const firstPageRef = useRef()
+  const [generation, setGeneration] = useState(0)
   useEffect(() => {
     if (api?.url && getRequestData.isSuccess) {
       const allPages = getRequestData.data.pages
+      if (allPages[0] !== firstPageRef.current) {
+        firstPageRef.current = allPages[0]
+        shownRowCountRef.current = 0
+        setGeneration((count) => count + 1)
+      }
 
       const combinedResults = allPages.flatMap((page) => {
         const nestedData = getNestedValue(page, api.dataKey)
@@ -909,6 +919,16 @@ export const CippDataTable = (props) => {
         // dataKey miss on a bare-array page: the endpoint served the legacy shape.
         return Array.isArray(page) ? page : []
       })
+      const shown = shownRowCountRef.current
+      if (
+        getRequestData.hasNextPage &&
+        !getRequestData.isFetchNextPageError &&
+        combinedResults.length > shown &&
+        combinedResults.length < shown * 1.5
+      ) {
+        return
+      }
+      shownRowCountRef.current = combinedResults.length
       const filtered = dataFilter
         ? combinedResults.filter(dataFilter)
         : combinedResults
@@ -922,8 +942,9 @@ export const CippDataTable = (props) => {
     api?.url,
     getRequestData.isSuccess,
     getRequestData.data,
+    getRequestData.hasNextPage,
+    getRequestData.isFetchNextPageError,
     api.dataKey,
-    getRequestData.isFetching,
     queryKey,
     dataFilter,
     dataMap,
@@ -950,7 +971,8 @@ export const CippDataTable = (props) => {
     }
     prevSchemaKeyRef.current = schemaKey
 
-    const apiColumns = utilColumnsFromAPI(usedData)
+    // Inlined, the column closures would keep this render's scope and, through usedColumns, every earlier one.
+    const apiColumns = /*#__NOINLINE__*/ utilColumnsFromAPI(usedData)
 
     // Apply custom filterFn to columns that have filterType === 'equal'
     const enhancedApiColumns = apiColumns.map((col) => {
@@ -1227,7 +1249,12 @@ export const CippDataTable = (props) => {
   // column virtualizer memoizes pinned indexes without depending on column count;
   // without a remount, TableHeadRow maps a sparse virtual item and reads `.index`
   // on undefined.
-  const mrtColumnSetKey = useMemo(() => displayColumnIds.join('|'), [displayColumnIds])
+  // Also remount on each new load (refresh, tenant switch): MUI buttons and MRT's row virtualizer
+  // keep their first render's closures for life, and through them that render's rows and pages.
+  const mrtColumnSetKey = useMemo(
+    () => `${displayColumnIds.join('|')}#${generation}`,
+    [displayColumnIds, generation]
+  )
 
   const preferredColumnOrderIds = useMemo(
     () =>
@@ -2026,6 +2053,8 @@ export const CippDataTable = (props) => {
   // the table on every render: this used to be mirrored into state by an effect keyed on
   // filters and sorting, so the copy was taken once at mount — before the rows had arrived
   // — and every table that loads its data asynchronously reported nothing to navigate.
+  // No closure may capture it: every row's memos keep the table options of their render, and
+  // through them this render's scope, so a captured row array chains every generation of rows.
   const navigationRows = table.getSortedRowModel().rows
   // Prefer the position of the row actually on show, so sorting or filtering while the
   // drawer is open carries the counter with it. The stored index covers the case where the
@@ -2308,20 +2337,20 @@ export const CippDataTable = (props) => {
         customComponent={offCanvas?.customComponent}
         onNavigateUp={() => {
           const newIndex = currentRowIndex - 1
-          if (newIndex >= 0 && navigationRows[newIndex]) {
-            const nextRow = navigationRows[newIndex].original
+          const target = table.getSortedRowModel().rows[newIndex]
+          if (newIndex >= 0 && target) {
             setOffCanvasRowIndex(newIndex)
-            setOffCanvasData(nextRow)
-            setContextRow(nextRow)
+            setOffCanvasData(target.original)
+            setContextRow(target.original)
           }
         }}
         onNavigateDown={() => {
           const newIndex = currentRowIndex + 1
-          if (navigationRows[newIndex]) {
-            const nextRow = navigationRows[newIndex].original
+          const target = table.getSortedRowModel().rows[newIndex]
+          if (target) {
             setOffCanvasRowIndex(newIndex)
-            setOffCanvasData(nextRow)
-            setContextRow(nextRow)
+            setOffCanvasData(target.original)
+            setContextRow(target.original)
           }
         }}
         canNavigateUp={currentRowIndex > 0}

@@ -8,6 +8,8 @@
  * grant privileges; it only narrows them.
  */
 
+import { clearPersistedQueries } from './query-persister'
+
 const KEY = 'cipp_impersonate_role'
 const listeners = new Set()
 const notify = () => listeners.forEach((listener) => listener())
@@ -27,7 +29,7 @@ export const subscribeImpersonation = (listener) => {
   return () => listeners.delete(listener)
 }
 
-// Everything except authmecipp is persisted to localStorage (REACT_QUERY_OFFLINE_CACHE*),
+// Everything except authmecipp is persisted (utils/query-persister),
 // so both transitions must clear the persisted cache and hard-reload or role-scoped data
 // from the other identity survives. Mirrors the "Clear Cache and Reload" speed-dial in
 // _app.js. Never use queryClient.cancelQueries() here (permanent-abort race).
@@ -37,14 +39,7 @@ const clearCachesAndReload = (queryClient) => {
   } catch {
     /* reload still gives a clean slate */
   }
-  try {
-    Object.keys(window.localStorage)
-      .filter((key) => key.startsWith('REACT_QUERY_OFFLINE_CACHE'))
-      .forEach((key) => window.localStorage.removeItem(key))
-  } catch {
-    /* worst case: stale cache entries expire on their own */
-  }
-  window.location.reload()
+  clearPersistedQueries().then(() => window.location.reload())
 }
 
 export const enterImpersonation = (role, queryClient) => {
