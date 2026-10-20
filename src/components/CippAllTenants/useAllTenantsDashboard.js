@@ -75,16 +75,18 @@ export const deriveSecureScoreSummary = (rows, displayNameByDomain = new Map()) 
     .sort((a, b) => a[0].localeCompare(b[0]))
     .map(([date, value]) => ({
       date,
-      percent: value.count ? Math.round((value.total / value.count) * 10) / 10 : 0,
+      percent: value.count ? Math.round((value.total / value.count) * 100) / 100 : 0,
     }))
 
   const delta =
     trend.length > 1
-      ? Math.round((trend[trend.length - 1].percent - trend[0].percent) * 10) / 10
+      ? Math.round((trend[trend.length - 1].percent - trend[0].percent) * 100) / 100
       : null
 
   return {
-    average: Math.round(withNames.reduce((sum, row) => sum + row.percent, 0) / withNames.length),
+    average:
+      Math.round((withNames.reduce((sum, row) => sum + row.percent, 0) / withNames.length) * 100) /
+      100,
     worst: sorted[0],
     best: sorted[sorted.length - 1],
     scored: withNames.length,

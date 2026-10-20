@@ -1,4 +1,15 @@
-import { Box, Card, CardHeader, CardContent, Typography, Divider, Skeleton } from '@mui/material'
+import { useState } from 'react'
+import {
+  Box,
+  Card,
+  CardHeader,
+  CardContent,
+  Typography,
+  Divider,
+  Skeleton,
+  ToggleButton,
+  ToggleButtonGroup,
+} from '@mui/material'
 import { CippIcons } from '../../utils/icon-registry'
 import { useTheme } from '@mui/material/styles'
 import { useRouter } from 'next/router'
@@ -47,6 +58,8 @@ export const SecureScoreCard = ({ data, isLoading }) => {
   // recharts has no theme; hard-coded light greys drew a near-white grid and a white tooltip
   // over the dark card, so grid, reference line and tooltip come off the palette.
   const theme = useTheme()
+  const [chartMode, setChartMode] = useState('percent')
+  const isPercent = chartMode === 'percent'
   return (
     <Card sx={{ flex: 1, height: '100%' }}>
       <CardHeader
@@ -65,6 +78,17 @@ export const SecureScoreCard = ({ data, isLoading }) => {
             <CippIcons.Security sx={{ fontSize: 24 }} />
             <Typography variant="h6">Secure Score</Typography>
           </Box>
+        }
+        action={
+          <ToggleButtonGroup
+            size="small"
+            exclusive
+            value={chartMode}
+            onChange={(_, mode) => mode && setChartMode(mode)}
+          >
+            <ToggleButton value="percent">%</ToggleButton>
+            <ToggleButton value="points">Points</ToggleButton>
+          </ToggleButtonGroup>
         }
         sx={{ pb: 1 }}
       />
@@ -128,7 +152,7 @@ export const SecureScoreCard = ({ data, isLoading }) => {
                       day: 'numeric',
                     }),
                     score: score.currentScore,
-                    percentage: Math.round((score.currentScore / score.maxScore) * 100),
+                    percentage: Math.round((score.currentScore / score.maxScore) * 10000) / 100,
                   }))
                   const axis = secureScoreAxisProps({ isMobile })
                   return (
@@ -140,15 +164,15 @@ export const SecureScoreCard = ({ data, isLoading }) => {
                       <XAxis dataKey="date" {...axis.x} />
                       <YAxis
                         {...axis.y}
-                        domain={[0, maxScore]}
-                        tickFormatter={(value) => Math.round(value)}
+                        domain={[0, isPercent ? 100 : maxScore]}
+                        tickFormatter={(value) => Math.round(value) + (isPercent ? '%' : '')}
                       />
                       <ReferenceLine
-                        y={maxScore}
+                        y={isPercent ? 100 : maxScore}
                         stroke={theme.palette.text.secondary}
                         strokeDasharray="0"
                         label={{
-                          value: `Max: ${Math.round(maxScore)}`,
+                          value: isPercent ? 'Max: 100%' : `Max: ${Math.round(maxScore)}`,
                           position: 'insideTopRight',
                           fontSize: 11,
                           fill: theme.palette.text.secondary,
@@ -167,13 +191,13 @@ export const SecureScoreCard = ({ data, isLoading }) => {
                         }}
                         formatter={(value, name) => {
                           if (name === 'score') return [value.toFixed(2), 'Score']
-                          if (name === 'percentage') return [value + '%', 'Percentage']
+                          if (name === 'percentage') return [value.toFixed(2) + '%', 'Percentage']
                           return value
                         }}
                       />
                       <Line
                         type="monotone"
-                        dataKey="score"
+                        dataKey={isPercent ? 'percentage' : 'score'}
                         stroke="#22c55e"
                         strokeWidth={2}
                         dot={{ fill: '#22c55e', r: 4 }}
@@ -228,9 +252,10 @@ export const SecureScoreCard = ({ data, isLoading }) => {
               <Typography variant="h6" sx={{
                 fontWeight: "bold"
               }}>
-                {Math.round(
-                  (data[data.length - 1].currentScore / data[data.length - 1].maxScore) * 100
-                )}
+                {(
+                  (data[data.length - 1].currentScore / data[data.length - 1].maxScore) *
+                  100
+                ).toFixed(2)}
                 %
               </Typography>
             </Box>

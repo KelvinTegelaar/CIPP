@@ -127,7 +127,7 @@ const LeaderboardCard = ({ title, subheader, rows, isFetching }) => (
                   color: severityColor(scoreSeverity(row.percent)),
                 }}
               >
-                {row.percent}%
+                {row.percent.toFixed(2)}%
               </Typography>
             </Stack>
           ))}
@@ -158,7 +158,7 @@ export const AllTenantsSecureScoreSummary = () => {
   const infoBarItems = [
     {
       name: 'Portfolio average',
-      data: `${summary.average}%`,
+      data: `${summary.average.toFixed(2)}%`,
       icon: <CippIcons.ShieldCheckIcon />,
       toolTip: `Average of each tenant's latest cached score, across ${summary.scored} tenants`,
     },
@@ -171,7 +171,7 @@ export const AllTenantsSecureScoreSummary = () => {
     },
     {
       name: 'Highest',
-      data: summary.best ? `${summary.best.percent}%` : '—',
+      data: summary.best ? `${summary.best.percent.toFixed(2)}%` : '—',
       icon: <CippIcons.TrophyIcon />,
       color: 'success',
       toolTip: summary.best
@@ -180,7 +180,7 @@ export const AllTenantsSecureScoreSummary = () => {
     },
     {
       name: 'Lowest',
-      data: summary.worst ? `${summary.worst.percent}%` : '—',
+      data: summary.worst ? `${summary.worst.percent.toFixed(2)}%` : '—',
       icon: <CippIcons.ExclamationTriangleIcon />,
       color: 'error',
       toolTip: summary.worst

@@ -156,7 +156,7 @@ export const AllTenantsDashboard = () => {
                 }}>
                 <Box>
                   <Typography variant="h4" sx={{ fontVariantNumeric: 'tabular-nums' }}>
-                    {secureScore.average}%
+                    {secureScore.average.toFixed(2)}%
                   </Typography>
                   <Typography variant="caption" sx={{
                     color: "text.disabled"
@@ -224,7 +224,7 @@ export const AllTenantsDashboard = () => {
                           fontVariantNumeric: 'tabular-nums',
                         }}
                       >
-                        {secureScore.best?.percent}%
+                        {secureScore.best?.percent?.toFixed(2)}%
                       </Typography>
                     </Box>
                     <Box sx={{ minWidth: 0, textAlign: 'right' }}>
@@ -243,7 +243,7 @@ export const AllTenantsDashboard = () => {
                           fontVariantNumeric: 'tabular-nums',
                         }}
                       >
-                        {secureScore.worst?.percent}%
+                        {secureScore.worst?.percent?.toFixed(2)}%
                       </Typography>
                     </Box>
                   </Stack>

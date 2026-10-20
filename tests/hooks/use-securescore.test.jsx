@@ -22,7 +22,7 @@ const setFlags = (baselinesEnabled) => {
   responses['/api/ListFeatureFlags'] = [{ Id: 'Baselines', Enabled: baselinesEnabled }]
   responses['security/secureScoreControlProfiles'] = {
     Results: [
-      { id: 'mdo_commonattachmentsfilter', title: 'Common attachment filter', actionUrl: 'https://security.microsoft.com/a' },
+      { id: 'mdo_commonattachmentsfilter', title: 'Common attachment filter', maxScore: 8, actionUrl: 'https://security.microsoft.com/a' },
       { id: 'mdo_logcollector', title: 'Log collector', actionUrl: 'https://security.microsoft.com/b' },
     ],
   }
@@ -33,7 +33,7 @@ const setFlags = (baselinesEnabled) => {
         maxScore: 100,
         averageComparativeScores: [],
         controlScores: [
-          { controlName: 'mdo_commonattachmentsfilter', scoreInPercentage: 0 },
+          { controlName: 'mdo_commonattachmentsfilter', scoreInPercentage: 25, score: 2 },
           { controlName: 'mdo_logcollector', scoreInPercentage: 0 },
         ],
       },
@@ -72,5 +72,33 @@ describe('useSecureScore remediation links', () => {
     const { result } = renderHook(() => useSecureScore())
     await waitFor(() => expect(result.current.isSuccess).toBe(true))
     expect(actionUrlOf(result, 'mdo_logcollector')).toBe('https://security.microsoft.com/b')
+  })
+})
+
+describe('useSecureScore points to gain', () => {
+  beforeEach(() => {
+    for (const key of Object.keys(responses)) delete responses[key]
+  })
+
+  it('derives points and overall % to gain from the profile maxScore', async () => {
+    setFlags(true)
+    const { result } = renderHook(() => useSecureScore())
+    await waitFor(() => expect(result.current.isSuccess).toBe(true))
+    const control = result.current.translatedData.controlScores.find(
+      (c) => c.controlName === 'mdo_commonattachmentsfilter'
+    )
+    expect(control.pointsToGain).toBe(6)
+    expect(control.percentToGain).toBe(6)
+  })
+
+  it('leaves the gain empty when the profile has no maxScore', async () => {
+    setFlags(true)
+    const { result } = renderHook(() => useSecureScore())
+    await waitFor(() => expect(result.current.isSuccess).toBe(true))
+    const control = result.current.translatedData.controlScores.find(
+      (c) => c.controlName === 'mdo_logcollector'
+    )
+    expect(control.pointsToGain).toBeNull()
+    expect(control.percentToGain).toBeNull()
   })
 })
