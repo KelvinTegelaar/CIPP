@@ -34,6 +34,7 @@ describe('fromCraftRun', () => {
     expect(fromCraftRun(run)).toMatchObject({
       PartitionKey: 'CippQueue',
       RowKey: run.runName,
+      QueueId: 'f761aa95-044c-4b22-8cb4-fb7938aceb95',
       Name: 'Users (All Tenants)',
       Link: '/identity/administration/users',
       TotalTasks: 16,
