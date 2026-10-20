@@ -3126,10 +3126,10 @@
   resolved "https://registry.npmjs.org/@tiptap/extension-horizontal-rule/-/extension-horizontal-rule-3.31.4.tgz#d48fee5d0317d3761dc193b81191c53e1a6a24f8"
   integrity sha512-ws0Kh8kfHL7ESILSXj0HJAXs8G10ewlW1sedXKm8dm0op9L8il+xl8bEJVoqG/jMf77900Fc2CaQldcCGRpF1g==
 
-"@tiptap/extension-image@^3.31.3":
-  version "3.31.3"
-  resolved "https://registry.npmjs.org/@tiptap/extension-image/-/extension-image-3.31.3.tgz#751f7a93b81fc560fa9173cd5eb6aa3c72809bc5"
-  integrity sha512-wWNG9BOtx2Cg4vwxPVGDIJ5DGX+ETkldeoaFJLB1NXUL4OPUiVTf8cHZ+hdYgJWP704BEB7jQgjlpvdi6VigTg==
+"@tiptap/extension-image@^3.32.0":
+  version "3.32.0"
+  resolved "https://registry.npmjs.org/@tiptap/extension-image/-/extension-image-3.32.0.tgz#cb4d1247a0a4fc465dd95e91cb0c0ecf4111fae4"
+  integrity sha512-nv/YlOMwFUp2ItffQbHb14yAJjrn9sdxKl0WK5rH8PPiNoXVkvasieoBLNTHan9gjhrSp7LjVG2ZsMoSe/I7gg==
 
 "@tiptap/extension-italic@3.31.4":
   version "3.31.4"

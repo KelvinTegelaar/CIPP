@@ -57,7 +57,7 @@
     "@tanstack/react-table": "^8.19.2",
     "@tiptap/core": "^3.31.3",
     "@tiptap/extension-heading": "^3.31.3",
-    "@tiptap/extension-image": "^3.31.3",
+    "@tiptap/extension-image": "^3.32.0",
     "@tiptap/extension-table": "^3.31.3",
     "@tiptap/pm": "^3.31.3",
     "@tiptap/react": "^3.32.0",
