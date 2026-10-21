@@ -1,4 +1,5 @@
-import { Button } from '@mui/material'
+import { useState } from 'react'
+import { Button, Tooltip } from '@mui/material'
 import { CippTablePage } from '../../../../components/CippComponents/CippTablePage.jsx'
 import { Layout as DashboardLayout } from '../../../../layouts/index' // had to add an extra path here because I added an extra folder structure. We should switch to absolute pathing so we dont have to deal with relative.
 import Link from 'next/link'
@@ -8,6 +9,7 @@ import { CippApiResults } from '../../../../components/CippComponents/CippApiRes
 import { CippDomainCards } from '../../../../components/CippCards/CippDomainCards'
 import { CippIcons } from '../../../../utils/icon-registry'
 import { DomainAnalyserDialog } from '../../../../components/CippComponents/DomainAnalyserDialog'
+import { DomainReportDialog } from '../../../../components/CippPdf/DomainReportDialog'
 import { useDialog } from '../../../../hooks/use-dialog'
 
 const Page = () => {
@@ -18,6 +20,7 @@ const Page = () => {
     url: '/api/ExecDomainAnalyser',
     waiting: false,
   })
+  const [reportOpen, setReportOpen] = useState(false)
   const actions = [
     {
       label: 'Add/Modify DKIM Selectors',
@@ -87,6 +90,23 @@ const Page = () => {
             <Button onClick={analyserDialog.handleOpen} startIcon={<CippIcons.Refresh />}>
               Run Analysis Now
             </Button>
+            <Tooltip
+              title={
+                currentTenant === 'AllTenants'
+                  ? 'Select a single tenant to report on all of its domains'
+                  : 'Generate a client-ready PDF covering every domain in this tenant'
+              }
+            >
+              <span>
+                <Button
+                  onClick={() => setReportOpen(true)}
+                  startIcon={<CippIcons.PictureAsPdf />}
+                  disabled={!currentTenant || currentTenant === 'AllTenants'}
+                >
+                  Generate Report
+                </Button>
+              </span>
+            </Tooltip>
           </>
         }
         prependComponents={<CippApiResults apiObject={apiGetCall} />}
@@ -103,6 +123,7 @@ const Page = () => {
           'DMARCPercentagePass',
           'DNSSECPresent',
           'DKIMEnabled',
+          'MTASTS',
           'EnterpriseEnrollment',
           'EnterpriseRegistration',
         ]}
@@ -110,6 +131,11 @@ const Page = () => {
         actions={actions}
       />
       <DomainAnalyserDialog createDialog={analyserDialog} />
+      <DomainReportDialog
+        tenantFilter={currentTenant}
+        open={reportOpen}
+        onClose={() => setReportOpen(false)}
+      />
     </>
   )
 }

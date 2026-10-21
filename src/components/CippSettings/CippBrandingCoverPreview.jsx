@@ -176,6 +176,18 @@ export const REPORT_COVER_PRESETS = [
     footer: "Confidential & Proprietary",
   },
   {
+    id: "domain",
+    label: "Domain Security Report",
+    reportName: "Domain Security Assessment",
+    coverLabel: "Domain Security Assessment",
+    title: "Domain Security",
+    accent: "Assessment",
+    subtitle: "Email security and DNS health across every domain.",
+    metaPrimary: SAMPLE_TENANT_NAME,
+    metaSecondary: null,
+    footer: "Point-in-time assessment of public DNS records",
+  },
+  {
     // Last: this one has no fixed content of its own — it renders whatever an operator assembles in
     // the report builder, so it belongs after the reports that are the same every time.
     id: "reportBuilder",
