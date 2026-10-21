@@ -1,95 +1,69 @@
-import { pdf } from '@react-pdf/renderer'
-import { BECRemediationReportDocument } from '../../src/components/BECRemediationReportButton'
-import {
-  SAMPLE_BEC,
-  SAMPLE_TENANT_NAME,
-} from '../../src/components/CippPdf/previewSampleData'
+import React from 'react'
+import { screen, waitFor } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
+import { renderWithProviders, settingsWith } from '../test-utils'
+import { api, getResult } from '../mocks/api-call'
+import { BECRemediationReportButton } from '../../src/components/BECRemediationReportButton'
 
-// Real render, not a stub: a JSX or data error in the report only surfaces in react-pdf's layout
-// pass, so a shallow render asserts nothing useful. This exercises the executive summary — the
-// findings-at-a-glance table, the by-objective bar chart, the tailored priority actions and the
-// order-of-events timeline — for real, on both a populated case and an empty one.
-const renderToBlob = (node) => pdf(node).toBlob()
+vi.mock('../../src/api/ApiCall', async () =>
+  (await import('../mocks/api-call')).apiCallMock()
+)
 
-const baseProps = {
-  brandingSettings: {},
-  tenantName: SAMPLE_TENANT_NAME,
-  variables: {},
-}
+const TENANT = 'contoso.onmicrosoft.com'
+const branding = getResult({
+  data: { reportDefaults: { bec: 'preset-full', becSummary: 'preset-summary' } },
+})
+let fetchMock
 
-describe('BECRemediationReportDocument', () => {
-  it('renders the sample BEC case to a PDF', async () => {
-    const blob = await renderToBlob(
-      <BECRemediationReportDocument
-        {...baseProps}
-        userData={SAMPLE_BEC.userData}
-        becData={SAMPLE_BEC.becData}
-      />
-    )
+beforeEach(() => {
+  api.get = () => branding
+  fetchMock = vi.fn(() =>
+    Promise.resolve({
+      ok: true,
+      blob: () => Promise.resolve(new Blob(['%PDF-'], { type: 'application/pdf' })),
+    })
+  )
+  vi.stubGlobal('fetch', fetchMock)
+  URL.createObjectURL = vi.fn(() => 'blob:bec-report')
+  URL.revokeObjectURL = vi.fn()
+})
 
-    expect(blob.size).toBeGreaterThan(1000)
-  }, 30000)
+afterEach(() => {
+  vi.unstubAllGlobals()
+  vi.restoreAllMocks()
+})
 
-  it('renders with no findings at all, so a clean tenant still produces a report', async () => {
-    const blob = await renderToBlob(
-      <BECRemediationReportDocument
-        {...baseProps}
-        userData={{ userPrincipalName: 'clean@example.com' }}
-        becData={{}}
-      />
-    )
+const renderButton = () =>
+  renderWithProviders(
+    <BECRemediationReportButton
+      userData={{ id: 'u1', userPrincipalName: 'user@contoso.com' }}
+      becData={{ CaseId: 'BEC-1' }}
+      tenantName="Contoso"
+    />,
+    { settings: settingsWith({ currentTenant: TENANT }) }
+  )
 
-    expect(blob.size).toBeGreaterThan(1000)
-  }, 30000)
+const lastParams = () => new URL(fetchMock.mock.calls.at(-1)[0], 'https://example.com').searchParams
 
-  it('renders the C-suite summary variant (executive pages only)', async () => {
-    const blob = await renderToBlob(
-      <BECRemediationReportDocument
-        {...baseProps}
-        variant="summary"
-        userData={SAMPLE_BEC.userData}
-        becData={SAMPLE_BEC.becData}
-      />
-    )
+describe('BECRemediationReportButton branding defaults', () => {
+  it('sends the full preset then the summary preset when the variant changes', async () => {
+    const user = userEvent.setup()
+    renderButton()
+    await user.click(screen.getByRole('button', { name: /Generate (BEC Remediation Report PDF|PDF Report)/i }))
+    await screen.findByRole('dialog')
+    await waitFor(() => expect(fetchMock).toHaveBeenCalled())
+    expect(lastParams().get('brandingPresetId')).toBe('preset-full')
 
-    expect(blob.size).toBeGreaterThan(1000)
-  }, 30000)
+    await user.click(screen.getByRole('button', { name: 'C-suite summary' }))
+    await waitFor(() => expect(lastParams().get('brandingPresetId')).toBe('preset-summary'))
+    expect(lastParams().get('variant')).toBe('summary')
+  })
 
-  it('renders the Remediation Taken section from a run with containment history', async () => {
-    const becData = {
-      ...SAMPLE_BEC.becData,
-      Run: {
-        Containment: [
-          {
-            At: '2026-08-05T10:00:00Z',
-            By: 'analyst@example.com',
-            Actions: ['ResetPassword', 'RevokeSessions'],
-            Results: [
-              {
-                Action: 'ResetPassword',
-                Target: 'sample.user@example.com',
-                state: 'success',
-                resultText: 'Password reset',
-              },
-              {
-                Action: 'RevokeSessions',
-                Target: 'sample.user@example.com',
-                state: 'success',
-                resultText: 'Sessions revoked',
-              },
-            ],
-          },
-        ],
-      },
-    }
-    const blob = await renderToBlob(
-      <BECRemediationReportDocument
-        {...baseProps}
-        userData={SAMPLE_BEC.userData}
-        becData={becData}
-      />
-    )
-
-    expect(blob.size).toBeGreaterThan(1000)
-  }, 30000)
+  it('falls back to default branding when BEC defaults are unset', async () => {
+    api.get = () => getResult({ data: { reportDefaults: {} } })
+    renderButton()
+    await userEvent.click(screen.getByRole('button', { name: /Generate (BEC Remediation Report PDF|PDF Report)/i }))
+    await waitFor(() => expect(fetchMock).toHaveBeenCalled())
+    expect(lastParams().get('brandingPresetId')).toBe('')
+  })
 })
