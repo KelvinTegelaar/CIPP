@@ -43,7 +43,7 @@ const Page = () => {
             title="Report Attachment Retention"
             endpoint="ExecReportAttachmentRetentionConfig"
             defaultDays={360}
-            description="Scheduled report attachments too large to email (over 4MB) are uploaded to storage and linked from the email instead. Configure how long those files and their download links are kept."
+            description="Scheduled report attachments too large to email (over 4MB) are uploaded to storage and linked from the email instead. Configure how long those files and their download links, and generated Report Builder reports and their PDFs, are kept."
           />
         </Grid>
         <Grid size={{ lg: 4, md: 6, sm: 12, xs: 12 }}>
