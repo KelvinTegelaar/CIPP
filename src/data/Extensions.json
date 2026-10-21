@@ -741,6 +741,17 @@
         }
       },
       {
+        "type": "LocaleSelect",
+        "name": "Hudu.Locale",
+        "label": "Date and number format (default English (United Kingdom))",
+        "condition": {
+          "field": "Hudu.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
+      },
+      {
         "type": "switch",
         "name": "Hudu.IncludeParterCenterLink",
         "label": "Include link to Partner Center Service management page (partner.microsoft.com)",
