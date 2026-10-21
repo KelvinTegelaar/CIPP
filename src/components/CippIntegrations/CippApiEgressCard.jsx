@@ -29,7 +29,7 @@ import { CippAutoComplete } from "../CippComponents/CippAutocomplete";
 
 // Authoritative per-client API egress from Craft's CraftEgressAccounting table (via /api/ListApiEgress):
 // a used-of-cap gauge for the instance total, a stacked-by-client trend over the selected window, and
-// today's top endpoints for all API clients, one client, or signed-in users (tracked, never capped).
+// today's top endpoints and caller IPs for all API clients, one client, or signed-in users (tracked, never capped).
 // Shows a notice instead when accounting is off / not hosted.
 
 const RANGE_OPTIONS = [
@@ -96,11 +96,12 @@ export const CippApiEgressCard = () => {
 
   const endpointSources = useMemo(
     () => [
-      { value: "all", label: "All API clients", endpoints: r?.Endpoints ?? [] },
+      { value: "all", label: "All API clients", endpoints: r?.Endpoints ?? [], ips: r?.Ips ?? [] },
       ...(r?.Clients ?? []).map((c) => ({
         value: c.AppId,
         label: c.Name,
         endpoints: c.Endpoints ?? [],
+        ips: c.Ips ?? [],
       })),
       ...(r?.Interactive
         ? [
@@ -108,6 +109,7 @@ export const CippApiEgressCard = () => {
               value: "interactive",
               label: "Signed-in users (not capped)",
               endpoints: r.Interactive.Endpoints ?? [],
+              ips: r.Interactive.Ips ?? [],
             },
           ]
         : []),
@@ -125,6 +127,17 @@ export const CippApiEgressCard = () => {
         AvgSize: formatBytes(e.AvgBytes),
         MaxSize: formatBytes(e.MaxBytes),
         CacheHitPct: e.Requests > 0 ? Math.round((e.CacheHits / e.Requests) * 100) : 0,
+        Errors: e.Errors,
+        Shed: e.Shed,
+      })),
+    [selectedSource]
+  );
+  const ipRows = useMemo(
+    () =>
+      selectedSource.ips.map((e) => ({
+        IP: e.Ip,
+        Egress: formatBytes(e.Bytes),
+        Requests: e.Requests,
         Errors: e.Errors,
         Shed: e.Shed,
       })),
@@ -275,7 +288,7 @@ export const CippApiEgressCard = () => {
               disableClearable
               multiple={false}
               size="small"
-              label="Endpoints for"
+              label="Breakdown for"
               options={endpointSources.map(({ value, label }) => ({ value, label }))}
               value={{ value: selectedSource.value, label: selectedSource.label }}
               onChange={(v) => {
@@ -300,6 +313,18 @@ export const CippApiEgressCard = () => {
                 "Errors",
                 "Shed",
               ]}
+            />
+          </Grid>
+
+          {/* ── Today's top caller IPs ── */}
+          <Grid size={{ xs: 12 }}>
+            <CippDataTable
+              noCard
+              title="Top caller IPs today"
+              data={ipRows}
+              isFetching={query.isFetching}
+              queryKey="ApiEgressIpsTable"
+              simpleColumns={["IP", "Egress", "Requests", "Errors", "Shed"]}
             />
           </Grid>
         </Grid>
