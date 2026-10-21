@@ -102,7 +102,11 @@ export const ShadowAIReportButton = ({ data, tenantName, disabled }) => {
   // re-rendered while the dialog is open whenever the selected sections change.
   const pdf = useServerPdf({
     url: '/api/ExecGetShadowAIReportPdf',
-    body: { tenantFilter, sectionConfig, brandingPresetId: branding?.reportDefaults?.shadowAI ?? '' },
+    body: {
+      tenantFilter,
+      sectionConfig,
+      brandingPresetId: branding?.reportDefaults?.shadowAI ?? '',
+    },
     enabled: previewOpen,
   })
 

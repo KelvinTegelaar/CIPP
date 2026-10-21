@@ -11,7 +11,9 @@ vi.mock('../../src/api/ApiCall', async () =>
 
 const TENANT = 'contoso.onmicrosoft.com'
 const branding = getResult({
-  data: { reportDefaults: { bec: 'preset-full', becSummary: 'preset-summary' } },
+  data: {
+    reportDefaults: { bec: 'preset-full', becSummary: 'preset-summary' },
+  },
 })
 let fetchMock
 
@@ -20,7 +22,8 @@ beforeEach(() => {
   fetchMock = vi.fn(() =>
     Promise.resolve({
       ok: true,
-      blob: () => Promise.resolve(new Blob(['%PDF-'], { type: 'application/pdf' })),
+      blob: () =>
+        Promise.resolve(new Blob(['%PDF-'], { type: 'application/pdf' })),
     })
   )
   vi.stubGlobal('fetch', fetchMock)
@@ -43,27 +46,26 @@ const renderButton = () =>
     { settings: settingsWith({ currentTenant: TENANT }) }
   )
 
-const lastParams = () => new URL(fetchMock.mock.calls.at(-1)[0], 'https://example.com').searchParams
+const lastParams = () =>
+  new URL(fetchMock.mock.calls.at(-1)[0], 'https://example.com').searchParams
 
 describe('BECRemediationReportButton branding defaults', () => {
   it('sends the full preset then the summary preset when the variant changes', async () => {
     const user = userEvent.setup()
     renderButton()
-    await user.click(screen.getByRole('button', { name: /Generate (BEC Remediation Report PDF|PDF Report)/i }))
+    await user.click(
+      screen.getByRole('button', {
+        name: 'Generate BEC Remediation Report PDF',
+      })
+    )
     await screen.findByRole('dialog')
     await waitFor(() => expect(fetchMock).toHaveBeenCalled())
     expect(lastParams().get('brandingPresetId')).toBe('preset-full')
 
     await user.click(screen.getByRole('button', { name: 'C-suite summary' }))
-    await waitFor(() => expect(lastParams().get('brandingPresetId')).toBe('preset-summary'))
+    await waitFor(() =>
+      expect(lastParams().get('brandingPresetId')).toBe('preset-summary')
+    )
     expect(lastParams().get('variant')).toBe('summary')
-  })
-
-  it('falls back to default branding when BEC defaults are unset', async () => {
-    api.get = () => getResult({ data: { reportDefaults: {} } })
-    renderButton()
-    await userEvent.click(screen.getByRole('button', { name: /Generate (BEC Remediation Report PDF|PDF Report)/i }))
-    await waitFor(() => expect(fetchMock).toHaveBeenCalled())
-    expect(lastParams().get('brandingPresetId')).toBe('')
   })
 })

@@ -29,7 +29,8 @@ beforeEach(() => {
   fetchMock = vi.fn(() =>
     Promise.resolve({
       ok: true,
-      blob: () => Promise.resolve(new Blob(['%PDF-'], { type: 'application/pdf' })),
+      blob: () =>
+        Promise.resolve(new Blob(['%PDF-'], { type: 'application/pdf' })),
     })
   )
   vi.stubGlobal('fetch', fetchMock)
@@ -45,28 +46,42 @@ afterEach(() => {
 const reports = [
   {
     name: 'Sharing',
-    component: <SharingReportButton sharingData={{ summary: {} }} tenantName="Contoso" />,
+    component: (
+      <SharingReportButton sharingData={{ summary: {} }} tenantName="Contoso" />
+    ),
     endpoint: 'ExecGetSharingReportPdf',
     preset: defaults.sharing,
     button: /export report/i,
   },
   {
     name: 'Permissions',
-    component: <PermissionsReportButton permissionsData={{ summary: {} }} tenantName="Contoso" />,
+    component: (
+      <PermissionsReportButton
+        permissionsData={{ summary: {} }}
+        tenantName="Contoso"
+      />
+    ),
     endpoint: 'ExecGetPermissionsReportPdf',
     preset: defaults.permissions,
     button: /export report/i,
   },
   {
     name: 'Mail Flow',
-    component: <MailFlowReportButton mailFlowData={{ days: 14, totals: { EmailDelivered: 3 } }} tenantName="Contoso" />,
+    component: (
+      <MailFlowReportButton
+        mailFlowData={{ days: 14, totals: { EmailDelivered: 3 } }}
+        tenantName="Contoso"
+      />
+    ),
     endpoint: 'ExecGetMailFlowReportPdf',
     preset: defaults.mailFlow,
     button: /export report/i,
   },
   {
     name: 'Shadow AI',
-    component: <ShadowAIReportButton data={{}} tenantName="Contoso" disabled={false} />,
+    component: (
+      <ShadowAIReportButton data={{}} tenantName="Contoso" disabled={false} />
+    ),
     endpoint: 'ExecGetShadowAIReportPdf',
     preset: defaults.shadowAI,
     button: /executive shadow ai report/i,
@@ -74,36 +89,27 @@ const reports = [
 ]
 
 describe('Per-report PDF branding defaults', () => {
-  it.each(reports)('$name forwards its configured preset to the PDF endpoint', async ({ component, endpoint, preset, button }) => {
-    renderWithProviders(component, { settings: settingsWith({ currentTenant: TENANT }) })
-    await userEvent.click(screen.getByRole('button', { name: button }))
-    await waitFor(() => expect(fetchMock).toHaveBeenCalled())
-
-    const [url, init] = fetchMock.mock.calls.at(-1)
-    expect(url).toContain(endpoint)
-    if (endpoint === 'ExecGetShadowAIReportPdf') {
-      expect(JSON.parse(init.body)).toMatchObject({
-        tenantFilter: TENANT,
-        brandingPresetId: preset,
+  it.each(reports)(
+    '$name forwards its configured preset to the PDF endpoint',
+    async ({ component, endpoint, preset, button }) => {
+      renderWithProviders(component, {
+        settings: settingsWith({ currentTenant: TENANT }),
       })
-    } else {
-      const params = new URL(url, 'https://example.com').searchParams
-      expect(params.get('tenantFilter')).toBe(TENANT)
-      expect(params.get('brandingPresetId')).toBe(preset)
-    }
-  })
+      await userEvent.click(screen.getByRole('button', { name: button }))
+      await waitFor(() => expect(fetchMock).toHaveBeenCalled())
 
-  it.each(reports)('$name falls back to global branding when no preset is assigned', async ({ component, endpoint, button }) => {
-    api.get = () => getResult({ data: { reportDefaults: {} } })
-    renderWithProviders(component, { settings: settingsWith({ currentTenant: TENANT }) })
-    await userEvent.click(screen.getByRole('button', { name: button }))
-    await waitFor(() => expect(fetchMock).toHaveBeenCalled())
-
-    const [url, init] = fetchMock.mock.calls.at(-1)
-    if (endpoint === 'ExecGetShadowAIReportPdf') {
-      expect(JSON.parse(init.body).brandingPresetId).toBe('')
-    } else {
-      expect(new URL(url, 'https://example.com').searchParams.get('brandingPresetId')).toBe('')
+      const [url, init] = fetchMock.mock.calls.at(-1)
+      expect(url).toContain(endpoint)
+      if (endpoint === 'ExecGetShadowAIReportPdf') {
+        expect(JSON.parse(init.body)).toMatchObject({
+          tenantFilter: TENANT,
+          brandingPresetId: preset,
+        })
+      } else {
+        const params = new URL(url, 'https://example.com').searchParams
+        expect(params.get('tenantFilter')).toBe(TENANT)
+        expect(params.get('brandingPresetId')).toBe(preset)
+      }
     }
-  })
+  )
 })

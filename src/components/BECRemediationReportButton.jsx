@@ -39,7 +39,10 @@ export const BECRemediationReportButton = ({ userData, becData, tenantName }) =>
     userName: userData?.userPrincipalName ?? '',
     userDisplayName: userData?.displayName ?? '',
     variant,
-    brandingPresetId: branding?.reportDefaults?.[variant === 'summary' ? 'becSummary' : 'bec'] ?? '',
+    brandingPresetId:
+      branding?.reportDefaults?.[
+        variant === 'summary' ? 'becSummary' : 'bec'
+      ] ?? '',
   })
   const pdf = useServerPdf({ url: `/api/ExecGetBecReportPdf?${params}`, enabled: dialogOpen })
   const handleOpenDialog = () => setDialogOpen(true)
