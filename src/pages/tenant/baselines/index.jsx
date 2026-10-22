@@ -274,20 +274,21 @@ const Page = () => {
                   isFetching={aggregate.isFetching}
                   title="Fleet Compliance Trend"
                   chartType="area"
+                  xaxisType="datetime"
                   chartSeries={
                     trend.length > 0
                       ? [
                           {
                             name: 'Compliant with accepted deviations',
                             data: trend.map((point) => ({
-                              x: point.date,
+                              x: new Date(`${point.date}T00:00:00`).getTime(),
                               y: point.aligned,
                             })),
                           },
                           {
                             name: 'Compliant with baseline',
                             data: trend.map((point) => ({
-                              x: point.date,
+                              x: new Date(`${point.date}T00:00:00`).getTime(),
                               y: point.verified,
                             })),
                           },

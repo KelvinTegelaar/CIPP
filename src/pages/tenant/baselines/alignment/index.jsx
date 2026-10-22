@@ -2110,18 +2110,19 @@ const Page = () => {
             <CippChartCard
               title="Compliance Trend"
               chartType="area"
+              xaxisType="datetime"
               chartSeries={[
                 {
                   name: 'Compliant with accepted deviations',
                   data: row.trend.map((point) => ({
-                    x: point.date,
+                    x: new Date(`${point.date}T00:00:00`).getTime(),
                     y: point.aligned,
                   })),
                 },
                 {
                   name: 'Compliant with baseline',
                   data: row.trend.map((point) => ({
-                    x: point.date,
+                    x: new Date(`${point.date}T00:00:00`).getTime(),
                     y: point.verified,
                   })),
                 },

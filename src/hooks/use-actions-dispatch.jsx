@@ -1,7 +1,6 @@
 import { useCallback, useState } from "react";
 import { CippApiDialog } from "../components/CippComponents/CippApiDialog";
 import { useDialog } from "./use-dialog";
-import { useSettings } from "./use-settings";
 
 const IDLE = { data: {}, action: {}, ready: false };
 
@@ -19,7 +18,6 @@ export const useActionsDispatch = ({ actions = [], data, queryKeys }) => {
   const [actionData, setActionData] = useState(IDLE);
   const [customAction, setCustomAction] = useState(null);
   const createDialog = useDialog();
-  const settings = useSettings();
 
   // Nullsafety for data: it can be undefined (still loading) or null (no data)
   const isDisabled = (action) => {
@@ -30,13 +28,9 @@ export const useActionsDispatch = ({ actions = [], data, queryKeys }) => {
 
   const visibleActions = actions?.filter((action) => !action.link || action.showInActionsMenu) ?? [];
 
+  // CippApiDialog posts an AllTenants row under the row's own tenant (getRowTenant), so the
+  // selected tenant is left alone here.
   const dispatch = (action) => {
-    // An AllTenants row carries its own tenant; posting under "AllTenants" would target the
-    // wrong one. Page-level data has no Tenant, so this is a no-op there.
-    if (settings?.currentTenant === "AllTenants" && data?.Tenant) {
-      settings.handleUpdate({ currentTenant: data.Tenant });
-    }
-
     // Run-and-return paths must NOT set ready: doing so mounts CippApiDialog with
     // api.noConfirm true, and its mount effect auto-submits into the very customFunction
     // just called here — one tap, two invocations.
