@@ -18,20 +18,22 @@ const Page = () => {
 
   const urlFilters = useUrlFilters()
 
-  const overviews = ApiGetCall({
-    url: '/api/ListServiceHealthOverviews?UseReportDB=true',
-    data: { tenantFilter: currentTenant },
-    queryKey: `overviews-${currentTenant}`,
-    waiting: !!currentTenant,
-  })
+  // Live by default like the dashboard card, so a fresh outage shows up immediately
   const reportDB = useCippReportDB({
     apiUrl: '/api/ListServiceHealthOverviews',
     queryKey: 'ListServiceHealthOverviews',
     cacheName: 'ServiceHealthOverviews',
     syncTitle: 'Sync Service Health',
     allowToggle: true,
-    defaultCached: true,
+    defaultCached: false,
     allowAllTenantSync: true,
+  })
+  // Info bar counters follow the table's Live/Cached mode
+  const overviews = ApiGetCall({
+    url: reportDB.resolvedApiUrl,
+    data: { tenantFilter: currentTenant },
+    queryKey: `overviews-${reportDB.resolvedQueryKey}`,
+    waiting: !!currentTenant,
   })
 
   return (

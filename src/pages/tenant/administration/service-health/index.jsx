@@ -36,20 +36,21 @@ const Page = () => {
 
   const router = useRouter()
 
+  // Single tenant reads live from Graph; AllTenants is always served from the cache by the backend
   const overviews = ApiGetCall({
-    url: '/api/ListServiceHealthOverviews?UseReportDB=true',
+    url: '/api/ListServiceHealthOverviews',
     data: { tenantFilter: currentTenant },
     queryKey: `overviews-${currentTenant}`,
     waiting: !!currentTenant,
   })
   const issues = ApiGetCall({
-    url: '/api/ListServiceHealthIssues?UseReportDB=true',
+    url: '/api/ListServiceHealthIssues',
     data: { tenantFilter: currentTenant },
     queryKey: `issues-${currentTenant}`,
     waiting: !!currentTenant,
   })
   const messages = ApiGetCall({
-    url: '/api/ListMessageCenterMessages?UseReportDB=true',
+    url: '/api/ListMessageCenterMessages',
     data: { tenantFilter: currentTenant },
     queryKey: `messages-${currentTenant}`,
     waiting: !!currentTenant,
