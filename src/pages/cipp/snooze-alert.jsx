@@ -60,7 +60,7 @@ const Page = () => {
     if (!data) return null
     try {
       const item = JSON.parse(data)
-      return item.UserPrincipalName || item.Message || item.DisplayName || null
+      return item.UserPrincipalName || item.Message || item.DisplayName || item.Id || null
     } catch {
       return null
     }
