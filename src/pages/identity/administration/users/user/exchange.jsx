@@ -1177,16 +1177,14 @@ const Page = () => {
       type: 'POST',
       icon: <CippIcons.Delete />,
       url: '/api/RemoveTrustedBlockedSender',
-      customDataformatter: (row, action, formData) => {
-        return {
-          userPrincipalName: row?.UserPrincipalName,
-          typeProperty: row?.TypeProperty,
-          value: row?.Value,
+      customDataformatter: (row) =>
+        (Array.isArray(row) ? row : [row]).map((entry) => ({
+          userPrincipalName: entry?.UserPrincipalName,
+          typeProperty: entry?.TypeProperty,
+          value: entry?.Value,
           tenantFilter: userSettingsDefaults.currentTenant,
-        }
-      },
-      confirmText:
-        'Are you sure you want to remove [Value] from the [Type] list for [UserPrincipalName]?',
+        })),
+      confirmText: 'Are you sure you want to remove [Value] from the trusted/blocked list?',
       multiPost: false,
       relatedQueryKeys: `JunkEmailConfig-${userId}`,
     },
