@@ -645,7 +645,7 @@ export const AllTenantsDashboard = () => {
                   <AllTenantsCacheList
                     rows={cache.staleTenants}
                     isFetching={countsApi.isLoading || tenants.isLoading}
-                    emptyText="Every tenant was cached within the last 30 hours."
+                    emptyText="Every tenant was cached within the last 48 hours."
                   />
                 </Grid>
               </Grid>

@@ -79,15 +79,24 @@ describe('deriveCacheSummary', () => {
     })
   })
 
-  it('warns between 30 and 72 hours and reports the age in hours', () => {
+  it('treats a collection that missed one nightly run as fresh', () => {
     const summary = deriveCacheSummary(
-      [row('a.com', 'Users', 48)],
+      [row('a.com', 'Users', 40)],
+      [tenant('a.com', 'Alpha')]
+    )
+
+    expect(summary.freshness).toEqual({ fresh: 1, stale: 0, missing: 0 })
+  })
+
+  it('warns between 48 and 72 hours and reports the age in hours', () => {
+    const summary = deriveCacheSummary(
+      [row('a.com', 'Users', 60)],
       [tenant('a.com', 'Alpha')]
     )
 
     expect(summary.freshness).toEqual({ fresh: 0, stale: 1, missing: 0 })
     expect(summary.staleTenants[0]).toMatchObject({
-      detail: 'Oldest collection 48 hours old',
+      detail: 'Oldest collection 60 hours old',
       severity: 'warning',
     })
   })

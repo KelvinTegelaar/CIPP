@@ -124,8 +124,8 @@ const ADHOC_CACHE_TYPES = new Set([
 const RETIRED_CACHE_TYPES = new Set(['CredentialUserRegistrationDetails', 'DeviceSettings'])
 
 // The nightly orchestrator runs at 03:00, so a tenant that collected yesterday is still healthy;
-// past 30 hours it has missed a run, and past 72 it has missed three.
-const STALE_HOURS = 30
+// past 48 hours it has missed two runs, and past 72 it has missed three.
+const STALE_HOURS = 48
 const CRITICAL_HOURS = 72
 
 /**
