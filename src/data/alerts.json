@@ -3,6 +3,7 @@
     "name": "MFAAlertUsers",
     "label": "Alert on users without any form of MFA",
     "recommendedRunInterval": "1d",
+    "minimumRunInterval": "1d",
     "requiresInput": true,
     "inputType": "number",
     "inputLabel": "Exclude accounts created in the last X days (default: 0, no exclusion)",
@@ -18,6 +19,7 @@
     "name": "MFAAdmins",
     "label": "Alert on admins without any form of MFA (Entra P1 Required)",
     "recommendedRunInterval": "1d",
+    "minimumRunInterval": "1d",
     "requiresInput": true,
     "inputType": "switch",
     "inputLabel": "Include disabled admin accounts?",
@@ -31,7 +33,8 @@
   {
     "name": "LicenseAssignmentErrors",
     "label": "Alert on license assignment errors",
-    "recommendedRunInterval": "1d"
+    "recommendedRunInterval": "1d",
+    "minimumRunInterval": "1d"
   },
   {
     "name": "SmtpAuthSuccess",
@@ -50,7 +53,8 @@
         "message": "Days cannot exceed 30"
       }
     },
-    "recommendedRunInterval": "1d"
+    "recommendedRunInterval": "1d",
+    "minimumRunInterval": "1d"
   },
   {
     "name": "NoCAConfig",
@@ -66,6 +70,7 @@
     "name": "InactiveLicensedUsers",
     "label": "Alert on licensed users that have not logged in for X days",
     "recommendedRunInterval": "1d",
+    "minimumRunInterval": "1d",
     "requiresInput": true,
     "multipleInput": true,
     "inputs": [
@@ -90,6 +95,7 @@
     "name": "InactiveGuestUsers",
     "label": "Alert on guest users that have not logged in for X days",
     "recommendedRunInterval": "1d",
+    "minimumRunInterval": "1d",
     "requiresInput": true,
     "multipleInput": true,
     "inputs": [
@@ -109,6 +115,7 @@
     "name": "InactiveUsers",
     "label": "Alert on users that have not logged in for X days",
     "recommendedRunInterval": "1d",
+    "minimumRunInterval": "1d",
     "requiresInput": true,
     "multipleInput": true,
     "inputs": [
@@ -128,6 +135,7 @@
     "name": "InactiveSharePointSites",
     "label": "Alert on SharePoint sites that have not been active for X days",
     "recommendedRunInterval": "7d",
+    "minimumRunInterval": "1d",
     "requiresInput": true,
     "multipleInput": true,
     "inputs": [
@@ -147,6 +155,7 @@
     "name": "InactiveTeamsSites",
     "label": "Alert on Teams linked sites that have not been active for X days",
     "recommendedRunInterval": "7d",
+    "minimumRunInterval": "1d",
     "requiresInput": true,
     "multipleInput": true,
     "inputs": [
@@ -200,6 +209,7 @@
       }
     ],
     "recommendedRunInterval": "1d",
+    "minimumRunInterval": "1d",
     "description": "Alerts when a mailbox exceeds a percentage of its send/receive quota, using the Microsoft mailbox usage report. The report's storage figure already excludes the Recoverable Items dumpster and the archive, so it reflects what actually counts against the quota. Deleted mailboxes are skipped."
   },
   {
@@ -219,7 +229,8 @@
         "inputName": "ArchiveQuotaExcludedMailboxes"
       }
     ],
-    "recommendedRunInterval": "7d"
+    "recommendedRunInterval": "7d",
+    "minimumRunInterval": "1d"
   },
   {
     "name": "SharePointQuota",
@@ -237,7 +248,8 @@
     "inputType": "textField",
     "inputLabel": "Enter quota percentage (default: 90)",
     "inputName": "OneDriveQuota",
-    "recommendedRunInterval": "1d"
+    "recommendedRunInterval": "1d",
+    "minimumRunInterval": "1d"
   },
   {
     "name": "OneDriveLongPaths",
@@ -247,12 +259,14 @@
     "inputLabel": "Minimum paths over inferred 260-character limit (default: 1)",
     "inputName": "OneDriveLongPaths",
     "recommendedRunInterval": "7d",
+    "minimumRunInterval": "1d",
     "description": "Uses the OneDriveLongPaths Report DB cache (run ExecCIPPDBCache OneDriveLongPaths first). Signals users who may hit OneDrive sync or Office path errors. Alert and cache store owner UPN and counts only — never file or folder names."
   },
   {
     "name": "UnlicensedOneDriveData",
     "label": "Alert on leftover unlicensed OneDrive data nearing deletion",
     "recommendedRunInterval": "7d",
+    "minimumRunInterval": "1d",
     "requiresInput": true,
     "multipleInput": true,
     "inputs": [
@@ -293,6 +307,7 @@
     "name": "ExpiringLicenses",
     "label": "Alert on licenses expiring in X days",
     "recommendedRunInterval": "7d",
+    "minimumRunInterval": "1d",
     "requiresInput": true,
     "multipleInput": true,
     "inputs": [
@@ -388,6 +403,8 @@
   {
     "name": "Vulnerabilities",
     "label": "Alert on software vulnerabilities",
+    "recommendedRunInterval": "1d",
+    "minimumRunInterval": "6h",
     "requiresInput": true,
     "multipleInput": true,
     "inputs": [
@@ -456,7 +473,6 @@
         ]
       }
     ],
-    "recommendedRunInterval": "4h",
     "description": "Monitors for software vulnerabilities based on age, CVSS severity, and exploitability level. By default alerts on items older than the threshold; enable 'newer than' mode to only receive alerts for recent vulnerabilities and prevent duplicates. Filter by minimum CVSS score (low=0+, medium=4+, high=7+, critical=9+) and select which exploitability levels to include. Requires Defender for Endpoint/Business."
   },
   {
@@ -473,6 +489,7 @@
     "name": "EntraLicenseUtilization",
     "label": "Alert on Entra ID P1/P2 license over-utilization",
     "recommendedRunInterval": "7d",
+    "minimumRunInterval": "1d",
     "requiresInput": true,
     "inputType": "textField",
     "inputLabel": "Alert when utilization exceeds % (default: 110)",
@@ -482,22 +499,26 @@
     "name": "AppSecretExpiry",
     "label": "Alert on expiring application secrets",
     "recommendedRunInterval": "1d",
+    "minimumRunInterval": "1d",
     "description": "Reports app registration client secrets expiring within the next 30 days, and keeps reporting them for 7 days after they expire. Secrets that expired more than 7 days ago are not reported."
   },
   {
     "name": "AppleTerms",
     "label": "Alert on new Apple Business Manager terms",
-    "recommendedRunInterval": "30d"
+    "recommendedRunInterval": "30d",
+    "minimumRunInterval": "1d"
   },
   {
     "name": "AppCertificateExpiry",
     "label": "Alert on expiring application certificates",
-    "recommendedRunInterval": "1d"
+    "recommendedRunInterval": "1d",
+    "minimumRunInterval": "1d"
   },
   {
     "name": "LongLivedAppCredentials",
     "label": "Alert on long-lived app registration secrets or certificates",
     "recommendedRunInterval": "1d",
+    "minimumRunInterval": "1d",
     "requiresInput": true,
     "inputType": "number",
     "inputLabel": "Maximum allowed credential lifetime in months (1-24)",
@@ -567,6 +588,7 @@
     "name": "ApnCertExpiry",
     "label": "Alert on expiring APN certificates",
     "recommendedRunInterval": "1d",
+    "minimumRunInterval": "1d",
     "requiresInput": true,
     "inputType": "number",
     "inputLabel": "Days until expiry to alert (default: 30)",
@@ -576,6 +598,7 @@
     "name": "VppTokenExpiry",
     "label": "Alert on expiring VPP tokens",
     "recommendedRunInterval": "1d",
+    "minimumRunInterval": "1d",
     "requiresInput": true,
     "inputType": "number",
     "inputLabel": "Days until expiry to alert (default: 30)",
@@ -585,6 +608,7 @@
     "name": "DepTokenExpiry",
     "label": "Alert on expiring DEP tokens",
     "recommendedRunInterval": "1d",
+    "minimumRunInterval": "1d",
     "requiresInput": true,
     "inputType": "number",
     "inputLabel": "Days until expiry to alert (default: 30)",
@@ -599,7 +623,8 @@
   {
     "name": "SoftDeletedMailboxes",
     "label": "Alert on soft deleted mailboxes",
-    "recommendedRunInterval": "1d"
+    "recommendedRunInterval": "1d",
+    "minimumRunInterval": "1d"
   },
   {
     "name": "DeviceCompliance",
@@ -625,6 +650,7 @@
     "name": "IntunePolicyConflicts",
     "label": "Alert on Intune policy or app conflicts/errors",
     "recommendedRunInterval": "1d",
+    "minimumRunInterval": "1d",
     "requiresInput": true,
     "multipleInput": true,
     "inputs": [
@@ -659,17 +685,20 @@
   {
     "name": "BreachAlert",
     "label": "Alert on (new) potentially breached passwords. Generates an alert if a password is found to be breached.",
-    "recommendedRunInterval": "7d"
+    "recommendedRunInterval": "7d",
+    "minimumRunInterval": "1d"
   },
   {
     "name": "LicensedUsersWithRoles",
     "label": "Alert on licensed users with any administrator roles",
-    "recommendedRunInterval": "7d"
+    "recommendedRunInterval": "7d",
+    "minimumRunInterval": "1d"
   },
   {
     "name": "RoleEscalableGroups",
     "label": "Alert on groups or nested groups assigned to a role that could be used for privilege escalation",
     "recommendedRunInterval": "1d",
+    "minimumRunInterval": "1d",
     "description": "Scans for groups, including nested groups, that are assigned to directory roles and are not role assignable, which allows group owners or group admins to add more users to the group and gain access to a potentially privileged role."
   },
   {
@@ -700,12 +729,14 @@
     "inputLabel": "Alert when score is below % (default: 70)",
     "inputName": "InputValue",
     "recommendedRunInterval": "7d",
+    "minimumRunInterval": "1d",
     "description": "Monitors domain security scores from the DomainAnalyser and alerts when scores fall below the specified threshold."
   },
   {
     "name": "MXRecordChanged",
     "label": "Alert on MX record changes",
     "recommendedRunInterval": "1d",
+    "minimumRunInterval": "1d",
     "description": "Monitors MX records for all domains and alerts when changes are detected. This helps identify potential mail routing changes that could indicate security issues or unauthorized modifications."
   },
   {
@@ -762,6 +793,7 @@
     "inputLabel": "Alert when alignment is below % (default: 99)",
     "inputName": "InputValue",
     "recommendedRunInterval": "1d",
+    "minimumRunInterval": "6h",
     "description": "Monitors tenant alignment scores against standards templates and alerts when the alignment percentage falls below the specified threshold. This helps ensure compliance across all managed tenants."
   },
   {
@@ -785,6 +817,7 @@
     "name": "StaleEntraDevices",
     "label": "Alert on stale Entra devices that have not been active for X days",
     "recommendedRunInterval": "1d",
+    "minimumRunInterval": "1d",
     "requiresInput": true,
     "multipleInput": true,
     "inputs": [
@@ -804,6 +837,7 @@
     "name": "SecureScore",
     "label": "Alert on a low Secure Score",
     "recommendedRunInterval": "1d",
+    "minimumRunInterval": "1d",
     "requiresInput": true,
     "multipleInput": true,
     "inputs": [
@@ -869,6 +903,7 @@
     "name": "NewShadowAITool",
     "label": "Alert on new Shadow AI tools detected",
     "recommendedRunInterval": "1d",
+    "minimumRunInterval": "1d",
     "requiresInput": true,
     "inputType": "switch",
     "inputLabel": "Ignore sanctioned tools?",

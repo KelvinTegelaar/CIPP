@@ -17,6 +17,12 @@ const Page = () => {
       condition: (row) => row?.EventType === 'Scheduled Task',
     },
     {
+      label: 'View Run History',
+      link: '/tenant/administration/alert-configuration/run-history?taskId=[RowKey]',
+      icon: <CippIcons.ManageHistory />,
+      condition: (row) => row?.EventType === 'Scheduled Task',
+    },
+    {
       label: 'Edit Alert',
       link: '/tenant/administration/alert-configuration/alert?id=[RowKey]',
       pinned: true,

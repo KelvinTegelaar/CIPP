@@ -32,6 +32,14 @@ import { CippHead } from '../../../../components/CippComponents/CippHead'
 import { useSettings } from '../../../../hooks/use-settings'
 import { pushEnrolmentHint, usePushDevices } from '../../../../hooks/use-push-subscription'
 
+// Recurrences are 30m, 4h, 1d and so on; a bare number is a day count, as the scheduler reads it.
+const recurrenceSeconds = (value) => {
+  const match = /^(\d+)([mhd])?$/.exec(value ?? '')
+  return match
+    ? Number(match[1]) * { m: 60, h: 3600, d: 86400 }[match[2] ?? 'd']
+    : 0
+}
+
 const AlertWizard = () => {
   const apiRequest = ApiPostCall({
     relatedQueryKeys: ['ListAlertsQueue', 'ListCurrentAlerts'],
@@ -144,6 +152,7 @@ const AlertWizard = () => {
     { value: '30m', label: 'Every 30 minutes' },
     { value: '1h', label: 'Every hour' },
     { value: '4h', label: 'Every 4 hours' },
+    { value: '6h', label: 'Every 6 hours' },
     { value: '1d', label: 'Every 1 day' },
     { value: '7d', label: 'Every 7 days' },
     { value: '14d', label: 'Every 14 days' },
@@ -560,6 +569,26 @@ const AlertWizard = () => {
       }
     }
   }, [commandValue, editAlert])
+
+  // An alert with a minimumRunInterval only offers recurrences at or above it, and an existing alert saved
+  // with a shorter one is raised to the minimum (the scheduler skips its extra runs until it is saved).
+  const minimumInterval = commandValue?.value?.minimumRunInterval
+  const allowedRecurrenceOptions = minimumInterval
+    ? recurrenceOptions.filter(
+        (opt) =>
+          recurrenceSeconds(opt.value) >= recurrenceSeconds(minimumInterval)
+      )
+    : recurrenceOptions
+  useEffect(() => {
+    const current = formControl.getValues('recurrence')?.value
+    if (!minimumInterval || !current) return
+    if (recurrenceSeconds(current) < recurrenceSeconds(minimumInterval)) {
+      formControl.setValue(
+        'recurrence',
+        recurrenceOptions.find((opt) => opt.value === minimumInterval)
+      )
+    }
+  }, [commandValue, minimumInterval])
 
   // Seed catalog defaults for the chosen alert's inputs. Only for a new alert: an existing one
   // is reset from its stored parameters, which must win over the catalog.
@@ -1265,7 +1294,7 @@ const AlertWizard = () => {
                                 }}
                                 formControl={formControl}
                                 label="When should the alert run"
-                                options={recurrenceOptions} // Use the state-managed recurrenceOptions here
+                                options={allowedRecurrenceOptions}
                               />
                             </Grid>
                             <Grid size={12}>
