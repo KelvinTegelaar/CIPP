@@ -13,6 +13,10 @@ import { CippApiResults } from "../../../../components/CippComponents/CippApiRes
 import CippGeoLocation from "../../../../components/CippComponents/CippGeoLocation";
 import { useState } from "react";
 
+// Stored states stay Trusted/Blocked; they read as the BEC verdicts they mean.
+const STATE_LABEL = { Trusted: "Safe", Blocked: "Compromised" };
+const withVerdict = (row) => ({ ...row, Verdict: STATE_LABEL[row.state] || row.state });
+
 const Page = () => {
   const currentTenant = useSettings().currentTenant;
   const formControl = useForm({ mode: "onBlur" });
@@ -31,7 +35,7 @@ const Page = () => {
       hideBulk: true,
     },
     {
-      label: "Trust",
+      label: "Mark Safe",
       url: "/api/ExecAddTrustedIP",
       type: "POST",
       data: {
@@ -40,12 +44,12 @@ const Page = () => {
         State: "!Trusted",
       },
       icon: <CippIcons.Add />,
-      confirmText: "Mark [Range] as trusted?",
+      confirmText: "Mark [Range] as safe?",
       multiPost: false,
       condition: (row) => row.state !== "Trusted",
     },
     {
-      label: "Block",
+      label: "Mark Compromised",
       url: "/api/ExecAddTrustedIP",
       type: "POST",
       data: {
@@ -54,7 +58,7 @@ const Page = () => {
         State: "!Blocked",
       },
       icon: <CippIcons.Block />,
-      confirmText: "Mark [Range] as blocked (a known attacker address)?",
+      confirmText: "Mark [Range] as compromised (a known attacker address)?",
       multiPost: false,
       condition: (row) => row.state !== "Blocked",
     },
@@ -68,7 +72,7 @@ const Page = () => {
         State: "!NotTrusted",
       },
       icon: <CippIcons.Delete />,
-      confirmText: "Make [Range] neutral again (neither trusted nor blocked)?",
+      confirmText: "Make [Range] neutral again (neither safe nor compromised)?",
       multiPost: false,
     },
   ];
@@ -150,10 +154,10 @@ const Page = () => {
                   <Grid size={12}>
                     <Stack direction="row" spacing={1}>
                       <Button variant="contained" color="primary" onClick={handleAddToWhitelist}>
-                        Trust
+                        Mark Safe
                       </Button>
                       <Button variant="contained" color="error" onClick={handleBlock}>
-                        Block
+                        Mark Compromised
                       </Button>
                       <Button variant="outlined" onClick={handleRemoveFromWhitelist}>
                         Remove from list
@@ -169,7 +173,8 @@ const Page = () => {
               title={"IP Allow/Block List"}
               api={{ url: "/api/ListIPWhitelist" }}
               queryKey={"ListIPWhitelist"}
-              simpleColumns={["PartitionKey", "state", "Range", "Note"]}
+              simpleColumns={["PartitionKey", "Verdict", "Range", "Note"]}
+              dataMap={withVerdict}
               actions={actions}
             />
             <CippApiResults apiObject={addGeoIP} />

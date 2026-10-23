@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { memo, useEffect, useMemo, useState } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 import { useQueryClient } from '@tanstack/react-query'
 import {
@@ -9,7 +9,9 @@ import {
   CardContent,
   Chip,
   Grid,
+  Pagination,
   Stack,
+  TextField,
   Typography,
 } from '@mui/material'
 import { CippIcons } from '../../utils/icon-registry'
@@ -42,10 +44,13 @@ const OVERRIDE_OPTIONS = ['Auto', 'Safe', 'Suspicious', 'Compromised'].map(
   option
 )
 const valueOf = (field) => field?.value ?? field
+const PAGE_SIZE = 25
+const SEARCH_FIELDS = ['IP', 'ASN', 'ASName', 'Org', 'Country', 'City']
+const isTrue = (value) => value === true || value === 'True'
 
 // One address: who it is judged to be, and each reason behind the score with its signed weight -
 // red pushes towards the attacker, green towards the user.
-const VerdictCard = ({ verdict, index, formControl, disabledNote }) => (
+const VerdictCard = memo(({ verdict, index, formControl, disabledNote }) => (
   <Card variant="outlined">
     <CardContent sx={{ py: 1.5, '&:last-child': { pb: 1.5 } }}>
       <Grid container spacing={2}>
@@ -74,8 +79,26 @@ const VerdictCard = ({ verdict, index, formControl, disabledNote }) => (
             <Typography variant="body2" color="text.secondary">
               {[verdict.City, verdict.Country].filter(Boolean).join(', ')}
               {verdict.ASName ? ` · ${verdict.ASName}` : ''}
+              {verdict.ASN ? ` (AS${verdict.ASN})` : ''}
+              {verdict.Org && verdict.Org !== verdict.ASName
+                ? ` · ${verdict.Org}`
+                : ''}
             </Typography>
+            {isTrue(verdict.Hosting) && (
+              <Chip size="small" variant="outlined" label="Hosting" />
+            )}
+            {isTrue(verdict.Proxy) && (
+              <Chip size="small" variant="outlined" label="Proxy / VPN" />
+            )}
           </Stack>
+          <Typography variant="caption" color="text.secondary" component="p">
+            {verdict.SuccessfulSignIns ?? 0} successful,{' '}
+            {verdict.FailedSignIns ?? 0} failed sign-in(s),{' '}
+            {verdict.Activities ?? 0} activit(ies)
+            {verdict.FirstSeen
+              ? ` · ${new Date(verdict.FirstSeen).toLocaleString()} to ${new Date(verdict.LastSeen).toLocaleString()}`
+              : ''}
+          </Typography>
           {verdict.Source && verdict.Source !== 'Heuristics' && (
             <Typography variant="body2" sx={{ mb: 0.5 }}>
               Decided by {verdict.Source}
@@ -129,7 +152,8 @@ const VerdictCard = ({ verdict, index, formControl, disabledNote }) => (
       </Grid>
     </CardContent>
   </Card>
-)
+))
+VerdictCard.displayName = 'VerdictCard'
 
 /**
  * Review the IP verdicts of a BEC case: override any address as Safe, Suspicious or Compromised and
@@ -153,6 +177,38 @@ export const CippBecIPReviewDrawer = ({
   const watched = useWatch({ control: formControl.control })
   const { checkPermissions } = usePermissions()
   const canSaveToList = checkPermissions(['CIPP.AppSettings.ReadWrite'])
+  const [search, setSearch] = useState('')
+  const [verdictFilter, setVerdictFilter] = useState([])
+  const [page, setPage] = useState(1)
+
+  // Rows keep their index in the case's list, which is what the form fields are keyed by.
+  const shown = useMemo(() => {
+    const term = search.trim().toLowerCase()
+    return verdicts
+      .map((verdict, index) => ({ verdict, index }))
+      .filter(
+        ({ verdict }) =>
+          (verdictFilter.length === 0 ||
+            verdictFilter.includes(verdict.Verdict)) &&
+          (!term ||
+            SEARCH_FIELDS.some((field) =>
+              String(verdict[field] ?? '')
+                .toLowerCase()
+                .includes(term)
+            ))
+      )
+  }, [verdicts, search, verdictFilter])
+  const pageCount = Math.max(1, Math.ceil(shown.length / PAGE_SIZE))
+  const currentPage = Math.min(page, pageCount)
+  const verdictsPresent = useMemo(
+    () => [...new Set(verdicts.map((v) => v.Verdict))],
+    [verdicts]
+  )
+  const filtering = search.trim() !== '' || verdictFilter.length > 0
+  const setShown = (value) =>
+    shown.forEach(({ index }) =>
+      formControl.setValue(`Choices.${index}.Verdict`, option(value))
+    )
 
   // Every open starts from the case's current overrides.
   useEffect(() => {
@@ -328,15 +384,90 @@ export const CippBecIPReviewDrawer = ({
               collect them.
             </Typography>
           )}
-          {verdicts.map((v, index) => (
-            <VerdictCard
-              key={v.IP}
-              verdict={v}
-              index={index}
-              formControl={formControl}
-              disabledNote={valueOf(choices[index]?.Verdict) === 'Auto'}
+          {verdicts.length > 0 && (
+            <Stack spacing={1}>
+              <TextField
+                size="small"
+                label="Search address, network, organisation or location"
+                value={search}
+                onChange={(event) => {
+                  setSearch(event.target.value)
+                  setPage(1)
+                }}
+              />
+              <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+                {verdictsPresent.map((value) => {
+                  const active = verdictFilter.includes(value)
+                  return (
+                    <Chip
+                      key={value}
+                      size="small"
+                      clickable
+                      color={BEC_VERDICT_COLOR[value] || 'default'}
+                      variant={active ? 'filled' : 'outlined'}
+                      label={`${BEC_VERDICT_LABEL[value] || value} (${verdicts.filter((v) => v.Verdict === value).length})`}
+                      onClick={() => {
+                        setVerdictFilter(
+                          active
+                            ? verdictFilter.filter((v) => v !== value)
+                            : [...verdictFilter, value]
+                        )
+                        setPage(1)
+                      }}
+                    />
+                  )
+                })}
+              </Stack>
+              {filtering && (
+                <Stack
+                  direction="row"
+                  spacing={1}
+                  alignItems="center"
+                  flexWrap="wrap"
+                  useFlexGap
+                >
+                  <Typography variant="body2" color="text.secondary">
+                    Set all {shown.length} shown to
+                  </Typography>
+                  {OVERRIDE_OPTIONS.map(({ value }) => (
+                    <Button
+                      key={value}
+                      size="small"
+                      variant="outlined"
+                      disabled={shown.length === 0}
+                      onClick={() => setShown(value)}
+                    >
+                      {value}
+                    </Button>
+                  ))}
+                </Stack>
+              )}
+            </Stack>
+          )}
+          {filtering && shown.length === 0 && (
+            <Typography variant="body2" color="text.secondary">
+              No address matches the search.
+            </Typography>
+          )}
+          {shown
+            .slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE)
+            .map(({ verdict, index }) => (
+              <VerdictCard
+                key={verdict.IP}
+                verdict={verdict}
+                index={index}
+                formControl={formControl}
+                disabledNote={valueOf(choices[index]?.Verdict) === 'Auto'}
+              />
+            ))}
+          {pageCount > 1 && (
+            <Pagination
+              count={pageCount}
+              page={currentPage}
+              onChange={(_, value) => setPage(value)}
+              sx={{ alignSelf: 'center' }}
             />
-          ))}
+          )}
         </Stack>
       </CippOffCanvas>
     </>
