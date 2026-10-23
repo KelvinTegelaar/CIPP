@@ -469,6 +469,7 @@ export const CippQuarantineTable = ({ entityType = 'Email' }) => {
           {getMessageContents.isSuccess ? (
             <CippMessageViewer
               emailSource={getMessageContents?.data?.Message}
+              emlBase64={getMessageContents?.data?.EmlBase64}
             />
           ) : (
             <Skeleton variant="rectangular" height={400} />
