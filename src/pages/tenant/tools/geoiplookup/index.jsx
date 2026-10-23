@@ -32,9 +32,10 @@ const Page = () => {
     },
     {
       label: "Trust",
-      url: `/api/ExecAddTrustedIP${`?tenantFilter=${currentTenant}`}`,
+      url: "/api/ExecAddTrustedIP",
       type: "POST",
       data: {
+        tenantFilter: "PartitionKey",
         IP: "Range",
         State: "!Trusted",
       },
@@ -45,9 +46,10 @@ const Page = () => {
     },
     {
       label: "Block",
-      url: `/api/ExecAddTrustedIP${`?tenantFilter=${currentTenant}`}`,
+      url: "/api/ExecAddTrustedIP",
       type: "POST",
       data: {
+        tenantFilter: "PartitionKey",
         IP: "Range",
         State: "!Blocked",
       },
@@ -58,16 +60,16 @@ const Page = () => {
     },
     {
       label: "Remove from list",
-      url: `/api/ExecAddTrustedIP${`?tenantFilter=${currentTenant}`}`,
+      url: "/api/ExecAddTrustedIP",
       type: "POST",
       data: {
+        tenantFilter: "PartitionKey",
         IP: "Range",
         State: "!NotTrusted",
       },
       icon: <CippIcons.Delete />,
       confirmText: "Make [Range] neutral again (neither trusted nor blocked)?",
       multiPost: false,
-      condition: (row) => row.state !== "NotTrusted",
     },
   ];
 
