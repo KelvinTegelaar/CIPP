@@ -8,7 +8,6 @@ import {
   Card,
   CardContent,
   Chip,
-  Grid,
   Pagination,
   Stack,
   TextField,
@@ -50,86 +49,72 @@ const isTrue = (value) => value === true || value === 'True'
 
 // One address: who it is judged to be, and each reason behind the score with its signed weight -
 // red pushes towards the attacker, green towards the user.
-const VerdictCard = memo(({ verdict, index, formControl, disabledNote }) => (
-  <Card variant="outlined">
-    <CardContent sx={{ py: 1.5, '&:last-child': { pb: 1.5 } }}>
-      <Grid container spacing={2}>
-        <Grid size={{ xs: 12, md: 7 }}>
-          <Stack
-            direction="row"
-            spacing={1}
-            alignItems="center"
-            flexWrap="wrap"
-            useFlexGap
-            sx={{ mb: 1 }}
-          >
-            <Typography variant="subtitle1" sx={{ fontFamily: 'monospace' }}>
-              {verdict.IP}
+const VerdictCard = memo(({ verdict, index, formControl, showNote }) => {
+  const where = [
+    [verdict.City, verdict.Country].filter(Boolean).join(', '),
+    verdict.ASN ? `AS${verdict.ASN}` : null,
+    verdict.ASName,
+    verdict.Org !== verdict.ASName ? verdict.Org : null,
+  ]
+    .filter(Boolean)
+    .join(' · ')
+  return (
+    <Card variant="outlined">
+      <CardContent sx={{ py: 1.5, '&:last-child': { pb: 1.5 } }}>
+        <Stack
+          direction={{ xs: 'column', sm: 'row' }}
+          spacing={1}
+          alignItems={{ xs: 'stretch', sm: 'flex-start' }}
+        >
+          <Box sx={{ flex: 1, minWidth: 0 }}>
+            <Stack
+              direction="row"
+              spacing={1}
+              alignItems="center"
+              flexWrap="wrap"
+              useFlexGap
+            >
+              <Typography
+                variant="subtitle1"
+                sx={{ fontFamily: 'monospace', wordBreak: 'break-all' }}
+              >
+                {verdict.IP}
+              </Typography>
+              <Chip
+                size="small"
+                color={BEC_VERDICT_COLOR[verdict.Verdict] || 'default'}
+                label={BEC_VERDICT_LABEL[verdict.Verdict] || verdict.Verdict}
+              />
+              <Chip
+                size="small"
+                variant="outlined"
+                label={`Score ${verdict.Score}`}
+              />
+              {isTrue(verdict.Hosting) && (
+                <Chip size="small" variant="outlined" label="Hosting" />
+              )}
+              {isTrue(verdict.Proxy) && (
+                <Chip size="small" variant="outlined" label="Proxy / VPN" />
+              )}
+            </Stack>
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              noWrap
+              title={where}
+            >
+              {where}
             </Typography>
-            <Chip
-              size="small"
-              color={BEC_VERDICT_COLOR[verdict.Verdict] || 'default'}
-              label={BEC_VERDICT_LABEL[verdict.Verdict] || verdict.Verdict}
-            />
-            <Chip
-              size="small"
-              variant="outlined"
-              label={`Score ${verdict.Score}`}
-            />
-            <Typography variant="body2" color="text.secondary">
-              {[verdict.City, verdict.Country].filter(Boolean).join(', ')}
-              {verdict.ASName ? ` · ${verdict.ASName}` : ''}
-              {verdict.ASN ? ` (AS${verdict.ASN})` : ''}
-              {verdict.Org && verdict.Org !== verdict.ASName
-                ? ` · ${verdict.Org}`
+            <Typography variant="caption" color="text.secondary" component="p">
+              {verdict.SuccessfulSignIns ?? 0} successful,{' '}
+              {verdict.FailedSignIns ?? 0} failed sign-in(s),{' '}
+              {verdict.Activities ?? 0} activit(ies)
+              {verdict.FirstSeen
+                ? ` · ${new Date(verdict.FirstSeen).toLocaleString()} to ${new Date(verdict.LastSeen).toLocaleString()}`
                 : ''}
             </Typography>
-            {isTrue(verdict.Hosting) && (
-              <Chip size="small" variant="outlined" label="Hosting" />
-            )}
-            {isTrue(verdict.Proxy) && (
-              <Chip size="small" variant="outlined" label="Proxy / VPN" />
-            )}
-          </Stack>
-          <Typography variant="caption" color="text.secondary" component="p">
-            {verdict.SuccessfulSignIns ?? 0} successful,{' '}
-            {verdict.FailedSignIns ?? 0} failed sign-in(s),{' '}
-            {verdict.Activities ?? 0} activit(ies)
-            {verdict.FirstSeen
-              ? ` · ${new Date(verdict.FirstSeen).toLocaleString()} to ${new Date(verdict.LastSeen).toLocaleString()}`
-              : ''}
-          </Typography>
-          {verdict.Source && verdict.Source !== 'Heuristics' && (
-            <Typography variant="body2" sx={{ mb: 0.5 }}>
-              Decided by {verdict.Source}
-            </Typography>
-          )}
-          <Stack spacing={0.5}>
-            {(Array.isArray(verdict.Reasons) ? verdict.Reasons : []).map(
-              (reason) => (
-                <Stack
-                  key={`${reason.Code}-${reason.Text}`}
-                  direction="row"
-                  spacing={1}
-                  alignItems="flex-start"
-                >
-                  <Chip
-                    size="small"
-                    variant="outlined"
-                    color={reason.Weight > 0 ? 'error' : 'success'}
-                    label={
-                      reason.Weight > 0 ? `+${reason.Weight}` : reason.Weight
-                    }
-                    sx={{ minWidth: 44, height: 20 }}
-                  />
-                  <Typography variant="body2">{reason.Text}</Typography>
-                </Stack>
-              )
-            )}
-          </Stack>
-        </Grid>
-        <Grid size={{ xs: 12, md: 5 }}>
-          <Stack spacing={1}>
+          </Box>
+          <Box sx={{ width: { xs: '100%', sm: 200 }, flexShrink: 0 }}>
             <CippFormComponent
               type="autoComplete"
               name={`Choices.${index}.Verdict`}
@@ -140,19 +125,50 @@ const VerdictCard = memo(({ verdict, index, formControl, disabledNote }) => (
               creatable={false}
               disableClearable
             />
+          </Box>
+        </Stack>
+        {verdict.Source && verdict.Source !== 'Heuristics' && (
+          <Typography variant="body2" sx={{ mt: 0.5 }}>
+            Decided by {verdict.Source}
+          </Typography>
+        )}
+        <Stack spacing={0.5} sx={{ mt: 1 }}>
+          {(Array.isArray(verdict.Reasons) ? verdict.Reasons : []).map(
+            (reason) => (
+              <Stack
+                key={`${reason.Code}-${reason.Text}`}
+                direction="row"
+                spacing={1}
+                alignItems="flex-start"
+              >
+                <Chip
+                  size="small"
+                  variant="outlined"
+                  color={reason.Weight > 0 ? 'error' : 'success'}
+                  label={
+                    reason.Weight > 0 ? `+${reason.Weight}` : reason.Weight
+                  }
+                  sx={{ minWidth: 44, height: 20 }}
+                />
+                <Typography variant="body2">{reason.Text}</Typography>
+              </Stack>
+            )
+          )}
+        </Stack>
+        {showNote && (
+          <Box sx={{ mt: 1 }}>
             <CippFormComponent
               type="textField"
               name={`Choices.${index}.Note`}
               label="Note"
               formControl={formControl}
-              disabled={disabledNote}
             />
-          </Stack>
-        </Grid>
-      </Grid>
-    </CardContent>
-  </Card>
-))
+          </Box>
+        )}
+      </CardContent>
+    </Card>
+  )
+})
 VerdictCard.displayName = 'VerdictCard'
 
 /**
@@ -457,7 +473,7 @@ export const CippBecIPReviewDrawer = ({
                 verdict={verdict}
                 index={index}
                 formControl={formControl}
-                disabledNote={valueOf(choices[index]?.Verdict) === 'Auto'}
+                showNote={valueOf(choices[index]?.Verdict) !== 'Auto'}
               />
             ))}
           {pageCount > 1 && (
