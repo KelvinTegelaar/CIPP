@@ -46,6 +46,14 @@ const formatBytes = (b) => {
   return `${b} B`;
 };
 
+// Share of requests sent as br / gzip / uncompressed; "-" for rows recorded before Craft tracked it.
+const formatEncoding = (e) => {
+  if (e.BrRequests == null || !e.Requests) return "-";
+  const pct = (n) => Math.round((n / e.Requests) * 100);
+  const none = e.Requests - e.BrRequests - e.GzipRequests;
+  return `br ${pct(e.BrRequests)}% · gzip ${pct(e.GzipRequests)}% · none ${pct(none)}%`;
+};
+
 const formatBucketTime = (iso, hours) => {
   const d = new Date(iso);
   if (Number.isNaN(d.getTime())) return "";
@@ -127,6 +135,7 @@ export const CippApiEgressCard = () => {
         AvgSize: formatBytes(e.AvgBytes),
         MaxSize: formatBytes(e.MaxBytes),
         CacheHitPct: e.Requests > 0 ? Math.round((e.CacheHits / e.Requests) * 100) : 0,
+        Encoding: formatEncoding(e),
         Errors: e.Errors,
         Shed: e.Shed,
       })),
@@ -138,6 +147,7 @@ export const CippApiEgressCard = () => {
         IP: e.Ip,
         Egress: formatBytes(e.Bytes),
         Requests: e.Requests,
+        Encoding: formatEncoding(e),
         Errors: e.Errors,
         Shed: e.Shed,
       })),
@@ -310,6 +320,7 @@ export const CippApiEgressCard = () => {
                 "AvgSize",
                 "MaxSize",
                 "CacheHitPct",
+                "Encoding",
                 "Errors",
                 "Shed",
               ]}
@@ -324,7 +335,7 @@ export const CippApiEgressCard = () => {
               data={ipRows}
               isFetching={query.isFetching}
               queryKey="ApiEgressIpsTable"
-              simpleColumns={["IP", "Egress", "Requests", "Errors", "Shed"]}
+              simpleColumns={["IP", "Egress", "Requests", "Encoding", "Errors", "Shed"]}
             />
           </Grid>
         </Grid>
