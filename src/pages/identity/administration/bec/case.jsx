@@ -311,6 +311,7 @@ const Page = () => {
             startPending={startRunCall.isPending}
             onJumpToGroup={jumpToGroup}
             caseSelector={caseSelector}
+            relatedQueryKeys={[`ListBECReports-${tenant}-${userId}`]}
           />
         ) : (
           <CippBecRunStatusCard
