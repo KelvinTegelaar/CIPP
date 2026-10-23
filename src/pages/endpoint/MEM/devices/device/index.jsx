@@ -45,6 +45,17 @@ const Page = () => {
     waiting: waiting,
   })
 
+  // Intune's own device-page reports: unlike the per-device state collections they also cover
+  // settings catalog, administrative template and endpoint security policies.
+  const reportTenant = router.query.tenantFilter ?? userSettingsDefaults.currentTenant
+  // Both reports in one round trip; a report that failed comes back null with its reason in errors
+  const policyReport = ApiGetCall({
+    url: '/api/ListDevicePolicyStatus',
+    data: { tenantFilter: reportTenant, deviceId, report: 'all' },
+    queryKey: `DevicePolicyStatus-${deviceId}`,
+    waiting: waiting,
+  })
+
   const deviceBulkRequest = ApiPostCall({
     urlFromData: true,
   })
@@ -217,41 +228,78 @@ const Page = () => {
 
   const tenantFilter = router.query.tenantFilter ?? userSettingsDefaults.currentTenant
 
+  const reportRows = (key) =>
+    Array.isArray(policyReport.data?.Results?.[key]) ? policyReport.data.Results[key] : []
+  const reportFailed = (key) =>
+    policyReport.isError || Boolean(policyReport.data?.Results?.errors?.[key])
+  const reportError = (key, fallback) => policyReport.data?.Results?.errors?.[key] ?? fallback
+  // Setting-level drill-down only exists for policies the per-device state collections know about
+  const complianceStateIds = new Set(deviceCompliance.map((policy) => policy.id))
+  const configurationStateIds = new Set(deviceConfiguration.map((policy) => policy.id))
+
+  const countOf = (count, singular, plural) => `${count} ${count === 1 ? singular : plural}`
+  // Report times are UTC without a zone suffix
+  const asUtc = (value) => (value && !value.endsWith('Z') ? `${value}Z` : value)
+  const settingDetails = (row, stateIds, statesCollection) =>
+    stateIds.has(row.policyId) ? (
+      <CippDevicePolicySettingStates
+        deviceId={deviceId}
+        policyStateId={row.policyId}
+        tenantFilter={tenantFilter}
+        statesCollection={statesCollection}
+      />
+    ) : (
+      <Typography variant="body2" sx={{ color: 'text.secondary', p: 2 }}>
+        Setting-level results are not available for this policy type.
+      </Typography>
+    )
+
   // Prepare compliance policy items
+  // PolicyStatus 2 = compliant
+  const complianceRows = reportRows('compliance').map((policy) => ({
+    policyName: policy.PolicyName,
+    status: policy.PolicyStatus_loc || 'Unknown',
+    compliant: policy.PolicyStatus === 2,
+    userPrincipalName: policy.UPN,
+    lastContactDateTime: asUtc(policy.LastContact),
+    policyVersion: policy.PolicyVersion,
+    policyId: policy.PolicyId,
+  }))
+  const nonCompliantCount = complianceRows.filter((row) => !row.compliant).length
   let compliancePolicyItems = []
-  if (deviceCompliance.length > 0) {
-    compliancePolicyItems = deviceCompliance.map((policy, index) => ({
-      id: policy.id || `compliance-${index}`,
-      cardLabelBox: {
-        cardLabelBoxHeader: policy.complianceState === 'compliant' ? <CippIcons.CheckCircle /> : <CippIcons.Warning />,
-      },
-      text: policy.displayName || 'Unknown Policy',
-      subtext: `State: ${policy.complianceState || 'Unknown'}`,
-      statusColor: policy.complianceState === 'compliant' ? 'success.main' : 'warning.main',
-      statusText: policy.complianceState || 'Unknown',
-      propertyItems: [
-        {
-          label: 'Setting Count',
-          value: policy.settingCount || 'N/A',
-        },
-      ],
-      children: policy.id ? (
-        <CippDevicePolicySettingStates
-          deviceId={deviceId}
-          policyStateId={policy.id}
-          tenantFilter={tenantFilter}
-          statesCollection="deviceCompliancePolicyStates"
-        />
-      ) : null,
-    }))
-  } else if (isBulkRequestFailed(deviceComplianceData) || deviceBulkRequest.isError) {
+  if (complianceRows.length > 0) {
     compliancePolicyItems = [
       {
-        id: 1,
+        id: 'compliance',
+        cardLabelBox: {
+          cardLabelBoxHeader:
+            nonCompliantCount > 0 ? <CippIcons.Warning /> : <CippIcons.CheckCircle />,
+        },
+        text: 'Compliance Policies',
+        subtext: `${countOf(complianceRows.length, 'policy', 'policies')}, ${nonCompliantCount} not compliant`,
+        statusText: nonCompliantCount > 0 ? 'Not compliant' : 'Compliant',
+        statusColor: nonCompliantCount > 0 ? 'warning.main' : 'success.main',
+        table: {
+          title: 'Compliance Policies',
+          hideTitle: true,
+          data: complianceRows,
+          simpleColumns: ['policyName', 'status', 'userPrincipalName', 'lastContactDateTime'],
+          refreshFunction: () => policyReport.refetch(),
+          offCanvas: {
+            children: (row) =>
+              settingDetails(row, complianceStateIds, 'deviceCompliancePolicyStates'),
+          },
+        },
+      },
+    ]
+  } else if (reportFailed('compliance')) {
+    compliancePolicyItems = [
+      {
+        id: 'compliance',
         cardLabelBox: '!',
         text: 'Error loading compliance policies',
-        subtext: getBulkFailureMessage(
-          deviceComplianceData,
+        subtext: reportError(
+          'compliance',
           'Unable to load compliance policies. Try refreshing the device.'
         ),
         statusColor: 'error.main',
@@ -262,7 +310,7 @@ const Page = () => {
   } else {
     compliancePolicyItems = [
       {
-        id: 1,
+        id: 'compliance',
         cardLabelBox: '-',
         text: 'No compliance policies available',
         subtext: 'This device does not have any compliance policies assigned.',
@@ -274,40 +322,61 @@ const Page = () => {
   }
 
   // Prepare configuration policy items
+  const configurationRows = reportRows('configuration').map((policy) => ({
+    policyName: policy.PolicyName,
+    status: policy.ReportStatus_loc || policy.ReportStatus || 'Unknown',
+    succeeded: policy.ReportStatus === 'Succeeded',
+    failed: ['Error', 'Conflict'].includes(policy.ReportStatus),
+    policyType: policy.UnifiedPolicyType_loc,
+    platform: policy.UnifiedPolicyPlatformType_loc,
+    lastReportedDateTime: asUtc(policy.PspdpuLastModifiedTimeUtc),
+    policyId: policy.PolicyId,
+  }))
+  const failedConfigurationCount = configurationRows.filter((row) => row.failed).length
+  const pendingConfigurationCount = configurationRows.filter(
+    (row) => !row.succeeded && !row.failed
+  ).length
   let configurationPolicyItems = []
-  if (deviceConfiguration.length > 0) {
-    configurationPolicyItems = deviceConfiguration.map((policy, index) => ({
-      id: policy.id || `configuration-${index}`,
-      cardLabelBox: {
-        cardLabelBoxHeader: policy.state === 'compliant' ? <CippIcons.CheckCircle /> : <CippIcons.Warning />,
-      },
-      text: policy.displayName || 'Unknown Policy',
-      subtext: `State: ${policy.state || 'Unknown'}`,
-      statusColor: policy.state === 'compliant' ? 'success.main' : 'warning.main',
-      statusText: policy.state || 'Unknown',
-      propertyItems: [
-        {
-          label: 'Setting Count',
-          value: policy.settingCount || 'N/A',
-        },
-      ],
-      children: policy.id ? (
-        <CippDevicePolicySettingStates
-          deviceId={deviceId}
-          policyStateId={policy.id}
-          tenantFilter={tenantFilter}
-          statesCollection="deviceConfigurationStates"
-        />
-      ) : null,
-    }))
-  } else if (isBulkRequestFailed(deviceConfigurationData) || deviceBulkRequest.isError) {
+  if (configurationRows.length > 0) {
     configurationPolicyItems = [
       {
-        id: 1,
+        id: 'configuration',
+        cardLabelBox: {
+          cardLabelBoxHeader:
+            failedConfigurationCount > 0 ? <CippIcons.Warning /> : <CippIcons.CheckCircle />,
+        },
+        text: 'Configuration Policies',
+        subtext: `${countOf(configurationRows.length, 'policy', 'policies')}, ${failedConfigurationCount} with errors or conflicts${
+          pendingConfigurationCount > 0 ? `, ${pendingConfigurationCount} other` : ''
+        }`,
+        statusText: countOf(configurationRows.length, 'Policy', 'Policies'),
+        statusColor:
+          failedConfigurationCount > 0
+            ? 'error.main'
+            : pendingConfigurationCount > 0
+              ? 'warning.main'
+              : 'success.main',
+        table: {
+          title: 'Configuration Policies',
+          hideTitle: true,
+          data: configurationRows,
+          simpleColumns: ['policyName', 'status', 'policyType', 'lastReportedDateTime'],
+          refreshFunction: () => policyReport.refetch(),
+          offCanvas: {
+            children: (row) =>
+              settingDetails(row, configurationStateIds, 'deviceConfigurationStates'),
+          },
+        },
+      },
+    ]
+  } else if (reportFailed('configuration')) {
+    configurationPolicyItems = [
+      {
+        id: 'configuration',
         cardLabelBox: '!',
         text: 'Error loading configuration policies',
-        subtext: getBulkFailureMessage(
-          deviceConfigurationData,
+        subtext: reportError(
+          'configuration',
           'Unable to load configuration policies. Try refreshing the device.'
         ),
         statusColor: 'error.main',
@@ -318,7 +387,7 @@ const Page = () => {
   } else {
     configurationPolicyItems = [
       {
-        id: 1,
+        id: 'configuration',
         cardLabelBox: '-',
         text: 'No configuration policies available',
         subtext: 'This device does not have any configuration policies assigned.',
@@ -352,10 +421,10 @@ const Page = () => {
           cardLabelBoxHeader: failedActionCount > 0 ? <CippIcons.Warning /> : <CippIcons.CheckCircle />,
         },
         text: 'Device Actions',
-        subtext: `${deviceActionRows.length} action(s) recorded${
+        subtext: `${countOf(deviceActionRows.length, 'action', 'actions')} recorded${
           pendingActionCount > 0 ? `, ${pendingActionCount} pending` : ''
         }${failedActionCount > 0 ? `, ${failedActionCount} failed` : ''}`,
-        statusText: `${deviceActionRows.length} Action(s)`,
+        statusText: countOf(deviceActionRows.length, 'Action', 'Actions'),
         statusColor: failedActionCount > 0 ? 'warning.main' : 'info.main',
         table: {
           title: 'Device Actions',
@@ -390,8 +459,8 @@ const Page = () => {
           cardLabelBoxHeader: <CippIcons.CheckCircle />,
         },
         text: 'Detected Applications',
-        subtext: `${detectedApps.length} application(s) detected`,
-        statusText: `${detectedApps.length} App(s)`,
+        subtext: `${countOf(detectedApps.length, 'application', 'applications')} detected`,
+        statusText: countOf(detectedApps.length, 'App', 'Apps'),
         statusColor: 'info.main',
         table: {
           title: 'Detected Applications',
@@ -441,8 +510,8 @@ const Page = () => {
           cardLabelBoxHeader: <CippIcons.CheckCircle />,
         },
         text: 'Device Users',
-        subtext: `${users.length} user(s) associated with this device`,
-        statusText: `${users.length} User(s)`,
+        subtext: `${countOf(users.length, 'user', 'users')} associated with this device`,
+        statusText: countOf(users.length, 'User', 'Users'),
         statusColor: 'info.main',
         table: {
           title: 'Device Users',
@@ -501,10 +570,12 @@ const Page = () => {
             },
             text: 'Groups',
             subtext: 'List of groups the device is a member of',
-            statusText: ` ${
+            statusText: countOf(
               deviceMemberOf?.filter((item) => item?.['@odata.type'] === '#microsoft.graph.group')
-                .length
-            } Group(s)`,
+                .length,
+              'Group',
+              'Groups'
+            ),
             statusColor: 'info.main',
             table: {
               title: 'Group Memberships',
@@ -603,6 +674,7 @@ const Page = () => {
                         size="small"
                         onClick={() => {
                           deviceRequest.refetch()
+                          policyReport.refetch()
                           refreshFunction()
                         }}
                       >
@@ -801,17 +873,11 @@ const Page = () => {
             </Grid>
             <Grid size={{ xs: 12, lg: 8 }}>
               <Stack spacing={3}>
-                <Typography variant="h6">Compliance Policies</Typography>
+                <Typography variant="h6">Policies</Typography>
                 <CippBannerListCard
-                  isFetching={deviceBulkRequest.isPending}
-                  items={compliancePolicyItems}
-                  isCollapsible={compliancePolicyItems.length > 0}
-                />
-                <Typography variant="h6">Configuration Policies</Typography>
-                <CippBannerListCard
-                  isFetching={deviceBulkRequest.isPending}
-                  items={configurationPolicyItems}
-                  isCollapsible={configurationPolicyItems.length > 0}
+                  isFetching={policyReport.isFetching}
+                  items={[...compliancePolicyItems, ...configurationPolicyItems]}
+                  isCollapsible={true}
                 />
                 <Typography variant="h6">Detected Applications</Typography>
                 <CippBannerListCard
