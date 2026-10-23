@@ -145,6 +145,11 @@
     "description": "MFA registration details for users"
   },
   {
+    "type": "ServicePrincipalSignInActivities",
+    "friendlyName": "Service Principal Sign-In Activity",
+    "description": "Last sign-in of every app, delegated or app-only (Entra ID P1)"
+  },
+  {
     "type": "OAuth2PermissionGrants",
     "friendlyName": "OAuth2 Permission Grants",
     "description": "OAuth2 permission grants"

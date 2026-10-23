@@ -36,6 +36,7 @@ import {
 } from './util-columnsFromAPI'
 import { CIPPTableToptoolbar } from './CIPPTableToptoolbar'
 import { CippOffCanvas } from '../CippComponents/CippOffCanvas'
+import { CippStructuredTooltip } from '../CippComponents/CippStructuredTooltip'
 import { useDialog } from '../../hooks/use-dialog'
 import { CippApiDialog } from '../CippComponents/CippApiDialog'
 import { getCippError } from '../../utils/get-cipp-error'
@@ -710,6 +711,11 @@ export const CippDataTable = (props) => {
     mobileCard,
     dataSourceControls,
     subTables = EMPTY_ARRAY,
+    // { [columnId]: (row) => ({ title, description, items }) | null }: hover details for a column's cells.
+    // Keep the object stable (module scope or useMemo); a new one rebuilds the columns.
+    cellTooltips,
+    // { [columnId]: (row, defaultCell) => node }: replace or wrap a column's rendered cell; same stability rule.
+    cellRenderers,
     persistenceKey,
     parentRow,
   } = props
@@ -1228,8 +1234,36 @@ export const CippDataTable = (props) => {
   }, [columnVisibility])
 
   const displayColumns = useMemo(() => {
+    const withTooltips = (cols) => {
+      if (!cellTooltips && !cellRenderers) return cols
+      return cols.map((col) => {
+        const getTooltip = cellTooltips?.[col.id]
+        const render = cellRenderers?.[col.id]
+        const BaseCell = col.Cell
+        if (
+          typeof BaseCell !== 'function' ||
+          (typeof getTooltip !== 'function' && typeof render !== 'function')
+        )
+          return col
+        return {
+          ...col,
+          Cell: (cellProps) => {
+            const base = <BaseCell {...cellProps} />
+            const rendered =
+              typeof render === 'function' ? render(cellProps.row.original, base) : base
+            const tooltip =
+              typeof getTooltip === 'function' ? getTooltip(cellProps.row.original) : null
+            return tooltip ? (
+              <CippStructuredTooltip {...tooltip}>{rendered}</CippStructuredTooltip>
+            ) : (
+              rendered
+            )
+          },
+        }
+      })
+    }
     if (!Array.isArray(subTables) || subTables.length === 0) {
-      return usedColumns
+      return withTooltips(usedColumns)
     }
     const cachedHeaders = new Map()
     const injected = []
@@ -1256,10 +1290,12 @@ export const CippDataTable = (props) => {
     const injectedById = new Map(injected.map((col) => [col.id, col]))
     const replaced = columns.map((col) => injectedById.get(col.id) ?? col)
     const existing = new Set(columns.map((col) => col.id))
-    return [...replaced, ...injected.filter((col) => !existing.has(col.id))].filter(
-      (col) => !excludedIds.has(col.id)
+    return withTooltips(
+      [...replaced, ...injected.filter((col) => !existing.has(col.id))].filter(
+        (col) => !excludedIds.has(col.id)
+      )
     )
-  }, [usedColumns, usedData, subTables, configuredSimpleColumns])
+  }, [usedColumns, usedData, subTables, configuredSimpleColumns, cellTooltips, cellRenderers])
 
   const displayColumnIds = useMemo(
     () => displayColumns.map((col) => col.id).filter(Boolean),

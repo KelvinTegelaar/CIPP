@@ -313,11 +313,14 @@ HeaderedTabbedLayout.propTypes = {
   ).isRequired,
   title: PropTypes.string.isRequired,
   subtitle: PropTypes.arrayOf(
-    PropTypes.shape({
-      icon: PropTypes.node.isRequired,
-      // Often a copy-chip (or other node), not plain text — see users/groups headers.
-      text: PropTypes.node.isRequired,
-    })
+    PropTypes.oneOfType([
+      PropTypes.shape({
+        icon: PropTypes.node.isRequired,
+        // Often a copy-chip (or other node), not plain text — see users/groups headers.
+        text: PropTypes.node.isRequired,
+      }),
+      PropTypes.shape({ component: PropTypes.node.isRequired }),
+    ])
   ),
   actions: PropTypes.arrayOf(
     PropTypes.shape({

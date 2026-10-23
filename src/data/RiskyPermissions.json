@@ -4,7 +4,7 @@
     "id": "9e3f62cf-ca93-4989-b6ce-bf83c28f9fe8",
     "name": "RoleManagement.ReadWrite.Directory",
     "type": "Application",
-    "risk": "Critical",
+    "suspicion": "Critical",
     "impact": "Critical",
     "categories": ["PrivilegeEscalation"],
     "reason": "Abuse: assign Global Administrator (or any directory role) to any principal. Critical: direct tenant admin with no intermediate hop."
@@ -14,7 +14,7 @@
     "id": "06b708a9-e830-4db3-a914-8e69da51d44f",
     "name": "AppRoleAssignment.ReadWrite.All",
     "type": "Application",
-    "risk": "Critical",
+    "suspicion": "Critical",
     "impact": "Critical",
     "categories": ["PrivilegeEscalation"],
     "reason": "Abuse: grant any app role (including RoleManagement or Mail.Send) to any SP—including self. Critical: universal permission escalation."
@@ -24,7 +24,7 @@
     "id": "1bfefb4e-e0b5-418b-a88f-73c46d2cc8e9",
     "name": "Application.ReadWrite.All",
     "type": "Application",
-    "risk": "Critical",
+    "suspicion": "Critical",
     "impact": "Critical",
     "categories": ["PrivilegeEscalation"],
     "reason": "Abuse: rotate credentials and redirect URIs on any app—become that app in the tenant. Critical: impersonation of arbitrary first- and third-party apps."
@@ -34,7 +34,7 @@
     "id": "8e8e4742-1d95-4f68-9d56-6ee75648c72a",
     "name": "DelegatedPermissionGrant.ReadWrite.All",
     "type": "Application",
-    "risk": "Critical",
+    "suspicion": "Critical",
     "impact": "Critical",
     "categories": ["PrivilegeEscalation", "DataAccess"],
     "reason": "Abuse: create AllPrincipals or broad delegated grants for arbitrary scopes. Critical: tenant-wide consent equivalent without per-user phishing."
@@ -44,7 +44,7 @@
     "id": "7e05723c-0bb0-42da-be95-ae9f08a6e53c",
     "name": "Domain.ReadWrite.All",
     "type": "Application",
-    "risk": "Critical",
+    "suspicion": "Critical",
     "impact": "Critical",
     "categories": ["PrivilegeEscalation", "Integrity"],
     "reason": "Abuse: alter or add domains in the tenant. Critical: tenant takeover risk."
@@ -54,7 +54,7 @@
     "id": "01c0a623-fc9b-48e9-b794-0756f8e8f067",
     "name": "Policy.ReadWrite.ConditionalAccess",
     "type": "Application",
-    "risk": "Critical",
+    "suspicion": "Critical",
     "impact": "Critical",
     "categories": ["Integrity", "Availability"],
     "reason": "Abuse: add exclusions, weaken MFA, or block admins from signing in. Critical: defeats tenant-wide access controls."
@@ -64,7 +64,7 @@
     "id": "854d9ab1-6657-4ec8-be45-823027bcd009",
     "name": "PrivilegedAccess.ReadWrite.AzureAD",
     "type": "Application",
-    "risk": "Critical",
+    "suspicion": "Critical",
     "impact": "Critical",
     "categories": ["PrivilegeEscalation"],
     "reason": "Abuse: approve or materialize privileged role assignments via PIM. Critical: GA-equivalent without standing assignment."
@@ -74,7 +74,7 @@
     "id": "e330c4f0-4170-414e-a55a-2f022ec2b57b",
     "name": "DeviceManagementRBAC.ReadWrite.All",
     "type": "Application",
-    "risk": "High",
+    "suspicion": "High",
     "impact": "High",
     "categories": ["PrivilegeEscalation"],
     "reason": "Abuse: grant Intune admin roles or widen scope tags to own account. High: full device-estate control short of Entra GA."
@@ -84,7 +84,7 @@
     "id": "274d0592-d1b6-44bd-af1d-26d259bcb43a",
     "name": "RoleManagement.ReadWrite.CloudPC",
     "type": "Application",
-    "risk": "High",
+    "suspicion": "High",
     "impact": "High",
     "categories": ["PrivilegeEscalation"],
     "reason": "Abuse: own Cloud PC RBAC—compromise Windows 365 admin plane. High: major segment, not entire Entra directory."
@@ -94,7 +94,7 @@
     "id": "0c5e8a55-87a6-4556-93ab-adc52c4d862d",
     "name": "DeviceManagementRBAC.ReadWrite.All",
     "type": "Delegated",
-    "risk": "Low",
+    "suspicion": "Low",
     "impact": "High",
     "categories": ["PrivilegeEscalation"],
     "reason": "Abuse: same Intune RBAC writes but only in user-delegated context. Low: requires already-privileged sign-in; AllPrincipals here is a weak signal."
@@ -104,7 +104,7 @@
     "id": "501d06f8-07b8-4f18-b5c6-c191a4af7a82",
     "name": "RoleManagement.ReadWrite.CloudPC",
     "type": "Delegated",
-    "risk": "Low",
+    "suspicion": "Low",
     "impact": "High",
     "categories": ["PrivilegeEscalation"],
     "reason": "Abuse: Cloud PC RBAC changes as the signed-in user. Low: bounded by users existing Cloud PC admin rights; rare as org-wide grant."
@@ -114,7 +114,7 @@
     "id": "0e263e50-5827-48a4-b97c-d940288653c7",
     "name": "Directory.AccessAsUser.All",
     "type": "Delegated",
-    "risk": "High",
+    "suspicion": "High",
     "impact": "Critical",
     "categories": ["PrivilegeEscalation", "DataAccess", "Integrity"],
     "reason": "Abuse: act on the directory with the full rights of the signed-in user. Only abusable when that identity holds an admin role (e.g. Global Administrator): delegated access never exceeds the user's own rights. High: with an admin signing in, the app holds that admin's full directory power."
@@ -124,7 +124,7 @@
     "id": "d01b97e9-cbc0-49fe-810a-750afd5527a3",
     "name": "RoleManagement.ReadWrite.Directory",
     "type": "Delegated",
-    "risk": "High",
+    "suspicion": "High",
     "impact": "Critical",
     "categories": ["PrivilegeEscalation"],
     "reason": "Abuse: assign directory roles, including Global Administrator, as the signed-in user. Only abusable when that identity holds Privileged Role Administrator or Global Administrator. High: one admin sign-in to the app is enough to escalate."
@@ -134,7 +134,7 @@
     "id": "bdfbf15f-ee85-4955-8675-146e8e5296b5",
     "name": "Application.ReadWrite.All",
     "type": "Delegated",
-    "risk": "High",
+    "suspicion": "High",
     "impact": "Critical",
     "categories": ["PrivilegeEscalation"],
     "reason": "Abuse: add credentials to apps and service principals as the signed-in user. Only tenant-wide when that identity holds an admin role (e.g. Application Administrator); otherwise limited to apps the user owns. High: with an admin signing in, any app can be impersonated."
@@ -144,7 +144,7 @@
     "id": "84bccea3-f856-4a8a-967b-dbe0a3d53a64",
     "name": "AppRoleAssignment.ReadWrite.All",
     "type": "Delegated",
-    "risk": "High",
+    "suspicion": "High",
     "impact": "Critical",
     "categories": ["PrivilegeEscalation"],
     "reason": "Abuse: grant app roles (such as RoleManagement.ReadWrite.Directory) to any service principal as the signed-in user. Only abusable when that identity holds an admin role that can grant consent (e.g. Privileged Role Administrator or Global Administrator). High: one admin sign-in turns it into permanent app-only escalation."
@@ -154,7 +154,7 @@
     "id": "024d486e-b451-40bb-833d-3e66d98c5c73",
     "name": "Mail.ReadWrite",
     "type": "Delegated",
-    "risk": "Medium",
+    "suspicion": "Medium",
     "impact": "Medium",
     "categories": ["DataAccess", "Integrity"],
     "reason": "Abuse: read, change, and delete mail as the signed-in user—consent-phishing staple for inbox rules, evidence removal, and exfil. No admin role needed; limited to mailboxes the user can already open, and an Exchange admin role does not widen it. Medium: per-user blast radius."
@@ -164,7 +164,7 @@
     "id": "e383f46e-2787-4529-855e-0e479a3ffac0",
     "name": "Mail.Send",
     "type": "Delegated",
-    "risk": "Medium",
+    "suspicion": "Medium",
     "impact": "Medium",
     "categories": ["Integrity"],
     "reason": "Abuse: send mail as the signed-in user for internal phishing and BEC. No admin role needed; limited to the user's own mailbox and mailboxes they have Send As on. Medium: per-user blast radius."
@@ -174,7 +174,7 @@
     "id": "863451e7-0667-486c-a5d6-d135439485f0",
     "name": "Files.ReadWrite.All",
     "type": "Delegated",
-    "risk": "Medium",
+    "suspicion": "Medium",
     "impact": "Medium",
     "categories": ["DataAccess", "Integrity", "Availability"],
     "reason": "Abuse: read, overwrite, or encrypt every file the signed-in user can reach—OneDrive plus shared SharePoint content. No admin role needed; limited to the user's own access. Medium: per-user blast radius, but shared sites widen it."
@@ -184,7 +184,7 @@
     "id": "9769c687-087d-48ac-9cb3-c37dde652038",
     "name": "EWS.AccessAsUser.All",
     "type": "Delegated",
-    "risk": "Medium",
+    "suspicion": "Medium",
     "impact": "Medium",
     "categories": ["DataAccess", "Integrity"],
     "reason": "Abuse: full EWS access to the signed-in user's mailbox—read, send, rules, and delegates. No admin role needed; limited to mailboxes the user can already open. Medium: per-user blast radius."
@@ -194,7 +194,7 @@
     "id": "19dbc75e-c2e2-444c-a770-ec69d8559fc7",
     "name": "Directory.ReadWrite.All",
     "type": "Application",
-    "risk": "High",
+    "suspicion": "High",
     "impact": "High",
     "categories": ["PrivilegeEscalation", "Integrity", "Availability"],
     "reason": "Abuse: create users, reset attributes, manipulate groups—often chains to GA via role-assignable groups or owned objects. High: below direct RoleManagement but still org-wide write."
@@ -204,7 +204,7 @@
     "id": "618b6020-bca8-4de6-99f6-ef445fa4d857",
     "name": "PrivilegedEligibilitySchedule.ReadWrite.AzureADGroup",
     "type": "Application",
-    "risk": "High",
+    "suspicion": "High",
     "impact": "High",
     "categories": ["PrivilegeEscalation"],
     "reason": "Abuse: make identities eligible for privileged groups—path to Azure RBAC or app access via group. High: not directory-role assignment but strong pivot."
@@ -214,7 +214,7 @@
     "id": "dbaae8cf-10b5-4b86-a4a1-f871c94c6695",
     "name": "GroupMember.ReadWrite.All",
     "type": "Application",
-    "risk": "Low",
+    "suspicion": "Low",
     "impact": "High",
     "categories": ["PrivilegeEscalation"],
     "reason": "Abuse: add self or ally to any group—dangerous only if exploitable privileged groups exist. Low: permission is extremely common; signal is hygiene, not inherent tier-0."
@@ -224,7 +224,7 @@
     "id": "50483e42-d915-4231-9639-7fdb7fd190e5",
     "name": "UserAuthenticationMethod.ReadWrite.All",
     "type": "Application",
-    "risk": "High",
+    "suspicion": "High",
     "impact": "Critical",
     "categories": ["PrivilegeEscalation"],
     "reason": "Abuse: strip or add MFA methods for any user—silent takeover of chosen accounts. High: targeted, not tenant-wide admin, but no user cooperation needed."
@@ -234,7 +234,7 @@
     "id": "e2a3a72e-5f79-4c64-b1b1-878b674786c9",
     "name": "Mail.ReadWrite",
     "type": "Application",
-    "risk": "High",
+    "suspicion": "High",
     "impact": "Critical",
     "categories": ["DataAccess", "Integrity"],
     "reason": "Abuse: read, delete, or alter all mail in every mailbox—evidence destruction and mass exfil. High: no send-as-anyone (see Mail.Send) but write scope across all mailboxes."
@@ -244,7 +244,7 @@
     "id": "b633e1c5-b582-4048-a93e-9f11b44c7e96",
     "name": "Mail.Send",
     "type": "Application",
-    "risk": "Critical",
+    "suspicion": "Critical",
     "impact": "Critical",
     "categories": ["Integrity"],
     "reason": "Abuse: send as any mailbox with tenant mail trust. Critical: BEC and phishing at arbitrary scale without compromised user passwords."
@@ -254,7 +254,7 @@
     "id": "6918b873-d17a-4dc1-b314-35f528134491",
     "name": "Contacts.ReadWrite",
     "type": "Application",
-    "risk": "High",
+    "suspicion": "High",
     "impact": "Medium",
     "categories": ["Integrity"],
     "reason": "Abuse: create or overwrite contacts in every mailbox—spoof display names, phone numbers, and SMTP addresses so users trust forged senders or call attacker numbers. High: social engineering without Mail.Send."
@@ -264,7 +264,7 @@
     "id": "810c84a8-4a9e-49e6-bf7d-12d183f40d01",
     "name": "Mail.Read",
     "type": "Application",
-    "risk": "Low",
+    "suspicion": "Low",
     "impact": "Critical",
     "categories": ["DataAccess"],
     "reason": "Abuse: copy all mail app-only—total confidentiality breach. Low: identical technical blast radius as many backup/DLP products; alert alone is low-fidelity without app reputation."
@@ -274,7 +274,7 @@
     "id": "741f803b-c850-494e-b5df-cde7c675a1ca",
     "name": "User.ReadWrite.All",
     "type": "Application",
-    "risk": "Medium",
+    "suspicion": "Medium",
     "impact": "High",
     "categories": ["PrivilegeEscalation", "Integrity"],
     "reason": "Abuse: password reset and profile takeover for any user. Medium: catastrophic if abused but routinely required by IDM/provisioning; narrower than directory-role grant."
@@ -284,7 +284,7 @@
     "id": "7ab1d382-f21e-4acd-a863-ba3e13f7da61",
     "name": "Directory.Read.All",
     "type": "Application",
-    "risk": "Low",
+    "suspicion": "Low",
     "impact": "Medium",
     "categories": ["DataAccess"],
     "reason": "Abuse: full tenant enumeration for targeting. Low: read-only; nearly every SaaS integration requests it—weak discriminator for malicious apps."
@@ -294,7 +294,7 @@
     "id": "b2620db1-3bf7-4c5b-9cb9-576d29eac736",
     "name": "eDiscovery.ReadWrite.All",
     "type": "Application",
-    "risk": "Critical",
+    "suspicion": "Critical",
     "impact": "Critical",
     "categories": ["DataAccess", "Integrity"],
     "reason": "Abuse: alter holds, cases, review sets—spoliation and access to highest-sensitivity legal data. Critical: write on legal pipeline plus massive content exposure."
@@ -304,7 +304,7 @@
     "id": "50180013-6191-4d1e-a373-e590ff4e66af",
     "name": "eDiscovery.Read.All",
     "type": "Application",
-    "risk": "Medium",
+    "suspicion": "Medium",
     "impact": "High",
     "categories": ["DataAccess"],
     "reason": "Abuse: read investigation and hold-adjacent content—sensitive exfil. Medium: no hold tampering; fewer vendors than Mail.Read but still specialized category."
@@ -314,7 +314,7 @@
     "id": "294ce7c9-31ba-490a-ad7d-97a7d075e4ed",
     "name": "Chat.ReadWrite.All",
     "type": "Application",
-    "risk": "Medium",
+    "suspicion": "Medium",
     "impact": "High",
     "categories": ["DataAccess", "Integrity"],
     "reason": "Abuse: read or modify all Teams 1:1/group chats app-only. Medium: broad collaboration compromise; Microsoft may gate some APIs—below mail/send for typical abuse economics."
@@ -324,7 +324,7 @@
     "id": "6b7d71aa-70aa-4810-a8d9-5d9fb2830017",
     "name": "Chat.Read.All",
     "type": "Application",
-    "risk": "Medium",
+    "suspicion": "Medium",
     "impact": "High",
     "categories": ["DataAccess"],
     "reason": "Abuse: exfiltrate all private and group Teams chats. Medium: read-only; retention and compliance vendors legitimately drive volume."
@@ -334,7 +334,7 @@
     "id": "7b2449af-6ccd-4f4d-9f78-e550c193f0d1",
     "name": "ChannelMessage.Read.All",
     "type": "Application",
-    "risk": "Medium",
+    "suspicion": "Medium",
     "impact": "High",
     "categories": ["DataAccess"],
     "reason": "Abuse: read every Teams channel message—org-wide comms and IP exfil. Medium: supervision/archiving vendors; no write path."
@@ -344,7 +344,7 @@
     "id": "45bbb07e-7321-4fd7-a8f6-3ff27e6a81c8",
     "name": "CallRecords.Read.All",
     "type": "Application",
-    "risk": "Low",
+    "suspicion": "Low",
     "impact": "Low",
     "categories": ["DataAccess"],
     "reason": "Abuse: map who called whom and when—metadata surveillance. Low: no content; CDR and contact-center integrations normalize this permission."
@@ -354,7 +354,7 @@
     "id": "b0afded3-3588-46d8-8b3d-9842eff778da",
     "name": "AuditLog.Read.All",
     "type": "Application",
-    "risk": "Low",
+    "suspicion": "Low",
     "impact": "Medium",
     "categories": ["DataAccess"],
     "reason": "Abuse: learn defender actions and admin activity to evade detection. Low: SIEM exports need it; read-only and ubiquitous on security tooling."
@@ -364,7 +364,7 @@
     "id": "dd98c7f5-2d42-42d3-a0e4-633161547251",
     "name": "ThreatHunting.Read.All",
     "type": "Application",
-    "risk": "Medium",
+    "suspicion": "Medium",
     "impact": "High",
     "categories": ["DataAccess"],
     "reason": "Abuse: run KQL across M365 Defender corpus—mailbox, device, and identity telemetry harvest. Medium: exceeds most integrations; MDR/MSSP-typical, not commodity SaaS."
@@ -374,7 +374,7 @@
     "id": "5b07b0dd-2377-4e44-a38d-703f09a0dc3c",
     "name": "DeviceManagementManagedDevices.PrivilegedOperations.All",
     "type": "Application",
-    "risk": "Critical",
+    "suspicion": "Critical",
     "impact": "Critical",
     "categories": ["Availability"],
     "reason": "Abuse: remote wipe, PIN reset, or lockout on all Intune devices—business continuity destruction. Critical: device fleet availability, not just data theft."
@@ -384,7 +384,7 @@
     "id": "5ac13192-7ace-4fcf-b828-1a26f28068ee",
     "name": "DeviceManagementServiceConfig.ReadWrite.All",
     "type": "Application",
-    "risk": "Medium",
+    "suspicion": "Medium",
     "impact": "Medium",
     "categories": ["Integrity"],
     "reason": "Abuse: enroll attacker hardware (e.g. Autopilot import), change enrollment boundaries. Medium: serious device-trust impact but standard for UEM onboarding products."
@@ -394,7 +394,7 @@
     "id": "01d4889c-1287-42c6-ac1f-5d1e02578ef6",
     "name": "Files.Read.All",
     "type": "Application",
-    "risk": "Low",
+    "suspicion": "Low",
     "impact": "Critical",
     "categories": ["DataAccess"],
     "reason": "Abuse: read every file in SharePoint and OneDrive. Low: same capability as many backup and search products—low signal without vendor context."
@@ -404,7 +404,7 @@
     "id": "75359482-378d-4052-8f01-80520e7db3cd",
     "name": "Files.ReadWrite.All",
     "type": "Application",
-    "risk": "Critical",
+    "suspicion": "Critical",
     "impact": "Critical",
     "categories": ["DataAccess", "Integrity", "Availability"],
     "reason": "Abuse: delete or encrypt all tenant documents—ransomware analogue. Critical: tenant-wide file integrity and availability."
@@ -414,7 +414,7 @@
     "id": "a82116e5-55eb-4c41-a434-62fe8a61c773",
     "name": "Sites.FullControl.All",
     "type": "Application",
-    "risk": "Critical",
+    "suspicion": "Critical",
     "impact": "Critical",
     "categories": ["DataAccess", "Integrity", "Availability"],
     "reason": "Abuse: script, admin, and content control on every site—superset of file R/W. Critical: SharePoint tenant compromise."
@@ -424,7 +424,7 @@
     "id": "9492366f-7969-46a4-8d15-ed1a20078fff",
     "name": "Sites.ReadWrite.All",
     "type": "Application",
-    "risk": "High",
+    "suspicion": "High",
     "impact": "Critical",
     "categories": ["DataAccess", "Integrity", "Availability"],
     "reason": "Abuse: read/write all list items and documents without full site-admin shell. High: mass exfil and tamper; one step below FullControl for some attack paths."
@@ -434,7 +434,7 @@
     "id": "0c0bf378-bf22-4481-8f81-9e89a9b4960a",
     "name": "Sites.Manage.All",
     "type": "Application",
-    "risk": "High",
+    "suspicion": "High",
     "impact": "Critical",
     "categories": ["DataAccess", "Integrity", "Availability"],
     "reason": "Abuse: destroy or recreate lists/libraries tenant-wide—availability and structure sabotage. High: often paired with data attacks."
@@ -444,7 +444,7 @@
     "id": "19b94e34-907c-4f43-bde9-38b1909ed408",
     "name": "SharePointTenantSettings.ReadWrite.All",
     "type": "Application",
-    "risk": "High",
+    "suspicion": "High",
     "impact": "Medium",
     "categories": ["Integrity"],
     "reason": "Abuse: loosen sharing, guest, or OneDrive policies—opens data exfil channels. High: policy-layer, not direct file read."
@@ -454,7 +454,7 @@
     "id": "f12eb8d6-28e3-46e6-b2c0-b7e4dc69fc95",
     "name": "TermStore.ReadWrite.All",
     "type": "Application",
-    "risk": "High",
+    "suspicion": "High",
     "impact": "Medium",
     "categories": ["Integrity"],
     "reason": "Abuse: corrupt managed metadata—breaks classification, search, and retention semantics. High: integrity across content estate."
@@ -464,7 +464,7 @@
     "id": "332a536c-c7ef-4017-ab91-336970924f0d",
     "name": "Sites.Read.All",
     "type": "Application",
-    "risk": "Low",
+    "suspicion": "Low",
     "impact": "Critical",
     "categories": ["DataAccess"],
     "reason": "Abuse: read all site and list content—document exfil via Graph sites API. Low: overlaps Files.Read.All use cases; noisy for alerting."
@@ -474,7 +474,7 @@
     "id": "678536fe-1083-478a-9c59-b99265e6b0d3",
     "name": "Sites.FullControl.All",
     "type": "Application",
-    "risk": "Critical",
+    "suspicion": "Critical",
     "impact": "Critical",
     "categories": ["DataAccess", "Integrity", "Availability"],
     "reason": "Abuse: native SPO/REST full control on all site collections—same impact as Graph Sites.FullControl on SP resource. Critical."
@@ -484,7 +484,7 @@
     "id": "fbcd29d2-fcca-4405-aded-518d457caae4",
     "name": "Sites.ReadWrite.All",
     "type": "Application",
-    "risk": "High",
+    "suspicion": "High",
     "impact": "Critical",
     "categories": ["DataAccess", "Integrity", "Availability"],
     "reason": "Abuse: app-only R/W all sites via SharePoint API—parallel to Graph Sites.ReadWrite. High."
@@ -494,7 +494,7 @@
     "id": "9bff6588-13f2-4c48-bbf2-ddab62256b36",
     "name": "Sites.Manage.All",
     "type": "Application",
-    "risk": "High",
+    "suspicion": "High",
     "impact": "Critical",
     "categories": ["DataAccess", "Integrity", "Availability"],
     "reason": "Abuse: structural destruction across all sites via SPO resource. High."
@@ -504,7 +504,7 @@
     "id": "c8e3537c-ec53-43b9-bed3-b2bd3617ae97",
     "name": "TermStore.ReadWrite.All",
     "type": "Application",
-    "risk": "High",
+    "suspicion": "High",
     "impact": "Medium",
     "categories": ["Integrity"],
     "reason": "Abuse: tenant term store rewrite via SPO resource—metadata integrity. High."
@@ -514,7 +514,7 @@
     "id": "85bd96b3-dd7e-44d4-94f4-47fbb58e5718",
     "name": "SharePointTenantSettings.ReadWrite.All",
     "type": "Application",
-    "risk": "High",
+    "suspicion": "High",
     "impact": "Medium",
     "categories": ["Integrity"],
     "reason": "Abuse: loosen sharing, guest, or OneDrive policies via the SPO resource—opens data exfil channels. High: same as the Graph version."
@@ -524,7 +524,7 @@
     "id": "d13f72ca-a275-4b96-b789-48ebcc4da984",
     "name": "Sites.Read.All",
     "type": "Application",
-    "risk": "Low",
+    "suspicion": "Low",
     "impact": "Critical",
     "categories": ["DataAccess"],
     "reason": "Abuse: read all site and list content via the SPO REST API. Low: same as the Graph version; noisy for alerting."
@@ -534,7 +534,7 @@
     "id": "292d869f-3427-49a8-9dab-8c70152b74e9",
     "name": "Organization.ReadWrite.All",
     "type": "Application",
-    "risk": "High",
+    "suspicion": "High",
     "impact": "High",
     "categories": ["PrivilegeEscalation", "Integrity"],
     "reason": "Abuse: change tenant branding, partner relationships, and org metadata—phishing lures and trust abuse. High: not direct GA but broad org-level write."
@@ -544,7 +544,7 @@
     "id": "be74164b-cff1-491c-8741-e671cb536e13",
     "name": "Policy.ReadWrite.ApplicationConfiguration",
     "type": "Application",
-    "risk": "High",
+    "suspicion": "High",
     "impact": "High",
     "categories": ["Integrity"],
     "reason": "Abuse: alter token lifetime, claims mapping, HRD, and issuance policies—authentication and token-trust manipulation. High: tier-0-adjacent; cited in consent and federation abuse research."
@@ -554,7 +554,7 @@
     "id": "338163d7-f101-4c92-94ba-ca46fe52447c",
     "name": "Policy.ReadWrite.CrossTenantAccess",
     "type": "Application",
-    "risk": "High",
+    "suspicion": "High",
     "impact": "High",
     "categories": ["Integrity"],
     "reason": "Abuse: change cross-tenant access defaults—expand guest/B2B trust surface. High: lateral movement into partner tenants or inbound abuse."
@@ -564,7 +564,7 @@
     "id": "09850681-111b-4a89-9bed-3f2cae46d706",
     "name": "User.Invite.All",
     "type": "Application",
-    "risk": "Medium",
+    "suspicion": "Medium",
     "impact": "Medium",
     "categories": ["Integrity"],
     "reason": "Abuse: invite arbitrary B2B guests—persistence and lateral access. Medium: powerful but common on collaboration portals; volume-based risk."
@@ -574,7 +574,7 @@
     "id": "5eb59dd3-1da2-4329-8733-9dabdc435916",
     "name": "AdministrativeUnit.ReadWrite.All",
     "type": "Application",
-    "risk": "High",
+    "suspicion": "High",
     "impact": "High",
     "categories": ["PrivilegeEscalation"],
     "reason": "Abuse: redefine scoped admin boundaries and membership—segment RBAC takeover. High: fewer vendors than GroupMember; meaningful policy impact."
@@ -584,7 +584,7 @@
     "id": "d903a879-88e0-4c09-b0c9-82f6a1333f84",
     "name": "SecurityEvents.ReadWrite.All",
     "type": "Application",
-    "risk": "High",
+    "suspicion": "High",
     "impact": "Medium",
     "categories": ["Integrity"],
     "reason": "Abuse: modify security events—evasion and blind defenders. High: integrity of SecOps pipeline."
@@ -594,7 +594,7 @@
     "id": "34bf0e97-1971-4929-b999-9e2442d941d7",
     "name": "SecurityIncident.ReadWrite.All",
     "type": "Application",
-    "risk": "High",
+    "suspicion": "High",
     "impact": "High",
     "categories": ["DataAccess", "Integrity"],
     "reason": "Abuse: alter M365 Defender incidents—close or corrupt case workflow. High: SOC integrity."
@@ -604,7 +604,7 @@
     "id": "ed4fca05-be46-441f-9803-1873825f8fdb",
     "name": "SecurityAlert.ReadWrite.All",
     "type": "Application",
-    "risk": "High",
+    "suspicion": "High",
     "impact": "High",
     "categories": ["DataAccess", "Integrity"],
     "reason": "Abuse: resolve or reclassify Defender alerts—hide active attacks from the SOC. High: integrity of SecOps triage."
@@ -614,7 +614,7 @@
     "id": "656f6061-f9fe-4807-9708-6a2e0934df76",
     "name": "IdentityRiskyUser.ReadWrite.All",
     "type": "Application",
-    "risk": "High",
+    "suspicion": "High",
     "impact": "Medium",
     "categories": ["Integrity"],
     "reason": "Abuse: dismiss risky-user state—clears ID Protection signals for compromised accounts. High: direct impact on identity SOC."
@@ -624,7 +624,7 @@
     "id": "9241abd9-d0e6-425a-bd4f-47ba86e767a4",
     "name": "DeviceManagementConfiguration.ReadWrite.All",
     "type": "Application",
-    "risk": "High",
+    "suspicion": "High",
     "impact": "Critical",
     "categories": ["PrivilegeEscalation", "Integrity"],
     "reason": "Abuse: deploy malicious Intune compliance or configuration profiles to all scoped devices. High: device compromise at scale short of wipe."
@@ -634,7 +634,7 @@
     "id": "243333ab-4d21-40cb-a475-36241daa0842",
     "name": "DeviceManagementManagedDevices.ReadWrite.All",
     "type": "Application",
-    "risk": "Medium",
+    "suspicion": "Medium",
     "impact": "Medium",
     "categories": ["DataAccess", "Integrity"],
     "reason": "Abuse: read or alter managed device inventory and properties. Medium: excludes wipe/passcode reset but broad device recon and tamper."
@@ -644,7 +644,7 @@
     "id": "65319a09-a2be-469d-8782-f6b07debf789",
     "name": "IdentityUserFlow.ReadWrite.All",
     "type": "Application",
-    "risk": "High",
+    "suspicion": "High",
     "impact": "Medium",
     "categories": ["Integrity"],
     "reason": "Abuse: change B2C/CIAM user flows—authentication UX and logic tampering. High: where External ID flows are used."
@@ -654,7 +654,7 @@
     "id": "b8bb2037-6e08-44ac-a4ea-4674e010e2a4",
     "name": "OnlineMeetings.ReadWrite.All",
     "type": "Application",
-    "risk": "Medium",
+    "suspicion": "Medium",
     "impact": "Medium",
     "categories": ["Integrity"],
     "reason": "Abuse: create or hijack meetings as the app—meeting phishing and join-link abuse. Medium: cited in OAuth/consent abuse alongside mail and calendar."
@@ -664,7 +664,7 @@
     "id": "a7a681dc-756e-4909-b988-f160edc6655f",
     "name": "Calls.AccessMedia.All",
     "type": "Application",
-    "risk": "Critical",
+    "suspicion": "Critical",
     "impact": "High",
     "categories": ["DataAccess"],
     "reason": "Abuse: access live call media streams app-only—wiretap-class eavesdropping. Critical: confidentiality of voice/video."
@@ -674,7 +674,7 @@
     "id": "de89b5e4-5b8f-48eb-8925-29c2b33bd8bd",
     "name": "CustomSecAttributeAssignment.ReadWrite.All",
     "type": "Application",
-    "risk": "High",
+    "suspicion": "High",
     "impact": "High",
     "categories": ["PrivilegeEscalation"],
     "reason": "Abuse: rewrite security attribute assignments—ABAC and access-control decisions based on attributes can be subverted. High: niche but high impact where CSAs gate access."
@@ -684,7 +684,7 @@
     "id": "dd199f4a-f148-40a4-a2ec-f0069cc799ec",
     "name": "RoleAssignmentSchedule.ReadWrite.Directory",
     "type": "Application",
-    "risk": "Critical",
+    "suspicion": "Critical",
     "impact": "Critical",
     "categories": ["PrivilegeEscalation"],
     "reason": "Abuse: create an active PIM assignment of Global Administrator for a controlled account. Critical: direct tenant admin via the PIM API."
@@ -694,7 +694,7 @@
     "id": "fee28b28-e1f3-4841-818e-2704dc62245f",
     "name": "RoleEligibilitySchedule.ReadWrite.Directory",
     "type": "Application",
-    "risk": "Critical",
+    "suspicion": "Critical",
     "impact": "Critical",
     "categories": ["PrivilegeEscalation"],
     "reason": "Abuse: make a controlled account eligible for Global Administrator, then activate it. Critical: one activation away from tenant admin."
@@ -704,7 +704,7 @@
     "id": "31e08e0a-d3f7-4ca2-ac39-7343fb83e8ad",
     "name": "RoleManagementPolicy.ReadWrite.Directory",
     "type": "Application",
-    "risk": "High",
+    "suspicion": "High",
     "impact": "High",
     "categories": ["PrivilegeEscalation"],
     "reason": "Abuse: strip MFA, approval, and justification requirements from Entra role activation. High: removes PIM guardrails that block other escalation paths."
@@ -714,7 +714,7 @@
     "id": "2f6817f8-7b12-4f0f-bc18-eeaf60705a9e",
     "name": "PrivilegedAccess.ReadWrite.AzureADGroup",
     "type": "Application",
-    "risk": "Critical",
+    "suspicion": "Critical",
     "impact": "Critical",
     "categories": ["PrivilegeEscalation"],
     "reason": "Abuse: add a controlled account as owner or member of a role-assignable group that holds Global Administrator. Critical: direct tenant admin via PIM for Groups."
@@ -724,7 +724,7 @@
     "id": "41202f2c-f7ab-45be-b001-85c9728b9d69",
     "name": "PrivilegedAssignmentSchedule.ReadWrite.AzureADGroup",
     "type": "Application",
-    "risk": "Critical",
+    "suspicion": "Critical",
     "impact": "Critical",
     "categories": ["PrivilegeEscalation"],
     "reason": "Abuse: create active PIM for Groups assignments to role-assignable groups holding privileged roles. Critical: same path as PrivilegedAccess.ReadWrite.AzureADGroup."
@@ -734,7 +734,7 @@
     "id": "b38dcc4d-a239-4ed6-aa84-6c65b284f97c",
     "name": "RoleManagementPolicy.ReadWrite.AzureADGroup",
     "type": "Application",
-    "risk": "High",
+    "suspicion": "High",
     "impact": "High",
     "categories": ["PrivilegeEscalation"],
     "reason": "Abuse: remove MFA and approval requirements from PIM for Groups activation. High: removes guardrails on privileged group membership."
@@ -744,7 +744,7 @@
     "id": "6f9d5abc-2db6-400b-a267-7de22a40fb87",
     "name": "PrivilegedAccess.ReadWrite.AzureResources",
     "type": "Application",
-    "risk": "Low",
+    "suspicion": "Low",
     "impact": "Low",
     "categories": ["PrivilegeEscalation"],
     "reason": "Abuse: legacy PIM API for Azure resource role assignments. Low: retired API not known to work app-only; flag as hygiene."
@@ -754,7 +754,7 @@
     "id": "a402ca1c-2696-4531-972d-6e5ee4aa11ea",
     "name": "Policy.ReadWrite.PermissionGrant",
     "type": "Application",
-    "risk": "Critical",
+    "suspicion": "Critical",
     "impact": "Critical",
     "categories": ["PrivilegeEscalation"],
     "reason": "Abuse: create a permission grant policy that lets the app obtain RoleManagement.ReadWrite.Directory. Critical: self-escalation to tenant admin."
@@ -764,7 +764,7 @@
     "id": "fc023787-fd04-4e44-9bc7-d454f00c0f0a",
     "name": "Application.ReadUpdate.All",
     "type": "Application",
-    "risk": "Critical",
+    "suspicion": "Critical",
     "impact": "Critical",
     "categories": ["PrivilegeEscalation"],
     "reason": "Abuse: add credentials to any existing app or service principal and act as it. Critical: same impersonation path as Application.ReadWrite.All."
@@ -774,7 +774,7 @@
     "id": "18a4783c-866b-4cc7-a460-3d5e5662c884",
     "name": "Application.ReadWrite.OwnedBy",
     "type": "Application",
-    "risk": "High",
+    "suspicion": "High",
     "impact": "High",
     "categories": ["PrivilegeEscalation"],
     "reason": "Abuse: add credentials to apps this app owns and inherit their permissions. High: limited to owned apps, but a privileged owned app is a full escalation."
@@ -784,7 +784,7 @@
     "id": "cc13eba4-8cd8-44c6-b4d4-f93237adce58",
     "name": "DelegatedAdminRelationship.ReadWrite.All",
     "type": "Application",
-    "risk": "Critical",
+    "suspicion": "Critical",
     "impact": "Critical",
     "categories": ["PrivilegeEscalation"],
     "reason": "Abuse: in a partner tenant, add a controlled account to groups mapped in GDAP relationships and assume their roles in customer tenants. Critical: Global Administrator across customer tenants."
@@ -794,7 +794,7 @@
     "id": "9acd699f-1e81-4958-b001-93b1d2506e19",
     "name": "EntitlementManagement.ReadWrite.All",
     "type": "Application",
-    "risk": "High",
+    "suspicion": "High",
     "impact": "High",
     "categories": ["PrivilegeEscalation"],
     "reason": "Abuse: remove approval from an access package that grants a privileged role, then request it with a controlled account. High: escalation via Identity Governance."
@@ -804,7 +804,7 @@
     "id": "62a82d76-70ea-41e2-9197-370581804d09",
     "name": "Group.ReadWrite.All",
     "type": "Application",
-    "risk": "Medium",
+    "suspicion": "Medium",
     "impact": "High",
     "categories": ["PrivilegeEscalation", "Integrity"],
     "reason": "Abuse: change owners and members of any non-role-assignable group, including groups granting Azure RBAC or app access. Medium: very common on collaboration tools; real risk depends on what groups grant."
@@ -814,7 +814,7 @@
     "id": "2d9bd318-b883-40be-9df7-63ec4fcdc424",
     "name": "Group-OnPremisesSyncBehavior.ReadWrite.All",
     "type": "Application",
-    "risk": "Medium",
+    "suspicion": "Medium",
     "impact": "Medium",
     "categories": ["PrivilegeEscalation"],
     "reason": "Abuse: flip a group between cloud-managed and synced to move control between Entra and on-premises AD. Medium: needs on-premises admin access for the full path."
@@ -824,7 +824,7 @@
     "id": "29c18626-4985-4dcd-85c0-193eef327366",
     "name": "Policy.ReadWrite.AuthenticationMethod",
     "type": "Application",
-    "risk": "High",
+    "suspicion": "High",
     "impact": "High",
     "categories": ["PrivilegeEscalation", "Integrity"],
     "reason": "Abuse: enable weak or attacker-friendly methods (TAP, SMS, QR) tenant-wide. High: enabler for account takeover via authentication method permissions."
@@ -834,7 +834,7 @@
     "id": "627169a8-8c15-451c-861a-5b80e383de5c",
     "name": "UserAuthMethod-TAP.ReadWrite.All",
     "type": "Application",
-    "risk": "High",
+    "suspicion": "High",
     "impact": "Critical",
     "categories": ["PrivilegeEscalation"],
     "reason": "Abuse: issue a Temporary Access Pass for any user and sign in as them. High: silent targeted takeover, same as UserAuthenticationMethod.ReadWrite.All."
@@ -844,7 +844,7 @@
     "id": "6e85d483-7092-4375-babe-0a94a8213a58",
     "name": "UserAuthMethod-Phone.ReadWrite.All",
     "type": "Application",
-    "risk": "High",
+    "suspicion": "High",
     "impact": "High",
     "categories": ["PrivilegeEscalation"],
     "reason": "Abuse: set an attacker phone number on any user and sign in with SMS one-time codes. High: targeted takeover where SMS sign-in is allowed."
@@ -854,7 +854,7 @@
     "id": "7e9ebcc1-90aa-4471-8051-e68d6b4e9c89",
     "name": "UserAuthMethod-HardwareOATH.ReadWrite.All",
     "type": "Application",
-    "risk": "High",
+    "suspicion": "High",
     "impact": "High",
     "categories": ["PrivilegeEscalation"],
     "reason": "Abuse: register an attacker-held OATH token on any user and pass MFA as them. High: targeted takeover where hardware OATH is enabled."
@@ -864,7 +864,7 @@
     "id": "4869299f-18c3-40c8-98f2-222657e67db1",
     "name": "UserAuthMethod-QR.ReadWrite.All",
     "type": "Application",
-    "risk": "High",
+    "suspicion": "High",
     "impact": "High",
     "categories": ["PrivilegeEscalation"],
     "reason": "Abuse: generate a QR code and PIN for any user and sign in as them. High: targeted takeover where QR code sign-in is enabled."
@@ -874,7 +874,7 @@
     "id": "cc117bb9-00cf-4eb8-b580-ea2a878fe8f7",
     "name": "User-PasswordProfile.ReadWrite.All",
     "type": "Application",
-    "risk": "High",
+    "suspicion": "High",
     "impact": "High",
     "categories": ["PrivilegeEscalation"],
     "reason": "Abuse: reset the password of users the app can manage. High: purpose-built for password resets, so a grant is a stronger signal than User.ReadWrite.All."
@@ -884,7 +884,7 @@
     "id": "3011c876-62b7-4ada-afa2-506cbbecc68c",
     "name": "User.EnableDisableAccount.All",
     "type": "Application",
-    "risk": "High",
+    "suspicion": "High",
     "impact": "Critical",
     "categories": ["Availability"],
     "reason": "Abuse: disable every account, including break-glass, and hold the tenant to ransom. High: tenant-wide availability impact comparable to Global Administrator."
@@ -894,7 +894,7 @@
     "id": "eccc023d-eccf-4e7b-9683-8813ab36cecc",
     "name": "User.DeleteRestore.All",
     "type": "Application",
-    "risk": "High",
+    "suspicion": "High",
     "impact": "Critical",
     "categories": ["Availability"],
     "reason": "Abuse: delete every account, including break-glass, and hold the tenant to ransom. High: tenant-wide availability impact comparable to Global Administrator."
@@ -904,7 +904,7 @@
     "id": "af2bf46f-7bf1-4be3-8bad-e17e279e8462",
     "name": "SecurityIdentitiesActions.ReadWrite.All",
     "type": "Application",
-    "risk": "High",
+    "suspicion": "High",
     "impact": "High",
     "categories": ["Availability"],
     "reason": "Abuse: disable accounts or mark every user compromised through Defender for Identity actions. High: tenant-wide availability impact."
@@ -914,7 +914,7 @@
     "id": "7fc588a2-ea2d-4d1f-bcf7-33c324b149b8",
     "name": "SignInIdentifier.ReadWrite.All",
     "type": "Application",
-    "risk": "Medium",
+    "suspicion": "Medium",
     "impact": "Medium",
     "categories": ["PrivilegeEscalation"],
     "reason": "Abuse: change a controlled account's UPN to fall into a dynamic group with privileged access. Medium: depends on dynamic group rules in the tenant."
@@ -924,7 +924,7 @@
     "id": "9255e99d-faf5-445e-bbf7-cb71482737c4",
     "name": "DeviceManagementScripts.ReadWrite.All",
     "type": "Application",
-    "risk": "High",
+    "suspicion": "High",
     "impact": "Critical",
     "categories": ["PrivilegeEscalation", "Integrity"],
     "reason": "Abuse: deploy PowerShell or shell scripts that run as SYSTEM on managed devices, including admin workstations. High: code execution across the device fleet."
@@ -934,7 +934,7 @@
     "id": "9b50c33d-700f-43b1-b2eb-87e89b703581",
     "name": "Synchronization.ReadWrite.All",
     "type": "Application",
-    "risk": "Medium",
+    "suspicion": "Medium",
     "impact": "Medium",
     "categories": ["Integrity"],
     "reason": "Abuse: reconfigure provisioning and cloud sync jobs and their attribute mappings. Medium: abuse paths are not well researched, but the scope reaches identity sync."
@@ -944,7 +944,7 @@
     "id": "ef54d2bf-783f-4e0f-bca1-3210c0444d99",
     "name": "Calendars.ReadWrite.All",
     "type": "Application",
-    "risk": "High",
+    "suspicion": "High",
     "impact": "High",
     "categories": ["DataAccess", "Integrity"],
     "reason": "Abuse: read/write every mailbox calendar on EXO resource—meeting intel, invite injection, availability exfil. High: OAuth abuse surface per Microsoft/defender guidance."
@@ -954,7 +954,7 @@
     "id": "f9156939-25cd-4ba8-abfe-7fabcf003749",
     "name": "MailboxSettings.ReadWrite",
     "type": "Application",
-    "risk": "Medium",
+    "suspicion": "Medium",
     "impact": "High",
     "categories": ["DataAccess", "Integrity"],
     "reason": "Abuse: alter forwarding, OOF, locale, and mailbox settings tenant-wide—persistence and mail redirection without Mail.Send. Medium: common on EXO tooling."
@@ -964,7 +964,7 @@
     "id": "dc50a0fb-09a3-484d-be87-e023b12c6440",
     "name": "Exchange.ManageAsApp",
     "type": "Application",
-    "risk": "Critical",
+    "suspicion": "Critical",
     "impact": "Critical",
     "categories": ["PrivilegeEscalation", "DataAccess", "Integrity", "Availability"],
     "reason": "Abuse: full Exchange org administration as app—mail flow, RBAC, mailboxes, transport. Critical: mail-plane tier-0; no Graph equivalent granularity."
@@ -974,7 +974,7 @@
     "id": "ea3d980d-ebc7-4be4-8298-a167e5b8797c",
     "name": "Exchange.ManageAsAppV2",
     "type": "Application",
-    "risk": "High",
+    "suspicion": "High",
     "impact": "Critical",
     "categories": ["DataAccess", "Integrity"],
     "reason": "Abuse: preview name of Exchange.AdminAPI.ManageAsApp—grant folder permissions (Inbox, Calendar) and Send on behalf on any mailbox the app's Exchange role covers. High: persistent mailbox access and BEC that survives app removal; needs an Exchange RBAC role."
@@ -984,7 +984,7 @@
     "id": "95930782-af91-4e2e-89b7-e34ce33a0450",
     "name": "Exchange.AdminAPI.ManageAsApp",
     "type": "Application",
-    "risk": "Critical",
+    "suspicion": "Critical",
     "impact": "Critical",
     "categories": ["DataAccess", "Integrity"],
     "reason": "Abuse: Exchange Admin API as app—grant folder permissions (Inbox, Calendar) and Send on behalf on any mailbox the app's Exchange role covers. Critical: persistent mailbox access and BEC that survives app removal; needs an Exchange RBAC role. The rating is partly forward-looking: Microsoft is expanding this API to replace EWS, so new endpoints are expected to land under this same permission without a new consent."
@@ -994,7 +994,7 @@
     "id": "9f021f4d-e924-4317-bf46-8db5e8340c6c",
     "name": "Exchange.AdminAPI.Manage",
     "type": "Delegated",
-    "risk": "Medium",
+    "suspicion": "Medium",
     "impact": "High",
     "categories": ["DataAccess", "Integrity"],
     "reason": "Abuse: consented app adds attacker access to the user's folders or Send on behalf list via the Exchange Admin API. Medium: user-consentable, and the delegation persists after the grant is revoked."
@@ -1004,7 +1004,7 @@
     "id": "44d6b5f2-d42b-4fa7-b999-1c5fcab98e4d",
     "name": "Exchange.ManageV2",
     "type": "Delegated",
-    "risk": "Medium",
+    "suspicion": "Medium",
     "impact": "High",
     "categories": ["DataAccess", "Integrity"],
     "reason": "Abuse: preview name of Exchange.AdminAPI.Manage—consented app adds attacker access to the user's folders or Send on behalf list. Medium: user-consentable, and the delegation persists after the grant is revoked."
@@ -1014,7 +1014,7 @@
     "id": "ab4f2b77-0b06-4fc1-a9de-02113fc2ab7c",
     "name": "Exchange.Manage",
     "type": "Delegated",
-    "risk": "High",
+    "suspicion": "High",
     "impact": "Critical",
     "categories": ["PrivilegeEscalation", "DataAccess", "Integrity", "Availability"],
     "reason": "Abuse: run Exchange Online PowerShell cmdlets as the signed-in user—transport rules, forwarding, mailbox permissions. Only abusable when that identity holds an Exchange admin role; cmdlets are limited to the user's own Exchange RBAC. High: with an Exchange admin signing in, the app holds the whole mail plane."
@@ -1024,7 +1024,7 @@
     "id": "3b5f3d61-589b-4a3c-a359-5dd4b5ee5bd5",
     "name": "EWS.AccessAsUser.All",
     "type": "Delegated",
-    "risk": "Medium",
+    "suspicion": "Medium",
     "impact": "Medium",
     "categories": ["DataAccess", "Integrity"],
     "reason": "Abuse: full EWS access to the signed-in user's mailbox via the Exchange Online resource. No admin role needed; limited to mailboxes the user can already open. Medium: same as the Graph version."
@@ -1034,7 +1034,7 @@
     "id": "75767999-c7a8-481e-a6b4-19458e0b30a5",
     "name": "Mail.ReadWrite",
     "type": "Delegated",
-    "risk": "Medium",
+    "suspicion": "Medium",
     "impact": "Medium",
     "categories": ["DataAccess", "Integrity"],
     "reason": "Abuse: read, change, and delete mail as the signed-in user via the Exchange Online resource. No admin role needed; limited to mailboxes the user can already open. Medium: same as the Graph version."
@@ -1044,7 +1044,7 @@
     "id": "5eb43c10-865a-4259-960a-83946678f8dd",
     "name": "Mail.Send",
     "type": "Delegated",
-    "risk": "Medium",
+    "suspicion": "Medium",
     "impact": "Medium",
     "categories": ["Integrity"],
     "reason": "Abuse: send mail as the signed-in user via the Exchange Online resource. No admin role needed; limited to the user's own mailbox and mailboxes they have Send As on. Medium: same as the Graph version."
@@ -1054,7 +1054,7 @@
     "id": "dc890d15-9560-4a4c-9b7f-a736ec74ec40",
     "name": "full_access_as_app",
     "type": "Application",
-    "risk": "Critical",
+    "suspicion": "Critical",
     "impact": "Critical",
     "categories": ["DataAccess", "Integrity"],
     "reason": "Abuse: EWS full access to every mailbox—read, change, delete, and send as any user. Critical: the app-only mailbox takeover used in high-profile intrusions."
@@ -1064,7 +1064,7 @@
     "id": "b633e1c5-b582-4048-a93e-9f11b44c7e96",
     "name": "Mail.Send",
     "type": "Application",
-    "risk": "Critical",
+    "suspicion": "Critical",
     "impact": "Critical",
     "categories": ["Integrity"],
     "reason": "Abuse: send as any mailbox through the Exchange Online resource. Critical: same BEC impact as Graph Mail.Send."
@@ -1074,7 +1074,7 @@
     "id": "e2a3a72e-5f79-4c64-b1b1-878b674786c9",
     "name": "Mail.ReadWrite",
     "type": "Application",
-    "risk": "High",
+    "suspicion": "High",
     "impact": "Critical",
     "categories": ["DataAccess", "Integrity"],
     "reason": "Abuse: read, change, or delete mail in every mailbox through the Exchange Online resource. High: same as Graph Mail.ReadWrite."
@@ -1084,7 +1084,7 @@
     "id": "810c84a8-4a9e-49e6-bf7d-12d183f40d01",
     "name": "Mail.Read",
     "type": "Application",
-    "risk": "Low",
+    "suspicion": "Low",
     "impact": "Critical",
     "categories": ["DataAccess"],
     "reason": "Abuse: read all mail through the Exchange Online resource. Low: same as Graph Mail.Read; common on backup and archiving products."
@@ -1094,7 +1094,7 @@
     "id": "6918b873-d17a-4dc1-b314-35f528134491",
     "name": "Contacts.ReadWrite",
     "type": "Application",
-    "risk": "High",
+    "suspicion": "High",
     "impact": "Medium",
     "categories": ["Integrity"],
     "reason": "Abuse: forge contacts in every mailbox through the Exchange Online resource. High: same social-engineering impact as Graph Contacts.ReadWrite."
@@ -1104,7 +1104,7 @@
     "id": "7146a1f0-8703-45b3-9eae-527a64c00995",
     "name": "SMTP.SendAsApp",
     "type": "Application",
-    "risk": "Medium",
+    "suspicion": "Medium",
     "impact": "Medium",
     "categories": ["Integrity"],
     "reason": "Abuse: send mail over SMTP AUTH as mailboxes the app was granted. Medium: needs per-mailbox Exchange permissions for the service principal."
@@ -1114,7 +1114,7 @@
     "id": "5e5addcd-3e8d-4e90-baf5-964efab2b20a",
     "name": "IMAP.AccessAsApp",
     "type": "Application",
-    "risk": "Medium",
+    "suspicion": "Medium",
     "impact": "Medium",
     "categories": ["DataAccess", "Integrity"],
     "reason": "Abuse: read and change mail over IMAP in mailboxes the app was granted. Medium: needs per-mailbox Exchange permissions for the service principal."
@@ -1124,7 +1124,7 @@
     "id": "cb842b43-da6e-4506-86fe-bb12199c656d",
     "name": "POP.AccessAsApp",
     "type": "Application",
-    "risk": "Medium",
+    "suspicion": "Medium",
     "impact": "Medium",
     "categories": ["DataAccess"],
     "reason": "Abuse: download mail over POP from mailboxes the app was granted. Medium: needs per-mailbox Exchange permissions for the service principal."

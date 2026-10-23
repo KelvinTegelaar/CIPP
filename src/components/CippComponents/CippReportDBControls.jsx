@@ -13,7 +13,8 @@ import { CippQueueTracker } from "../CippTable/CippQueueTracker";
  * @param {Object} config
  * @param {string} config.apiUrl          - Base API URL without query params (e.g. "/api/ListMailboxes")
  * @param {string} config.queryKey        - Base query key (e.g. "ListMailboxes")
- * @param {string} config.cacheName       - Cache type name for sync (e.g. "Mailboxes", "IntunePolicies")
+ * @param {string|string[]} config.cacheName - Cache type name for sync (e.g. "Mailboxes"), or several when the
+ *   report is built from more than one cache; Sync then runs each of them.
  * @param {string} config.syncTitle       - Title for the sync dialog (e.g. "Sync Mailboxes")
  * @param {string} [config.syncConfirmText] - Custom confirm text. Default auto-generated from cacheName + tenant.
  * @param {Object} [config.syncData]      - Extra data to pass to ExecCIPPDBCache. Merged with { Name: cacheName }.
@@ -134,9 +135,10 @@ export function useCippReportDB(config) {
         ? 'Showing cached data — click to switch to live'
         : 'Showing live data — click to switch to cache'
 
+  const cacheNames = Array.isArray(cacheName) ? cacheName : [cacheName]
   const confirmText =
     syncConfirmText ||
-    `Run ${cacheName} cache sync for ${currentTenant}? This will update data immediately.`
+    `Run ${cacheNames.join(', ')} cache sync for ${currentTenant}? This will update data immediately.`
 
   // The controls JSX
   const controls = (
@@ -190,10 +192,23 @@ export function useCippReportDB(config) {
         confirmText,
         relatedQueryKeys: [`${queryKey}-${currentTenant}-true`],
         data: {
-          Name: cacheName,
+          Name: cacheNames[0],
           ...(cacheName === "Mailboxes" ? { Types: "None" } : {}),
           ...(syncData || {}),
         },
+        // One request per cache type; the queue tracker follows the last one started.
+        // multiPost: false is what makes CippApiDialog send a GET array as separate requests.
+        ...(cacheNames.length > 1
+          ? {
+              multiPost: false,
+              customDataformatter: () =>
+                cacheNames.map((name) => ({
+                  tenantFilter: currentTenant,
+                  Name: name,
+                  ...(syncData || {}),
+                })),
+            }
+          : {}),
         onSuccess: handleSyncSuccess,
       }}
     />

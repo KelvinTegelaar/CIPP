@@ -10,6 +10,7 @@ import tabOptions from './tabOptions'
 import { CippCopyToClipBoard } from '../../../../../components/CippComponents/CippCopyToClipboard'
 import { Box } from '@mui/system'
 import { Typography, Button, Alert } from '@mui/material'
+import { CippEnterpriseAppStatusChip } from '../../../../../components/CippComponents/CippEnterpriseAppStatusChip'
 import { CippTimeAgo } from '../../../../../components/CippComponents/CippTimeAgo'
 import { useEffect, useMemo, useState } from 'react'
 import { CippHead } from '../../../../../components/CippComponents/CippHead'
@@ -68,6 +69,9 @@ const Page = () => {
   const subtitle =
     spRequest.isSuccess && spData
       ? [
+          {
+            component: <CippEnterpriseAppStatusChip accountEnabled={spData?.accountEnabled} />,
+          },
           {
             icon: <CippIcons.Badge />,
             text: <CippCopyToClipBoard type="chip" text={spData?.appId || 'N/A'} />,
