@@ -329,6 +329,57 @@ const Page = () => {
     ]
   }
 
+  // Prepare device action history, newest first. Action results can carry secrets
+  // (a reset passcode), so only the name, state and times are kept.
+  const deviceActionRows = [...(deviceData?.deviceActionResults ?? [])]
+    .sort((a, b) => new Date(b.startDateTime ?? 0) - new Date(a.startDateTime ?? 0))
+    .map((result) => ({
+      actionName: (result.actionName ?? 'Unknown action')
+        .replace(/([a-z])([A-Z])/g, '$1 $2')
+        .replace(/^./, (c) => c.toUpperCase()),
+      actionState: result.actionState,
+      startDateTime: result.startDateTime,
+      lastUpdatedDateTime: result.lastUpdatedDateTime,
+    }))
+  const pendingActionCount = deviceActionRows.filter((r) => r.actionState === 'pending').length
+  const failedActionCount = deviceActionRows.filter((r) => r.actionState === 'failed').length
+  let actionHistoryItems = []
+  if (deviceActionRows.length > 0) {
+    actionHistoryItems = [
+      {
+        id: 1,
+        cardLabelBox: {
+          cardLabelBoxHeader: failedActionCount > 0 ? <CippIcons.Warning /> : <CippIcons.CheckCircle />,
+        },
+        text: 'Device Actions',
+        subtext: `${deviceActionRows.length} action(s) recorded${
+          pendingActionCount > 0 ? `, ${pendingActionCount} pending` : ''
+        }${failedActionCount > 0 ? `, ${failedActionCount} failed` : ''}`,
+        statusText: `${deviceActionRows.length} Action(s)`,
+        statusColor: failedActionCount > 0 ? 'warning.main' : 'info.main',
+        table: {
+          title: 'Device Actions',
+          hideTitle: true,
+          data: deviceActionRows,
+          simpleColumns: ['actionName', 'actionState', 'startDateTime', 'lastUpdatedDateTime'],
+          refreshFunction: () => deviceRequest.refetch(),
+        },
+      },
+    ]
+  } else {
+    actionHistoryItems = [
+      {
+        id: 1,
+        cardLabelBox: '-',
+        text: 'No device actions recorded',
+        subtext: 'Actions such as sync, reboot or remediation runs appear here once queued.',
+        statusColor: 'warning.main',
+        statusText: 'No Actions',
+        propertyItems: [],
+      },
+    ]
+  }
+
   // Prepare detected apps items
   let detectedAppsItems = []
   if (detectedApps.length > 0) {
@@ -778,6 +829,12 @@ const Page = () => {
                 <CippBannerListCard
                   isFetching={deviceBulkRequest.isPending}
                   items={groupMembershipItems}
+                  isCollapsible={true}
+                />
+                <Typography variant="h6">Action History</Typography>
+                <CippBannerListCard
+                  isFetching={deviceRequest.isFetching}
+                  items={actionHistoryItems}
                   isCollapsible={true}
                 />
               </Stack>
