@@ -2171,7 +2171,7 @@ const Page = () => {
         </Stack>
       ),
       confirmText:
-        'Run [templateName] now? Pick a single covered tenant, or All Tenants in Template for the whole assignment. Standards in report-only stages are compared without changes. This baseline's configuration is applied as-is: settings from other assigned baselines (even more specific ones) and tenant overrides are ignored for this run.',
+        'Run [templateName] now? Pick a single covered tenant, or All Tenants in Template for the whole assignment. Standards in report-only stages are compared without changes. The configuration in this baseline is applied as-is: settings from other assigned baselines (even more specific ones) and tenant overrides are ignored for this run.',
       multiPost: false,
       relatedQueryKeys,
     },
