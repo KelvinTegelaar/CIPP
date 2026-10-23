@@ -398,6 +398,47 @@ const Page = () => {
     ]
   }
 
+  // Enrollment configurations that applied when the device enrolled; the report has no status
+  const enrollmentRows = reportRows('enrollment').map((policy) => ({
+    profileName: policy.ProfileName,
+    policyType: policy.PolicyType_loc || policy.PolicyType,
+  }))
+  let enrollmentPolicyItems = []
+  if (enrollmentRows.length > 0) {
+    enrollmentPolicyItems = [
+      {
+        id: 'enrollment',
+        cardLabelBox: { cardLabelBoxHeader: <CippIcons.CheckCircle /> },
+        text: 'Enrollment Configurations',
+        subtext: `${countOf(enrollmentRows.length, 'configuration', 'configurations')} applied at enrollment`,
+        statusText: countOf(enrollmentRows.length, 'Configuration', 'Configurations'),
+        statusColor: 'success.main',
+        table: {
+          title: 'Enrollment Configurations',
+          hideTitle: true,
+          data: enrollmentRows,
+          simpleColumns: ['profileName', 'policyType'],
+          refreshFunction: () => policyReport.refetch(),
+        },
+      },
+    ]
+  } else if (reportFailed('enrollment')) {
+    enrollmentPolicyItems = [
+      {
+        id: 'enrollment',
+        cardLabelBox: '!',
+        text: 'Error loading enrollment configurations',
+        subtext: reportError(
+          'enrollment',
+          'Unable to load enrollment configurations. Try refreshing the device.'
+        ),
+        statusColor: 'error.main',
+        statusText: 'Error',
+        propertyItems: [],
+      },
+    ]
+  }
+
   // Prepare device action history, newest first. Action results can carry secrets
   // (a reset passcode), so only the name, state and times are kept.
   const deviceActionRows = [...(deviceData?.deviceActionResults ?? [])]
@@ -876,7 +917,11 @@ const Page = () => {
                 <Typography variant="h6">Policies</Typography>
                 <CippBannerListCard
                   isFetching={policyReport.isFetching}
-                  items={[...compliancePolicyItems, ...configurationPolicyItems]}
+                  items={[
+                    ...compliancePolicyItems,
+                    ...configurationPolicyItems,
+                    ...enrollmentPolicyItems,
+                  ]}
                   isCollapsible={true}
                 />
                 <Typography variant="h6">Detected Applications</Typography>
