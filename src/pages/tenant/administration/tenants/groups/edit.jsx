@@ -65,6 +65,7 @@ const Page = () => {
               valueForForm = rule.value.map((item) => ({
                 label: item.label || item.value || item,
                 value: item.value || item,
+                guid: item.guid,
               }));
               // For single selection operators, take just the first item
               if (rule.operator === "eq" || rule.operator === "ne") {
@@ -75,6 +76,7 @@ const Page = () => {
               valueForForm = {
                 label: rule.value.label || rule.value.value,
                 value: rule.value.value,
+                guid: rule.value.guid,
               };
             } else {
               // Simple value
