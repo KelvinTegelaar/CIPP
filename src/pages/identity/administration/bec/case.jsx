@@ -350,7 +350,14 @@ const Page = () => {
           />
         )}
 
-        {becData && <CippBecRemediationHistory becData={becData} />}
+        {becData && (
+          <CippBecRemediationHistory
+            becData={becData}
+            tenantFilter={tenant}
+            userPrincipalName={userData?.userPrincipalName}
+            relatedQueryKeys={[`ListBECReports-${tenant}-${userId}`]}
+          />
+        )}
         {runState === 'waiting' && (
           <CippBecRemediationHistory
             becData={{ Run: { Containment: poll?.Containment } }}

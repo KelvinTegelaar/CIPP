@@ -214,8 +214,8 @@ export const CippBecContainmentDrawer = ({
   })
 
   // The run is a background task reporting per-action progress like offboarding does; once it finishes, refresh
-  // the case so the remediation history picks up the result. Memoized so CippApiResults does not
-  // re-arm the poll on every render.
+  // the case so the remediation history picks up the result, and the catalog so a copy cached before an
+  // upgrade cannot hide Release user. Memoized so CippApiResults does not re-arm the poll on every render.
   const queryClient = useQueryClient()
   const relatedKeysJoined = relatedQueryKeys.join('|')
   const jobProgress = useMemo(
@@ -224,7 +224,11 @@ export const CippBecContainmentDrawer = ({
       title: 'Remediation progress',
       url: (id) => `/api/ListOffboardingProgress?DeploymentId=${id}`,
       onComplete: () =>
-        [`execBECCheck-polling-${caseId}`, ...relatedKeysJoined.split('|')]
+        [
+          `execBECCheck-polling-${caseId}`,
+          'ListBECRemediationActions',
+          ...relatedKeysJoined.split('|'),
+        ]
           .filter(Boolean)
           .forEach((key) => queryClient.invalidateQueries({ queryKey: [key] })),
     }),
