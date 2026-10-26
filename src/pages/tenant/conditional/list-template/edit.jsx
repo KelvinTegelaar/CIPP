@@ -126,7 +126,7 @@ const EditCATemplate = () => {
 
   // Build a data formatter that works for both editor modes
   const builderDataFormatter = (values) => {
-    const cleaned = extractCAPolicyJSON(values);
+    const cleaned = extractCAPolicyJSON(values, templateData);
     return { GUID, ...cleaned };
   };
 
