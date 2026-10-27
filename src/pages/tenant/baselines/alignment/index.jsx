@@ -958,11 +958,23 @@ const Page = () => {
       url: '/api/ExecBaselineRun',
       icon: <CippIcons.PlayArrow />,
       color: 'success',
-      data: {
-        mode: '!oneoff',
-        tenantFilter: 'tenantFilter',
-        standard: 'standardName',
-      },
+      // One request per tenant: the backend refuses a second CA deploy for a tenant while one runs.
+      customDataformatter: (rows) =>
+        Array.isArray(rows)
+          ? [...new Set(rows.map((row) => row.tenantFilter))].map(
+              (tenantFilter) => ({
+                mode: 'oneoff',
+                tenantFilter,
+                standard: rows
+                  .filter((row) => row.tenantFilter === tenantFilter)
+                  .map((row) => row.standardName),
+              })
+            )
+          : {
+              mode: 'oneoff',
+              tenantFilter: rows.tenantFilter,
+              standard: rows.standardName,
+            },
       confirmText:
         'Fix [standardLabel] on [tenantFilter] now? CIPP immediately applies the configured expected value.',
       multiPost: false,
