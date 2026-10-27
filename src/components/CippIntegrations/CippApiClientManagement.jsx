@@ -164,7 +164,7 @@ const CippApiClientManagement = () => {
     if (!azureConfig.isSuccess || !apiClients.isSuccess) return false;
     return !isEqual(
       (apiClients.data?.pages?.[0]?.Results || [])
-        .filter((c) => c.Enabled)
+        .filter((c) => String(c.Enabled).toLowerCase() === "true")
         .map((c) => c.ClientId)
         .sort(),
       (azureConfig.data?.Results?.ClientIDs || []).sort()
