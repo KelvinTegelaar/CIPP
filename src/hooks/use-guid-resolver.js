@@ -401,7 +401,8 @@ export const useGuidResolver = (manualTenant = null) => {
       const { guidsSet, partnerGuidsMap } = findGuids(objectToScan);
 
       // Handle regular GUIDs (current tenant) - these should NOT include partner tenant GUIDs
-      if (guidsSet.size > 0) {
+      // AllTenants is not a directory to look GUIDs up in.
+      if (guidsSet.size > 0 && activeTenant && activeTenant !== "AllTenants") {
         const guidsArray = Array.from(guidsSet);
         const notResolvedGuids = guidsArray.filter(
           (guid) => !guidMapping[guid] && !notFoundGuidsRef.current.has(guid)

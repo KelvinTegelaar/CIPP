@@ -1088,6 +1088,12 @@ export const nativeMenuItems = [
             permissions: ['CIPP.IPDatabase.*'],
             scope: 'global',
           },
+          {
+            title: 'Compare CA Policies',
+            path: '/tenant/tools/compare-ca-policies',
+            permissions: ['Tenant.ConditionalAccess.*'],
+            scope: 'global',
+          },
         ],
       },
       {
