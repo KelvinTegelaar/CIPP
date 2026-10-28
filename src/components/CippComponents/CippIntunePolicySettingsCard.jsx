@@ -42,6 +42,7 @@ export const CippIntunePolicySettingsCard = ({
     removeSetting,
     addGroupRow,
     removeGroupRow,
+    templateSettings,
   } = editor
 
   return (
@@ -181,6 +182,7 @@ export const CippIntunePolicySettingsCard = ({
         platform={platform}
         technology={technology}
         existingIds={collectSettingDefinitionIds(policy)}
+        templateSettings={templateSettings}
       />
     </Card>
   )

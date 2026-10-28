@@ -96,4 +96,48 @@ describe('useIntunePolicyEditor', () => {
     expect(added).toBe(false)
     expect(enabledValue(result.current.policy).value).toBe(forceListDisabled)
   })
+
+  it("stamps the template's references on a setting added to a template-based policy", async () => {
+    const fetchMock = vi.fn(async () => ({
+      ok: true,
+      json: async () => ({
+        settingTemplates: [
+          {
+            settingInstanceTemplate: {
+              settingDefinitionId: forceListDefinition.id,
+              settingInstanceTemplateId: 'instance-template',
+              choiceSettingValueTemplate: {
+                settingValueTemplateId: 'value-template',
+              },
+            },
+          },
+        ],
+      }),
+    }))
+    vi.stubGlobal('fetch', fetchMock)
+    const { result } = renderHook(() =>
+      useHarness({
+        templateReference: { templateId: 'template_1' },
+        settings: [],
+      })
+    )
+    await waitFor(() =>
+      expect(result.current.editor.templateSettings).toBeTruthy()
+    )
+
+    act(() => {
+      result.current.editor.addSetting(forceListDefinition, forceListChildren)
+    })
+
+    const instance = result.current.policy.settings[0].settingInstance
+    expect(fetchMock).toHaveBeenCalledWith('/intune-templates/template_1.json')
+    expect(instance.settingInstanceTemplateReference).toEqual({
+      settingInstanceTemplateId: 'instance-template',
+    })
+    expect(instance.choiceSettingValue.settingValueTemplateReference).toEqual({
+      settingValueTemplateId: 'value-template',
+      useTemplateDefault: false,
+    })
+    vi.unstubAllGlobals()
+  })
 })

@@ -74,6 +74,7 @@ export const CippIntuneSettingPicker = ({
   platform,
   technology,
   existingIds = EMPTY_EXISTING,
+  templateSettings,
 }) => {
   const [search, setSearch] = useState('')
   const [debounced, setDebounced] = useState('')
@@ -100,6 +101,18 @@ export const CippIntuneSettingPicker = ({
     () => new Map(rows.map((row) => [row.id, row])),
     [rows]
   )
+
+  // A template-based policy only accepts the settings its template defines; deployment drops the rest.
+  const pickableRows = useMemo(() => {
+    if (!templateSettings) return rows
+    return rows.filter((row) => {
+      let root = row
+      for (let depth = 0; root.parentId && depth < MAX_DEPTH; depth++) {
+        root = rowsById.get(root.parentId) ?? { id: root.parentId }
+      }
+      return templateSettings.has(root.id)
+    })
+  }, [rows, rowsById, templateSettings])
 
   // A setting that only exists beneath another is added through its top-level setting, built with
   // the options that lead down to it.
@@ -131,11 +144,11 @@ export const CippIntuneSettingPicker = ({
     () =>
       debounced.length < 2
         ? []
-        : searchSettingIndex(rows, debounced, {
+        : searchSettingIndex(pickableRows, debounced, {
             technology,
             excludeIds: existingIds,
           }),
-    [rows, debounced, technology, existingIds]
+    [pickableRows, debounced, technology, existingIds]
   )
   const results = matches.slice(0, MAX_RESULTS)
 
