@@ -188,7 +188,7 @@ const mergeKeys = (dataArray) => {
           !skipRecursion.includes(key)
         ) {
           if (typeof base[key] === 'boolean') return // don't merge into a boolean
-          if (typeof base[key] !== 'object' || Array.isArray(base[key])) base[key] = {}
+          if (base[key] === null || typeof base[key] !== 'object' || Array.isArray(base[key])) base[key] = {}
           base[key] = mergeRecursive(obj[key], base[key])
         } else if (typeof obj[key] === 'boolean') {
           base[key] = obj[key]
@@ -197,6 +197,9 @@ const mergeKeys = (dataArray) => {
           base[key] = base[key]
         } else if (obj[key] !== undefined && obj[key] !== null) {
           base[key] = obj[key]
+        } else if (!(key in base)) {
+          // An empty value still makes a column, or a filter on it is silently dropped
+          base[key] = null
         }
       })
       return base
@@ -249,7 +252,16 @@ export const utilColumnsFromAPI = (dataArray) => {
           .map((r) => resolveValue(r))
           .filter((v) => v !== undefined && v !== null)
 
-        const sampleValue = valuesForColumn.length ? valuesForColumn[0] : undefined
+        // A column empty across the sample still takes its type from the first row that has a value
+        const firstRowWithValue = valuesForColumn.length
+          ? undefined
+          : dataArray.find((r) => {
+              const v = resolveValue(r)
+              return v !== undefined && v !== null
+            })
+        const sampleValue = valuesForColumn.length
+          ? valuesForColumn[0]
+          : firstRowWithValue && resolveValue(firstRowWithValue)
 
         // Measure content width from formatted text values for this column.
         const textValues = valuesForColumn.map((v) => getCippFormatting(v, accessorKey, 'text'))

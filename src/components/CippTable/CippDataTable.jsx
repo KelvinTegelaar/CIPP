@@ -45,7 +45,7 @@ import { useSettings } from '../../hooks/use-settings'
 import { parseCippDate } from '../../utils/parse-cipp-date'
 import { isEqual } from 'lodash' // Import lodash for deep comparison
 import { useLicenseBackfill } from '../../hooks/use-license-backfill'
-import { licenseIncludesFilterFn } from '../../utils/get-cipp-filter-variant'
+import { booleanEqualsFilterFn, licenseIncludesFilterFn } from '../../utils/get-cipp-filter-variant'
 import { useTableViewMode, useIsNarrowForTables } from '../../hooks/use-breakpoint'
 import { CippMobileCardList } from './CippMobileCardList'
 import { CippPageActionsFab } from '../CippComponents/CippPageActionsFab'
@@ -268,6 +268,7 @@ const FILTER_FNS = {
     return String(rowValue).toLowerCase().includes(String(value).toLowerCase())
   },
   licenseIncludes: licenseIncludesFilterFn,
+  booleanEquals: booleanEqualsFilterFn,
   notContains: (row, columnId, value) => {
     const rowValue = row.getValue(columnId)
     if (rowValue === null || rowValue === undefined) {
@@ -310,6 +311,7 @@ const MRT_LOCALIZATION_OVERRIDES = {
   filterNotContains: 'Does Not Contain',
   filterRegex: 'Regex',
   filterLicenseIncludes: 'Includes',
+  filterBooleanEquals: 'Equals',
   filterCustom: 'Custom',
 }
 

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { getCippFilterVariant } from '../../src/utils/get-cipp-filter-variant'
+import { booleanEqualsFilterFn, getCippFilterVariant } from '../../src/utils/get-cipp-filter-variant'
 
 describe('getCippFilterVariant array columns', () => {
   it('sorts arrays of objects (rendered as the items button) by item count', () => {
@@ -46,5 +46,27 @@ describe('getCippFilterVariant array columns', () => {
       values: [[], []],
     })
     expect(result).toBeUndefined()
+  })
+})
+
+describe('boolean columns', () => {
+  it('filter on the raw value rather than the formatted cell text', () => {
+    expect(getCippFilterVariant('MFARegistration', { sampleValue: false, values: [false] }).filterFn).toBe(
+      'booleanEquals'
+    )
+  })
+
+  it('match Yes and No against true, false and their string forms, never against an empty value', () => {
+    const row = (value) => ({ original: { MFARegistration: value } })
+    expect(booleanEqualsFilterFn(row(false), 'MFARegistration', 'No')).toBe(true)
+    expect(booleanEqualsFilterFn(row(true), 'MFARegistration', 'No')).toBe(false)
+    expect(booleanEqualsFilterFn(row(true), 'MFARegistration', 'Yes')).toBe(true)
+    expect(booleanEqualsFilterFn(row('False'), 'MFARegistration', 'No')).toBe(true)
+    expect(booleanEqualsFilterFn(row(null), 'MFARegistration', 'No')).toBe(false)
+    expect(booleanEqualsFilterFn(row(null), 'MFARegistration', 'Yes')).toBe(false)
+  })
+
+  it('resolve nested column paths', () => {
+    expect(booleanEqualsFilterFn({ original: { a: { b: true } } }, 'a.b', 'Yes')).toBe(true)
   })
 })
