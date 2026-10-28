@@ -364,7 +364,7 @@ export const AllTenantsDashboard = () => {
               subheader="Tenants bucketed by combined alignment score"
               api={alignmentApi}
               action={
-                <Button component={Link} href="/tenant/standards/alignment" size="small">
+                <Button component={Link} href={alignment.path} size="small">
                   View
                 </Button>
               }
@@ -490,7 +490,7 @@ export const AllTenantsDashboard = () => {
               value={alignment.pendingDeviations}
               label="Standards deviations awaiting approval"
               meta={`${alignment.pendingTenantCount} tenants`}
-              link="/tenant/standards/alignment"
+              link={alignment.path}
             />
           </Grid>
         </Grid>

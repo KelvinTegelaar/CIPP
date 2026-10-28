@@ -263,6 +263,13 @@ export const useAllTenantsDashboard = () => {
     waiting: true,
   })
 
+  // Same key and TTL as the layout's call so react-query serves one shared copy.
+  const featureFlagsApi = ApiGetCall({
+    url: '/api/ListFeatureFlags',
+    queryKey: 'featureFlags',
+    staleTime: 600000,
+  })
+
   // countsOnly returns the aggregates with no rows. Deriving them here pulled the estate's whole
   // failed-test set over the wire, growing linearly with tenant count.
   const failedTestsApi = ApiGetCall({
@@ -390,8 +397,14 @@ export const useAllTenantsDashboard = () => {
       })),
       pendingDeviations: summary.PendingDeviations ?? 0,
       pendingTenantCount: summary.PendingTenantCount ?? 0,
+      // The Baselines flag hides the classic standards pages and the summary then scores baselines.
+      path: asArray(featureFlagsApi.data).some(
+        (flag) => flag.Id === 'Baselines' && flag.Enabled === true
+      )
+        ? '/tenant/baselines/alignment'
+        : '/tenant/standards/alignment',
     }
-  }, [alignmentApi.data])
+  }, [alignmentApi.data, featureFlagsApi.data])
 
   /* ------------------------------------------------------------- test results */
 
