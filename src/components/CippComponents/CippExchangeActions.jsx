@@ -183,7 +183,7 @@ export const CippExchangeActions = () => {
       type: "POST",
       icon: <CippIcons.Archive />,
       url: "/api/ExecEnableArchive",
-      data: { ID: "Id", username: "UPN" },
+      data: { ID: "ExchangeGuid", username: "UPN" },
       confirmText: "Are you sure you want to enable the online archive for [UPN]?",
       multiPost: false,
       condition: (row) => row.ArchiveGuid === "00000000-0000-0000-0000-000000000000",
@@ -237,7 +237,7 @@ export const CippExchangeActions = () => {
       type: "POST",
       icon: <CippIcons.PostAdd />,
       url: "/api/ExecEnableAutoExpandingArchive",
-      data: { ID: "Id", username: "UPN" },
+      data: { ID: "ExchangeGuid", username: "UPN" },
       confirmText:
         "Are you sure you want to enable auto-expanding archive for [UPN]? The archive must already be enabled.",
       multiPost: false,
@@ -312,7 +312,7 @@ export const CippExchangeActions = () => {
       label: "Set Litigation Hold",
       type: "POST",
       url: "/api/ExecSetLitigationHold",
-      data: { UPN: "UPN", Identity: "Id" },
+      data: { UPN: "UPN", Identity: "ExchangeGuid" },
       confirmText: "What do you want to set the Litigation Hold to?",
       icon: <CippIcons.Gavel />,
       condition: (row) => row.LicensedForLitigationHold === true,
@@ -334,7 +334,7 @@ export const CippExchangeActions = () => {
       label: "Set Retention Hold",
       type: "POST",
       url: "/api/ExecSetRetentionHold",
-      data: { UPN: "UPN", Identity: "Id" },
+      data: { UPN: "UPN", Identity: "ExchangeGuid" },
       confirmText: "What do you want to set Retention Hold to?",
       icon: <CippIcons.MailLock />,
       fields: [
@@ -366,7 +366,7 @@ export const CippExchangeActions = () => {
       label: "Set Custom Attributes",
       type: "POST",
       url: "/api/ExecSetMailboxCustomAttributes",
-      data: { userid: "UPN", Identity: "Id" },
+      data: { userid: "UPN", Identity: "ExchangeGuid" },
       confirmText:
         "Set the selected custom attributes on [UPN]? Empty values clear that attribute; unlisted attributes are left unchanged.",
       icon: <CippIcons.Edit />,
@@ -392,7 +392,7 @@ export const CippExchangeActions = () => {
         return mailboxArray.map((mailbox) => ({
           tenantFilter: mailbox.Tenant || mailbox.tenantFilter || tenant,
           userid: mailbox.UPN || mailbox.UserPrincipalName,
-          Identity: mailbox.Id || mailbox.id,
+          Identity: mailbox.ExchangeGuid,
           ...attrs,
         }));
       },
