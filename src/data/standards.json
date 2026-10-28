@@ -9063,12 +9063,14 @@
         "type": "number",
         "name": "standards.SPOVersionControl.MajorVersionLimit",
         "label": "Maximum Major Versions (when auto trim is off)",
+        "required": false,
         "default": 50
       },
       {
         "type": "number",
         "name": "standards.SPOVersionControl.ExpireVersionsAfterDays",
         "label": "Expire Versions After Days (0 = never, otherwise 30-36500, when auto trim is off)",
+        "required": false,
         "default": 0,
         "validators": {
           "min": { "value": 0, "message": "Use 0 for never, or 30 or more days" },
