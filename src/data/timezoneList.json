@@ -36,6 +36,11 @@
     "standardTime": "Mountain Standard Time"
   },
   {
+    "timezone": "(UTC-07:00) Pacific Time (British Columbia)",
+    "standardTime": "British Columbia Standard Time",
+    "sharePointUnsupported": true
+  },
+  {
     "timezone": "(UTC-06:00) Central America",
     "standardTime": "Central America Standard Time"
   },
@@ -52,6 +57,11 @@
     "standardTime": "Canada Central Standard Time"
   },
   {
+    "timezone": "(UTC-06:00) Mountain Time (Alberta)",
+    "standardTime": "Alberta Standard Time",
+    "sharePointUnsupported": true
+  },
+  {
     "timezone": "(UTC-05:00) Bogota, Lima, Quito",
     "standardTime": "SA Pacific Standard Time"
   },
@@ -62,6 +72,11 @@
   {
     "timezone": "(UTC-05:00) Indiana (East)",
     "standardTime": "US Eastern Standard Time"
+  },
+  {
+    "timezone": "(UTC-05:00) Manitoba",
+    "standardTime": "Manitoba Standard Time",
+    "sharePointUnsupported": true
   },
   {
     "timezone": "(UTC-04:30) Caracas",

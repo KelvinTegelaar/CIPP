@@ -6,6 +6,12 @@ import { CippSharedMailboxLicenseAlert } from "./CippSharedMailboxLicenseAlert";
 import CippMailboxCustomAttributeRows, {
   canEditMailboxCustomAttributes,
 } from "./CippMailboxCustomAttributeRows";
+import timezoneList from "../../data/timezoneList.json";
+
+const timezoneOptions = timezoneList.map((tz) => ({
+  label: `${tz.standardTime} - ${tz.timezone}`,
+  value: tz.standardTime,
+}));
 
 export const CippExchangeActions = () => {
   const tenant = useSettings().currentTenant;
@@ -359,6 +365,35 @@ export const CippExchangeActions = () => {
           type: "textField",
           placeholder: "e.g. en-US",
           validators: { required: "Please enter a locale" },
+        },
+      ],
+    },
+    {
+      label: "Migrate Calendar Time Zone",
+      type: "POST",
+      url: "/api/ExecCalendarTimeZoneMigration",
+      data: { UPN: "UPN", Identity: "ExchangeGuid" },
+      confirmText:
+        "Move [UPN] to a new time zone? This sets the mailbox and working hours time zone, then moves the future meetings this mailbox organises to the new time zone at the same local time. Attendees receive a meeting update.",
+      icon: <CippIcons.Schedule />,
+      fields: [
+        {
+          type: "autoComplete",
+          name: "FromTimeZone",
+          label: "Current time zone",
+          multiple: false,
+          creatable: false,
+          options: timezoneOptions,
+          validators: { required: "Please select the current time zone" },
+        },
+        {
+          type: "autoComplete",
+          name: "ToTimeZone",
+          label: "New time zone",
+          multiple: false,
+          creatable: false,
+          options: timezoneOptions,
+          validators: { required: "Please select the new time zone" },
         },
       ],
     },

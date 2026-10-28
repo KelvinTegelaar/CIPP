@@ -41,7 +41,7 @@ const Page = () => {
       tenantInTitle={false}
       apiUrl="/api/ListGeneratedReports"
       queryKey={`${currentTenant}-ListGeneratedReports`}
-      simpleColumns={['TemplateName', 'TenantFilter', 'GeneratedAt', 'Status', 'Sections']}
+      simpleColumns={['TemplateName', 'TenantFilter', 'GeneratedAt', 'Status']}
       actions={actions}
       offCanvas={offCanvas}
       rowOpen={{
