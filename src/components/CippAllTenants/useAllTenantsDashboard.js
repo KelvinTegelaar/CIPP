@@ -300,7 +300,7 @@ export const useAllTenantsDashboard = () => {
   const { checkPermissions } = usePermissions()
   const canReadLogs = checkPermissions(['CIPP.Logs.*'])
 
-  // ListLogs defaults to today's partition when no date is supplied, which keeps this cheap.
+  // ListLogs defaults to today's partition when no date is supplied; the first page is enough here.
   const logsApi = ApiGetCall({
     url: '/api/ListLogs',
     data: { Filter: 'True', Severity: 'Error,Critical' },
@@ -477,7 +477,7 @@ export const useAllTenantsDashboard = () => {
   /* -------------------------------------------------------------------- logs */
 
   const logs = useMemo(() => {
-    const rows = asArray(logsApi.data).filter((row) =>
+    const rows = asArray(logsApi.data?.Results).filter((row) =>
       ['error', 'critical'].includes(String(row?.Severity ?? '').toLowerCase())
     )
 

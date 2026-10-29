@@ -489,7 +489,6 @@ const Page = () => {
         AppId: filters.appId,
         Filter: filterEnabled,
         Tenant: limitedTenant, // Only when the tenant switch is on
-        manualPagination: true, // Page through ListLogs via Metadata.nextLink
         // CippTablePage injects tenantFilter from the tenant selector, but ListLogs reads
         // Tenant instead, and a literal 'AllTenants' tenantFilter would stop
         // ApiGetCallWithPagination from ever fetching page two. Null drops the param.
