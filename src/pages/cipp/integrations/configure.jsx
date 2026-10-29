@@ -28,6 +28,7 @@ import CippIntegrationFieldMapping from "../../../components/CippIntegrations/Ci
 import { CippCardTabPanel } from "../../../components/CippComponents/CippCardTabPanel";
 import CippApiClientManagement from "../../../components/CippIntegrations/CippApiClientManagement";
 import { CippApiEgressCard } from "../../../components/CippIntegrations/CippApiEgressCard";
+import CippIntegrationOAuthConnect from "../../../components/CippIntegrations/CippIntegrationOAuthConnect";
 import CippApiDocumentation from "../../../components/CippIntegrations/CippApiDocumentation";
 import CippMcpManagement, {
   McpFeatureDisabledAlert,
@@ -185,6 +186,10 @@ const Page = () => {
                 {extension.alertText}
               </Alert>
             )}
+            {extension?.id === "NinjaOne" &&
+              integrations?.data?.NinjaOne?.TicketingEnabled === true && (
+                <CippIntegrationOAuthConnect extension="NinjaOne" />
+              )}
             <Stack
               direction="row"
               spacing={2}
