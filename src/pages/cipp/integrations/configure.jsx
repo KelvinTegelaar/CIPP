@@ -90,18 +90,24 @@ const Page = () => {
     ...syncQuery,
   });
 
-  const [haloTestTicketQuery, setHaloTestTicketQuery] = useState({ url: "", waiting: false, queryKey: "" });
-  const actionHaloTestTicketResults = ApiGetCall({
-    ...haloTestTicketQuery,
+  // PSA integrations that can raise a real ticket on demand, keyed by extension id. Each has its
+  // own endpoint because the test ticket is built from that PSA's own settings.
+  const testTicketEndpoints = {
+    HaloPSA: "/api/ExecHaloPSATestTicket",
+    Syncro: "/api/ExecSyncroTestTicket",
+  };
+  const [testTicketQuery, setTestTicketQuery] = useState({ url: "", waiting: false, queryKey: "" });
+  const actionTestTicketResults = ApiGetCall({
+    ...testTicketQuery,
   });
-  const handleHaloTestTicket = () => {
-    if (haloTestTicketQuery.waiting) {
-      actionHaloTestTicketResults.refetch();
+  const handleTestTicket = () => {
+    if (testTicketQuery.waiting) {
+      actionTestTicketResults.refetch();
     }
-    setHaloTestTicketQuery({
-      url: "/api/ExecHaloPSATestTicket",
+    setTestTicketQuery({
+      url: testTicketEndpoints[router.query.id],
       waiting: true,
-      queryKey: `ExecHaloPSATestTicket-${router.query.id}`,
+      queryKey: `ExecPSATestTicket-${router.query.id}`,
     });
   };
   const clearHIBPKey = ApiPostCall({
@@ -226,15 +232,15 @@ const Page = () => {
                   </Button>
                 </Box>
               )}
-              {extension?.id === "HaloPSA" && (
+              {testTicketEndpoints[extension?.id] && (
                 <Box>
                   <Button
                     variant="outlined"
                     color="primary"
-                    onClick={() => handleHaloTestTicket()}
+                    onClick={() => handleTestTicket()}
                     disabled={
-                      actionHaloTestTicketResults?.isLoading ||
-                      integrations?.data?.HaloPSA?.Enabled !== true
+                      actionTestTicketResults?.isLoading ||
+                      integrations?.data?.[extension.id]?.Enabled !== true
                     }
                   >
                     <SvgIcon fontSize="small" style={{ marginRight: "8" }}>
@@ -278,7 +284,7 @@ const Page = () => {
             </Stack>
             <CippApiResults apiObject={actionTestResults} />
             <CippApiResults apiObject={actionSyncResults} />
-            <CippApiResults apiObject={actionHaloTestTicketResults} />
+            <CippApiResults apiObject={actionTestTicketResults} />
             <CippApiResults apiObject={clearHIBPKey} />
             {router.query.id === "cippapi" && <McpFeatureDisabledAlert sx={{ mb: 2 }} />}
             {router.query.id === "cippapi" && mcpAuth.data?.Results?.ResourceConflict && (

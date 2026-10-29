@@ -95,6 +95,15 @@ const AlertWizard = () => {
   // it with the integration disabled just returns an error row. PsaTicketStrategy above has static
   // options and degrades harmlessly, which is why it is not gated the same way.
   const haloEnabled = integrationsConfig?.data?.HaloPSA?.Enabled === true
+  // Syncro has four fixed priorities, so its list is static and needs no API call. When both PSAs
+  // are enabled the dropdown stays Halo's: the stored value is then a Halo priority id, which the
+  // Syncro side recognises as not one of its own and falls back to its integration default.
+  const syncroEnabled = integrationsConfig?.data?.Syncro?.Enabled === true
+  const syncroPriorityOptions = ['0 Urgent', '1 High', '2 Normal', '3 Low'].map((priority) => ({
+    value: priority,
+    label: priority,
+  }))
+  const psaPriorityEnabled = haloEnabled || syncroEnabled
   // Priorities are fetched here rather than by the autocomplete itself for two reasons: the field
   // has to react to what Halo returns (a Ticket Type with no SLA has no priorities to offer, and
   // the field is shown disabled with the reason instead of an empty dropdown), and loading at page
@@ -118,16 +127,20 @@ const AlertWizard = () => {
   const haloPriorityRows = [].concat(
     haloPriorityRequest?.data?.Priorities ?? []
   )
-  const psaPriorityOptions = haloPriorityRows
-    .filter((priority) => Number(priority?.priorityid) > 0)
-    .map((priority) => ({
-      value: Number(priority.priorityid),
-      label: priority.name,
-    }))
+  const psaPriorityOptions = haloEnabled
+    ? haloPriorityRows
+        .filter((priority) => Number(priority?.priorityid) > 0)
+        .map((priority) => ({
+          value: Number(priority.priorityid),
+          label: priority.name,
+        }))
+    : syncroPriorityOptions
   // Settled with nothing pickable, whether that is Halo's own explanatory row (which comes back
   // 200 OK) or the request failing outright. Either way there is no choice to offer, so disable
-  // rather than leave an empty dropdown that looks broken.
+  // rather than leave an empty dropdown that looks broken. Syncro's list is static, so it is
+  // never unavailable.
   const psaPriorityUnavailable =
+    haloEnabled &&
     (haloPriorityRequest.isSuccess || haloPriorityRequest.isError) &&
     !haloPriorityRequest.isFetching &&
     psaPriorityOptions.length === 0
@@ -137,13 +150,20 @@ const AlertWizard = () => {
   const psaPriorityHelperText = psaPriorityUnavailable
     ? (haloPriorityRows.find((priority) => priority?.name)?.name ??
       'Could not load HaloPSA priorities, so none can be chosen here. Tickets from this alert will be created without a per-alert priority.')
-    : "Optional. Overrides the HaloPSA Default Priority for tickets raised by this alert. Restricted to the priorities on the integration Ticket Type's SLA. Leave blank to use the integration default."
+    : haloEnabled
+      ? "Optional. Overrides the HaloPSA Default Priority for tickets raised by this alert. Restricted to the priorities on the integration Ticket Type's SLA. Leave blank to use the integration default."
+      : 'Optional. Overrides the Syncro Default Priority for tickets raised by this alert. Leave blank to use the integration default.'
   // Stored as a bare id string on the alert row. Seed the form with {value: <number>} so
   // CippAutoComplete's resolvedDefaultValue can swap in the real priority name once the options
   // load - it matches on === against a number, so the string form would never resolve. Non-positive
   // ids are hint rows saved before they were filtered out; treat them as unset.
   const toPsaPriorityValue = (stored) => {
     if (stored === undefined || stored === null || stored === '') return null
+    // Syncro priorities are stored as their own strings ('1 High'), so they resolve directly
+    // against the static options rather than through the numeric Halo path below.
+    if (!haloEnabled) {
+      return syncroPriorityOptions.find((option) => option.value === String(stored)) ?? null
+    }
     const numeric = Number(stored)
     if (!Number.isFinite(numeric) || numeric <= 0) return null
     return { value: numeric, label: String(stored) }
@@ -1138,7 +1158,7 @@ const AlertWizard = () => {
                                 options={alertActions}
                               />
                             </Grid>
-                            {haloEnabled && (
+                            {psaPriorityEnabled && (
                               <CippFormCondition
                                 field="Actions"
                                 compareType="valueEq"
@@ -1455,7 +1475,7 @@ const AlertWizard = () => {
                               </Grid>
                             </CippFormCondition>
 
-                            {haloEnabled && (
+                            {psaPriorityEnabled && (
                               <CippFormCondition
                                 field="postExecution"
                                 compareType="valueEq"

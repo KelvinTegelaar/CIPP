@@ -480,6 +480,107 @@
     "autoMapSyncApi": true
   },
   {
+    "name": "Syncro",
+    "id": "Syncro",
+    "type": "Syncro",
+    "cat": "Ticketing",
+    "logo": "/assets/integrations/syncro.svg",
+    "forceSyncButton": false,
+    "description": "Enable the Syncro integration to send alerts to your ticketing system.",
+    "helpText": "This integration raises a Syncro ticket for every alert configured to deliver to a PSA, against the Syncro customer each tenant is mapped to. Enter the subdomain of your Syncro instance and an API key from a user that can read customers and create tickets.",
+    "links": [
+      {
+        "name": "Syncro API Documentation",
+        "url": "https://api-docs.syncromsp.com/"
+      }
+    ],
+    "SettingOptions": [
+      {
+        "type": "switch",
+        "name": "Syncro.Enabled",
+        "label": "Enable Integration"
+      },
+      {
+        "type": "textField",
+        "name": "Syncro.Subdomain",
+        "label": "Syncro Subdomain",
+        "placeholder": "Enter your Syncro subdomain, e.g. yourcompany for yourcompany.syncromsp.com",
+        "helperText": "The first part of your Syncro URL. A full URL pasted here is reduced to the subdomain.",
+        "required": true,
+        "condition": {
+          "field": "Syncro.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
+      },
+      {
+        "type": "password",
+        "name": "Syncro.APIKey",
+        "label": "Syncro API Key",
+        "placeholder": "Enter your Syncro API key. Leave blank to keep your current key.",
+        "helperText": "Created under Admin > API > API Tokens in Syncro. The token's user needs the Customers - List/Search and Tickets - Create permissions.",
+        "required": true,
+        "condition": {
+          "field": "Syncro.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
+      },
+      {
+        "type": "autoComplete",
+        "name": "Syncro.DefaultPriority",
+        "label": "Syncro Default Priority",
+        "placeholder": "Select a priority, leave blank for Syncro's default",
+        "helperText": "Optional. Sets the priority on every CIPP-generated ticket unless an alert sets its own. Leave blank to let Syncro apply its default (Normal).",
+        "fullRow": true,
+        "multiple": false,
+        "creatable": false,
+        "options": [
+          { "label": "0 Urgent", "value": "0 Urgent" },
+          { "label": "1 High", "value": "1 High" },
+          { "label": "2 Normal", "value": "2 Normal" },
+          { "label": "3 Low", "value": "3 Low" }
+        ],
+        "condition": {
+          "field": "Syncro.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
+      },
+      {
+        "type": "textField",
+        "name": "Syncro.ProblemType",
+        "label": "Syncro Problem Type",
+        "placeholder": "Enter a problem type exactly as it appears in Syncro, leave blank for none",
+        "helperText": "Optional. Stamped on every CIPP-generated ticket. Must match an existing Issue Type in Syncro exactly.",
+        "condition": {
+          "field": "Syncro.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
+      },
+      {
+        "type": "textField",
+        "name": "Syncro.TicketStatus",
+        "label": "Syncro Initial Status",
+        "placeholder": "Enter a ticket status exactly as it appears in Syncro, leave blank for New",
+        "helperText": "Optional. The status new tickets are created with. Must match an existing ticket status in Syncro exactly.",
+        "condition": {
+          "field": "Syncro.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
+      }
+    ],
+    "mappingRequired": true,
+    "autoMapSyncApi": true
+  },
+  {
     "name": "NinjaOne",
     "id": "NinjaOne",
     "type": "NinjaOne",

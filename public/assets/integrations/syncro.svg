@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="360" height="100" viewBox="0 0 360 100" role="img" aria-label="Syncro">
+  <title>Syncro</title>
+  <g fill="none" stroke="#1BAB8A" stroke-width="9" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M28 50a22 22 0 1 1 6.4 15.6" />
+    <path d="M72 50a22 22 0 1 1-6.4-15.6" />
+  </g>
+  <text x="110" y="66" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="52" font-weight="600" fill="#1BAB8A">Syncro</text>
+</svg>
