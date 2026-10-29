@@ -110,8 +110,10 @@ const buildEditorStages = (templateDefinition) =>
     templateDefinition?.stages ?? [
       { name: 'Default', standards: [], conditions: [], logic: 'and' },
     ]
-  ).map((stage) => ({
+  ).map((stage, index) => ({
     key: newStageKey(),
+    // Saved position, so the save can move tenants whose stage was removed or reordered.
+    sourceStage: templateDefinition ? index + 1 : null,
     name: stage.name,
     standards: [...stage.standards],
     // Saved per-instance configuration (variables + action posture) keyed by
@@ -254,6 +256,7 @@ const StagePanel = ({
       const values = formControl.getValues()
       return {
         name: stage.name,
+        sourceStage: stage.sourceStage ?? null,
         logic: unwrapValue(values.conditionLogic) ?? 'and',
         conditions: conditionIds.map((conditionId) => {
           const condition = values.conditions?.[conditionId] ?? {}
@@ -663,6 +666,9 @@ const Page = () => {
     setSaveTargetId(savedId)
     setLoadedTemplateId(savedId)
     setLastSavedId(savedId)
+    setStages((prev) =>
+      prev.map((stage, index) => ({ ...stage, sourceStage: index + 1 }))
+    )
     setHasUnsavedChanges(false)
     // Re-baseline the form so isDirty clears after the save.
     formControl.reset(formControl.getValues())
@@ -1013,6 +1019,7 @@ const Page = () => {
           (stage) =>
             stageSerializers.current[stage.key]?.() ?? {
               name: stage.name,
+              sourceStage: stage.sourceStage ?? null,
               logic: 'and',
               conditions: [],
               standards: [],

@@ -390,6 +390,11 @@ const outcomeTimeline = {
     chipColor: 'primary',
     icon: <CippIcons.ArrowForward />,
   },
+  'Stage Moved Back': {
+    color: 'warning',
+    chipColor: 'warning',
+    icon: <CippIcons.ArrowBack />,
+  },
   Deleted: { color: 'error', chipColor: 'error', icon: <CippIcons.RemoveCircle /> },
   'Delete Failed': {
     color: 'error',
@@ -2307,6 +2312,24 @@ const Page = () => {
                         Re-evaluate Stage
                       </Button>
                     )}
+                    {state.currentStage > 1 && (
+                      <Button
+                        size="small"
+                        variant="outlined"
+                        startIcon={<CippIcons.ArrowBack />}
+                        onClick={() => {
+                          setAdvanceTarget({
+                            action: 'previous',
+                            tenantFilter: state.tenantFilter,
+                            templateId: row.GUID,
+                            templateName: row.templateName,
+                          })
+                          advanceDialog.handleOpen()
+                        }}
+                      >
+                        Move Back
+                      </Button>
+                    )}
                   </Stack>
                 </Stack>
                 {state.nextStage ? (
@@ -2552,56 +2575,68 @@ const Page = () => {
                     - advances when {describeStageConditions(state.nextStage)}
                   </Typography>
                 )}
-                {state.manualAdvance && (
+                {(state.nextStage || state.currentStage > 1) && (
                   <>
                     <Box sx={{ flexGrow: 1 }} />
                     <Divider sx={{ my: 1 }} />
-                    <Stack direction="row" sx={{
+                    <Stack direction="row" spacing={1} sx={{
                       justifyContent: "flex-end"
                     }}>
-                      <Button
-                        size="small"
-                        variant="contained"
-                        startIcon={<CippIcons.ArrowForward />}
-                        onClick={() => {
-                          setAdvanceTarget({
-                            tenantFilter: tenant.tenantId,
-                            templateId: state.templateId,
-                            templateName: state.templateName,
-                            nextStageName: state.nextStageName,
-                          })
-                          advanceDialog.handleOpen()
-                        }}
-                      >
-                        Move to next stage ({state.nextStageName})
-                      </Button>
-                    </Stack>
-                  </>
-                )}
-                {state.nextStage && !state.manualAdvance && (
-                  <>
-                    <Box sx={{ flexGrow: 1 }} />
-                    <Divider sx={{ my: 1 }} />
-                    <Stack direction="row" sx={{
-                      justifyContent: "flex-end"
-                    }}>
-                      <Button
-                        size="small"
-                        variant="outlined"
-                        startIcon={<CippIcons.Refresh />}
-                        onClick={() => {
-                          setAdvanceTarget({
-                            action: 'evaluate',
-                            tenantFilter: tenant.tenantId,
-                            templateId: state.templateId,
-                            templateName: state.templateName,
-                            nextStageName: state.nextStageName,
-                          })
-                          advanceDialog.handleOpen()
-                        }}
-                      >
-                        Re-evaluate stage conditions
-                      </Button>
+                      {state.currentStage > 1 && (
+                        <Button
+                          size="small"
+                          variant="outlined"
+                          startIcon={<CippIcons.ArrowBack />}
+                          onClick={() => {
+                            setAdvanceTarget({
+                              action: 'previous',
+                              tenantFilter: tenant.tenantId,
+                              templateId: state.templateId,
+                              templateName: state.templateName,
+                            })
+                            advanceDialog.handleOpen()
+                          }}
+                        >
+                          Move back a stage
+                        </Button>
+                      )}
+                      {state.manualAdvance && (
+                        <Button
+                          size="small"
+                          variant="contained"
+                          startIcon={<CippIcons.ArrowForward />}
+                          onClick={() => {
+                            setAdvanceTarget({
+                              tenantFilter: tenant.tenantId,
+                              templateId: state.templateId,
+                              templateName: state.templateName,
+                              nextStageName: state.nextStageName,
+                            })
+                            advanceDialog.handleOpen()
+                          }}
+                        >
+                          Move to next stage ({state.nextStageName})
+                        </Button>
+                      )}
+                      {state.nextStage && !state.manualAdvance && (
+                        <Button
+                          size="small"
+                          variant="outlined"
+                          startIcon={<CippIcons.Refresh />}
+                          onClick={() => {
+                            setAdvanceTarget({
+                              action: 'evaluate',
+                              tenantFilter: tenant.tenantId,
+                              templateId: state.templateId,
+                              templateName: state.templateName,
+                              nextStageName: state.nextStageName,
+                            })
+                            advanceDialog.handleOpen()
+                          }}
+                        >
+                          Re-evaluate stage conditions
+                        </Button>
+                      )}
                     </Stack>
                   </>
                 )}
@@ -2652,25 +2687,27 @@ const Page = () => {
         <CippApiDialog
           createDialog={advanceDialog}
           title={
-            advanceTarget.action === 'evaluate'
-              ? 'Re-evaluate Stage'
-              : 'Move to Next Stage'
+            {
+              evaluate: 'Re-evaluate Stage',
+              previous: 'Move Back a Stage',
+            }[advanceTarget.action] ?? 'Move to Next Stage'
           }
           api={{
             url: '/api/ExecBaselineStage',
             type: 'POST',
             data: {
-              action:
-                advanceTarget.action === 'evaluate'
-                  ? '!evaluate'
-                  : '!advanceStage',
+              action: `!${advanceTarget.action ?? 'advanceStage'}`,
               tenantFilter: 'tenantFilter',
               templateId: 'templateId',
             },
             confirmText:
-              advanceTarget.action === 'evaluate'
-                ? 'Check now whether [tenantFilter] meets the conditions for stage [nextStageName] of [templateName]? If they are met it moves there and receives the standards of that stage on the next run.'
-                : 'Move [tenantFilter] into stage [nextStageName] of [templateName]? The tenant receives all standards from that stage on the next run.',
+              {
+                evaluate:
+                  'Check now whether [tenantFilter] meets the conditions for stage [nextStageName] of [templateName]? If they are met it moves there and receives the standards of that stage on the next run.',
+                previous:
+                  'Move [tenantFilter] back one stage in [templateName]? Standards from its current stage stop applying on the next run, but settings already applied stay in place. If it still meets the conditions of the stage it left, the next scheduled run moves it forward again.',
+              }[advanceTarget.action] ??
+              'Move [tenantFilter] into stage [nextStageName] of [templateName]? The tenant receives all standards from that stage on the next run.',
             relatedQueryKeys,
           }}
           row={advanceTarget}
