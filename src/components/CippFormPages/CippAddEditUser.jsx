@@ -289,7 +289,10 @@ const CippAddEditUser = (props) => {
           displayName += selectedTemplate.displayName
         }
 
-        formControl.setValue('displayName', displayName, { shouldDirty: true })
+        formControl.setValue('displayName', displayName, {
+          shouldDirty: true,
+          shouldValidate: true,
+        })
       }
 
       // Auto-generate username if template has usernameFormat
@@ -326,6 +329,7 @@ const CippAddEditUser = (props) => {
           if (generatedUsername) {
             formControl.setValue('username', generatedUsername, {
               shouldDirty: true,
+              shouldValidate: true,
             })
           }
         }
@@ -414,9 +418,15 @@ const CippAddEditUser = (props) => {
         ? value.length > 0
         : value !== undefined && value !== null && value !== ''
       if (hasValue) {
-        formControl.setValue(fieldName, value, { shouldDirty: true })
+        formControl.setValue(fieldName, value, {
+          shouldDirty: true,
+          shouldValidate: true,
+        })
       } else if (isSwitch) {
-        formControl.setValue(fieldName, emptyValue, { shouldDirty: true })
+        formControl.setValue(fieldName, emptyValue, {
+          shouldDirty: true,
+          shouldValidate: true,
+        })
       }
     }
 

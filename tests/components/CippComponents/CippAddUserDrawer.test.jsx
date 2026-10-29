@@ -253,6 +253,55 @@ describe('CippAddUserDrawer - backdrop click must not wipe typed input (issue #3
   }, 30000)
 })
 
+// Shape mirrors /api/ListNewUserDefaults: the stored template JSON plus GUID/RowKey
+const defaultTemplate = okGet([
+  {
+    tenantFilter: 'AllTenants',
+    templateName: 'UserOnboarding',
+    defaultForTenant: true,
+    usernameFormat: '%FirstName%',
+    usernameSpaceHandling: 'keep',
+    primDomain: 'testdomain.com',
+    GUID: 'template-guid',
+    RowKey: 'template-guid',
+  },
+])
+
+describe('CippAddUserDrawer - template auto-fill validates the form (ticket 50317104911)', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+    postState = { isPending: false, isSuccess: false, isError: false }
+    mutateSpy = vi.fn()
+    mockApis()
+    const baseGet = ApiGetCall.getMockImplementation()
+    ApiGetCall.mockImplementation((args) =>
+      args.url.startsWith('/api/ListNewUserDefaults') ? defaultTemplate : baseGet(args)
+    )
+  })
+
+  it('enables Create once the template fills Display Name and Username from the name fields', async () => {
+    const user = userEvent.setup()
+    renderWithProviders(<Harness />, {
+      settings: settingsWith({ usageLocation: { value: 'US', label: 'United States' } }),
+    })
+
+    await user.click(screen.getByRole('button', { name: 'Add User' }))
+    await waitFor(() => {
+      expect(getDomainInput()).toHaveValue('testdomain.com')
+    })
+    await user.type(screen.getByLabelText(/First Name/i, { selector: 'input' }), 'John')
+    await user.type(screen.getByLabelText(/Last Name/i, { selector: 'input' }), 'Doe')
+
+    await waitFor(() => {
+      expect(screen.getByLabelText(/Display Name/i, { selector: 'input' })).toHaveValue('John Doe')
+      expect(screen.getByLabelText(/^Username/i, { selector: 'input' })).toHaveValue('john')
+    })
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Create User' })).toBeEnabled()
+    })
+  }, 30000)
+})
+
 describe('CippAddUserDrawer - user creation is refused under All Tenants (ticket 48312738612)', () => {
   beforeEach(() => {
     vi.clearAllMocks()
