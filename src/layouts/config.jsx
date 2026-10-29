@@ -187,7 +187,7 @@ export const nativeMenuItems = [
           {
             title: 'Authentication Methods',
             path: '/tenant/administration/authentication-methods',
-            permissions: ['Tenant.Config.*'],
+            permissions: ['Tenant.Administration.*'],
           },
           {
             title: 'Partner Relationships',
