@@ -30,6 +30,9 @@ import { useState, useEffect, useMemo } from "react";
 
 const TABLE_LABELS = {
   AppPermissions: "App Permissions",
+  BaselineRollouts: "Baselines",
+  Baselines: "Baseline Standards",
+  BaselineRolloutState: "Baseline Tenant Stages",
   CommunityRepos: "Community Repositories",
   Config: "CIPP Configuration",
   CustomPowershellScripts: "Custom PowerShell/Test Scripts",
