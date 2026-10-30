@@ -32,6 +32,7 @@ import { useDialog } from '../hooks/use-dialog'
 import { CippUniversalSearchV2 } from '../components/CippCards/CippUniversalSearchV2'
 import { CippOffCanvas } from '../components/CippComponents/CippOffCanvas'
 import { CippLicenseDetailsDrawer } from '../components/CippComponents/CippLicenseDetailsDrawer'
+import { CippBitlockerKeySearch } from '../components/CippComponents/CippBitlockerKeySearch'
 import { BANNER_HEIGHT_VAR, SAFE_AREA_TOP_OFFSET, TOP_NAV_HEIGHT } from './constants'
 
 export const TopNav = (props) => {
@@ -68,6 +69,8 @@ export const TopNav = (props) => {
   const [universalSearchKey, setUniversalSearchKey] = useState(0)
   const [licenseDrawerVisible, setLicenseDrawerVisible] = useState(false)
   const [licenseDrawerData, setLicenseDrawerData] = useState(null)
+  const [bitlockerDrawerVisible, setBitlockerDrawerVisible] = useState(false)
+  const [bitlockerDrawerData, setBitlockerDrawerData] = useState({ searchTerm: '', searchType: 'keyId' })
   const [universalSearchDefaultType, setUniversalSearchDefaultType] = useState('Users')
   const itemRefs = useRef({})
   const touchDragRef = useRef({ startIdx: null, overIdx: null })
@@ -733,6 +736,10 @@ export const TopNav = (props) => {
                     setLicenseDrawerData(licenseData)
                     setLicenseDrawerVisible(true)
                   }}
+                  onBitlockerSelect={(bitlockerData) => {
+                    setBitlockerDrawerData(bitlockerData)
+                    setBitlockerDrawerVisible(true)
+                  }}
                 />
               </Box>
             </DialogContent>
@@ -745,6 +752,19 @@ export const TopNav = (props) => {
             contentPadding={0}
           >
             <CippLicenseDetailsDrawer data={licenseDrawerData} />
+          </CippOffCanvas>
+          <CippOffCanvas
+            title="BitLocker Key Details"
+            visible={bitlockerDrawerVisible}
+            onClose={() => setBitlockerDrawerVisible(false)}
+            size="xl"
+            contentPadding={0}
+          >
+            <CippBitlockerKeySearch
+              initialSearchTerm={bitlockerDrawerData.searchTerm}
+              initialSearchType={bitlockerDrawerData.searchType}
+              autoSearch={true}
+            />
           </CippOffCanvas>
           <NotificationsPopover />
           <AccountPopover

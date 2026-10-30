@@ -356,3 +356,38 @@ describe('CippUniversalSearchV2 tenant scope', () => {
     expect(tenantCalls().some((c) => c.waiting === true)).toBe(true)
   })
 })
+
+describe('CippUniversalSearchV2 BitLocker scope', () => {
+  beforeEach(() => {
+    layoutState.isMobile = false
+    bookmarkState.bookmarks = []
+    apiState.byUrl = {
+      '/api/ExecBitlockerSearch': {
+        ...idle,
+        isSuccess: true,
+        data: { Results: [{ keyId: 'key-1', deviceId: 'dev-1', deviceName: 'LAPTOP-1' }] },
+      },
+    }
+  })
+
+  // The search dialog closes on confirm and unmounts this component, so the key drawer must be the parent's
+  it('hands the selected key to the parent along with closing the search', async () => {
+    const onBitlockerSelect = vi.fn()
+    const onConfirm = vi.fn()
+    const user = userEvent.setup()
+    renderWithProviders(
+      <CippUniversalSearchV2
+        defaultSearchType="BitLocker"
+        onConfirm={onConfirm}
+        onBitlockerSelect={onBitlockerSelect}
+      />
+    )
+
+    await user.type(screen.getByPlaceholderText(/search bitlocker/i), 'key-1')
+    await user.keyboard('{Enter}')
+    await user.click(await screen.findByText('LAPTOP-1'))
+
+    expect(onBitlockerSelect).toHaveBeenCalledWith({ searchTerm: 'key-1', searchType: 'keyId' })
+    expect(onConfirm).toHaveBeenCalled()
+  })
+})

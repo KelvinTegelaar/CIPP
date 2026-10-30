@@ -23,8 +23,6 @@ import {
 import { ApiGetCall } from "../../api/ApiCall";
 import { useRouter } from "next/router";
 import { BulkActionsMenu } from "../bulk-actions-menu";
-import { CippOffCanvas } from "../CippComponents/CippOffCanvas";
-import { CippBitlockerKeySearch } from "../CippComponents/CippBitlockerKeySearch";
 import { nativeMenuItems } from "../../layouts/config";
 import { getHiddenPages } from "../../utils/filter-menu-items";
 import { usePermissions } from "../../hooks/use-permissions";
@@ -117,6 +115,7 @@ export const CippUniversalSearchV2 = React.forwardRef(
       onConfirm = () => {},
       onChange = () => {},
       onLicenseSelect,
+      onBitlockerSelect,
       maxResults = 10,
       value = "",
       autoFocus = false,
@@ -130,11 +129,6 @@ export const CippUniversalSearchV2 = React.forwardRef(
     const [tabOptions] = useState(loadTabOptions);
     const [showDropdown, setShowDropdown] = useState(false);
     const [highlightedIndex, setHighlightedIndex] = useState(-1);
-    const [bitlockerDrawerVisible, setBitlockerDrawerVisible] = useState(false);
-    const [bitlockerDrawerDefaults, setBitlockerDrawerDefaults] = useState({
-      searchTerm: "",
-      searchType: "keyId",
-    });
     const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0, width: 0 });
     const [dropdownMaxHeight, setDropdownMaxHeight] = useState(400);
     const containerRef = useRef(null);
@@ -579,14 +573,14 @@ export const CippUniversalSearchV2 = React.forwardRef(
     };
 
     const handleBitlockerResultClick = (match) => {
-      setBitlockerDrawerDefaults({
+      // The drawer lives in the parent: onConfirm closes the search dialog and would unmount it here.
+      onBitlockerSelect?.({
         searchTerm:
           bitlockerLookupType === "deviceId"
             ? match?.deviceId || searchValue
             : match?.keyId || searchValue,
         searchType: bitlockerLookupType,
       });
-      setBitlockerDrawerVisible(true);
       setSearchValue("");
       setShowDropdown(false);
       onConfirm(match);
@@ -1035,20 +1029,6 @@ export const CippUniversalSearchV2 = React.forwardRef(
             </Paper>
           </Portal>
         )}
-
-        <CippOffCanvas
-          title="BitLocker Key Details"
-          visible={bitlockerDrawerVisible}
-          onClose={() => setBitlockerDrawerVisible(false)}
-          size="xl"
-          contentPadding={0}
-        >
-          <CippBitlockerKeySearch
-            initialSearchTerm={bitlockerDrawerDefaults.searchTerm}
-            initialSearchType={bitlockerDrawerDefaults.searchType}
-            autoSearch={true}
-          />
-        </CippOffCanvas>
       </>
     );
   },
