@@ -13,17 +13,31 @@ const Page = () => {
   const apiData = { FunctionName: "Get-CIPPTimerFunctions", Parameters: { ListAllTasks: true } };
   const [data, setData] = useState([]);
   const createDialog = useDialog();
-  const simpleColumns = [
-    "Priority",
-    "Command",
-    "Parameters",
-    "Cron",
-    "NextOccurrence",
-    "LastOccurrence",
-    "Status",
-    "PreferredProcessor",
-    "ErrorMsg",
-  ];
+  // Craft (CIPPNG) rows carry the scheduler's timezone and jitter instead of the Functions status fields
+  const isCraft = Array.isArray(data) && data.some((row) => "JitterMinutes" in row);
+  const simpleColumns = isCraft
+    ? [
+        "Priority",
+        "Command",
+        "Parameters",
+        "Cron",
+        "Timezone",
+        "JitterMinutes",
+        "JitterDelay",
+        "NextOccurrence",
+        "LastOccurrence",
+      ]
+    : [
+        "Priority",
+        "Command",
+        "Parameters",
+        "Cron",
+        "NextOccurrence",
+        "LastOccurrence",
+        "Status",
+        "PreferredProcessor",
+        "ErrorMsg",
+      ];
 
   const offCanvas = {
     extendedInfoFields: simpleColumns,
@@ -71,7 +85,7 @@ const Page = () => {
         tenantInTitle={false}
         refreshFunction={handleRefresh}
         isFetching={fetchData.isPending}
-        cardButton={<ResetToDefaultButton />}
+        cardButton={isCraft ? undefined : <ResetToDefaultButton />}
         offCanvas={offCanvas}
         actions={[
           {
