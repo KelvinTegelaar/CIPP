@@ -159,6 +159,7 @@ const Page = () => {
     'SignInActivity',
     'LastSignInDateTime',
     'PermissionCount',
+    'DirectoryRoleCount',
     'HasAllPrincipalsGrant',
     'AppId',
     ...reportDB.cacheColumns,

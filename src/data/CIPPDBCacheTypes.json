@@ -150,6 +150,21 @@
     "description": "Last sign-in of every app, delegated or app-only (Entra ID P1)"
   },
   {
+    "type": "AppCredentialChanges",
+    "friendlyName": "App Credential Changes",
+    "description": "Secrets and certificates added to apps in the last 30 days and who added them (Entra ID P1)"
+  },
+  {
+    "type": "ServicePrincipalRoleChanges",
+    "friendlyName": "Service Principal Role Changes",
+    "description": "Directory roles and group memberships given to apps in the last 30 days and who gave them (Entra ID P1)"
+  },
+  {
+    "type": "DelegatedGrantChanges",
+    "friendlyName": "Delegated Grant Changes",
+    "description": "Delegated permission grants added in the last 30 days and who added them, a user or an app (Entra ID P1)"
+  },
+  {
     "type": "OAuth2PermissionGrants",
     "friendlyName": "OAuth2 Permission Grants",
     "description": "OAuth2 permission grants"

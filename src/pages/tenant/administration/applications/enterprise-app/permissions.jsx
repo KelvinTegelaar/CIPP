@@ -160,6 +160,7 @@ const Page = () => {
             key={spObjectId}
             servicePrincipalId={spObjectId}
             tenantFilter={tenantFilter}
+            canEdit={canWriteApplication}
           />
         </Box>
       )}

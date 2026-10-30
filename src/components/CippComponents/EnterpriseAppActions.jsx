@@ -300,7 +300,7 @@ export const getEnterpriseAppSigningActions = (canWriteApplication) => [
   },
 ]
 
-export const getEnterpriseAppListActions = (canWriteApplication) => [
+export const getEnterpriseAppListActions = (canWriteApplication, isHomeTenantApp) => [
   {
     icon: <CippIcons.EyeIcon />,
     label: 'View in CIPP',
@@ -310,7 +310,7 @@ export const getEnterpriseAppListActions = (canWriteApplication) => [
     multiPost: false,
     external: false,
   },
-  { ...viewInEntraAction },
+  { ...viewInEntraAction, condition: isHomeTenantApp },
   ...getEnterpriseAppPostActions(canWriteApplication),
 ]
 

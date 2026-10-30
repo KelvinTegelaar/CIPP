@@ -1128,6 +1128,1845 @@
     "impact": "Medium",
     "categories": ["DataAccess"],
     "reason": "Abuse: download mail over POP from mailboxes the app was granted. Medium: needs per-mailbox Exchange permissions for the service principal."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "62e90394-69f5-4237-9190-012177145e10",
+    "name": "Global Administrator",
+    "type": "DirectoryRole",
+    "suspicion": "Critical",
+    "impact": "Critical",
+    "categories": ["PrivilegeEscalation", "DataAccess", "Integrity", "Availability"],
+    "reason": "Abuse: everything in Entra ID and every Microsoft 365 service, including elevating to all Azure subscriptions. Critical: an app holding it is a standing tenant admin with no user, MFA or PIM in the way."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "e8611ab8-c189-46e8-94e1-60213ab1f814",
+    "name": "Privileged Role Administrator",
+    "type": "DirectoryRole",
+    "suspicion": "Critical",
+    "impact": "Critical",
+    "categories": ["PrivilegeEscalation"],
+    "reason": "Abuse: assign any directory role, including Global Administrator, and grant consent for any permission to any app. Critical: one step from tenant admin."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "7be44c8a-adaf-4e2a-84d6-ab2649e08a13",
+    "name": "Privileged Authentication Administrator",
+    "type": "DirectoryRole",
+    "suspicion": "Critical",
+    "impact": "Critical",
+    "categories": ["PrivilegeEscalation", "Availability"],
+    "reason": "Abuse: reset the password and authentication methods of any user, Global Administrators included, then sign in as them. Critical: takeover of any account."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "e00e864a-17c5-4a4b-9c06-f5b95a8d5bd8",
+    "name": "Partner Tier2 Support",
+    "type": "DirectoryRole",
+    "suspicion": "Critical",
+    "impact": "Critical",
+    "categories": ["PrivilegeEscalation", "Availability"],
+    "reason": "Abuse: reset passwords of any user including Global Administrators, manage domains and role assignments. Critical: deprecated role that should not be assigned to anything."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "fc8ad4e2-40e4-4724-8317-bcda7503ecbf",
+    "name": "Customer Delegated Admin Relationship Administrator",
+    "type": "DirectoryRole",
+    "suspicion": "Critical",
+    "impact": "Critical",
+    "categories": ["PrivilegeEscalation"],
+    "reason": "Abuse: accept a GDAP relationship from any partner, giving that partner's staff admin roles in this tenant. Critical: hands tenant administration to an outside organisation."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "9b895d92-2cd3-44c7-9d02-a6ac2d5ea5c3",
+    "name": "Application Administrator",
+    "type": "DirectoryRole",
+    "suspicion": "Critical",
+    "impact": "Critical",
+    "categories": ["PrivilegeEscalation"],
+    "reason": "Abuse: add credentials to any app or service principal and act as it, and consent to delegated permissions for everyone. Critical: adding a secret to any app that holds RoleManagement.ReadWrite.Directory or AppRoleAssignment.ReadWrite.All turns this into Global Administrator; no app needs it to do its own job."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "158c047a-c907-4556-b7ef-446551a6b5f7",
+    "name": "Cloud Application Administrator",
+    "type": "DirectoryRole",
+    "suspicion": "Critical",
+    "impact": "Critical",
+    "categories": ["PrivilegeEscalation"],
+    "reason": "Abuse: add credentials to any app or service principal and act as it, and consent to delegated permissions for everyone. Critical: adding a secret to any app that holds RoleManagement.ReadWrite.Directory or AppRoleAssignment.ReadWrite.All turns this into Global Administrator; no app needs it to do its own job."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "8ac3fc64-6eca-42ea-9e69-59f4c7b60eb2",
+    "name": "Hybrid Identity Administrator",
+    "type": "DirectoryRole",
+    "suspicion": "High",
+    "impact": "Critical",
+    "categories": ["PrivilegeEscalation"],
+    "reason": "Abuse: change domain federation and sync settings so a token signer the attacker controls is trusted for any user. Critical: a federation backdoor signs in as anyone."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "8329153b-31d0-4727-b945-745eb3bc5f31",
+    "name": "Domain Name Administrator",
+    "type": "DirectoryRole",
+    "suspicion": "High",
+    "impact": "Critical",
+    "categories": ["PrivilegeEscalation"],
+    "reason": "Abuse: add domains and configure federation on them, then sign in as any user of a federated domain. Critical: a federation backdoor."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "be2f45a1-457d-42af-a067-6ec1fa63bc45",
+    "name": "External Identity Provider Administrator",
+    "type": "DirectoryRole",
+    "suspicion": "High",
+    "impact": "Critical",
+    "categories": ["PrivilegeEscalation"],
+    "reason": "Abuse: configure identity providers and domain federation that the tenant trusts for sign-in. Critical: can introduce a trusted sign-in source the attacker controls."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "194ae4cb-b126-40b2-bd5b-6091b380977d",
+    "name": "Security Administrator",
+    "type": "DirectoryRole",
+    "suspicion": "High",
+    "impact": "Critical",
+    "categories": ["PrivilegeEscalation", "Integrity"],
+    "reason": "Abuse: change Conditional Access, ID Protection, Defender and domain federation settings. Critical: can switch off the controls that protect every sign-in."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "b1be1c3e-b65d-4f19-8427-f6fa0d97feb9",
+    "name": "Conditional Access Administrator",
+    "type": "DirectoryRole",
+    "suspicion": "High",
+    "impact": "Critical",
+    "categories": ["Integrity"],
+    "reason": "Abuse: disable or exclude accounts from every Conditional Access policy. Critical: removes MFA and device requirements tenant-wide."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "29232cdf-9323-42fd-ade2-1d097af3e4de",
+    "name": "Exchange Administrator",
+    "type": "DirectoryRole",
+    "suspicion": "High",
+    "impact": "Critical",
+    "categories": ["DataAccess", "Integrity"],
+    "reason": "Abuse: grant itself access to any mailbox, add forwarding and transport rules, export mail. Critical: all mail in the tenant."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "f28a1f50-f6e7-4571-818b-6a12f2af6b6c",
+    "name": "SharePoint Administrator",
+    "type": "DirectoryRole",
+    "suspicion": "High",
+    "impact": "Critical",
+    "categories": ["DataAccess", "Integrity"],
+    "reason": "Abuse: make itself admin of any site or OneDrive and read or share every file. Critical: all files in the tenant."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "3a2c62db-5318-420d-8d74-23affee5d9d5",
+    "name": "Intune Administrator",
+    "type": "DirectoryRole",
+    "suspicion": "High",
+    "impact": "Critical",
+    "categories": ["Integrity", "DataAccess"],
+    "reason": "Abuse: push scripts and apps to every managed device and read BitLocker keys and local admin passwords. Critical: code execution on all managed devices."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "0526716b-113d-4c15-b2c8-68e3c22b9f80",
+    "name": "Authentication Policy Administrator",
+    "type": "DirectoryRole",
+    "suspicion": "High",
+    "impact": "High",
+    "categories": ["Integrity"],
+    "reason": "Abuse: weaken the authentication methods policy and tenant-wide MFA settings. High: lowers the bar for every sign-in."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "25a516ed-2fa0-40ea-a2d0-12923a21473a",
+    "name": "Authentication Extensibility Administrator",
+    "type": "DirectoryRole",
+    "suspicion": "High",
+    "impact": "High",
+    "categories": ["Integrity"],
+    "reason": "Abuse: create custom authentication extensions that call out to an attacker endpoint during sign-in and token issuance. High: can alter tokens for apps that use them."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "fe930be7-5e62-47db-91af-98c3a49a38b1",
+    "name": "User Administrator",
+    "type": "DirectoryRole",
+    "suspicion": "High",
+    "impact": "High",
+    "categories": ["PrivilegeEscalation", "Availability"],
+    "reason": "Abuse: reset passwords of users and limited admins, create, delete and disable users, and manage group membership. High: account takeover of most users, including app owners."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "c4e39bd9-1100-46d3-8c65-fb160da0071f",
+    "name": "Authentication Administrator",
+    "type": "DirectoryRole",
+    "suspicion": "High",
+    "impact": "High",
+    "categories": ["PrivilegeEscalation"],
+    "reason": "Abuse: reset passwords and authentication methods of non-admins, then sign in as them. High: account takeover of most users, including app owners."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "729827e3-9c14-49f7-bb1b-9608f156bbb8",
+    "name": "Helpdesk Administrator",
+    "type": "DirectoryRole",
+    "suspicion": "High",
+    "impact": "High",
+    "categories": ["PrivilegeEscalation"],
+    "reason": "Abuse: reset passwords of non-admins and read BitLocker keys. High: account takeover of most users."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "966707d0-3269-4727-9be2-8c3a10f19b9d",
+    "name": "Password Administrator",
+    "type": "DirectoryRole",
+    "suspicion": "High",
+    "impact": "High",
+    "categories": ["PrivilegeEscalation"],
+    "reason": "Abuse: reset passwords of non-admins. High: account takeover of most users."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "58f930cc-fcf4-4152-852c-1d7dbf502139",
+    "name": "Entra SOC Identity Responder",
+    "type": "DirectoryRole",
+    "suspicion": "High",
+    "impact": "High",
+    "categories": ["PrivilegeEscalation", "Availability"],
+    "reason": "Abuse: reset passwords, revoke sessions and disable users. High: account takeover or lockout of users."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "4ba39ca4-527c-499a-b93d-d9b492c50246",
+    "name": "Partner Tier1 Support",
+    "type": "DirectoryRole",
+    "suspicion": "High",
+    "impact": "High",
+    "categories": ["PrivilegeEscalation"],
+    "reason": "Abuse: reset non-admin passwords, add app credentials and manage users and groups. High: deprecated role that should not be assigned to anything."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "1981f584-96e9-4a6f-95b0-f522373f8fae",
+    "name": "Tenant Governance Administrator",
+    "type": "DirectoryRole",
+    "suspicion": "High",
+    "impact": "High",
+    "categories": ["PrivilegeEscalation"],
+    "reason": "Abuse: manage cross-tenant access and, through the Tenant Governance app, service principals, consent grants and app role assignments. High: can grant access to tenant resources."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "d29b2b05-8046-44ba-8758-1e26182fcf32",
+    "name": "Directory Synchronization Accounts",
+    "type": "DirectoryRole",
+    "suspicion": "High",
+    "impact": "High",
+    "categories": ["PrivilegeEscalation", "Integrity"],
+    "reason": "Abuse: write synced users, including their password hashes, so it can set the password of any synchronised account and sign in as it. High: takeover of every hybrid account; only Microsoft Entra Connect should hold it."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "9360feb5-f418-4baa-8175-e2a00bac4301",
+    "name": "Directory Writers",
+    "type": "DirectoryRole",
+    "suspicion": "Medium",
+    "impact": "High",
+    "categories": ["PrivilegeEscalation", "Integrity"],
+    "reason": "Abuse: create users, change group membership and create OAuth2 permission grants. High: intended for apps, but enough to grant itself or others more access."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "fdd7a751-b60b-444a-984c-02652fe8fa1c",
+    "name": "Groups Administrator",
+    "type": "DirectoryRole",
+    "suspicion": "Medium",
+    "impact": "High",
+    "categories": ["PrivilegeEscalation", "Integrity"],
+    "reason": "Abuse: change membership of any group that is not role-assignable, including groups that grant access to apps and data. High: access to whatever those groups unlock."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "45d8d3c5-c802-45c6-b32a-1d70b5e1e86e",
+    "name": "Identity Governance Administrator",
+    "type": "DirectoryRole",
+    "suspicion": "Medium",
+    "impact": "High",
+    "categories": ["PrivilegeEscalation"],
+    "reason": "Abuse: manage access packages, group membership and app role assignments. High: can grant access to apps and groups."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "59d46f88-662b-457b-bceb-5c3809e5908f",
+    "name": "Lifecycle Workflows Administrator",
+    "type": "DirectoryRole",
+    "suspicion": "Medium",
+    "impact": "High",
+    "categories": ["Integrity", "Availability"],
+    "reason": "Abuse: create workflows that run tasks against users, such as changing groups or disabling accounts. High: automated changes across many users."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "17315797-102d-40b4-93e0-432062caca18",
+    "name": "Compliance Administrator",
+    "type": "DirectoryRole",
+    "suspicion": "Medium",
+    "impact": "High",
+    "categories": ["DataAccess", "Integrity"],
+    "reason": "Abuse: manage compliance features and all features in the Exchange admin center. High: broad reach into mail and data governance."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "31392ffb-586c-42d1-9346-e59415a2cc4e",
+    "name": "Exchange Recipient Administrator",
+    "type": "DirectoryRole",
+    "suspicion": "Medium",
+    "impact": "High",
+    "categories": ["DataAccess", "Integrity"],
+    "reason": "Abuse: change any recipient, including mailbox permissions and forwarding. High: can open up mailboxes."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "1707125e-0aa2-4d4d-8655-a7c786c76a25",
+    "name": "Microsoft 365 Backup Administrator",
+    "type": "DirectoryRole",
+    "suspicion": "Medium",
+    "impact": "High",
+    "categories": ["DataAccess", "Availability"],
+    "reason": "Abuse: restore and manage Microsoft 365 Backup for mail, SharePoint and OneDrive. High: can overwrite content or change what is protected."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "7698a772-787b-4ac8-901f-60d6b08affd2",
+    "name": "Cloud Device Administrator",
+    "type": "DirectoryRole",
+    "suspicion": "Medium",
+    "impact": "High",
+    "categories": ["DataAccess", "Availability"],
+    "reason": "Abuse: read BitLocker keys and local admin passwords, and disable or delete devices. High: unlocks devices and their local admin accounts."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "11451d60-acb2-45eb-a7d6-43d0f0125c13",
+    "name": "Windows 365 Administrator",
+    "type": "DirectoryRole",
+    "suspicion": "Medium",
+    "impact": "High",
+    "categories": ["Integrity"],
+    "reason": "Abuse: manage Cloud PCs and security groups. High: control of Cloud PCs and the groups that target them."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "69091246-20e8-4a56-aa4d-066075b2a7a8",
+    "name": "Teams Administrator",
+    "type": "DirectoryRole",
+    "suspicion": "Medium",
+    "impact": "High",
+    "categories": ["Integrity"],
+    "reason": "Abuse: manage Teams, external access and all Microsoft 365 groups. High: can open Teams to outsiders and change group membership."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "11648597-926c-4cf3-9c36-bcebb0ba8dcc",
+    "name": "Power Platform Administrator",
+    "type": "DirectoryRole",
+    "suspicion": "Medium",
+    "impact": "High",
+    "categories": ["DataAccess", "Integrity"],
+    "reason": "Abuse: manage all Power Platform environments, flows and data loss prevention policies. High: access to business data and automations."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "a9ea8996-122f-4c74-9520-8edcd192826c",
+    "name": "Fabric Administrator",
+    "type": "DirectoryRole",
+    "suspicion": "Medium",
+    "impact": "High",
+    "categories": ["DataAccess"],
+    "reason": "Abuse: manage all Fabric and Power BI workspaces. High: access to business reporting data."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "d2562ede-74db-457e-a7b6-544e236ebb61",
+    "name": "AI Administrator",
+    "type": "DirectoryRole",
+    "suspicion": "Medium",
+    "impact": "High",
+    "categories": ["Integrity"],
+    "reason": "Abuse: manage Copilot, agents, agent identities and admin consent request policies. High: controls what agents can do in the tenant."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "db506228-d27e-4b7d-95e5-295956d6615f",
+    "name": "Agent ID Administrator",
+    "type": "DirectoryRole",
+    "suspicion": "Medium",
+    "impact": "High",
+    "categories": ["PrivilegeEscalation"],
+    "reason": "Abuse: manage agent identities, including their credentials and role assignments. High: can act as any agent identity."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "5f2222b1-57c3-48ba-8ad5-d4759f1fde6f",
+    "name": "Security Operator",
+    "type": "DirectoryRole",
+    "suspicion": "Medium",
+    "impact": "High",
+    "categories": ["Availability", "DataAccess"],
+    "reason": "Abuse: reset passwords, disable users and manage Defender for Endpoint. High: can lock users out and act on devices."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "f2ef992c-3afb-46b9-b7cf-a126ee74c451",
+    "name": "Global Reader",
+    "type": "DirectoryRole",
+    "suspicion": "Medium",
+    "impact": "High",
+    "categories": ["DataAccess"],
+    "reason": "Abuse: read every setting in every Microsoft 365 admin center, and BitLocker keys. High: a full map of the tenant's defences for an attacker."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "5d6b6bb7-de71-4623-b4af-96380a352509",
+    "name": "Security Reader",
+    "type": "DirectoryRole",
+    "suspicion": "Low",
+    "impact": "High",
+    "categories": ["DataAccess"],
+    "reason": "Abuse: read security alerts, sign-in and audit logs, Conditional Access and BitLocker keys. Low suspicion: common for security tools. High: shows an attacker what is monitored."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "4a5d8f65-41da-4de4-8968-e035b65339cf",
+    "name": "Reports Reader",
+    "type": "DirectoryRole",
+    "suspicion": "Low",
+    "impact": "Medium",
+    "categories": ["DataAccess"],
+    "reason": "Abuse: read sign-in logs, audit logs and usage reports. Low suspicion: common for reporting tools."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "88d8e3e3-8f55-4a1e-953a-9b9898b8876b",
+    "name": "Directory Readers",
+    "type": "DirectoryRole",
+    "suspicion": "Low",
+    "impact": "Medium",
+    "categories": ["DataAccess"],
+    "reason": "Abuse: read users, groups, apps and role memberships. Low suspicion: Microsoft recommends it for apps that need directory read access."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "b0f54661-2d74-4c50-afa3-1ec803f12efe",
+    "name": "Billing Administrator",
+    "type": "DirectoryRole",
+    "suspicion": "Medium",
+    "impact": "Medium",
+    "categories": ["Integrity"],
+    "reason": "Abuse: make purchases and manage subscriptions and payment details. Medium: financial and licensing changes."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "4d6ac14f-3453-41d0-bef9-a3e0c569773a",
+    "name": "License Administrator",
+    "type": "DirectoryRole",
+    "suspicion": "Low",
+    "impact": "Medium",
+    "categories": ["Availability"],
+    "reason": "Abuse: remove licences from users, cutting off their mail and apps. Low suspicion: common for licensing tools."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "aaf43236-0c0d-4d5f-883a-6955382ac081",
+    "name": "B2C IEF Keyset Administrator",
+    "type": "DirectoryRole",
+    "suspicion": "High",
+    "impact": "Critical",
+    "categories": ["PrivilegeEscalation", "Integrity"],
+    "reason": "Abuse: upload or replace the token signing and federation keys of the Identity Experience Framework. Critical: in a B2C tenant, forge tokens for any user."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "3edaf663-341e-4475-9f94-5c398ef6c070",
+    "name": "B2C IEF Policy Administrator",
+    "type": "DirectoryRole",
+    "suspicion": "High",
+    "impact": "High",
+    "categories": ["PrivilegeEscalation", "Integrity"],
+    "reason": "Abuse: rewrite custom sign-in policies to send credentials or claims to an attacker endpoint or skip MFA. High: controls how every B2C user signs in."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "cf1c38e5-3621-4004-a7cb-879624dced7c",
+    "name": "Application Developer",
+    "type": "DirectoryRole",
+    "suspicion": "High",
+    "impact": "High",
+    "categories": ["PrivilegeEscalation", "Integrity"],
+    "reason": "Abuse: register new apps regardless of the 'Users can register applications' setting and hold their credentials as owner. High: builds in-tenant backdoor apps that wait for consent and look home-grown in consent prompts."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "b6a27b2b-f905-4b2e-81b5-0d90e0ef1fdb",
+    "name": "Entra Backup Administrator",
+    "type": "DirectoryRole",
+    "suspicion": "High",
+    "impact": "High",
+    "categories": ["Integrity", "PrivilegeEscalation"],
+    "reason": "Abuse: restore directory objects and settings from an older snapshot, such as Conditional Access policies or app credentials from before a hardening change. High: silently rolls back security configuration."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "3f1acade-1e04-4fbc-9b69-f0302cd84aef",
+    "name": "Edge Administrator",
+    "type": "DirectoryRole",
+    "suspicion": "Medium",
+    "impact": "High",
+    "categories": ["DataAccess", "Integrity"],
+    "reason": "Abuse: force-install a browser extension on every managed Edge through the Edge management service. High: an extension reads every page, cookie and session token users have open."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "2b745bdf-0803-4d80-aa65-822c4493daac",
+    "name": "Office Apps Administrator",
+    "type": "DirectoryRole",
+    "suspicion": "Medium",
+    "impact": "High",
+    "categories": ["Integrity"],
+    "reason": "Abuse: push Cloud Policy settings to every Office install, such as enabling macros from the internet or trusted locations. High: opens the path for code execution on users' machines."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "ac434307-12b9-4fa1-a708-88bf58caabc1",
+    "name": "Global Secure Access Administrator",
+    "type": "DirectoryRole",
+    "suspicion": "Medium",
+    "impact": "High",
+    "categories": ["Integrity", "DataAccess"],
+    "reason": "Abuse: change traffic forwarding, web filtering and Private Access apps, publishing internal resources or disabling filtering. High: controls the network path to internal apps and the internet."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "892c5842-a9a6-463a-8041-72aa08ca3cf6",
+    "name": "Cloud App Security Administrator",
+    "type": "DirectoryRole",
+    "suspicion": "Medium",
+    "impact": "High",
+    "categories": ["Integrity", "Availability"],
+    "reason": "Abuse: switch off Defender for Cloud Apps policies, session controls and alerts, and run governance actions that suspend users. High: blinds the detection that would spot data theft."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "7495fdc4-34c4-4d15-a289-98788ce399fd",
+    "name": "Azure Information Protection Administrator",
+    "type": "DirectoryRole",
+    "suspicion": "Medium",
+    "impact": "High",
+    "categories": ["DataAccess", "Integrity"],
+    "reason": "Abuse: change sensitivity labels and their protection settings so protected content is no longer encrypted or is shared with outsiders. High: removes the protection on labelled data."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "58a13ea3-c632-46ae-9ee0-9c0d43cd7f3d",
+    "name": "Attribute Assignment Administrator",
+    "type": "DirectoryRole",
+    "suspicion": "Medium",
+    "impact": "High",
+    "categories": ["Integrity", "PrivilegeEscalation"],
+    "reason": "Abuse: set custom security attributes on users and apps, which Conditional Access app filters and Azure ABAC conditions key on. High: can move an app out of a policy or into an access condition."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "c430b396-e693-46cc-96f3-db01bf8bb62a",
+    "name": "Attack Simulation Administrator",
+    "type": "DirectoryRole",
+    "suspicion": "Medium",
+    "impact": "High",
+    "categories": ["Integrity"],
+    "reason": "Abuse: send simulated phishing with arbitrary links and payloads to every user, delivered past the mail filters. High: a trusted delivery path for real phishing."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "49eb8f75-97e9-4e37-9b2b-6c3ebfcffa31",
+    "name": "Exchange Backup Administrator",
+    "type": "DirectoryRole",
+    "suspicion": "Medium",
+    "impact": "High",
+    "categories": ["DataAccess", "Availability"],
+    "reason": "Abuse: restore any mailbox from Microsoft 365 Backup, including granular restores, and change backup policies. High: can overwrite mail or stop protecting it."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "9d3e04ba-3ee4-4d1b-a3a7-9aef423a09be",
+    "name": "SharePoint Backup Administrator",
+    "type": "DirectoryRole",
+    "suspicion": "Medium",
+    "impact": "High",
+    "categories": ["DataAccess", "Availability"],
+    "reason": "Abuse: restore any site or OneDrive from Microsoft 365 Backup and change backup policies. High: can overwrite files or stop protecting them."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "8c8b803f-96e1-4129-9349-20738d9f9652",
+    "name": "Microsoft 365 Migration Administrator",
+    "type": "DirectoryRole",
+    "suspicion": "Medium",
+    "impact": "High",
+    "categories": ["DataAccess", "Integrity"],
+    "reason": "Abuse: run Migration Manager jobs that move content in bulk into SharePoint, OneDrive and Teams. High: bulk writes into any destination site."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "44367163-eba1-44c3-98af-f5787879f96a",
+    "name": "Dynamics 365 Administrator",
+    "type": "DirectoryRole",
+    "suspicion": "Medium",
+    "impact": "High",
+    "categories": ["DataAccess", "Integrity"],
+    "reason": "Abuse: administer every Dynamics 365 and Dataverse environment and grant itself access to their data. High: all CRM and business data."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "963797fb-eb3b-4cde-8ce3-5878b3f32a3f",
+    "name": "Dynamics 365 Business Central Administrator",
+    "type": "DirectoryRole",
+    "suspicion": "Medium",
+    "impact": "High",
+    "categories": ["DataAccess", "Integrity"],
+    "reason": "Abuse: administer every Business Central environment, including exporting and copying databases. High: all finance data."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "af78dc32-cf4d-46f9-ba4e-4428526346b5",
+    "name": "Permissions Management Administrator",
+    "type": "DirectoryRole",
+    "suspicion": "Medium",
+    "impact": "High",
+    "categories": ["PrivilegeEscalation"],
+    "reason": "Abuse: manage Entra Permissions Management, including permission requests and remediation across connected Azure, AWS and GCP accounts. High: reaches cloud infrastructure outside Microsoft 365."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "e6d1a23a-da11-4be4-9570-befc86d067a7",
+    "name": "Compliance Data Administrator",
+    "type": "DirectoryRole",
+    "suspicion": "Medium",
+    "impact": "High",
+    "categories": ["DataAccess", "Availability"],
+    "reason": "Abuse: manage retention and data lifecycle policies and read DLP alert content. High: can set policies that delete content tenant-wide."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "5c4f9dcd-47dc-4cf7-8c9a-9e4207cbfc91",
+    "name": "Customer Lockbox Access Approver",
+    "type": "DirectoryRole",
+    "suspicion": "High",
+    "impact": "Medium",
+    "categories": ["DataAccess"],
+    "reason": "Abuse: approve Microsoft engineers' requests to access tenant content. High suspicion: approval is a human decision, an app holding it removes the check."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "95e79109-95c0-4d8e-aee3-d01accf2d47b",
+    "name": "Guest Inviter",
+    "type": "DirectoryRole",
+    "suspicion": "Medium",
+    "impact": "Medium",
+    "categories": ["DataAccess"],
+    "reason": "Abuse: invite outside accounts as guests even when members cannot. Medium: brings attacker accounts into the tenant as a channel for sharing data out."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "92ed04bf-c94a-4b82-9729-b799a7a4c178",
+    "name": "Organizational Branding Administrator",
+    "type": "DirectoryRole",
+    "suspicion": "Medium",
+    "impact": "Medium",
+    "categories": ["Integrity"],
+    "reason": "Abuse: change the sign-in page text, links and custom CSS. Medium: can point users at an attacker's 'password reset' page from the real sign-in page."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "507f53e4-4e52-4077-abd3-d2e1558b6ea2",
+    "name": "Organizational Messages Writer",
+    "type": "DirectoryRole",
+    "suspicion": "Medium",
+    "impact": "Medium",
+    "categories": ["Integrity"],
+    "reason": "Abuse: publish messages with links to every user in Windows and Microsoft 365 surfaces. Medium: phishing that arrives as an official company notice."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "8424c6f0-a189-499e-bbd0-26c1753c96d4",
+    "name": "Attribute Definition Administrator",
+    "type": "DirectoryRole",
+    "suspicion": "Medium",
+    "impact": "Medium",
+    "categories": ["Integrity"],
+    "reason": "Abuse: create and deactivate custom security attribute definitions that access conditions depend on. Medium: changes what the attributes can express, not who holds them."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "5b784334-f94b-471a-a387-e7219fc49ca2",
+    "name": "Attribute Log Administrator",
+    "type": "DirectoryRole",
+    "suspicion": "Medium",
+    "impact": "Medium",
+    "categories": ["Integrity"],
+    "reason": "Abuse: change the diagnostic settings that export custom security attribute audit events. Medium: can stop attribute changes from being logged."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "aa38014f-0993-46e9-9b45-30501a20909d",
+    "name": "Teams Telephony Administrator",
+    "type": "DirectoryRole",
+    "suspicion": "Medium",
+    "impact": "Medium",
+    "categories": ["Integrity"],
+    "reason": "Abuse: change phone numbers, call routing and voice policies. Medium: redirect calls or run up toll charges."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "baf37b3a-610e-45da-9e62-d9d1e5e8914b",
+    "name": "Teams Communications Administrator",
+    "type": "DirectoryRole",
+    "suspicion": "Medium",
+    "impact": "Medium",
+    "categories": ["Integrity", "DataAccess"],
+    "reason": "Abuse: change meeting and calling policies, such as recording, transcription and anonymous join. Medium: exposes meetings to outsiders or records them."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "810a2642-a034-447f-a5e8-41beaa378541",
+    "name": "Yammer Administrator",
+    "type": "DirectoryRole",
+    "suspicion": "Medium",
+    "impact": "Medium",
+    "categories": ["DataAccess", "Integrity"],
+    "reason": "Abuse: manage Viva Engage networks, communities and external access. Medium: can open communities to outsiders."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "eb1f4a8d-243a-41f0-9fbd-c7cdf6c5ef7c",
+    "name": "Insights Administrator",
+    "type": "DirectoryRole",
+    "suspicion": "Medium",
+    "impact": "Medium",
+    "categories": ["DataAccess"],
+    "reason": "Abuse: manage Viva Insights and the collaboration data it analyses. Medium: mail and meeting metadata for the whole organisation."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "25df335f-86eb-4119-b717-0ff02de207e9",
+    "name": "Insights Analyst",
+    "type": "DirectoryRole",
+    "suspicion": "Medium",
+    "impact": "Medium",
+    "categories": ["DataAccess"],
+    "reason": "Abuse: run custom queries over the organisation's collaboration data. Medium: who mails and meets whom, across every employee."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "1a7d78b6-429f-476b-b8eb-35fb715fffd4",
+    "name": "SharePoint Embedded Administrator",
+    "type": "DirectoryRole",
+    "suspicion": "Medium",
+    "impact": "Medium",
+    "categories": ["DataAccess"],
+    "reason": "Abuse: manage SharePoint Embedded containers and their permissions. Medium: content of apps built on SharePoint Embedded."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "75941009-915a-4869-abe7-691bff18279e",
+    "name": "Skype for Business Administrator",
+    "type": "DirectoryRole",
+    "suspicion": "Medium",
+    "impact": "Medium",
+    "categories": ["Integrity"],
+    "reason": "Abuse: manage the communication settings Teams inherited from Skype for Business, including external access. Medium: retired product, unusual on an app."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "e3973bdf-4987-49ae-837a-ba8e231c7286",
+    "name": "Azure DevOps Administrator",
+    "type": "DirectoryRole",
+    "suspicion": "Medium",
+    "impact": "Medium",
+    "categories": ["Integrity"],
+    "reason": "Abuse: change tenant policies for Azure DevOps organisations, such as who can create them. Medium: does not grant access to code in existing organisations."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "32696413-001a-46ae-978c-ce0f6b3620d2",
+    "name": "Windows Update Deployment Administrator",
+    "type": "DirectoryRole",
+    "suspicion": "Medium",
+    "impact": "Medium",
+    "categories": ["Availability", "Integrity"],
+    "reason": "Abuse: pause security updates or push driver and feature updates to devices. Medium: keeps devices unpatched or breaks them."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "112ca1a2-15ad-4102-995e-45b0bc479a6a",
+    "name": "Tenant Creator",
+    "type": "DirectoryRole",
+    "suspicion": "Medium",
+    "impact": "Low",
+    "categories": ["Integrity"],
+    "reason": "Abuse: create new Entra and B2C tenants. Low: the new tenants sit outside this one, but can host lookalike apps and domains."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "9f06204d-73c1-4d4c-880a-6edb90606fd8",
+    "name": "Microsoft Entra Joined Device Local Administrator",
+    "type": "DirectoryRole",
+    "suspicion": "High",
+    "impact": "Low",
+    "categories": ["PrivilegeEscalation"],
+    "reason": "Abuse: local administrator on every Entra joined device for users who hold it. Low for an app: a service principal cannot sign in to a device, so holding it is a misconfiguration."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "9c6df0f2-1e7c-4dc3-b195-66dfbd24aa8f",
+    "name": "Attack Payload Author",
+    "type": "DirectoryRole",
+    "suspicion": "Low",
+    "impact": "Medium",
+    "categories": ["Integrity"],
+    "reason": "Abuse: create phishing payloads that a simulation administrator later sends. Medium: needs another role to deliver them."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "f42252d9-5400-4d7b-b9ef-cc582dbb8577",
+    "name": "Entra Backup Reader",
+    "type": "DirectoryRole",
+    "suspicion": "Low",
+    "impact": "Medium",
+    "categories": ["DataAccess"],
+    "reason": "Abuse: read directory backup snapshots and compare them with the live tenant. Medium: a history of the tenant's security configuration."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "f70938a0-fc10-4177-9e90-2178f8765737",
+    "name": "Teams Communications Support Engineer",
+    "type": "DirectoryRole",
+    "suspicion": "Low",
+    "impact": "Medium",
+    "categories": ["DataAccess"],
+    "reason": "Abuse: read full call records, including participant details, for every user. Medium: who calls whom across the organisation."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "0964bb5e-9bdb-4d7b-ac29-58e794862a40",
+    "name": "Search Administrator",
+    "type": "DirectoryRole",
+    "suspicion": "Low",
+    "impact": "Medium",
+    "categories": ["Integrity"],
+    "reason": "Abuse: change Microsoft Search settings, connectors and answers shown to every user. Medium: can plant links in search results."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "b5a8dcf3-09d5-43a9-a639-8e29ef291470",
+    "name": "Knowledge Administrator",
+    "type": "DirectoryRole",
+    "suspicion": "Low",
+    "impact": "Medium",
+    "categories": ["DataAccess"],
+    "reason": "Abuse: configure knowledge and learning features and the content sources they index. Medium: surfaces content across sites."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "3d762c5a-1b6c-493f-843e-55a3b42923d4",
+    "name": "Teams Devices Administrator",
+    "type": "DirectoryRole",
+    "suspicion": "Low",
+    "impact": "Medium",
+    "categories": ["Integrity"],
+    "reason": "Abuse: configure, update and restart Teams Rooms and phones. Medium: meeting room devices with cameras and microphones."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "6e591065-9bad-43ed-90f3-e9424366d2f0",
+    "name": "External ID User Flow Administrator",
+    "type": "DirectoryRole",
+    "suspicion": "Low",
+    "impact": "Medium",
+    "categories": ["Integrity"],
+    "reason": "Abuse: change self-service sign-up and sign-in user flows for external users. Medium: controls how external users join."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "644ef478-e28f-4e28-b9dc-3fdde9aa0b1f",
+    "name": "Printer Administrator",
+    "type": "DirectoryRole",
+    "suspicion": "Low",
+    "impact": "Low",
+    "categories": ["Integrity"],
+    "reason": "Abuse: manage Universal Print printers, connectors and who can print to them. Low: printing only."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "f023fd81-a637-4b56-95fd-791ac0226033",
+    "name": "Service Support Administrator",
+    "type": "DirectoryRole",
+    "suspicion": "Low",
+    "impact": "Low",
+    "categories": ["Integrity"],
+    "reason": "Abuse: open Microsoft support requests on behalf of the tenant. Low: support engineers still verify changes."
+  },
+  {
+    "api": "Microsoft Entra ID",
+    "id": "ffd52fa5-98dc-465c-991d-fc073eb59f8f",
+    "name": "Attribute Assignment Reader",
+    "type": "DirectoryRole",
+    "suspicion": "Low",
+    "impact": "Low",
+    "categories": ["DataAccess"],
+    "reason": "Abuse: read custom security attribute values on users and apps. Low: can reveal sensitive HR attributes stored there."
+  },
+  {
+    "api": "Microsoft Graph",
+    "id": "884b599e-4d48-43a5-ba94-15c414d00588",
+    "name": "DeviceLocalCredential.Read.All",
+    "type": "Application",
+    "suspicion": "High",
+    "impact": "Critical",
+    "categories": ["PrivilegeEscalation", "DataAccess"],
+    "reason": "Abuse: read the Windows LAPS local administrator password of every device. Critical: local admin on every managed endpoint."
+  },
+  {
+    "api": "Microsoft Graph",
+    "id": "57f1cf28-c0c4-4ec3-9a30-19a2eaaf2f6e",
+    "name": "BitlockerKey.Read.All",
+    "type": "Application",
+    "suspicion": "Medium",
+    "impact": "High",
+    "categories": ["DataAccess"],
+    "reason": "Abuse: read the BitLocker recovery key of every device. High: unlocks any lost, stolen or seized disk."
+  },
+  {
+    "api": "Microsoft Graph",
+    "id": "fb221be6-99f2-473f-bd32-01c6a0e9ca3b",
+    "name": "Policy.ReadWrite.Authorization",
+    "type": "Application",
+    "suspicion": "High",
+    "impact": "High",
+    "categories": ["PrivilegeEscalation", "Integrity"],
+    "reason": "Abuse: change the authorization policy, such as letting users consent to apps, register apps and invite guests. High: opens the tenant to consent phishing."
+  },
+  {
+    "api": "Microsoft Graph",
+    "id": "025d3225-3f02-4882-b4c0-cd5b541a4e80",
+    "name": "RoleManagement.ReadWrite.Exchange",
+    "type": "Application",
+    "suspicion": "High",
+    "impact": "Critical",
+    "categories": ["PrivilegeEscalation", "DataAccess"],
+    "reason": "Abuse: assign Exchange RBAC roles and management scopes to any principal, including mailbox access roles. Critical: reaches all mail."
+  },
+  {
+    "api": "Microsoft Graph",
+    "id": "89c8469c-83ad-45f7-8ff2-6e3d4285709e",
+    "name": "ServicePrincipalEndpoint.ReadWrite.All",
+    "type": "Application",
+    "suspicion": "Medium",
+    "impact": "Medium",
+    "categories": ["Integrity"],
+    "reason": "Abuse: change the endpoints registered on service principals so traffic goes to an attacker. Medium: depends on what uses those endpoints."
+  },
+  {
+    "api": "Microsoft Graph",
+    "id": "dcf7150a-88d4-4fe6-9be1-c2744c455397",
+    "name": "AgentIdentity.ReadWrite.All",
+    "type": "Application",
+    "suspicion": "Medium",
+    "impact": "High",
+    "categories": ["PrivilegeEscalation"],
+    "reason": "Abuse: create, change and delete agent identities. High: agents act with permissions of their own."
+  },
+  {
+    "api": "Microsoft Graph",
+    "id": "0510736e-bdfb-4b37-9a1f-89b4a074763a",
+    "name": "AgentIdentityBlueprint.AddRemoveCreds.All",
+    "type": "Application",
+    "suspicion": "High",
+    "impact": "High",
+    "categories": ["PrivilegeEscalation"],
+    "reason": "Abuse: add credentials to agent identity blueprints and act as them. High: takes over every agent built from them."
+  },
+  {
+    "api": "Microsoft Graph",
+    "id": "7fddd33b-d884-4ec0-8696-72cff90ff825",
+    "name": "AgentIdentityBlueprint.ReadWrite.All",
+    "type": "Application",
+    "suspicion": "Medium",
+    "impact": "High",
+    "categories": ["PrivilegeEscalation"],
+    "reason": "Abuse: create and change agent identity blueprints. High: controls how agents are created and what they hold."
+  },
+  {
+    "api": "Microsoft Graph",
+    "id": "1138cb37-bd11-4084-a2b7-9f71582aeddb",
+    "name": "Device.ReadWrite.All",
+    "type": "Application",
+    "suspicion": "Medium",
+    "impact": "Medium",
+    "categories": ["Integrity", "Availability"],
+    "reason": "Abuse: change device properties such as extension attributes used by dynamic groups and Conditional Access filters, or disable devices. Medium: can bend device-based policy."
+  },
+  {
+    "api": "Microsoft Graph",
+    "id": "74ef0291-ca83-4d02-8c7e-d2391e6a444f",
+    "name": "TeamsAppInstallation.ReadWriteForUser.All",
+    "type": "Application",
+    "suspicion": "Medium",
+    "impact": "Medium",
+    "categories": ["Integrity"],
+    "reason": "Abuse: install any Teams app for any user, such as a malicious bot or tab. Medium: a delivery channel inside Teams."
+  },
+  {
+    "api": "Microsoft Graph",
+    "id": "32ca478f-f89e-41d0-aaf8-101deb7da510",
+    "name": "TeamsAppInstallation.ReadWriteAndConsentForUser.All",
+    "type": "Application",
+    "suspicion": "High",
+    "impact": "High",
+    "categories": ["PrivilegeEscalation", "DataAccess"],
+    "reason": "Abuse: install Teams apps for any user and grant them resource-specific consent to that user's data. High: hands per-user data access to apps of its choice."
+  },
+  {
+    "api": "Microsoft Graph",
+    "id": "ef54d2bf-783f-4e0f-bca1-3210c0444d99",
+    "name": "Calendars.ReadWrite",
+    "type": "Application",
+    "suspicion": "Medium",
+    "impact": "High",
+    "categories": ["DataAccess", "Integrity"],
+    "reason": "Abuse: read and change every calendar, including meeting links and invites. High: meeting content and convincing phishing invites."
+  },
+  {
+    "api": "Microsoft Graph",
+    "id": "798ee544-9d2d-430c-a058-570e29e34338",
+    "name": "Calendars.Read",
+    "type": "Application",
+    "suspicion": "Low",
+    "impact": "Medium",
+    "categories": ["DataAccess"],
+    "reason": "Abuse: read every calendar. Medium: meeting details and who meets whom."
+  },
+  {
+    "api": "Microsoft Graph",
+    "id": "a4a80d8d-d283-4bd8-8504-555ec3870630",
+    "name": "OnlineMeetingTranscript.Read.All",
+    "type": "Application",
+    "suspicion": "Medium",
+    "impact": "High",
+    "categories": ["DataAccess"],
+    "reason": "Abuse: read the transcripts of every Teams meeting. High: what was said in confidential meetings."
+  },
+  {
+    "api": "Microsoft Graph",
+    "id": "a4a08342-c95d-476b-b943-97e100569c8d",
+    "name": "OnlineMeetingRecording.Read.All",
+    "type": "Application",
+    "suspicion": "Medium",
+    "impact": "High",
+    "categories": ["DataAccess"],
+    "reason": "Abuse: download the recordings of every Teams meeting. High: what was said and shown in confidential meetings."
+  },
+  {
+    "api": "Microsoft Graph",
+    "id": "4cd61b6d-8692-40bf-9d90-7f38db5e5fce",
+    "name": "CallTranscripts.Read.All",
+    "type": "Application",
+    "suspicion": "Medium",
+    "impact": "High",
+    "categories": ["DataAccess"],
+    "reason": "Abuse: read the transcripts of every Teams call. High: private conversations."
+  },
+  {
+    "api": "Microsoft Graph",
+    "id": "ce8fb1f1-5e1f-44a0-b102-4ec28454d0dc",
+    "name": "CallRecordings.Read.All",
+    "type": "Application",
+    "suspicion": "Medium",
+    "impact": "High",
+    "categories": ["DataAccess"],
+    "reason": "Abuse: download the recordings of every Teams call. High: private conversations."
+  },
+  {
+    "api": "Microsoft Graph",
+    "id": "b9bb2381-47a4-46cd-aafb-00cb12f68504",
+    "name": "ChatMessage.Read.All",
+    "type": "Application",
+    "suspicion": "Medium",
+    "impact": "High",
+    "categories": ["DataAccess"],
+    "reason": "Abuse: read every one-to-one and group chat message in Teams. High: private conversations."
+  },
+  {
+    "api": "Microsoft Graph",
+    "id": "dfb0dd15-61de-45b2-be36-d6a69fba3c79",
+    "name": "Teamwork.Migrate.All",
+    "type": "Application",
+    "suspicion": "High",
+    "impact": "High",
+    "categories": ["Integrity"],
+    "reason": "Abuse: post chat and channel messages that appear to come from any user, with any timestamp. High: perfect internal impersonation."
+  },
+  {
+    "api": "Microsoft Graph",
+    "id": "693c5e45-0940-467d-9b8a-1022fb9d42ef",
+    "name": "Mail.ReadBasic.All",
+    "type": "Application",
+    "suspicion": "Low",
+    "impact": "Medium",
+    "categories": ["DataAccess"],
+    "reason": "Abuse: read sender, recipients and subject of every message in every mailbox, without bodies. Medium: maps who talks to whom about what."
+  },
+  {
+    "api": "Microsoft Graph",
+    "id": "e118f1da-5c1c-46cf-bff6-8858d786f46f",
+    "name": "Mail-Advanced.ReadWrite.All",
+    "type": "Application",
+    "suspicion": "Medium",
+    "impact": "Critical",
+    "categories": ["DataAccess", "Integrity"],
+    "reason": "Abuse: read every mailbox and change the content of messages already sent or received. Critical: all mail, and evidence can be rewritten."
+  },
+  {
+    "api": "Microsoft Graph",
+    "id": "1583d471-fede-4e7c-b062-57e9d60cfb49",
+    "name": "MailboxItem.ReadWrite.All",
+    "type": "Application",
+    "suspicion": "Medium",
+    "impact": "Critical",
+    "categories": ["DataAccess", "Integrity"],
+    "reason": "Abuse: read, write and delete items in every mailbox. Critical: all mail."
+  },
+  {
+    "api": "Microsoft Graph",
+    "id": "937550e9-33a3-494b-88ae-d9cd394b1fbb",
+    "name": "MailboxItem.Export.All",
+    "type": "Application",
+    "suspicion": "Medium",
+    "impact": "Critical",
+    "categories": ["DataAccess"],
+    "reason": "Abuse: export the items of every mailbox. Critical: all mail in bulk."
+  },
+  {
+    "api": "Microsoft Graph",
+    "id": "76577085-e73d-4f1d-b26a-85fb33892327",
+    "name": "MailboxItem.ImportExport.All",
+    "type": "Application",
+    "suspicion": "Medium",
+    "impact": "Critical",
+    "categories": ["DataAccess", "Integrity"],
+    "reason": "Abuse: export and import items in every mailbox. Critical: all mail in bulk, and planted messages."
+  },
+  {
+    "api": "Microsoft Graph",
+    "id": "6931bccd-447a-43d1-b442-00a195474933",
+    "name": "MailboxSettings.ReadWrite",
+    "type": "Application",
+    "suspicion": "Low",
+    "impact": "Medium",
+    "categories": ["Integrity"],
+    "reason": "Abuse: change the automatic replies and settings of every mailbox. Medium: social engineering from a trusted address."
+  },
+  {
+    "api": "Microsoft Graph",
+    "id": "78145de6-330d-4800-a6ce-494ff2d33d07",
+    "name": "DeviceManagementApps.ReadWrite.All",
+    "type": "Application",
+    "suspicion": "High",
+    "impact": "Critical",
+    "categories": ["Integrity"],
+    "reason": "Abuse: create and assign Intune apps, which install on every targeted device. Critical: code execution on managed devices."
+  },
+  {
+    "api": "Microsoft Graph",
+    "id": "5c505cf4-8424-4b8e-aa14-ee06e3bb23e3",
+    "name": "LifecycleWorkflows.ReadWrite.All",
+    "type": "Application",
+    "suspicion": "High",
+    "impact": "High",
+    "categories": ["PrivilegeEscalation", "Availability"],
+    "reason": "Abuse: create workflows whose tasks issue Temporary Access Passes, change group membership or disable users. High: account takeover through an automated task."
+  },
+  {
+    "api": "Microsoft Graph",
+    "id": "0400e371-7db1-4338-a269-96069eb65227",
+    "name": "UserAuthMethod-Passkey.ReadWrite.All",
+    "type": "Application",
+    "suspicion": "High",
+    "impact": "Critical",
+    "categories": ["PrivilegeEscalation"],
+    "reason": "Abuse: register a passkey for any user and sign in as them. Critical: takeover of any account."
+  },
+  {
+    "api": "Microsoft Graph",
+    "id": "f6d38dfd-ec08-4995-8f07-23e929df0936",
+    "name": "UserAuthMethod-Password.ReadWrite.All",
+    "type": "Application",
+    "suspicion": "High",
+    "impact": "Critical",
+    "categories": ["PrivilegeEscalation"],
+    "reason": "Abuse: reset any user's password through their password method. Critical: takeover of any account."
+  },
+  {
+    "api": "Microsoft Graph",
+    "id": "38d9df27-64da-44fd-b7c5-a6fbac20248f",
+    "name": "UserAuthenticationMethod.Read.All",
+    "type": "Application",
+    "suspicion": "Low",
+    "impact": "Medium",
+    "categories": ["DataAccess"],
+    "reason": "Abuse: read every user's registered authentication methods, including phone numbers. Medium: shows who lacks strong MFA."
+  },
+  {
+    "api": "Microsoft Graph",
+    "id": "1c6e93a6-28e2-4cbb-9f64-1a46a821124d",
+    "name": "Policy.ReadWrite.SecurityDefaults",
+    "type": "Application",
+    "suspicion": "High",
+    "impact": "High",
+    "categories": ["Integrity"],
+    "reason": "Abuse: turn security defaults off. High: removes MFA for every user in tenants that rely on them."
+  },
+  {
+    "api": "Microsoft Graph",
+    "id": "2dcf8603-09eb-4078-b1ec-d30a1a76b873",
+    "name": "Policy.ReadWrite.IdentityProtection",
+    "type": "Application",
+    "suspicion": "Medium",
+    "impact": "High",
+    "categories": ["Integrity"],
+    "reason": "Abuse: weaken the Identity Protection user and sign-in risk policies. High: risky sign-ins stop being challenged."
+  },
+  {
+    "api": "Microsoft Graph",
+    "id": "64d40371-8d58-4270-bc8a-b4a66de36b9a",
+    "name": "Domain-InternalFederation.ReadWrite.All",
+    "type": "Application",
+    "suspicion": "Critical",
+    "impact": "Critical",
+    "categories": ["PrivilegeEscalation"],
+    "reason": "Abuse: configure federation on a domain so a token signer the attacker controls is trusted. Critical: sign in as any user of that domain."
+  },
+  {
+    "api": "Microsoft Graph",
+    "id": "90db2b9a-d928-4d33-a4dd-8442ae3d41e4",
+    "name": "IdentityProvider.ReadWrite.All",
+    "type": "Application",
+    "suspicion": "High",
+    "impact": "High",
+    "categories": ["PrivilegeEscalation"],
+    "reason": "Abuse: add or change identity providers the tenant trusts for sign-in. High: a trusted sign-in source the attacker controls."
+  },
+  {
+    "api": "Microsoft Graph",
+    "id": "c2667967-7050-4e7e-b059-4cbbb3811d03",
+    "name": "CustomAuthenticationExtension.ReadWrite.All",
+    "type": "Application",
+    "suspicion": "High",
+    "impact": "High",
+    "categories": ["Integrity"],
+    "reason": "Abuse: point custom authentication extensions at an attacker endpoint that receives sign-in data and can shape token claims. High: alters tokens for apps that use them."
+  },
+  {
+    "api": "Microsoft Graph",
+    "id": "a2b63618-5350-462d-b1b3-ba6eb3684e26",
+    "name": "PublicKeyInfrastructure.ReadWrite.All",
+    "type": "Application",
+    "suspicion": "Critical",
+    "impact": "Critical",
+    "categories": ["PrivilegeEscalation"],
+    "reason": "Abuse: add a certificate authority the tenant trusts for certificate-based authentication. Critical: sign in as any user with a certificate the attacker issues."
+  },
+  {
+    "api": "Microsoft Graph",
+    "id": "78bbf8cf-07d8-45ba-b0eb-1a7b48efbcf1",
+    "name": "MutualTlsOauthConfiguration.ReadWrite.All",
+    "type": "Application",
+    "suspicion": "High",
+    "impact": "High",
+    "categories": ["PrivilegeEscalation"],
+    "reason": "Abuse: add certificate authorities trusted for app mutual-TLS authentication. High: apps can be impersonated with attacker-issued certificates."
+  },
+  {
+    "api": "Microsoft Graph",
+    "id": "c22a92cc-79bf-4bb1-8b6c-e0a05d3d80ce",
+    "name": "OnPremDirectorySynchronization.ReadWrite.All",
+    "type": "Application",
+    "suspicion": "High",
+    "impact": "High",
+    "categories": ["Integrity"],
+    "reason": "Abuse: change directory synchronization settings and features. High: affects how on-premises identities and passwords sync."
+  },
+  {
+    "api": "Microsoft Graph",
+    "id": "5639c449-cfd9-4088-bc48-3e16da108bf8",
+    "name": "User.ReadUpdate.All",
+    "type": "Application",
+    "suspicion": "Medium",
+    "impact": "High",
+    "categories": ["Integrity"],
+    "reason": "Abuse: change user properties such as mail, phone and manager. High: enables account recovery and approval fraud."
+  },
+  {
+    "api": "Microsoft Graph",
+    "id": "81adad77-a25a-489d-ac43-321115620139",
+    "name": "PrivilegedAssignmentSchedule.ReadWrite.EntraAppRole",
+    "type": "Application",
+    "suspicion": "High",
+    "impact": "Critical",
+    "categories": ["PrivilegeEscalation"],
+    "reason": "Abuse: create PIM assignment schedules for application permissions to any API, Microsoft Graph included. Critical: can grant itself any permission."
+  },
+  {
+    "api": "Microsoft Graph",
+    "id": "7f4c39f1-1aa7-44b7-ab05-38df2609c37a",
+    "name": "PrivilegedEligibilitySchedule.ReadWrite.EntraAppRole",
+    "type": "Application",
+    "suspicion": "High",
+    "impact": "Critical",
+    "categories": ["PrivilegeEscalation"],
+    "reason": "Abuse: create PIM eligibility for application permissions to any API, Microsoft Graph included. Critical: can make itself eligible for any permission."
+  },
+  {
+    "api": "Microsoft Graph",
+    "id": "df021288-bdef-4463-88db-98f22de89214",
+    "name": "User.Read.All",
+    "type": "Application",
+    "suspicion": "Low",
+    "impact": "Low",
+    "categories": ["DataAccess"],
+    "reason": "Abuse: read every user profile. Low: directory reconnaissance; common for vendor tools."
+  },
+  {
+    "api": "Microsoft Graph",
+    "id": "089fe4d0-434a-44c5-8827-41ba8a0b17f5",
+    "name": "Contacts.Read",
+    "type": "Application",
+    "suspicion": "Low",
+    "impact": "Medium",
+    "categories": ["DataAccess"],
+    "reason": "Abuse: read contacts in every mailbox. Medium: business relationships for phishing."
+  },
+  {
+    "api": "Microsoft Graph",
+    "id": "b528084d-ad10-4598-8b93-929746b4d7d6",
+    "name": "People.Read.All",
+    "type": "Application",
+    "suspicion": "Low",
+    "impact": "Medium",
+    "categories": ["DataAccess"],
+    "reason": "Abuse: read every user's relevant-people list. Medium: who works closely with whom, for targeted phishing."
+  },
+  {
+    "api": "Microsoft Graph",
+    "id": "230c1aed-a721-4c5d-9cb4-a90514e508ef",
+    "name": "Reports.Read.All",
+    "type": "Application",
+    "suspicion": "Low",
+    "impact": "Low",
+    "categories": ["DataAccess"],
+    "reason": "Abuse: read Microsoft 365 usage reports. Low: usage data, names can be concealed."
+  },
+  {
+    "api": "Microsoft Graph",
+    "id": "0c458cef-11f3-48c2-a568-c66751c238c0",
+    "name": "Notes.ReadWrite.All",
+    "type": "Application",
+    "suspicion": "Medium",
+    "impact": "High",
+    "categories": ["DataAccess"],
+    "reason": "Abuse: read and change every OneNote notebook. High: notebooks often hold passwords and meeting notes."
+  },
+  {
+    "api": "Microsoft Graph",
+    "id": "44e666d1-d276-445b-a5fc-8815eeb81d55",
+    "name": "Tasks.ReadWrite.All",
+    "type": "Application",
+    "suspicion": "Low",
+    "impact": "Medium",
+    "categories": ["DataAccess"],
+    "reason": "Abuse: read and change every user's To Do tasks. Medium: work items and planted tasks."
+  },
+  {
+    "api": "Microsoft Graph",
+    "id": "570282fd-fa5c-430d-a7fd-fc8dc98a9dca",
+    "name": "Mail.Read",
+    "type": "Delegated",
+    "suspicion": "Low",
+    "impact": "Medium",
+    "categories": ["DataAccess"],
+    "reason": "Abuse: read the signed-in user's mail. Medium: one mailbox per consenting user."
+  },
+  {
+    "api": "Microsoft Graph",
+    "id": "5df07973-7d5d-46ed-9847-1271055cbd51",
+    "name": "Mail.ReadWrite.Shared",
+    "type": "Delegated",
+    "suspicion": "Medium",
+    "impact": "Medium",
+    "categories": ["DataAccess", "Integrity"],
+    "reason": "Abuse: read and change mail in every mailbox the user can open, including shared and delegated ones. Medium: reaches beyond the user's own mailbox."
+  },
+  {
+    "api": "Microsoft Graph",
+    "id": "a367ab51-6b49-43bf-a716-a1fb06d2a174",
+    "name": "Mail.Send.Shared",
+    "type": "Delegated",
+    "suspicion": "Medium",
+    "impact": "Medium",
+    "categories": ["Integrity"],
+    "reason": "Abuse: send mail as the user and on behalf of mailboxes they can send for. Medium: internal phishing from trusted addresses."
+  },
+  {
+    "api": "Microsoft Graph",
+    "id": "818c620a-27a9-40bd-a6a5-d96f7d610b4b",
+    "name": "MailboxSettings.ReadWrite",
+    "type": "Delegated",
+    "suspicion": "Low",
+    "impact": "Medium",
+    "categories": ["Integrity"],
+    "reason": "Abuse: change the user's automatic replies and mailbox settings. Medium: social engineering from the user's address."
+  },
+  {
+    "api": "Microsoft Graph",
+    "id": "5a54b8b3-347c-476d-8f8e-42d5c7424d29",
+    "name": "Sites.FullControl.All",
+    "type": "Delegated",
+    "suspicion": "Medium",
+    "impact": "High",
+    "categories": ["DataAccess", "Integrity"],
+    "reason": "Abuse: full control of every site the user can reach, including permissions. High: with a SharePoint admin signed in, every site."
+  },
+  {
+    "api": "Microsoft Graph",
+    "id": "89fe6a52-be36-487e-b7d8-d061c450a026",
+    "name": "Sites.ReadWrite.All",
+    "type": "Delegated",
+    "suspicion": "Medium",
+    "impact": "Medium",
+    "categories": ["DataAccess", "Integrity"],
+    "reason": "Abuse: read and change documents and list items on every site the user can reach. Medium: limited to what the user can open."
+  },
+  {
+    "api": "Microsoft Graph",
+    "id": "df85f4d6-205c-4ac5-a5ea-6bf408dba283",
+    "name": "Files.Read.All",
+    "type": "Delegated",
+    "suspicion": "Low",
+    "impact": "Medium",
+    "categories": ["DataAccess"],
+    "reason": "Abuse: read every file the user can open. Medium: limited to what the user can open."
+  },
+  {
+    "api": "Microsoft Graph",
+    "id": "204e0828-b5ca-4ad8-b9f3-f32a958e7cc4",
+    "name": "User.ReadWrite.All",
+    "type": "Delegated",
+    "suspicion": "Medium",
+    "impact": "High",
+    "categories": ["PrivilegeEscalation", "Integrity"],
+    "reason": "Abuse: change other users' profiles with the signed-in user's rights. High: with a User Administrator signed in, recovery details of most users."
+  },
+  {
+    "api": "Microsoft Graph",
+    "id": "4e46008b-f24c-477d-8fff-7bb4ec7aafe0",
+    "name": "Group.ReadWrite.All",
+    "type": "Delegated",
+    "suspicion": "Medium",
+    "impact": "High",
+    "categories": ["PrivilegeEscalation", "DataAccess"],
+    "reason": "Abuse: create and change groups and their content with the user's rights. High: with a Groups Administrator signed in, membership of every group."
+  },
+  {
+    "api": "Microsoft Graph",
+    "id": "f81125ac-d3b7-4573-a3b2-7099cc39df9e",
+    "name": "GroupMember.ReadWrite.All",
+    "type": "Delegated",
+    "suspicion": "Medium",
+    "impact": "High",
+    "categories": ["PrivilegeEscalation"],
+    "reason": "Abuse: change group membership with the user's rights. High: with an admin signed in, access to whatever groups unlock."
+  },
+  {
+    "api": "Microsoft Graph",
+    "id": "c5366453-9fb0-48a5-a156-24f0c49a4b84",
+    "name": "Directory.ReadWrite.All",
+    "type": "Delegated",
+    "suspicion": "High",
+    "impact": "High",
+    "categories": ["PrivilegeEscalation", "Integrity"],
+    "reason": "Abuse: change directory objects with the user's rights. High: with an admin signed in, users, groups and apps across the tenant."
+  },
+  {
+    "api": "Microsoft Graph",
+    "id": "b7887744-6746-4312-813d-72daeaee7e2d",
+    "name": "UserAuthenticationMethod.ReadWrite.All",
+    "type": "Delegated",
+    "suspicion": "High",
+    "impact": "Critical",
+    "categories": ["PrivilegeEscalation"],
+    "reason": "Abuse: add or change other users' authentication methods with the user's rights. Critical: with an authentication admin signed in, MFA for any account."
+  },
+  {
+    "api": "Microsoft Graph",
+    "id": "ad902697-1014-4ef5-81ef-2b4301988e8c",
+    "name": "Policy.ReadWrite.ConditionalAccess",
+    "type": "Delegated",
+    "suspicion": "High",
+    "impact": "Critical",
+    "categories": ["Integrity"],
+    "reason": "Abuse: change Conditional Access policies with the user's rights. Critical: with a Conditional Access admin signed in, MFA can be switched off tenant-wide."
+  },
+  {
+    "api": "Microsoft Graph",
+    "id": "7e823077-d88e-468f-a337-e18f1f0e6c7c",
+    "name": "Policy.ReadWrite.AuthenticationMethod",
+    "type": "Delegated",
+    "suspicion": "High",
+    "impact": "High",
+    "categories": ["Integrity"],
+    "reason": "Abuse: weaken the authentication methods policy with the user's rights. High: lowers the bar for every sign-in."
+  },
+  {
+    "api": "Microsoft Graph",
+    "id": "edd3c878-b384-41fd-95ad-e7407dd775be",
+    "name": "Policy.ReadWrite.Authorization",
+    "type": "Delegated",
+    "suspicion": "High",
+    "impact": "High",
+    "categories": ["PrivilegeEscalation", "Integrity"],
+    "reason": "Abuse: change the authorization policy with the user's rights, such as user consent and guest settings. High: opens the tenant to consent phishing."
+  },
+  {
+    "api": "Microsoft Graph",
+    "id": "2672f8bb-fd5e-42e0-85e1-ec764dd2614e",
+    "name": "Policy.ReadWrite.PermissionGrant",
+    "type": "Delegated",
+    "suspicion": "High",
+    "impact": "High",
+    "categories": ["PrivilegeEscalation"],
+    "reason": "Abuse: change consent and permission grant policies with the user's rights. High: lets users consent to permissions they should not."
+  },
+  {
+    "api": "Microsoft Graph",
+    "id": "014b43d0-6ed4-4fc6-84dc-4b6f7bae7d85",
+    "name": "Policy.ReadWrite.CrossTenantAccess",
+    "type": "Delegated",
+    "suspicion": "High",
+    "impact": "High",
+    "categories": ["Integrity"],
+    "reason": "Abuse: change cross-tenant access settings with the user's rights. High: trusts MFA and devices from other tenants, or opens B2B access."
+  },
+  {
+    "api": "Microsoft Graph",
+    "id": "0b5d694c-a244-4bde-86e6-eb5cd07730fe",
+    "name": "Domain.ReadWrite.All",
+    "type": "Delegated",
+    "suspicion": "High",
+    "impact": "Critical",
+    "categories": ["PrivilegeEscalation"],
+    "reason": "Abuse: add, verify and change domains with the user's rights. Critical: with a domain admin signed in, a federation backdoor."
+  },
+  {
+    "api": "Microsoft Graph",
+    "id": "46ca0847-7e6b-426e-9775-ea810a948356",
+    "name": "Organization.ReadWrite.All",
+    "type": "Delegated",
+    "suspicion": "Medium",
+    "impact": "High",
+    "categories": ["Integrity"],
+    "reason": "Abuse: change organization settings and branding with the user's rights. High: tenant-wide settings."
+  },
+  {
+    "api": "Microsoft Graph",
+    "id": "41ce6ca6-6826-4807-84f1-1c82854f7ee5",
+    "name": "DelegatedPermissionGrant.ReadWrite.All",
+    "type": "Delegated",
+    "suspicion": "High",
+    "impact": "Critical",
+    "categories": ["PrivilegeEscalation"],
+    "reason": "Abuse: grant delegated permissions to any app with the user's rights. Critical: with an admin signed in, consent to anything for everyone."
+  },
+  {
+    "api": "Microsoft Graph",
+    "id": "c1499fe0-52b1-4b22-bed2-7a244e0e879f",
+    "name": "RoleManagement.ReadWrite.Exchange",
+    "type": "Delegated",
+    "suspicion": "High",
+    "impact": "Critical",
+    "categories": ["PrivilegeEscalation", "DataAccess"],
+    "reason": "Abuse: change Exchange RBAC with the user's rights. Critical: with an Exchange admin signed in, mailbox access roles for anyone."
+  },
+  {
+    "api": "Microsoft Graph",
+    "id": "0883f392-0a7a-443d-8c76-16a6d39c7b63",
+    "name": "DeviceManagementConfiguration.ReadWrite.All",
+    "type": "Delegated",
+    "suspicion": "Medium",
+    "impact": "High",
+    "categories": ["Integrity"],
+    "reason": "Abuse: change Intune configuration and compliance policies with the user's rights. High: with an Intune admin signed in, every managed device."
+  },
+  {
+    "api": "Microsoft Graph",
+    "id": "3404d2bf-2b13-457e-a330-c24615765193",
+    "name": "DeviceManagementManagedDevices.PrivilegedOperations.All",
+    "type": "Delegated",
+    "suspicion": "Medium",
+    "impact": "High",
+    "categories": ["Availability"],
+    "reason": "Abuse: wipe devices or reset passcodes with the user's rights. High: with an Intune admin signed in, every managed device."
+  },
+  {
+    "api": "Microsoft Graph",
+    "id": "b27a61ec-b99c-4d6a-b126-c4375d08ae30",
+    "name": "BitlockerKey.Read.All",
+    "type": "Delegated",
+    "suspicion": "Medium",
+    "impact": "Medium",
+    "categories": ["DataAccess"],
+    "reason": "Abuse: read BitLocker recovery keys the user can see. Medium: with an admin signed in, every device's key."
+  },
+  {
+    "api": "Microsoft Graph",
+    "id": "280b3b69-0437-44b1-bc20-3b2fca1ee3e9",
+    "name": "DeviceLocalCredential.Read.All",
+    "type": "Delegated",
+    "suspicion": "Medium",
+    "impact": "High",
+    "categories": ["PrivilegeEscalation", "DataAccess"],
+    "reason": "Abuse: read Windows LAPS local admin passwords the user can see. High: with an admin signed in, local admin on every managed endpoint."
+  },
+  {
+    "api": "Microsoft Graph",
+    "id": "e4c9e354-4dc5-45b8-9e7c-e1393b0b1a20",
+    "name": "AuditLog.Read.All",
+    "type": "Delegated",
+    "suspicion": "Low",
+    "impact": "Medium",
+    "categories": ["DataAccess"],
+    "reason": "Abuse: read sign-in and audit logs with the user's rights. Medium: shows an attacker what is monitored."
+  },
+  {
+    "api": "Microsoft Graph",
+    "id": "9ff7295e-131b-4d94-90e1-69fde507ac11",
+    "name": "Chat.ReadWrite",
+    "type": "Delegated",
+    "suspicion": "Low",
+    "impact": "Medium",
+    "categories": ["DataAccess", "Integrity"],
+    "reason": "Abuse: read and send the user's Teams chats. Medium: one user's conversations, and phishing from their account."
+  },
+  {
+    "api": "Microsoft Graph",
+    "id": "1ec239c2-d7c9-4623-a91a-a9775856bb36",
+    "name": "Calendars.ReadWrite",
+    "type": "Delegated",
+    "suspicion": "Low",
+    "impact": "Medium",
+    "categories": ["DataAccess", "Integrity"],
+    "reason": "Abuse: read and change the user's calendar. Medium: meeting details and planted invites."
+  },
+  {
+    "api": "Microsoft Graph",
+    "id": "d56682ec-c09e-4743-aaf4-1a3aac4caa21",
+    "name": "Contacts.ReadWrite",
+    "type": "Delegated",
+    "suspicion": "Low",
+    "impact": "Medium",
+    "categories": ["DataAccess"],
+    "reason": "Abuse: read and change the user's contacts. Medium: business relationships for phishing."
+  },
+  {
+    "api": "Microsoft Graph",
+    "id": "64ac0503-b4fa-45d9-b544-71a463f05da0",
+    "name": "Notes.ReadWrite.All",
+    "type": "Delegated",
+    "suspicion": "Low",
+    "impact": "Medium",
+    "categories": ["DataAccess"],
+    "reason": "Abuse: read and change every OneNote notebook the user can open. Medium: notebooks often hold passwords."
+  },
+  {
+    "api": "Microsoft Graph",
+    "id": "652390e4-393a-48de-9484-05f9b1212954",
+    "name": "IMAP.AccessAsUser.All",
+    "type": "Delegated",
+    "suspicion": "Medium",
+    "impact": "Medium",
+    "categories": ["DataAccess", "Integrity"],
+    "reason": "Abuse: full access to the user's mailbox over IMAP, outside Graph-based monitoring. Medium: one mailbox per consenting user."
+  },
+  {
+    "api": "Microsoft Graph",
+    "id": "d7b7f2d9-0f45-4ea1-9d42-e50810c06991",
+    "name": "POP.AccessAsUser.All",
+    "type": "Delegated",
+    "suspicion": "Medium",
+    "impact": "Medium",
+    "categories": ["DataAccess"],
+    "reason": "Abuse: download the user's mail over POP, outside Graph-based monitoring. Medium: one mailbox per consenting user."
+  },
+  {
+    "api": "Microsoft Graph",
+    "id": "258f6531-6087-4cc4-bb90-092c5fb3ed3f",
+    "name": "SMTP.Send",
+    "type": "Delegated",
+    "suspicion": "Medium",
+    "impact": "Medium",
+    "categories": ["Integrity"],
+    "reason": "Abuse: send mail as the user over SMTP AUTH. Medium: phishing from a trusted internal address."
+  },
+  {
+    "api": "Microsoft Graph",
+    "id": "ff91d191-45a0-43fd-b837-bd682c4a0b0f",
+    "name": "EAS.AccessAsUser.All",
+    "type": "Delegated",
+    "suspicion": "Medium",
+    "impact": "Medium",
+    "categories": ["DataAccess", "Integrity"],
+    "reason": "Abuse: full access to the user's mailbox over Exchange ActiveSync. Medium: one mailbox per consenting user."
+  },
+  {
+    "api": "Exchange Online",
+    "id": "195adc35-e27b-454b-a7ed-1ecdffa1c09f",
+    "name": "IMAP.AccessAsUser.All",
+    "type": "Delegated",
+    "suspicion": "Medium",
+    "impact": "Medium",
+    "categories": ["DataAccess", "Integrity"],
+    "reason": "Abuse: full access to the user's mailbox over IMAP, outside Graph-based monitoring. Medium: one mailbox per consenting user."
+  },
+  {
+    "api": "Exchange Online",
+    "id": "fb698133-92fa-453e-a9ed-688e10f2e5ac",
+    "name": "POP.AccessAsUser.All",
+    "type": "Delegated",
+    "suspicion": "Medium",
+    "impact": "Medium",
+    "categories": ["DataAccess"],
+    "reason": "Abuse: download the user's mail over POP, outside Graph-based monitoring. Medium: one mailbox per consenting user."
+  },
+  {
+    "api": "Exchange Online",
+    "id": "76faac2a-0f20-42f1-928a-50de5b9dbe52",
+    "name": "SMTP.Send",
+    "type": "Delegated",
+    "suspicion": "Medium",
+    "impact": "Medium",
+    "categories": ["Integrity"],
+    "reason": "Abuse: send mail as the user over SMTP AUTH. Medium: phishing from a trusted internal address."
+  },
+  {
+    "api": "Exchange Online",
+    "id": "266d2589-20b5-4f91-9a03-89247d1be8da",
+    "name": "EAS.AccessAsUser.All",
+    "type": "Delegated",
+    "suspicion": "Medium",
+    "impact": "Medium",
+    "categories": ["DataAccess", "Integrity"],
+    "reason": "Abuse: full access to the user's mailbox over Exchange ActiveSync. Medium: one mailbox per consenting user."
+  },
+  {
+    "api": "Exchange Online",
+    "id": "185758ba-798d-4b72-9e54-429a413a2510",
+    "name": "Mail.Read",
+    "type": "Delegated",
+    "suspicion": "Low",
+    "impact": "Medium",
+    "categories": ["DataAccess"],
+    "reason": "Abuse: read the signed-in user's mail. Medium: one mailbox per consenting user."
+  },
+  {
+    "api": "Exchange Online",
+    "id": "2e83d72d-8895-4b66-9eea-abb43449ab8b",
+    "name": "MailboxSettings.ReadWrite",
+    "type": "Delegated",
+    "suspicion": "Low",
+    "impact": "Medium",
+    "categories": ["Integrity"],
+    "reason": "Abuse: change the user's automatic replies and mailbox settings. Medium: social engineering from the user's address."
+  },
+  {
+    "api": "SharePoint Online",
+    "id": "56680e0d-d2a3-4ae1-80d8-3c4f2100e3d0",
+    "name": "AllSites.FullControl",
+    "type": "Delegated",
+    "suspicion": "Medium",
+    "impact": "High",
+    "categories": ["DataAccess", "Integrity"],
+    "reason": "Abuse: full control of every site the user can reach, including permissions. High: with a SharePoint admin signed in, every site."
+  },
+  {
+    "api": "SharePoint Online",
+    "id": "b3f70a70-8a4b-4f95-9573-d71c496a53f4",
+    "name": "AllSites.Manage",
+    "type": "Delegated",
+    "suspicion": "Medium",
+    "impact": "Medium",
+    "categories": ["DataAccess", "Integrity"],
+    "reason": "Abuse: create and delete lists and libraries on every site the user can reach. Medium: limited to what the user can open."
+  },
+  {
+    "api": "SharePoint Online",
+    "id": "640ddd16-e5b7-4d71-9690-3f4022699ee7",
+    "name": "AllSites.Write",
+    "type": "Delegated",
+    "suspicion": "Medium",
+    "impact": "Medium",
+    "categories": ["DataAccess", "Integrity"],
+    "reason": "Abuse: read and change items on every site the user can reach. Medium: limited to what the user can open."
+  },
+  {
+    "api": "SharePoint Online",
+    "id": "4e0d77b0-96ba-4398-af14-3baa780278f4",
+    "name": "AllSites.Read",
+    "type": "Delegated",
+    "suspicion": "Low",
+    "impact": "Medium",
+    "categories": ["DataAccess"],
+    "reason": "Abuse: read items on every site the user can reach. Medium: limited to what the user can open."
+  },
+  {
+    "api": "SharePoint Online",
+    "id": "2cfdc887-d7b4-4798-9b33-3d98d6b95dd2",
+    "name": "MyFiles.Write",
+    "type": "Delegated",
+    "suspicion": "Low",
+    "impact": "Medium",
+    "categories": ["DataAccess", "Integrity"],
+    "reason": "Abuse: read and change the user's OneDrive files. Medium: one OneDrive per consenting user."
+  },
+  {
+    "api": "Azure Service Management",
+    "id": "41094075-9dad-400e-a0bd-54e686782033",
+    "name": "user_impersonation",
+    "type": "Delegated",
+    "suspicion": "Medium",
+    "impact": "Critical",
+    "categories": ["PrivilegeEscalation", "DataAccess", "Integrity"],
+    "reason": "Abuse: call Azure Resource Manager as the signed-in user. Critical: with a subscription owner signed in, full control of their Azure resources."
   }
 ]
-

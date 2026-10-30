@@ -35,10 +35,15 @@ const categoryInfo = {
   },
 }
 
+// The shared formatter colours a 'Risk' column on a test-status scale (High red, Critical grey).
+const ratingChip = (value, variant = 'outlined') => (
+  <Chip size="small" variant={variant} label={value} color={ratingChipColor(value)} />
+)
+
 const withDescription = (descriptions, value, cell) =>
   descriptions[value] ? (
     <Tooltip title={descriptions[value]} arrow>
-      <span>{cell}</span>
+      <span>{ratingChip(value)}</span>
     </Tooltip>
   ) : (
     cell
@@ -57,8 +62,11 @@ const renderCategoryChips = (categories, cell) => {
   )
 }
 
-const renderRiskReasons = (reasons, cell) => {
-  if (!Array.isArray(reasons) || reasons.length === 0) return cell
+const renderRisk = (row, cell) => {
+  if (!row?.Risk) return cell
+  const chip = ratingChip(row.Risk, 'filled')
+  const reasons = row.RiskReasons
+  if (!Array.isArray(reasons) || reasons.length === 0) return chip
   return (
     <Tooltip
       arrow
@@ -70,13 +78,13 @@ const renderRiskReasons = (reasons, cell) => {
         </Box>
       }
     >
-      <span>{cell}</span>
+      <span>{chip}</span>
     </Tooltip>
   )
 }
 
 export const appPermissionExposureCellRenderers = {
-  Risk: (row, cell) => renderRiskReasons(row?.RiskReasons, cell),
+  Risk: renderRisk,
   HighestImpact: (row, cell) => withDescription(impactDescriptions, row?.HighestImpact, cell),
   Suspicion: (row, cell) => withDescription(suspicionDescriptions, row?.Suspicion, cell),
   Categories: (row, cell) => renderCategoryChips(row?.Categories, cell),
@@ -94,6 +102,12 @@ export const appPermissionExposureCaches = [
   'AppRoleAssignments',
   'OAuth2PermissionGrants',
   'ServicePrincipalSignInActivities',
+  'Apps',
+  'AppCredentialChanges',
+  'RoleAssignments',
+  'RoleDefinitions',
+  'ServicePrincipalRoleChanges',
+  'DelegatedGrantChanges',
 ]
 
 export const appPermissionExposureFilters = [
@@ -170,6 +184,11 @@ export const appPermissionExposureFilters = [
     value: [{ id: 'Ownership', value: 'Microsoft' }],
     type: 'column',
   },
+  {
+    filterName: 'Managed identities',
+    value: [{ id: 'Ownership', value: 'Managed identity' }],
+    type: 'column',
+  },
 ]
 
 export const ratingChipColor = (rating) => {
@@ -233,6 +252,7 @@ export const CippAppPermissionExposureDetail = ({ row, embedded = false }) => {
     { label: 'Vendor category', value: row.VendorCategory },
     { label: 'Vendor website', value: row.VendorWebsite },
     { label: 'Owner tenant ID', value: row.AppOwnerTenantId },
+    { label: 'Azure resource', value: row.AzureResourceId },
     { label: 'Publisher', value: row.PublisherName },
     { label: 'Verified publisher', value: row.VerifiedPublisher || (row.Ownership ? 'None' : null) },
     { label: 'Sign-in audience', value: row.SignInAudience },
@@ -243,8 +263,10 @@ export const CippAppPermissionExposureDetail = ({ row, embedded = false }) => {
     { label: 'Last app-only sign-in', value: formatSignInDate(row.LastAppOnlySignInDateTime) },
     { label: 'Last sign-in as a resource', value: formatSignInDate(row.LastSignInAsResourceDateTime) },
     { label: 'Credentials on the service principal', value: row.ServicePrincipalCredentialCount },
+    { label: 'Credentials on the app registration', value: row.AppRegistrationCredentialCount },
     { label: 'Application permissions', value: row.ApplicationPermissionCount },
     { label: 'Delegated permissions', value: row.DelegatedPermissionCount },
+    { label: 'Directory roles', value: row.DirectoryRoleCount },
     { label: 'Admin consent for all users', value: row.HasAllPrincipalsGrant },
   ]
     .map((prop) => ({ ...prop, value: formatValue(prop.value) }))
@@ -253,6 +275,9 @@ export const CippAppPermissionExposureDetail = ({ row, embedded = false }) => {
   const isThirdParty = ['Third party', 'MSP vendor', 'Known vendor', 'Personal account'].includes(row.Ownership)
   const canReadTenantData =
     row.HighestImpact === 'Critical' && Array.isArray(row.Categories) && row.Categories.includes('DataAccess')
+  const details = Array.isArray(row.PermissionDetails) ? row.PermissionDetails : []
+  const roleDetails = details.filter((detail) => detail.Type === 'DirectoryRole')
+  const permissionDetails = details.filter((detail) => detail.Type !== 'DirectoryRole')
 
   return (
     <Stack spacing={2} sx={{ p: 2 }}>
@@ -332,15 +357,38 @@ export const CippAppPermissionExposureDetail = ({ row, embedded = false }) => {
       </Grid>
 
       <Divider />
-      <Box>
-        <CippDataTable
-          noCard={true}
-          title="Permissions"
-          data={row.PermissionDetails ?? []}
-          simpleColumns={['Api', 'Name', 'Type', 'Impact', 'Suspicion', 'Categories', 'ConsentType', 'Reason']}
-          cellRenderers={permissionCellRenderers}
-        />
-      </Box>
+      {Array.isArray(row.CredentialDetails) && row.CredentialDetails.length > 0 && (
+        <Box>
+          <CippDataTable
+            noCard={true}
+            title="Credentials"
+            data={row.CredentialDetails}
+            simpleColumns={['Location', 'Type', 'Purpose', 'Expired', 'DisplayName', 'StartDateTime', 'AddedDateTime', 'AddedBy', 'EndDateTime']}
+          />
+        </Box>
+      )}
+      {roleDetails.length > 0 && (
+        <Box>
+          <CippDataTable
+            noCard={true}
+            title="Directory roles"
+            data={roleDetails}
+            simpleColumns={['Name', 'Scope', 'ViaGroupName', 'Impact', 'Suspicion', 'Categories', 'AddedDateTime', 'AddedBy', 'Reason']}
+            cellRenderers={permissionCellRenderers}
+          />
+        </Box>
+      )}
+      {(permissionDetails.length > 0 || roleDetails.length === 0) && (
+        <Box>
+          <CippDataTable
+            noCard={true}
+            title="Permissions"
+            data={permissionDetails}
+            simpleColumns={['Api', 'Name', 'Type', 'Impact', 'Suspicion', 'Categories', 'ConsentType', 'AddedDateTime', 'AddedBy', 'Reason']}
+            cellRenderers={permissionCellRenderers}
+          />
+        </Box>
+      )}
     </Stack>
   )
 }

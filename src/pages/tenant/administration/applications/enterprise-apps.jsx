@@ -6,9 +6,11 @@ import { usePermissions } from '../../../../hooks/use-permissions.js'
 import { useSettings } from '../../../../hooks/use-settings'
 import tabOptions from './tabOptions'
 import { Button, Chip, Tooltip } from '@mui/material'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import Link from 'next/link'
 import { getEnterpriseAppListActions } from '../../../../components/CippComponents/EnterpriseAppActions.jsx'
+import { ApiGetCall } from '../../../../api/ApiCall'
+import { getRowTenant } from '../../../../utils/resolve-row-templates'
 
 const Page = () => {
   const pageTitle = 'Enterprise Applications'
@@ -19,7 +21,25 @@ const Page = () => {
   const { checkPermissions } = usePermissions()
   const canWriteApplication = checkPermissions(['Tenant.Application.ReadWrite'])
 
-  const actions = getEnterpriseAppListActions(canWriteApplication)
+  const tenantList = ApiGetCall({ url: '/api/ListTenants', queryKey: 'ListTenants' })
+  const tenantIds = useMemo(() => {
+    const map = new Map()
+    for (const t of Array.isArray(tenantList.data) ? tenantList.data : []) {
+      if (!t?.customerId) continue
+      for (const key of [t.customerId, t.defaultDomainName, t.initialDomainName]) {
+        if (key) map.set(String(key).toLowerCase(), String(t.customerId).toLowerCase())
+      }
+    }
+    return map
+  }, [tenantList.data])
+
+  const isHomeTenantApp = (row) => {
+    const owner = String(row?.appOwnerOrganizationId ?? '').toLowerCase()
+    const rowTenant = String(getRowTenant(row, tenant) ?? '').toLowerCase()
+    return owner !== '' && tenantIds.get(rowTenant) === owner
+  }
+
+  const actions = getEnterpriseAppListActions(canWriteApplication, isHomeTenantApp)
 
   const offCanvas = {
     extendedInfoFields: [

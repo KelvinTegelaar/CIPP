@@ -97,6 +97,9 @@ const CACHE_TYPE_COLLECTIONS = {
     "ConditionalAccessPolicies",
     "UserRegistrationDetails",
     "ServicePrincipalSignInActivities",
+    "AppCredentialChanges",
+    "ServicePrincipalRoleChanges",
+    "DelegatedGrantChanges",
   ],
   IdentityProtection: [
     "RiskyUsers",
