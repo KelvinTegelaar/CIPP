@@ -843,12 +843,12 @@ export const CippDataTable = (props) => {
   const getRequestData = ApiGetCallWithPagination({
     url: api.url,
     data: {
-      // AllTenants Graph cache reads are served in bounded pages; a page can still opt out with manualPagination: false.
-      ...(api.url === '/api/ListGraphRequest' &&
-        api.data?.tenantFilter === 'AllTenants' && { manualPagination: true }),
       ...(graphFilterData.filter
         ? mergeCaseInsensitive(api.data, graphFilterData.filter)
         : api.data),
+      // AllTenants Graph cache reads are always served in bounded pages, whatever the page or a saved preset sends.
+      ...(api.url === '/api/ListGraphRequest' &&
+        api.data?.tenantFilter === 'AllTenants' && { manualPagination: true }),
       ...(cacheAction && { [cacheAction]: true }),
     },
     queryKey: requestQueryKey,

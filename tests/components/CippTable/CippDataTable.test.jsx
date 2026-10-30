@@ -1111,14 +1111,17 @@ describe('CippDataTable AllTenants Graph paging', () => {
     )
   })
 
-  it('leaves single-tenant reads and explicit opt-outs alone', () => {
+  it('leaves single-tenant reads alone', () => {
     expect(
       sentData({ tenantFilter: 'contoso.com', Endpoint: 'servicePrincipals' }).manualPagination
     ).toBeUndefined()
+  })
+
+  it('pages AllTenants reads even when the request asks not to', () => {
     expect(
       sentData({ tenantFilter: 'AllTenants', Endpoint: 'servicePrincipals', manualPagination: false })
         .manualPagination
-    ).toBe(false)
+    ).toBe(true)
   })
 })
 
