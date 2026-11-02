@@ -1102,6 +1102,7 @@ export const nativeMenuItems = [
           {
             title: 'Compare CA Policies',
             path: '/tenant/tools/compare-ca-policies',
+            docsPath: 'tools/tenant-tools/compare-ca-policies',
             permissions: ['Tenant.ConditionalAccess.*'],
             scope: 'global',
           },
