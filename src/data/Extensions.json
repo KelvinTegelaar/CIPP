@@ -485,6 +485,8 @@
     "type": "Syncro",
     "cat": "Ticketing",
     "logo": "/assets/integrations/syncro.svg",
+    "logoDark": "/assets/integrations/syncro_dark.svg",
+    "hidden": true,
     "forceSyncButton": false,
     "description": "Enable the Syncro integration to send alerts to your ticketing system.",
     "helpText": "This integration raises a Syncro ticket for every alert configured to deliver to a PSA, against the Syncro customer each tenant is mapped to. Enter the subdomain of your Syncro instance and an API key from a user that can read customers and create tickets.",

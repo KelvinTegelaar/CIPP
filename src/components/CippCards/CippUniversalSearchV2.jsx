@@ -300,7 +300,7 @@ export const CippUniversalSearchV2 = React.forwardRef(
         ? [
             { title: "Sync Jobs", path: "/cipp/integrations/sync" },
             ...extensions
-              .filter((extension) => !extension.comingSoon)
+              .filter((extension) => !extension.comingSoon && !extension.hidden)
               .map((extension) => ({
                 title: extension.name,
                 path: `/cipp/integrations/configure?id=${extension.id}`,
