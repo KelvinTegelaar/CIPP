@@ -108,6 +108,8 @@ export const appPermissionExposureCaches = [
   'RoleDefinitions',
   'ServicePrincipalRoleChanges',
   'DelegatedGrantChanges',
+  'ExoAppRoleAssignments',
+  'ExoApplicationAccessPolicies',
 ]
 
 export const appPermissionExposureFilters = [
@@ -267,6 +269,7 @@ export const CippAppPermissionExposureDetail = ({ row, embedded = false }) => {
     { label: 'Application permissions', value: row.ApplicationPermissionCount },
     { label: 'Delegated permissions', value: row.DelegatedPermissionCount },
     { label: 'Directory roles', value: row.DirectoryRoleCount },
+    { label: 'Exchange application roles', value: row.ExchangeRoleCount },
     { label: 'Admin consent for all users', value: row.HasAllPrincipalsGrant },
   ]
     .map((prop) => ({ ...prop, value: formatValue(prop.value) }))
@@ -277,7 +280,10 @@ export const CippAppPermissionExposureDetail = ({ row, embedded = false }) => {
     row.HighestImpact === 'Critical' && Array.isArray(row.Categories) && row.Categories.includes('DataAccess')
   const details = Array.isArray(row.PermissionDetails) ? row.PermissionDetails : []
   const roleDetails = details.filter((detail) => detail.Type === 'DirectoryRole')
-  const permissionDetails = details.filter((detail) => detail.Type !== 'DirectoryRole')
+  const exchangeRoleDetails = details.filter((detail) => detail.Type === 'ExchangeRole')
+  const permissionDetails = details.filter(
+    (detail) => detail.Type !== 'DirectoryRole' && detail.Type !== 'ExchangeRole'
+  )
 
   return (
     <Stack spacing={2} sx={{ p: 2 }}>
@@ -378,13 +384,38 @@ export const CippAppPermissionExposureDetail = ({ row, embedded = false }) => {
           />
         </Box>
       )}
-      {(permissionDetails.length > 0 || roleDetails.length === 0) && (
+      {exchangeRoleDetails.length > 0 && (
+        <Box>
+          <CippDataTable
+            noCard={true}
+            title="Exchange application roles"
+            data={exchangeRoleDetails}
+            simpleColumns={['Name', 'Scope', 'ScopeName', 'ScopeFilter', 'Impact', 'Suspicion', 'Categories', 'AddedDateTime', 'Reason']}
+            cellRenderers={permissionCellRenderers}
+          />
+        </Box>
+      )}
+      {(permissionDetails.length > 0 || (roleDetails.length === 0 && exchangeRoleDetails.length === 0)) && (
         <Box>
           <CippDataTable
             noCard={true}
             title="Permissions"
             data={permissionDetails}
-            simpleColumns={['Api', 'Name', 'Type', 'Impact', 'Suspicion', 'Categories', 'ConsentType', 'AddedDateTime', 'AddedBy', 'Reason']}
+            simpleColumns={[
+              'Api',
+              'Name',
+              'Type',
+              'Impact',
+              'Suspicion',
+              'Categories',
+              'ConsentType',
+              ...(permissionDetails.some((detail) => detail.AccessPolicy)
+                ? ['AccessPolicy', 'AccessPolicyScope']
+                : []),
+              'AddedDateTime',
+              'AddedBy',
+              'Reason',
+            ]}
             cellRenderers={permissionCellRenderers}
           />
         </Box>

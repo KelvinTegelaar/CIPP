@@ -74,6 +74,8 @@ const CACHE_TYPE_COLLECTIONS = {
     "ExoExternalInOutlook",
     "ExoOutboundConnector",
     "ExoRoleAssignmentPolicy",
+    "ExoAppRoleAssignments",
+    "ExoApplicationAccessPolicies",
     "ExoHostedContentFilterRule",
     "ExoGlobalQuarantinePolicy",
     "ExoOMEConfiguration",

@@ -2968,5 +2968,148 @@
     "impact": "Critical",
     "categories": ["PrivilegeEscalation", "DataAccess", "Integrity"],
     "reason": "Abuse: call Azure Resource Manager as the signed-in user. Critical: with a subscription owner signed in, full control of their Azure resources."
+  },
+  {
+    "api": "Exchange Online",
+    "id": "Application Mail.Read",
+    "name": "Application Mail.Read",
+    "type": "ExchangeRole",
+    "suspicion": "Low",
+    "impact": "Critical",
+    "categories": ["DataAccess"],
+    "coveredBy": ["Microsoft Graph|Mail.Read", "Microsoft Graph|Mail.ReadWrite", "Exchange Online|Mail.Read", "Exchange Online|Mail.ReadWrite", "Exchange Online|full_access_as_app"],
+    "reason": "Abuse: read all mail in the mailboxes the role covers, granted in Exchange and not visible in Entra. Low: same as Graph Mail.Read; common on backup and archiving products."
+  },
+  {
+    "api": "Exchange Online",
+    "id": "Application Mail.ReadBasic",
+    "name": "Application Mail.ReadBasic",
+    "type": "ExchangeRole",
+    "suspicion": "Low",
+    "impact": "Medium",
+    "categories": ["DataAccess"],
+    "coveredBy": ["Microsoft Graph|Mail.ReadBasic", "Microsoft Graph|Mail.ReadBasic.All", "Microsoft Graph|Mail.Read", "Microsoft Graph|Mail.ReadWrite", "Exchange Online|Mail.Read", "Exchange Online|Mail.ReadWrite", "Exchange Online|full_access_as_app"],
+    "reason": "Abuse: read sender, recipients and subject of every message in the mailboxes the role covers, granted in Exchange. Medium: maps who talks to whom about what."
+  },
+  {
+    "api": "Exchange Online",
+    "id": "Application Mail.ReadWrite",
+    "name": "Application Mail.ReadWrite",
+    "type": "ExchangeRole",
+    "suspicion": "High",
+    "impact": "Critical",
+    "categories": ["DataAccess", "Integrity"],
+    "coveredBy": ["Microsoft Graph|Mail.ReadWrite", "Exchange Online|Mail.ReadWrite", "Exchange Online|full_access_as_app"],
+    "reason": "Abuse: read, change or delete mail in the mailboxes the role covers, granted in Exchange and not visible in Entra. High: same as Graph Mail.ReadWrite."
+  },
+  {
+    "api": "Exchange Online",
+    "id": "Application Mail.Send",
+    "name": "Application Mail.Send",
+    "type": "ExchangeRole",
+    "suspicion": "Critical",
+    "impact": "Critical",
+    "categories": ["Integrity"],
+    "coveredBy": ["Microsoft Graph|Mail.Send", "Exchange Online|Mail.Send", "Exchange Online|full_access_as_app"],
+    "reason": "Abuse: send as any mailbox the role covers, granted in Exchange and not visible in Entra. Critical: same BEC impact as Graph Mail.Send."
+  },
+  {
+    "api": "Exchange Online",
+    "id": "Application MailboxSettings.Read",
+    "name": "Application MailboxSettings.Read",
+    "type": "ExchangeRole",
+    "suspicion": "Low",
+    "impact": "Low",
+    "categories": ["DataAccess"],
+    "coveredBy": ["Microsoft Graph|MailboxSettings.Read", "Microsoft Graph|MailboxSettings.ReadWrite", "Exchange Online|MailboxSettings.ReadWrite", "Exchange Online|full_access_as_app"],
+    "reason": "Abuse: read automatic replies, time zone and other settings of the mailboxes the role covers. Low: little of value."
+  },
+  {
+    "api": "Exchange Online",
+    "id": "Application MailboxSettings.ReadWrite",
+    "name": "Application MailboxSettings.ReadWrite",
+    "type": "ExchangeRole",
+    "suspicion": "Low",
+    "impact": "Medium",
+    "categories": ["Integrity"],
+    "coveredBy": ["Microsoft Graph|MailboxSettings.ReadWrite", "Exchange Online|MailboxSettings.ReadWrite", "Exchange Online|full_access_as_app"],
+    "reason": "Abuse: change automatic replies and settings of the mailboxes the role covers, granted in Exchange. Medium: social engineering from a trusted address."
+  },
+  {
+    "api": "Exchange Online",
+    "id": "Application Calendars.Read",
+    "name": "Application Calendars.Read",
+    "type": "ExchangeRole",
+    "suspicion": "Low",
+    "impact": "Medium",
+    "categories": ["DataAccess"],
+    "coveredBy": ["Microsoft Graph|Calendars.Read", "Microsoft Graph|Calendars.ReadWrite", "Exchange Online|Calendars.ReadWrite.All", "Exchange Online|full_access_as_app"],
+    "reason": "Abuse: read every calendar the role covers, granted in Exchange. Medium: meeting details and who meets whom."
+  },
+  {
+    "api": "Exchange Online",
+    "id": "Application Calendars.ReadWrite",
+    "name": "Application Calendars.ReadWrite",
+    "type": "ExchangeRole",
+    "suspicion": "Medium",
+    "impact": "High",
+    "categories": ["DataAccess", "Integrity"],
+    "coveredBy": ["Microsoft Graph|Calendars.ReadWrite", "Exchange Online|Calendars.ReadWrite.All", "Exchange Online|full_access_as_app"],
+    "reason": "Abuse: read and change every calendar the role covers, including meeting links and invites, granted in Exchange. High: meeting content and convincing phishing invites."
+  },
+  {
+    "api": "Exchange Online",
+    "id": "Application Contacts.Read",
+    "name": "Application Contacts.Read",
+    "type": "ExchangeRole",
+    "suspicion": "Low",
+    "impact": "Medium",
+    "categories": ["DataAccess"],
+    "coveredBy": ["Microsoft Graph|Contacts.Read", "Microsoft Graph|Contacts.ReadWrite", "Exchange Online|Contacts.ReadWrite", "Exchange Online|full_access_as_app"],
+    "reason": "Abuse: read contacts in the mailboxes the role covers, granted in Exchange. Medium: business relationships for phishing."
+  },
+  {
+    "api": "Exchange Online",
+    "id": "Application Contacts.ReadWrite",
+    "name": "Application Contacts.ReadWrite",
+    "type": "ExchangeRole",
+    "suspicion": "High",
+    "impact": "Medium",
+    "categories": ["Integrity"],
+    "coveredBy": ["Microsoft Graph|Contacts.ReadWrite", "Exchange Online|Contacts.ReadWrite", "Exchange Online|full_access_as_app"],
+    "reason": "Abuse: create or overwrite contacts in the mailboxes the role covers, granted in Exchange. High: spoofed display names and numbers without Mail.Send."
+  },
+  {
+    "api": "Exchange Online",
+    "id": "Application Mail Full Access",
+    "name": "Application Mail Full Access",
+    "type": "ExchangeRole",
+    "suspicion": "Critical",
+    "impact": "Critical",
+    "categories": ["DataAccess", "Integrity"],
+    "coveredBy": ["Exchange Online|full_access_as_app"],
+    "reason": "Abuse: read, change, delete and send mail as any mailbox the role covers (Mail.ReadWrite and Mail.Send), granted in Exchange and not visible in Entra. Critical: mailbox takeover and BEC."
+  },
+  {
+    "api": "Exchange Online",
+    "id": "Application Exchange Full Access",
+    "name": "Application Exchange Full Access",
+    "type": "ExchangeRole",
+    "suspicion": "Critical",
+    "impact": "Critical",
+    "categories": ["DataAccess", "Integrity"],
+    "coveredBy": ["Exchange Online|full_access_as_app"],
+    "reason": "Abuse: full mail, calendar, contact and mailbox settings access, including sending, in the mailboxes the role covers, granted in Exchange and not visible in Entra. Critical: mailbox takeover and BEC."
+  },
+  {
+    "api": "Exchange Online",
+    "id": "Application EWS.AccessAsApp",
+    "name": "Application EWS.AccessAsApp",
+    "type": "ExchangeRole",
+    "suspicion": "Critical",
+    "impact": "Critical",
+    "categories": ["DataAccess", "Integrity"],
+    "coveredBy": ["Exchange Online|full_access_as_app"],
+    "reason": "Abuse: EWS full access to the mailboxes the role covers: read, change, delete and send as any user, granted in Exchange and not visible in Entra. Critical: same as full_access_as_app."
   }
 ]
