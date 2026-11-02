@@ -11,6 +11,7 @@ import { CippCopyToClipBoard } from '../../../../../components/CippComponents/Ci
 import { Box, Stack } from '@mui/system'
 import { Grid } from '@mui/system'
 import { Typography, Card, CardHeader, Divider, Button, SvgIcon, Alert } from '@mui/material'
+import { CippEnterpriseAppStatusChip } from '../../../../../components/CippComponents/CippEnterpriseAppStatusChip'
 import { CippBannerListCard } from '../../../../../components/CippCards/CippBannerListCard'
 import { CippTimeAgo } from '../../../../../components/CippComponents/CippTimeAgo'
 import { useEffect, useMemo, useState, useRef } from 'react'
@@ -22,6 +23,8 @@ import { getEnterpriseAppDetailHeaderActions } from '../../../../../components/C
 import Link from 'next/link'
 import { getListGraphBulkRequestRows } from '../../../../../utils/getListGraphBulkRequestRows.js'
 import { CippCredentialExpandList } from '../../../../../components/CippComponents/CippCredentialExpandList.jsx'
+import { CippAppPermissionExposureDetail } from '../../../../../components/CippComponents/CippAppPermissionExposureDetail.jsx'
+import { getCippError } from '../../../../../utils/get-cipp-error'
 
 const spSelect =
   'id,appId,displayName,createdDateTime,accountEnabled,homepage,publisherName,signInAudience,replyUrls,verifiedPublisher,info,api,appOwnerOrganizationId,tags,passwordCredentials,keyCredentials,preferredSingleSignOnMode,preferredTokenSigningKeyThumbprint,loginUrl,logoutUrl,notificationEmailAddresses,samlSingleSignOnSettings,servicePrincipalNames'
@@ -147,6 +150,9 @@ const Page = () => {
     spRequest.isSuccess && spData
       ? [
           {
+            component: <CippEnterpriseAppStatusChip accountEnabled={spData?.accountEnabled} />,
+          },
+          {
             icon: <CippIcons.Badge />,
             text: <CippCopyToClipBoard type="chip" text={spData?.appId || 'N/A'} />,
           },
@@ -248,6 +254,28 @@ const Page = () => {
           ]
 
   const tenantForApi = router.query.tenantFilter ?? userSettingsDefaults.currentTenant
+
+  // Exposure context from the report: cached first, live when the tenant was never cached.
+  const canLoadExposure = !!spObjectId && !!spData?.id && tenantForApi !== 'AllTenants'
+  const exposureCached = ApiGetCall({
+    url: '/api/ListAppPermissionExposure',
+    data: { tenantFilter: tenantForApi, ServicePrincipalId: spObjectId, UseReportDB: true },
+    queryKey: `AppPermissionExposure-${tenantForApi}-${spObjectId}-cached`,
+    waiting: canLoadExposure,
+  })
+  const exposureNotCached = exposureCached.isError && exposureCached.error?.response?.status === 404
+  const exposureLive = ApiGetCall({
+    url: '/api/ListAppPermissionExposure',
+    data: { tenantFilter: tenantForApi, ServicePrincipalId: spObjectId },
+    queryKey: `AppPermissionExposure-${tenantForApi}-${spObjectId}-live`,
+    waiting: canLoadExposure && exposureNotCached,
+  })
+  const exposure = exposureNotCached ? exposureLive : exposureCached
+  const exposureRow = Array.isArray(exposure.data)
+    ? exposure.data[0]
+    : exposure.data?.ServicePrincipalId
+      ? exposure.data
+      : null
 
   const preferredSigning = signingCertificates.find((cert) => cert.preferred)
 
@@ -519,6 +547,43 @@ const Page = () => {
             </Grid>
             <Grid size={{ xs: 12, lg: 8 }}>
               <Stack spacing={3}>
+                {canLoadExposure && (
+                  <>
+                    <Stack direction="row" spacing={1} sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
+                      <Typography variant="h6">Permission exposure</Typography>
+                      <Button
+                        component={Link}
+                        href={`/tenant/reports/app-permission-exposure?tenantFilter=${tenantQs}`}
+                        size="small"
+                      >
+                        Open report
+                      </Button>
+                    </Stack>
+                    <Card>
+                      {exposure.isLoading && <CippFormSkeleton layout={[2, 2]} />}
+                      {exposure.isError && (
+                        <Alert severity="warning" sx={{ m: 2 }}>
+                          Could not load permission exposure: {getCippError(exposure.error)}
+                        </Alert>
+                      )}
+                      {exposure.isSuccess && !exposureRow && (
+                        <Alert severity="success" sx={{ m: 2 }}>
+                          This app holds no permissions from CIPP&apos;s risky permissions catalog.
+                        </Alert>
+                      )}
+                      {exposure.isSuccess && exposureRow && (
+                        <>
+                          <CippAppPermissionExposureDetail row={exposureRow} embedded />
+                          <Typography variant="caption" component="p" sx={{ px: 2, pb: 2, color: 'text.secondary' }}>
+                            {exposureNotCached
+                              ? 'Live data: this tenant has no cached report data yet.'
+                              : `Cached data${exposureRow.CacheTimestamp ? ` from ${new Date(exposureRow.CacheTimestamp).toLocaleString()}` : ''}. Sync it from the report.`}
+                          </Typography>
+                        </>
+                      )}
+                    </Card>
+                  </>
+                )}
                 {isSaml && (
                   <>
                     <Typography variant="h6">Single sign-on</Typography>

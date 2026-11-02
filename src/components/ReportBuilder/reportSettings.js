@@ -109,14 +109,11 @@ export const serialiseBlock = (b) => ({
   testId: b.testId || null,
   testCategory: b.testCategory || null,
   title: b.title,
+  // A database block is re-fetched for each tenant when the report renders, so its preview table is never saved.
   content:
-    b.type === 'blank'
+    b.type === 'blank' || (b.static && b.type !== 'database')
       ? b.content
-      : b.type === 'database'
-        ? b.content
-        : b.static
-          ? b.content
-          : null,
+      : null,
   status: b.status || null,
   static: b.type === 'blank' || b.type === 'database' ? true : b.static,
   dbType: b.dbType || null,

@@ -55,6 +55,15 @@ export const attachParentRow = (row, parentRow) => {
   return { ...row, parent: nextParent }
 }
 
+// A tenant may arrive as a { label, value } option (scheduled tasks); a list of tenants or a
+// group names no single tenant.
+const singleTenant = (tenant) =>
+  typeof tenant === 'string'
+    ? tenant
+    : !Array.isArray(tenant) && tenant?.type !== 'Group'
+      ? tenant?.value
+      : undefined
+
 /**
  * AllTenants convention used across CIPP: prefer the row (or nested parent) tenant.
  */
@@ -64,12 +73,12 @@ export const getRowTenant = (row, currentTenant) => {
   }
   const source = Array.isArray(row) ? row[0] : row
   return (
-    source?.Tenant ||
-    source?.tenantId ||
-    source?.parent?.Tenant ||
-    source?.parent?.tenantId ||
-    source?.tenantFilter ||
-    source?.parent?.tenantFilter ||
+    singleTenant(source?.Tenant) ||
+    singleTenant(source?.tenantId) ||
+    singleTenant(source?.parent?.Tenant) ||
+    singleTenant(source?.parent?.tenantId) ||
+    singleTenant(source?.tenantFilter) ||
+    singleTenant(source?.parent?.tenantFilter) ||
     currentTenant
   )
 }

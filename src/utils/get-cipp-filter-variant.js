@@ -31,6 +31,23 @@ export const licenseIncludesFilterFn = (row, columnId, filterValue) => {
   return otherFilters.some((selectedSkuId) => userSkuIds.includes(selectedSkuId));
 };
 
+// Compares the raw value, so the result never depends on how the cell text is formatted.
+export const booleanEqualsFilterFn = (row, columnId, filterValue) => {
+  const toBool = (value) => {
+    if (typeof value === "boolean") return value;
+    const text = String(value ?? "").toLowerCase();
+    if (text === "yes" || text === "true") return true;
+    if (text === "no" || text === "false") return false;
+    return null;
+  };
+  const raw = columnId.includes("@odata")
+    ? row.original?.[columnId]
+    : columnId.split(".").reduce((value, key) => value?.[key], row.original);
+  const expected = toBool(filterValue);
+  return expected !== null && toBool(raw) === expected;
+};
+booleanEqualsFilterFn.autoRemove = (value) => value === undefined || value === null || value === "";
+
 export const getCippFilterVariant = (providedColumnKeys, arg) => {
   // Back-compat + new options mode
   const isOptions =
@@ -139,7 +156,7 @@ export const getCippFilterVariant = (providedColumnKeys, arg) => {
     return {
       filterVariant: "select",
       sortingFn: "boolean",
-      filterFn: "equals",
+      filterFn: "booleanEquals",
       filterSelectOptions: ["Yes", "No"],
     };
   }

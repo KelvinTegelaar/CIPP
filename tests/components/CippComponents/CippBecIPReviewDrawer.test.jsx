@@ -171,13 +171,17 @@ describe('CippBecIPReviewDrawer', () => {
     })
     expect(run).toBeDisabled()
     expect(
-      screen.getByText(/set at least one address to safe, suspicious or compromised/i)
+      screen.getByText(
+        /set at least one address to safe, suspicious or compromised/i
+      )
     ).toBeInTheDocument()
     await user.click(screen.getAllByRole('combobox', { name: /verdict/i })[1])
     await user.click(await screen.findByRole('option', { name: 'Safe' }))
     await waitFor(() => expect(run).toBeEnabled())
     expect(
-      screen.queryByText(/set at least one address to safe, suspicious or compromised/i)
+      screen.queryByText(
+        /set at least one address to safe, suspicious or compromised/i
+      )
     ).not.toBeInTheDocument()
   }, 30000)
 
@@ -190,6 +194,28 @@ describe('CippBecIPReviewDrawer', () => {
     expect(
       screen.getByText(/already applied to this case/i)
     ).toBeInTheDocument()
+  }, 30000)
+
+  it('sets every address matching the search, and only those', async () => {
+    const user = userEvent.setup()
+    renderWithProviders(
+      <CippBecIPReviewDrawer
+        tenantFilter="contoso.com"
+        caseId="BEC-1"
+        becData={{ IPVerdicts: becData.IPVerdicts, IPOverrides: [] }}
+      />
+    )
+    await user.click(screen.getByRole('button', { name: /review ips/i }))
+    await user.type(await screen.findByLabelText(/search address/i), '203.0')
+    expect(screen.queryByText('198.51.100.7')).not.toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: 'Compromised' }))
+    await user.click(
+      screen.getByRole('button', { name: /re-run with these verdicts/i })
+    )
+    await waitFor(() => expect(calls).toHaveLength(1))
+    expect(calls[0].data.Overrides).toEqual([
+      { IP: '203.0.113.10', Verdict: 'Compromised', Note: '' },
+    ])
   }, 30000)
 
   it('hides the remember switch without the settings permission', async () => {

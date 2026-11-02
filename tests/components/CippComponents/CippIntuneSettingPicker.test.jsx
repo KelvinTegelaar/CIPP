@@ -106,6 +106,48 @@ describe('CippIntuneSettingPicker', () => {
     expect([...wanted]).toEqual([forceListIdsDefinition.id])
   })
 
+  it("leaves out settings outside a template-based policy's template", async () => {
+    renderWithTheme(
+      <CippIntuneSettingPicker
+        open
+        onClose={() => {}}
+        onAdd={() => true}
+        platform="windows10"
+        technology="mdm"
+        templateSettings={new Map([['some_other_setting', {}]])}
+      />
+    )
+
+    fireEvent.change(screen.getByLabelText('Search settings'), {
+      target: { value: 'silently installed' },
+    })
+
+    expect(
+      await screen.findByText('No settings matched', { exact: false })
+    ).toBeInTheDocument()
+  })
+
+  it('offers a nested setting whose top-level setting is in the template', async () => {
+    renderWithTheme(
+      <CippIntuneSettingPicker
+        open
+        onClose={() => {}}
+        onAdd={() => true}
+        platform="windows10"
+        technology="mdm"
+        templateSettings={new Map([[forceListDefinition.id, {}]])}
+      />
+    )
+
+    fireEvent.change(screen.getByLabelText('Search settings'), {
+      target: { value: 'silently installed' },
+    })
+
+    expect(
+      await screen.findByText(forceListIdsDefinition.displayName)
+    ).toBeInTheDocument()
+  })
+
   it('names the setting a nested result sits under', async () => {
     renderWithTheme(
       <CippIntuneSettingPicker

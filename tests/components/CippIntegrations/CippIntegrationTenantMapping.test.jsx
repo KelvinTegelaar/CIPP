@@ -58,7 +58,8 @@ beforeEach(() => {
 })
 
 describe('CippIntegrationTenantMapping SyncPasswords', () => {
-  it('toggles SyncPasswords on the row and saves it in the payload', async () => {
+  it.each(['Hudu', 'NinjaOne'])('%s saves SyncPasswords', async (id) => {
+    routerQuery = { id }
     renderWithProviders(<CippIntegrationTenantMapping />)
     expect(tableProps.simpleColumns).toContain('SyncPasswords')
 
@@ -79,8 +80,8 @@ describe('CippIntegrationTenantMapping SyncPasswords', () => {
     expect(post.mutate.mock.calls[0][0].data[0].SyncPasswords).toBe(false)
   })
 
-  it('has no SyncPasswords column or actions for a non-Hudu extension', () => {
-    routerQuery = { id: 'NinjaOne' }
+  it('has no SyncPasswords column or actions for HaloPSA', () => {
+    routerQuery = { id: 'HaloPSA' }
     renderWithProviders(<CippIntegrationTenantMapping />)
     expect(tableProps.simpleColumns).not.toContain('SyncPasswords')
     expect(tableProps.actions.some((a) => /password data/.test(a.label))).toBe(

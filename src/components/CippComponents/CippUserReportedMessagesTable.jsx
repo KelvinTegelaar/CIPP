@@ -420,7 +420,10 @@ export const CippUserReportedMessagesTable = () => {
         </DialogTitle>
         <DialogContent dividers>
           {messageDialogContent(getMessageContents, (data) => (
-            <CippMessageViewer emailSource={data?.Message} />
+            <CippMessageViewer
+              emailSource={data?.Message}
+              emlBase64={data?.EmlBase64}
+            />
           ))}
         </DialogContent>
       </Dialog>

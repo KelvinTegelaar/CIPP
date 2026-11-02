@@ -17,6 +17,7 @@ const Page = () => {
   });
 
   const vendorFilter = vendorTenantList
+    .filter((vendor) => vendor.removeOnOffboarding)
     .map((vendor) => {
       return vendor.vendorTenantId;
     })

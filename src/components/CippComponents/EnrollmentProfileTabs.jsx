@@ -421,7 +421,7 @@ export const WindowsAutopilotEnrollmentProfiles = () => {
   const groupsQuery = ApiGetCall({
     url: '/api/ListGroups',
     data: { tenantFilter: currentTenant },
-    queryKey: `ListGroups-${currentTenant}`,
+    queryKey: `ListGroupsMap-${currentTenant}`,
     waiting: Boolean(currentTenant),
   })
   const groupMap = useMemo(() => {

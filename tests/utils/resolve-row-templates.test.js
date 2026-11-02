@@ -101,6 +101,15 @@ describe('attachParentRow', () => {
 })
 
 describe('getRowTenant', () => {
+  it('unwraps a tenant option and skips tenant lists and groups', () => {
+    const option = { label: 'child.com', value: 'child.com', type: 'Tenant' }
+    expect(getRowTenant({ Tenant: option }, 'AllTenants')).toBe('child.com')
+    expect(getRowTenant({ Tenant: [option, option] }, 'AllTenants')).toBe('AllTenants')
+    expect(
+      getRowTenant({ Tenant: { label: 'Group', value: 'g1', type: 'Group' } }, 'AllTenants')
+    ).toBe('AllTenants')
+  })
+
   it('returns the current tenant outside AllTenants', () => {
     expect(
       getRowTenant({ Tenant: 'other.com' }, 'contoso.com')

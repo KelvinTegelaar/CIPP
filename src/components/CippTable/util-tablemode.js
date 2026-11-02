@@ -1,6 +1,22 @@
+import { getFacetedUniqueValues } from '@tanstack/react-table'
+
 // Card mode renders its own list, so a huge desktop tablePageSize preference must not
 // become that many unvirtualized cards. CippMobileCardList grows pageSize from here.
 const MOBILE_PAGE_SIZE_CAP = 50
+
+// MRT reads faceted values for every visible header on each data change, but only dropdown
+// filters use them; other columns get an empty map instead of a scan of every row.
+const FACETED_FILTER_VARIANTS = ['select', 'multi-select', 'autocomplete']
+const EMPTY_FACETS = new Map()
+const facetDropdownColumnsOnly = (table, columnId) => {
+  const getFacets = getFacetedUniqueValues()(table, columnId)
+  return () =>
+    FACETED_FILTER_VARIANTS.includes(
+      table.getColumn(columnId)?.columnDef.filterVariant
+    )
+      ? getFacets()
+      : EMPTY_FACETS
+}
 
 export const utilTableMode = (
   columnVisibility,
@@ -64,6 +80,7 @@ export const utilTableMode = (
       enableRowActions: actions || offCanvas ? true : false,
       enableSelectAll: true,
       enableFacetedValues: true,
+      getFacetedUniqueValues: facetDropdownColumnsOnly,
       enableColumnFilterModes: true,
       enableStickyHeader: !isCards,
       selectAllMode: 'all',

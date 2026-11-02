@@ -34,6 +34,7 @@ describe('fromCraftRun', () => {
     expect(fromCraftRun(run)).toMatchObject({
       PartitionKey: 'CippQueue',
       RowKey: run.runName,
+      QueueId: 'f761aa95-044c-4b22-8cb4-fb7938aceb95',
       Name: 'Users (All Tenants)',
       Link: '/identity/administration/users',
       TotalTasks: 16,
@@ -50,6 +51,13 @@ describe('fromCraftRun', () => {
       ['test02.onmicrosoft.com', 'Completed'],
       ['test01.onmicrosoft.com', 'Failed'],
     ])
+  })
+
+  it('carries how much work from other queues waits ahead of it', () => {
+    expect(fromCraftRun({ ...run, ahead: 340, runsAhead: 3 })).toMatchObject({
+      QueuedAhead: 340,
+      RunsAhead: 3,
+    })
   })
 
   it('turns a status-only end into just a status, so the counts already shown survive', () => {

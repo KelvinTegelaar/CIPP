@@ -1,3 +1,4 @@
+import { clearPersistedQueries } from "./query-persister";
 import { nativeMenuItems } from "../layouts/config";
 
 // Help/support destinations shared by CippSpeedDial (desktop FAB) and AccountPopover
@@ -54,17 +55,12 @@ export const getHelpLinks = (pathname = "") => [
   },
 ];
 
-// Clears the TanStack Query cache (memory + the persisted localStorage copy) and hard-reloads.
+// Clears the TanStack Query cache (memory + the persisted copy) and hard-reloads.
 export const clearCippCache = (queryClient) => {
   queryClient.clear();
 
   if (typeof window !== "undefined") {
-    Object.keys(localStorage).forEach((key) => {
-      if (key.startsWith("REACT_QUERY_OFFLINE_CACHE")) {
-        localStorage.removeItem(key);
-      }
-    });
     // Force refresh the page to bypass browser cache and reload JavaScript
-    window.location.reload(true);
+    clearPersistedQueries().then(() => window.location.reload(true));
   }
 };

@@ -244,9 +244,29 @@ describe('serialiseBlock', () => {
     expect(serialiseBlock({ type: 'test', static: true, content: 'edited' }).content).toBe('edited')
   })
 
-  it('marks custom and database blocks static, since their content is not re-fetched', () => {
+  it('marks custom and database blocks static', () => {
     expect(serialiseBlock({ type: 'blank', content: '<p>x</p>' }).static).toBe(true)
     expect(serialiseBlock({ type: 'database', content: '|a|' }).static).toBe(true)
+  })
+
+  it('drops the preview table of a database block but keeps how it is built', () => {
+    const saved = serialiseBlock({
+      type: 'database',
+      static: true,
+      title: 'Users',
+      dbType: 'Users',
+      format: 'csv',
+      selectedHeaders: ['displayName', 'mail'],
+      content: 'displayName,mail\nAdele,adele@contoso.com',
+      data: [{ displayName: 'Adele', mail: 'adele@contoso.com' }],
+    })
+    expect(saved.content).toBeNull()
+    expect(saved).not.toHaveProperty('data')
+    expect(saved).toMatchObject({
+      dbType: 'Users',
+      format: 'csv',
+      selectedHeaders: ['displayName', 'mail'],
+    })
   })
 
   it('does not carry chart fields on a block that has none', () => {

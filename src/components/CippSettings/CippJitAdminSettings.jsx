@@ -194,9 +194,10 @@ const CippJitAdminSettings = () => {
                 validators={{ min: { value: 1, message: "At least one approval is required" } }}
               />
               <Typography variant="body2" color="text.secondary">
-                Approvers are notified through the configured notification methods, and on the new CIPP infrastructure by push if
-                they have it enabled. The requester cannot approve their own request, and any
-                rejection ends the request.
+                Each approver gets an email about new requests, and the requester gets one with the
+                decision. The configured notification methods receive every event as well, and on the
+                new CIPP infrastructure approvers also get a push if they have it enabled. The requester
+                cannot approve their own request, and any rejection ends the request.
               </Typography>
             </Box>
           )}

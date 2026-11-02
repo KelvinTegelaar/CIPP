@@ -22,9 +22,16 @@ const COMMA_SEPARATED = new Set([
   "IncidentReportContent",
 ]);
 
+const DEPLOY_POSITIONS = [
+  { value: "last", label: "Deploy last" },
+  { value: "first", label: "Deploy first" },
+];
+
 // Turns the AddEditTransportRule payload into the New-TransportRule parameter set a template stores.
-const toTemplateParams = ({ tenantFilter, ruleId, Priority, State, Name, Comments, ...rest }) => {
+// "Deploy first" stores priority 0; "Deploy last" stores none, so new rules go last and existing rules keep their place.
+const toTemplateParams = ({ tenantFilter, ruleId, Priority, State, Name, Comments, ...rest }, deployFirst) => {
   const params = { name: Name, comments: Comments ?? "", Enabled: State === "Enabled" };
+  if (deployFirst) params.Priority = 0;
   Object.entries(rest).forEach(([key, value]) => {
     const list =
       typeof value === "string" && COMMA_SEPARATED.has(key.replace(/^ExceptIf/, ""))
@@ -89,6 +96,7 @@ export const CippTransportRuleDrawer = ({
       tenantFilter: currentTenant,
       Name: "",
       Priority: "",
+      DeployPosition: DEPLOY_POSITIONS[0],
       Comments: "",
       conditionType: [],
       actionType: [],
@@ -262,6 +270,7 @@ export const CippTransportRuleDrawer = ({
     const formData = {
       Name: rule.Name || "",
       Priority: rule.Priority ?? "",
+      DeployPosition: DEPLOY_POSITIONS[rule.Priority === 0 || rule.Priority === "0" ? 1 : 0],
       Comments: rule.Comments || "",
       Enabled: rule.State === undefined && rule.Enabled !== undefined ? rule.Enabled !== false : boolHelper(rule.State),
       Mode: rule.Mode ? { value: rule.Mode, label: rule.Mode } : { value: "Enforce", label: "Enforce" },
@@ -1415,7 +1424,9 @@ export const CippTransportRuleDrawer = ({
             ...(template?.GUID && { GUID: template.GUID }),
             name: apiData.Name,
             comments: apiData.Comments,
-            PowerShellCommand: JSON.stringify(toTemplateParams(apiData)),
+            PowerShellCommand: JSON.stringify(
+              toTemplateParams(apiData, (formData.DeployPosition?.value ?? formData.DeployPosition) === "first")
+            ),
           },
         },
         { onSuccess: handleCloseDrawer }
@@ -1515,18 +1526,28 @@ export const CippTransportRuleDrawer = ({
               />
             </Grid>
 
-            {!templateMode && (
-              <Grid size={{ xs: 12, md: 6 }}>
+            <Grid size={{ xs: 12, md: 6 }}>
+              {templateMode ? (
+                <CippFormComponent
+                  type="autoComplete"
+                  label="Deploy Position"
+                  name="DeployPosition"
+                  multiple={false}
+                  creatable={false}
+                  formControl={formControl}
+                  options={DEPLOY_POSITIONS}
+                />
+              ) : (
                 <CippFormComponent
                   type="number"
                   label="Priority"
                   name="Priority"
                   required
                   formControl={formControl}
-                  placeholder="0 (lowest priority)"
+                  placeholder="0 (runs first)"
                 />
-              </Grid>
-            )}
+              )}
+            </Grid>
 
             <Grid size={12}>
               <CippFormComponent

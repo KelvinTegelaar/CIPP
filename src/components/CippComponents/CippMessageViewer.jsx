@@ -36,10 +36,9 @@ import { CippApiDialog } from "./CippApiDialog";
 import { useDialog } from "../../hooks/use-dialog";
 import { CippTestMessageResults } from "./CippTestMessageResults";
 import { decodeMimeEncodedWords } from "../../utils/decode-mime-encoded-words";
+import { decodeTnef } from "../../utils/decode-tnef";
 
-// Base64 of the raw source so the backend can hand Exchange the exact message bytes.
-const toBase64 = (text) => {
-  const bytes = new TextEncoder().encode(text);
+const bytesToBase64 = (bytes) => {
   let binary = "";
   for (let i = 0; i < bytes.length; i += 0x8000) {
     binary += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
@@ -49,7 +48,7 @@ const toBase64 = (text) => {
 const headerAddress = (headers, name) =>
   headers?.match(new RegExp(`^${name}:\\s*(.+)$`, "im"))?.[1]?.match(/[\w.+-]+@[\w.-]+/)?.[0] ?? "";
 
-export const CippMessageViewer = ({ emailSource }) => {
+export const CippMessageViewer = ({ emailSource, emlBase64 }) => {
   const tenant = useSettings().currentTenant;
   const testMessageDialog = useDialog();
   const [testJobId, setTestJobId] = useState(null);
@@ -139,7 +138,8 @@ export const CippMessageViewer = ({ emailSource }) => {
     const link = document.createElement("a");
     if (newTab) {
       if (contentType.includes("rfc822")) {
-        var content = fileBytes;
+        var content =
+          typeof fileBytes === "string" ? fileBytes : new TextDecoder().decode(fileBytes);
         const nestedMessage = <CippMessageViewer emailSource={content} />;
         setDialogContent(nestedMessage);
         setDialogTitle(fileName);
@@ -157,7 +157,8 @@ export const CippMessageViewer = ({ emailSource }) => {
         setDialogTitle(fileName);
         setDialogOpen(true);
       } else if (contentType.includes("text")) {
-        const textContent = fileBytes;
+        const textContent =
+          typeof fileBytes === "string" ? fileBytes : new TextDecoder().decode(fileBytes);
         setDialogContent(
           <CippCodeBlock
             code={textContent}
@@ -272,6 +273,24 @@ export const CippMessageViewer = ({ emailSource }) => {
         setMessageHtml(null);
         setEmlHeaders(null);
       } else {
+        // A top-level TNEF part is binary, so its bytes only survive in the base64 export.
+        const tnefIsBody = /ms-tnef/i.test(ReadEmlJson.headers?.["Content-Type"] ?? "");
+        ReadEmlJson.attachments = ReadEmlJson.attachments?.flatMap((attachment) => {
+          if (!/ms-tnef/i.test(attachment.contentType ?? "")) return [attachment];
+          let tnef = null;
+          try {
+            const fromExport = tnefIsBody && emlBase64;
+            const raw = atob(fromExport ? emlBase64 : (attachment.data64 ?? ""));
+            const source = fromExport ? raw.slice(raw.indexOf("\r\n\r\n") + 4) : raw;
+            tnef = decodeTnef(Uint8Array.from(source, (c) => c.charCodeAt(0)));
+          } catch {
+            // undecodable winmail.dat stays a plain attachment
+          }
+          if (!tnef) return [attachment];
+          ReadEmlJson.html ??= tnef.html;
+          ReadEmlJson.text ??= tnef.text;
+          return tnef.attachments.map((inner) => ({ ...inner, data64: bytesToBase64(inner.data) }));
+        });
         setEmlContent(ReadEmlJson);
         setEmlError(false);
         if (ReadEmlJson.html) {
@@ -312,7 +331,7 @@ export const CippMessageViewer = ({ emailSource }) => {
         setEmlHeaders(headers ? headers[0] : null);
       }
     });
-  }, [emailSource, setMessageHtml, setEmlError, setEmlContent, setEmlHeaders]);
+  }, [emailSource, emlBase64, setMessageHtml, setEmlError, setEmlContent, setEmlHeaders]);
 
   var buttons = EmailButtons(emlHeaders, emailSource);
 
@@ -329,7 +348,7 @@ export const CippMessageViewer = ({ emailSource }) => {
           UnifiedDlpRules: false,
         })}
         row={{
-          MessageFileBase64: toBase64(emailSource),
+          MessageFileBase64: emlBase64 ?? bytesToBase64(new TextEncoder().encode(emailSource)),
           Sender: headerAddress(emlHeaders, "From"),
           Recipients: headerAddress(emlHeaders, "To"),
           TransportRules: true,
@@ -647,9 +666,10 @@ const CippMessageViewerPage = () => {
       reader.onabort = () => console.log("file reading was aborted");
       reader.onerror = () => console.log("file reading has failed");
       reader.onload = () => {
-        setEmlFile(reader.result);
+        const bytes = new Uint8Array(reader.result);
+        setEmlFile({ text: new TextDecoder().decode(bytes), base64: bytesToBase64(bytes) });
       };
-      reader.readAsText(file);
+      reader.readAsArrayBuffer(file);
     });
   }, []);
 
@@ -662,7 +682,7 @@ const CippMessageViewerPage = () => {
   };
 
   const handleAnalyze = () => {
-    setEmlFile(pasteValue);
+    setEmlFile({ text: pasteValue });
     setPasteCollapsed(true);
   };
 
@@ -735,7 +755,7 @@ const CippMessageViewerPage = () => {
         </Collapse>
       )}
 
-      {emlFile && <CippMessageViewer emailSource={emlFile} />}
+      {emlFile && <CippMessageViewer emailSource={emlFile.text} emlBase64={emlFile.base64} />}
     </CippPageCard>
   );
 };

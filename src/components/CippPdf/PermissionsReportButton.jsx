@@ -13,15 +13,17 @@ import {
 } from '@mui/material'
 import { useSettings } from '../../hooks/use-settings'
 import { ServerPdfPane, useServerPdf } from './useServerPdf'
+import { useBrandingSettings } from './useBrandingSettings'
 
 // The report PDF is rendered server-side (ExecGetPermissionsReportPdf) by the shared CIPPSharp
 // component kit; the button fetches the finished PDF as a blob for preview and download.
 export const PermissionsReportButton = ({ permissionsData, tenantName }) => {
   const [dialogOpen, setDialogOpen] = useState(false)
   const tenantFilter = useSettings().currentTenant
+  const branding = useBrandingSettings()
   const hasData = !!permissionsData?.summary
   const pdf = useServerPdf({
-    url: `/api/ExecGetPermissionsReportPdf?tenantFilter=${encodeURIComponent(tenantFilter)}`,
+    url: `/api/ExecGetPermissionsReportPdf?tenantFilter=${encodeURIComponent(tenantFilter)}&brandingPresetId=${encodeURIComponent(branding?.reportDefaults?.permissions ?? '')}`,
     enabled: dialogOpen,
   })
   const handleOpen = () => setDialogOpen(true)

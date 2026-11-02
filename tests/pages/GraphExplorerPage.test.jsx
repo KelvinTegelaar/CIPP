@@ -59,6 +59,61 @@ describe('Graph Explorer page', () => {
     )
   }, 30000) // heaviest test in the file (MRT mount + autocomplete remount + monaco Suspense); default 5000ms flakes under full-suite worker contention
 
+  it('json mode pages AllTenants reads from the cache', async () => {
+    const user = userEvent.setup()
+    renderWithProviders(<Page />, {
+      settings: settingsWith({ currentTenant: 'AllTenants' }),
+    })
+    await user.click(screen.getByRole('button', { name: 'View JSON' }))
+    await user.click(screen.getByRole('combobox', { name: 'Select a query' }))
+    await user.click(
+      await screen.findByRole('option', {
+        name: 'All users with email addresses',
+      })
+    )
+    await user.click(screen.getByRole('button', { name: 'Run' }))
+    await waitFor(() => {
+      expect(ApiGetCallWithPagination).toHaveBeenCalledWith(
+        expect.objectContaining({
+          url: '/api/ListGraphRequest',
+          data: expect.objectContaining({
+            tenantFilter: 'AllTenants',
+            manualPagination: true,
+          }),
+        })
+      )
+    })
+  }, 30000) // same contention budget as the view-toggle test
+
+  it('json mode loads every page and shows them all', async () => {
+    const fetchNextPage = vi.fn()
+    const twoPages = paginatedResult([], {
+      data: {
+        pages: [
+          { Results: [{ id: 'first-page' }] },
+          { Results: [{ id: 'second-page' }] },
+        ],
+      },
+      hasNextPage: true,
+      isFetchingNextPage: false,
+      fetchNextPage,
+    })
+    api.paginated = twoPages
+    try {
+      const user = userEvent.setup()
+      renderWithProviders(<Page />, {
+        settings: settingsWith({ currentTenant: 'AllTenants' }),
+      })
+      await user.click(screen.getByRole('button', { name: 'View JSON' }))
+      const editor = await screen.findByTestId('monaco-editor')
+      expect(editor).toHaveTextContent('first-page')
+      expect(editor).toHaveTextContent('second-page')
+      expect(fetchNextPage).toHaveBeenCalled()
+    } finally {
+      api.paginated = paginatedResult()
+    }
+  })
+
   it('warns when no tenant is selected in table mode', () => {
     renderWithProviders(<Page />, { settings: settingsWith({ currentTenant: null }) })
     expect(

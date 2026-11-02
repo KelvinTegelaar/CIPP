@@ -85,3 +85,44 @@ export const PhoneWidth = {
     })
   },
 }
+
+// The other queues have no live events in the panel, so their progress must keep moving while it is open.
+let otherQueueDone = 0
+export const OtherQueuesKeepUpdating = {
+  parameters: {
+    msw: {
+      handlers: [
+        http.get('*/api/ListCippQueue', ({ request }) => {
+          if (new URL(request.url).searchParams.get('QueueId')) {
+            return HttpResponse.json([queue])
+          }
+          otherQueueDone += 5
+          return HttpResponse.json([
+            queue,
+            {
+              QueueId: 'q-2',
+              Name: 'Groups Cache Sync (All Tenants)',
+              Status: 'Running',
+              Cancellable: true,
+              CompletedTasks: otherQueueDone,
+              TotalTasks: 16,
+            },
+          ])
+        }),
+      ],
+    },
+  },
+  beforeEach() {
+    otherQueueDone = 0
+  },
+  render: () => <CippQueueTracker queueId="q-1" title="Users (All Tenants)" />,
+  play: async ({ canvasElement, step }) => {
+    const body = within(document.body)
+    await userEvent.click(await within(canvasElement).findByRole('button'))
+
+    await step('the other queue shows its progress and then moves on', async () => {
+      await body.findByText('Running - 5 of 16 tasks done')
+      await body.findByText('Running - 10 of 16 tasks done', {}, { timeout: 8000 })
+    })
+  },
+}

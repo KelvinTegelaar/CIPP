@@ -105,8 +105,12 @@ export const CippMultiQueueTracker = ({
     // TanStack Query v5 hands this callback the Query object, not the data. Reading the data
     // off query.state is what makes the interval actually return false on completion - with
     // the v4 (data) signature the status is never found and the poll runs forever.
+    // A tenant-restricted caller gets no live events for these runs, so it polls the narrowed status.
     refetchInterval: (query) =>
-      isFinished(query?.state?.data?.Summary?.Status) || connected ? false : 3000,
+      isFinished(query?.state?.data?.Summary?.Status) ||
+      (connected && !query?.state?.data?.Queues?.some((queue) => queue.Polled))
+        ? false
+        : 3000,
     refetchOnWindowFocus: false,
     staleTime: 0,
   })

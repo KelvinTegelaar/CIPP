@@ -77,6 +77,12 @@ export const CippCertificateAuthStep = (props) => {
           instead of the client secret, for every Graph and Exchange Online call. The client secret
           is kept in Key Vault as a rollback - turn this off to switch back at any time.
         </Typography>
+        <Alert severity="info">
+          Turning this on also updates the CIPP Exemption Policy, the Entra app management policy
+          CIPP keeps on the CIPP-SAM application, so that no new client secrets can be added to it,
+          by anyone, while certificate authentication is on. Existing secrets keep working until they expire. Turning it off lifts that block, and
+          creates a client secret first if this install has none. Both changes are logged.
+        </Alert>
 
         {certStatus.isSuccess && (
           <Stack

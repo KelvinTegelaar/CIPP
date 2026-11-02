@@ -4,12 +4,18 @@ import {
   Button,
   Card,
   CardContent,
+  Checkbox,
   Chip,
   CircularProgress,
   Container,
   Divider,
+  IconButton,
   Link,
+  ListItemText,
+  Menu,
+  MenuItem,
   Stack,
+  SvgIcon,
   TextField,
   ToggleButton,
   ToggleButtonGroup,
@@ -51,7 +57,7 @@ import CippBaselineStandardSettings, {
 } from '../../../../components/CippBaselines/CippBaselineStandardSettings'
 import { useDialog } from '../../../../hooks/use-dialog'
 import { useSettings } from '../../../../hooks/use-settings'
-import { ApiGetCall } from '../../../../api/ApiCall'
+import { ApiGetCall, ApiGetCallWithPagination } from '../../../../api/ApiCall'
 import { parseCippDate } from '../../../../utils/parse-cipp-date'
 import { CippOffCanvas } from '../../../../components/CippComponents/CippOffCanvas'
 import { CippAutoComplete } from '../../../../components/CippComponents/CippAutocomplete'
@@ -384,6 +390,11 @@ const outcomeTimeline = {
     chipColor: 'primary',
     icon: <CippIcons.ArrowForward />,
   },
+  'Stage Moved Back': {
+    color: 'warning',
+    chipColor: 'warning',
+    icon: <CippIcons.ArrowBack />,
+  },
   Deleted: { color: 'error', chipColor: 'error', icon: <CippIcons.RemoveCircle /> },
   'Delete Failed': {
     color: 'error',
@@ -414,6 +425,240 @@ const historyEventMessage = (event) => {
     default:
       return `"${event.standardLabel}" - ${event.outcome}`
   }
+}
+
+// Loaded per opened row: one history partition read instead of one per row of the tenant list.
+const StandardRunHistory = ({ tenantFilter, standardName, children }) => {
+  const runs = ApiGetCall({
+    url: '/api/ListBaselineAlignment',
+    data: { tenantFilter, history: true, standard: standardName, pageSize: 5 },
+    queryKey: `ListBaselineAlignment-${tenantFilter}-history-${standardName}`,
+    waiting: !!tenantFilter && !!standardName,
+  })
+  return children(runs.data?.events ?? [], runs)
+}
+
+// Statuses with nothing left to decide sort below the ones that still need an operator.
+const settledStatuses = ['Compliant', 'Accepted', 'Skipped - No License', 'No Data']
+
+// One standard's per-tenant states: compact rows with a per-row menu and a bulk menu, both
+// dispatching the same actions (conditions, bulk eligibility, dialogs) as the tenant table.
+const TenantStateList = ({ rows, actions, details }) => {
+  const [statusFilter, setStatusFilter] = useState('All')
+  const [detailTenant, setDetailTenant] = useState(null)
+  // Looked up by tenant so the stacked drawer follows refreshed rows after an action.
+  const detailRow = rows.find((row) => row.tenantFilter === detailTenant)
+  const [selected, setSelected] = useState(() => new Set())
+  const [menu, setMenu] = useState(null)
+  const [pending, setPending] = useState(null)
+  const actionDialog = useDialog()
+
+  const counts = {}
+  for (const row of rows) counts[row.status] = (counts[row.status] ?? 0) + 1
+  const visibleRows = rows
+    .filter((row) => statusFilter === 'All' || row.status === statusFilter)
+    .sort(
+      (a, b) =>
+        Number(settledStatuses.includes(a.status)) -
+          Number(settledStatuses.includes(b.status)) ||
+        `${a.tenantName}`.localeCompare(`${b.tenantName}`)
+    )
+  const selectedRows = visibleRows.filter((row) =>
+    selected.has(row.tenantFilter)
+  )
+  const toggleRow = (tenantFilter) =>
+    setSelected((prev) => {
+      const next = new Set(prev)
+      if (next.has(tenantFilter)) next.delete(tenantFilter)
+      else next.add(tenantFilter)
+      return next
+    })
+  const qualifies = (action, row) => !action.condition || action.condition(row)
+  const appliesTo = (action, row) =>
+    !action.hideCondition?.(row) && qualifies(action, row)
+  const bulkActions = actions.filter(
+    (action) =>
+      !action.hideBulk &&
+      !action.link &&
+      !selectedRows.every((row) => action.hideCondition?.(row))
+  )
+  // A bulk action runs only when it applies to every selected row.
+  const bulkDisabled = (action) =>
+    !selectedRows.every((row) => appliesTo(action, row))
+  const run = (action, target) => {
+    setMenu(null)
+    setPending({ action, row: target })
+    actionDialog.handleOpen()
+  }
+
+  return (
+    <Stack spacing={1}>
+      <Stack direction="row" spacing={1} useFlexGap sx={{ flexWrap: 'wrap' }}>
+        {['All', ...Object.keys(counts)].map((status) => (
+          <Chip
+            key={status}
+            size="small"
+            label={`${status} ${status === 'All' ? rows.length : counts[status]}`}
+            color={
+              status === statusFilter
+                ? (deviationColors[status] ?? 'primary')
+                : 'default'
+            }
+            variant={status === statusFilter ? 'filled' : 'outlined'}
+            onClick={() => setStatusFilter(status)}
+          />
+        ))}
+      </Stack>
+      <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+        <Checkbox
+          size="small"
+          checked={
+            visibleRows.length > 0 && selectedRows.length === visibleRows.length
+          }
+          indeterminate={
+            selectedRows.length > 0 && selectedRows.length < visibleRows.length
+          }
+          onChange={(event) =>
+            setSelected(
+              new Set(
+                event.target.checked
+                  ? visibleRows.map((row) => row.tenantFilter)
+                  : []
+              )
+            )
+          }
+          slotProps={{ input: { 'aria-label': 'Select all shown tenants' } }}
+        />
+        <Typography variant="body2" sx={{ flex: 1, color: 'text.secondary' }}>
+          {selectedRows.length
+            ? `${selectedRows.length} selected`
+            : `${visibleRows.length} tenants`}
+        </Typography>
+        <Button
+          size="small"
+          variant="outlined"
+          disabled={selectedRows.length === 0}
+          endIcon={<CippIcons.ChevronDownIcon />}
+          onClick={(event) => setMenu({ anchor: event.currentTarget })}
+        >
+          Bulk actions
+        </Button>
+      </Stack>
+      <Divider />
+      <Stack divider={<Divider />}>
+        {visibleRows.map((row) => (
+          <Stack
+            key={row.tenantFilter}
+            direction="row"
+            spacing={1}
+            onClick={() => setDetailTenant(row.tenantFilter)}
+            sx={{
+              alignItems: 'center',
+              py: 0.5,
+              cursor: 'pointer',
+              '&:hover': { bgcolor: 'action.hover' },
+            }}
+          >
+            <Checkbox
+              size="small"
+              checked={selected.has(row.tenantFilter)}
+              onClick={(event) => event.stopPropagation()}
+              onChange={() => toggleRow(row.tenantFilter)}
+              slotProps={{ input: { 'aria-label': `Select ${row.tenantName}` } }}
+            />
+            <Box sx={{ minWidth: 0, flex: 1 }}>
+              <Typography variant="body2" sx={{ fontWeight: 600 }} noWrap>
+                {row.tenantName}
+              </Typography>
+              <Typography
+                variant="caption"
+                sx={{ color: 'text.secondary', display: 'block' }}
+                noWrap
+              >
+                {row.tenantFilter}
+                {row.deviationReason ? ` - ${row.deviationReason}` : ''}
+              </Typography>
+            </Box>
+            <Chip
+              size="small"
+              variant="outlined"
+              label={row.status}
+              color={deviationColors[row.status] ?? 'default'}
+            />
+            <IconButton
+              size="small"
+              aria-label={`Actions for ${row.tenantName}`}
+              onClick={(event) => {
+                event.stopPropagation()
+                setMenu({ anchor: event.currentTarget, row })
+              }}
+            >
+              <CippIcons.MoreVert fontSize="small" />
+            </IconButton>
+          </Stack>
+        ))}
+      </Stack>
+      <Menu
+        anchorEl={menu?.anchor}
+        open={Boolean(menu)}
+        onClose={() => setMenu(null)}
+        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+      >
+        {menu?.row && (
+          <MenuItem
+            onClick={() => {
+              setDetailTenant(menu.row.tenantFilter)
+              setMenu(null)
+            }}
+          >
+            <SvgIcon fontSize="small" sx={{ minWidth: '30px' }}>
+              <CippIcons.EyeIcon />
+            </SvgIcon>
+            <ListItemText>View Deviation</ListItemText>
+          </MenuItem>
+        )}
+        {(menu?.row
+          ? actions.filter((action) => !action.hideCondition?.(menu.row))
+          : bulkActions
+        ).map((action) => (
+          <MenuItem
+            key={action.label}
+            disabled={
+              menu?.row ? !qualifies(action, menu.row) : bulkDisabled(action)
+            }
+            onClick={() =>
+              run(action, menu?.row ?? selectedRows)
+            }
+          >
+            <SvgIcon fontSize="small" sx={{ minWidth: '30px' }}>
+              {action.icon}
+            </SvgIcon>
+            <ListItemText>{action.label}</ListItemText>
+          </MenuItem>
+        ))}
+      </Menu>
+      <CippOffCanvas
+        {...details}
+        visible={Boolean(detailRow)}
+        onClose={() => setDetailTenant(null)}
+        extendedData={detailRow ?? {}}
+        title={detailRow ? `${detailRow.tenantName} - ${details.title}` : details.title}
+      />
+      {pending && (
+        <CippApiDialog
+          key={pending.action.label}
+          {...pending.action}
+          createDialog={actionDialog}
+          api={pending.action}
+          row={pending.row}
+          title={pending.action.title ?? 'Confirmation'}
+          relatedQueryKeys={pending.action.relatedQueryKeys}
+          slotProps={{ transition: { onExited: () => setPending(null) } }}
+        />
+      )}
+    </Stack>
+  )
 }
 
 // A run's diff can be long - hide it behind a toggle so the history list stays readable.
@@ -489,10 +734,6 @@ const Page = () => {
   const [stagePick, setStagePick] = useState(undefined)
   const [advanceTarget, setAdvanceTarget] = useState(null)
   const advanceDialog = useDialog()
-  const [triageTarget, setTriageTarget] = useState(null)
-  const triageDialog = useDialog()
-  const [overrideTarget, setOverrideTarget] = useState(null)
-  const overrideDialog = useDialog()
   const [acceptPathTarget, setAcceptPathTarget] = useState(null)
   const acceptPathDialog = useDialog()
   const [denyPathTarget, setDenyPathTarget] = useState(null)
@@ -530,13 +771,13 @@ const Page = () => {
     outcome: [],
     mode: [],
     search: '',
+    days: 0,
   })
-  const [historyLimit, setHistoryLimit] = useState(50)
   const setHistoryFilter = (name, value) => {
     setHistoryFilters((prev) => ({ ...prev, [name]: value }))
-    setHistoryLimit(50)
   }
   const isTenantView = viewMode === 'tenant'
+  const isAllTenants = currentTenant === 'AllTenants'
   const isTemplateView = viewMode === 'template'
 
   // Refetch everything baseline-related after any triage/run/override action:
@@ -566,7 +807,10 @@ const Page = () => {
     url: '/api/ListBaselineAlignment',
     data: { tenantFilter: currentTenant },
     queryKey: `ListBaselineAlignment-${currentTenant}`,
-    waiting: isTenantView && !!currentTenant,
+    waiting:
+      (isTenantView || viewMode === 'history') &&
+      !!currentTenant &&
+      !isAllTenants,
   })
   // Same filter/queryKey scheme as the Fleet Overview so both pages share cache entries.
   // router.query is empty on the first render, so URL values are the fallback until the user picks.
@@ -583,12 +827,24 @@ const Page = () => {
     queryKey: baselineId
       ? `ListBaselineAlignment-byStandard-${baselineId}${stage ? `-${stage}` : ''}`
       : 'ListBaselineAlignment-byStandard',
-    waiting: viewMode === 'standard',
+    waiting: viewMode === 'standard' || (isTenantView && isAllTenants),
   })
-  const historyApi = ApiGetCall({
+  // Hour-rounded so the query key is stable between renders; days 0 means no lower bound.
+  const historySince = historyFilters.days
+    ? Math.floor(Date.now() / 3600000) * 3600 - historyFilters.days * 86400
+    : undefined
+  const historyApi = ApiGetCallWithPagination({
     url: '/api/ListBaselineAlignment',
-    data: { tenantFilter: currentTenant, history: true },
-    queryKey: `ListBaselineAlignment-${currentTenant}-history`,
+    data: {
+      tenantFilter: currentTenant,
+      history: true,
+      since: historySince,
+      pageSize: 500,
+      standard: historyFilters.standard.join(','),
+      outcome: historyFilters.outcome.join(','),
+      mode: historyFilters.mode.join(','),
+    },
+    queryKey: `ListBaselineAlignment-${currentTenant}-history-${historySince}-${historyFilters.standard.join(',')}-${historyFilters.outcome.join(',')}-${historyFilters.mode.join(',')}`,
     waiting: viewMode === 'history' && !!currentTenant,
   })
   const baselinesApi = ApiGetCall({
@@ -605,9 +861,10 @@ const Page = () => {
   // definition ships a delete executor (the detect-drift standards, where each
   // path IS a policy). Ordinary standards get accept-only per-property actions -
   // enforcing the baseline is the row-level Deny.
+  const findDefinition = (standardName) =>
+    catalog.find((entry) => entry.name === `${standardName}`.split('#')[0])
   const supportsPathDeletion = (standardName) =>
-    !!catalog.find((entry) => entry.name === `${standardName}`.split('#')[0])
-      ?.delete
+    !!findDefinition(standardName)?.delete
   const baselines = baselinesApi.data ?? []
   const baselineList = Array.isArray(baselines) ? baselines : [baselines]
   const baselineOptions = [
@@ -699,7 +956,6 @@ const Page = () => {
       // flipping a task back to Drift once its reopen window has elapsed. A Conflict
       // cannot even compare - the expected value itself is ambiguous.
       condition: (row) => row.status !== 'Conflict',
-      bulkFilterEligible: true,
     },
     {
       label: 'Remediate Now',
@@ -707,11 +963,23 @@ const Page = () => {
       url: '/api/ExecBaselineRun',
       icon: <CippIcons.PlayArrow />,
       color: 'success',
-      data: {
-        mode: '!oneoff',
-        tenantFilter: 'tenantFilter',
-        standard: 'standardName',
-      },
+      // One request per tenant: the backend refuses a second CA deploy for a tenant while one runs.
+      customDataformatter: (rows) =>
+        Array.isArray(rows)
+          ? [...new Set(rows.map((row) => row.tenantFilter))].map(
+              (tenantFilter) => ({
+                mode: 'oneoff',
+                tenantFilter,
+                standard: rows
+                  .filter((row) => row.tenantFilter === tenantFilter)
+                  .map((row) => row.standardName),
+              })
+            )
+          : {
+              mode: 'oneoff',
+              tenantFilter: rows.tenantFilter,
+              standard: rows.standardName,
+            },
       confirmText:
         'Fix [standardLabel] on [tenantFilter] now? CIPP immediately applies the configured expected value.',
       multiPost: false,
@@ -722,7 +990,6 @@ const Page = () => {
       // unambiguous expected value to deploy.
       condition: (row) => !isManualTaskRow(row) && row.status !== 'Conflict',
       hideCondition: (row) => isManualTaskRow(row),
-      bulkFilterEligible: true,
     },
     {
       label: 'Accept Deviation',
@@ -744,7 +1011,6 @@ const Page = () => {
       condition: (row) =>
         ['Drift', 'Partially Accepted'].includes(row.status) && !isManualTaskRow(row),
       hideCondition: (row) => isManualTaskRow(row),
-      bulkFilterEligible: true,
     },
     {
       label: 'Deny & Fix Deviation',
@@ -775,7 +1041,6 @@ const Page = () => {
       condition: (row) =>
         ['Drift', 'Partially Accepted'].includes(row.status) && !isManualTaskRow(row),
       hideCondition: (row) => isManualTaskRow(row),
-      bulkFilterEligible: true,
     },
     {
       label: 'Undo Accept/Deny',
@@ -800,7 +1065,6 @@ const Page = () => {
           Object.keys(row.acceptedPaths ?? {}).length > 0) &&
         !isManualTaskRow(row),
       hideCondition: (row) => isManualTaskRow(row),
-      bulkFilterEligible: true,
     },
     {
       label: 'Mark Task Complete',
@@ -819,7 +1083,6 @@ const Page = () => {
       relatedQueryKeys,
       condition: (row) => isManualTaskRow(row) && row.status === 'Drift',
       hideCondition: (row) => !isManualTaskRow(row),
-      bulkFilterEligible: true,
     },
     {
       label: 'Create Tenant Override',
@@ -835,9 +1098,7 @@ const Page = () => {
         standard: 'standardName',
       },
       children: ({ formHook, row }) => {
-        const standard = catalog.find(
-          (entry) => entry.name === row.standardName
-        )
+        const standard = findDefinition(row.standardName)
         if (!standard) return null
         return (
           <Stack spacing={2} sx={{ mt: 2 }}>
@@ -865,9 +1126,7 @@ const Page = () => {
       multiPost: false,
       relatedQueryKeys,
       condition: (row) => {
-        const standard = catalog.find(
-          (entry) => entry.name === row.standardName
-        )
+        const standard = findDefinition(row.standardName)
         // An existing override is removed, not re-created.
         return (
           row.sourceTemplate !== 'Tenant Override' &&
@@ -1060,21 +1319,28 @@ const Page = () => {
               sx={{ alignItems: 'center', justifyContent: 'flex-end' }}
             >
               <span>{parseCippDate(row.lastRun).toLocaleString()}</span>
-              {row.history?.[0]?.runId && (
-                <CippApiLogsDrawer
-                  baselineRunFilter={row.history[0].runId}
-                  tenantFilter={currentTenant}
-                  buttonText="View Logs"
-                  title={`Run ${String(row.history[0].runId).slice(0, 8)} - Logs`}
-                  size="small"
-                  sx={{
-                    fontSize: '0.75rem',
-                    p: 0,
-                    minWidth: 0,
-                    textTransform: 'none',
-                  }}
-                />
-              )}
+              <StandardRunHistory
+                tenantFilter={row.tenantFilter}
+                standardName={row.standardName}
+              >
+                {(runs) =>
+                  runs[0]?.runId && (
+                    <CippApiLogsDrawer
+                      baselineRunFilter={runs[0].runId}
+                      tenantFilter={row.tenantFilter}
+                      buttonText="View Logs"
+                      title={`Run ${String(runs[0].runId).slice(0, 8)} - Logs`}
+                      size="small"
+                      sx={{
+                        fontSize: '0.75rem',
+                        p: 0,
+                        minWidth: 0,
+                        textTransform: 'none',
+                      }}
+                    />
+                  )
+                }
+              </StandardRunHistory>
             </Stack>
           ) : (
             'N/A'
@@ -1707,84 +1973,108 @@ const Page = () => {
             >
               Last Runs
             </Typography>
-            {(row.history ?? []).map((run) => (
-              <Box
-                key={run.runId}
-                sx={{
-                  p: 1.5,
-                  borderRadius: '12px',
-                  border: '1px solid',
-                  borderColor: 'divider',
-                  bgcolor: 'background.paper',
-                }}
-              >
-                <Stack
-                  direction="row"
-                  spacing={1}
-                  sx={{
-                    alignItems: "center",
-                    justifyContent: "space-between"
-                  }}>
-                  <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
-                    {parseCippDate(run.timestamp).toLocaleString()}
+            <StandardRunHistory
+              tenantFilter={row.tenantFilter}
+              standardName={row.standardName}
+            >
+              {(runs, runsApi) =>
+                runsApi.isLoading ? (
+                  <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+                    Loading runs...
                   </Typography>
-                  <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
-                    <CippApiLogsDrawer
-                      baselineRunFilter={run.runId}
-                      tenantFilter={currentTenant}
-                      buttonText="View Logs"
-                      title={`Run ${String(run.runId).slice(0, 8)} - Logs`}
-                      size="small"
+                ) : (
+                  runs.map((run) => (
+                    <Box
+                      key={run.runId}
                       sx={{
-                        fontSize: '0.75rem',
-                        p: 0,
-                        minWidth: 0,
-                        textTransform: 'none',
+                        p: 1.5,
+                        borderRadius: '12px',
+                        border: '1px solid',
+                        borderColor: 'divider',
+                        bgcolor: 'background.paper',
                       }}
-                    />
-                    <Chip
-                      variant="outlined"
-                      size="small"
-                      label={outcomeTimeline[run.outcome]?.label ?? run.outcome}
-                      color={outcomeTimeline[run.outcome]?.chipColor ?? 'error'}
-                    />
-                  </Stack>
-                </Stack>
-                <Typography
-                  variant="caption"
-                  sx={{
-                    color: "text.secondary",
-                    display: 'block',
-                    mt: 0.5
-                  }}>
-                  {runModeLabels[run.mode] ?? run.mode}, triggered by{' '}
-                  {run.triggeredBy}
-                  {run.remediated ? ', remediated' : ''}
-                </Typography>
-                {run.detail && (
-                  <Typography
-                    variant="caption"
-                    sx={{ display: 'block', mt: 0.5 }}
-                  >
-                    {run.detail}
-                  </Typography>
-                )}
-                <RunDetails diff={run.diff} />
-              </Box>
-            ))}
+                    >
+                      <Stack
+                        direction="row"
+                        spacing={1}
+                        sx={{
+                          alignItems: "center",
+                          justifyContent: "space-between"
+                        }}>
+                        <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
+                          {parseCippDate(run.timestamp).toLocaleString()}
+                        </Typography>
+                        <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+                          <CippApiLogsDrawer
+                            baselineRunFilter={run.runId}
+                            tenantFilter={row.tenantFilter}
+                            buttonText="View Logs"
+                            title={`Run ${String(run.runId).slice(0, 8)} - Logs`}
+                            size="small"
+                            sx={{
+                              fontSize: '0.75rem',
+                              p: 0,
+                              minWidth: 0,
+                              textTransform: 'none',
+                            }}
+                          />
+                          <Chip
+                            variant="outlined"
+                            size="small"
+                            label={outcomeTimeline[run.outcome]?.label ?? run.outcome}
+                            color={outcomeTimeline[run.outcome]?.chipColor ?? 'error'}
+                          />
+                        </Stack>
+                      </Stack>
+                      <Typography
+                        variant="caption"
+                        sx={{
+                          color: "text.secondary",
+                          display: 'block',
+                          mt: 0.5
+                        }}>
+                        {runModeLabels[run.mode] ?? run.mode}, triggered by{' '}
+                        {run.triggeredBy}
+                        {run.remediated ? ', remediated' : ''}
+                      </Typography>
+                      {run.detail && (
+                        <Typography
+                          variant="caption"
+                          sx={{ display: 'block', mt: 0.5 }}
+                        >
+                          {run.detail}
+                        </Typography>
+                      )}
+                      <RunDetails diff={run.diff} />
+                    </Box>
+                  ))
+                )
+              }
+            </StandardRunHistory>
             <Button
               size="small"
               variant="outlined"
               startIcon={<CippIcons.EyeIcon />}
               sx={{ alignSelf: 'flex-start' }}
               onClick={() => {
+                // The tenant selector follows ?tenantFilter=, so switch through the URL.
+                if (row.tenantFilter !== currentTenant) {
+                  router.replace(
+                    {
+                      pathname: router.pathname,
+                      query: { ...router.query, tenantFilter: row.tenantFilter },
+                    },
+                    undefined,
+                    { shallow: true }
+                  )
+                }
                 setHistoryFilters({
-                  standard: row.standardLabel ? [row.standardLabel] : [],
+                  standard: row.standardName ? [row.standardName] : [],
                   outcome: [],
                   mode: [],
                   search: '',
+                  days: 0,
                 })
-                setHistoryLimit(50)
                 setViewMode('history')
               }}
             >
@@ -1797,10 +2087,17 @@ const Page = () => {
   }
 
   const standardOffCanvas = {
-    size: 'md',
+    size: 'lg',
     title: 'Standard Tenant Summary',
     contentPadding: 0,
-    children: (row) => (
+    // The table hands over the row as clicked; read it back from the aggregate so the
+    // drawer reflects actions taken from it.
+    children: (clickedRow) => {
+      const row =
+        standardAggregates.find(
+          (standard) => standard.standardName === clickedRow.standardName
+        ) ?? clickedRow
+      return (
       <Stack spacing={0}>
         {propertyList([
           { label: 'Standard', value: row.standardLabel },
@@ -1830,18 +2127,19 @@ const Page = () => {
             <CippChartCard
               title="Compliance Trend"
               chartType="area"
+              xaxisType="datetime"
               chartSeries={[
                 {
                   name: 'Compliant with accepted deviations',
                   data: row.trend.map((point) => ({
-                    x: point.date,
+                    x: new Date(`${point.date}T00:00:00`).getTime(),
                     y: point.aligned,
                   })),
                 },
                 {
                   name: 'Compliant with baseline',
                   data: row.trend.map((point) => ({
-                    x: point.date,
+                    x: new Date(`${point.date}T00:00:00`).getTime(),
                     y: point.verified,
                   })),
                 },
@@ -1849,132 +2147,17 @@ const Page = () => {
             />
           </Box>
         )}
-        <Stack spacing={1.5} sx={{ p: 2 }}>
-          <Typography
-            variant="caption"
-            sx={{
-              fontWeight: 600,
-              color: 'text.secondary',
-              textTransform: 'uppercase',
-              letterSpacing: 0.5,
-            }}
-          >
-            Tenant States
-          </Typography>
-          {/* The offcanvas renders with an empty row until one is selected. */}
-          {(row.rows ?? []).map((tenantRow) => (
-            <Box
-              key={tenantRow.tenantFilter}
-              sx={{
-                p: 1.5,
-                borderRadius: '12px',
-                border: '1px solid',
-                borderColor: 'divider',
-                bgcolor: 'background.paper',
-              }}
-            >
-              <Stack
-                direction="row"
-                spacing={1}
-                sx={{
-                  alignItems: "center",
-                  justifyContent: "space-between"
-                }}>
-                <Box sx={{ minWidth: 0 }}>
-                  <Typography
-                    variant="subtitle2"
-                    sx={{ fontWeight: 600 }}
-                    noWrap
-                  >
-                    {tenantRow.tenantName}
-                  </Typography>
-                  <Typography
-                    variant="caption"
-                    sx={{
-                      color: "text.secondary",
-                      display: 'block'
-                    }}>
-                    {tenantRow.tenantFilter}
-                  </Typography>
-                </Box>
-                <Chip
-                  variant="outlined"
-                  label={tenantRow.status}
-                  size="small"
-                  color={deviationColors[tenantRow.status] ?? 'default'}
-                />
-              </Stack>
-              {tenantRow.deviationReason && (
-                <Typography
-                  variant="caption"
-                  sx={{
-                    color: "text.secondary",
-                    display: 'block',
-                    mt: 1
-                  }}>
-                  {tenantRow.deviationReason}
-                </Typography>
-              )}
-              {([
-                'Drift',
-                'Partially Accepted',
-                'Denied - Remediate Pending',
-              ].includes(tenantRow.status) ||
-                tenantRow.sourceTemplate === 'Tenant Override') && (
-                <Stack direction="row" spacing={1} sx={{ mt: 1 }}>
-                  {[
-                    'Drift',
-                    'Partially Accepted',
-                    'Denied - Remediate Pending',
-                  ].includes(tenantRow.status) && (
-                    <>
-                      <Button
-                        size="small"
-                        variant="outlined"
-                        startIcon={<CippIcons.CheckCircle />}
-                        onClick={() => {
-                          setTriageTarget(tenantRow)
-                          triageDialog.handleOpen()
-                        }}
-                      >
-                        Accept Deviation
-                      </Button>
-                      {tenantRow.sourceTemplate !== 'Tenant Override' && (
-                        <Button
-                          size="small"
-                          variant="outlined"
-                          startIcon={<CippIcons.Tune />}
-                          onClick={() => {
-                            setOverrideTarget(tenantRow)
-                            overrideDialog.handleOpen()
-                          }}
-                        >
-                          Tenant Override
-                        </Button>
-                      )}
-                    </>
-                  )}
-                  {tenantRow.sourceTemplate === 'Tenant Override' && (
-                    <Button
-                      size="small"
-                      variant="outlined"
-                      color="error"
-                      startIcon={<CippIcons.LayersClear />}
-                      onClick={() => {
-                        setRemoveOverrideTarget(tenantRow)
-                        removeOverrideDialog.handleOpen()
-                      }}
-                    >
-                      Remove Override
-                    </Button>
-                  )}
-                </Stack>
-              )}
-            </Box>
-          ))}
-        </Stack>
+        <Box sx={{ p: 2 }}>
+          <TenantStateList
+            key={row.standardName}
+            rows={row.rows ?? []}
+            actions={tenantActions}
+            details={tenantOffCanvas}
+          />
+        </Box>
       </Stack>
-    ),
+      )
+    },
   }
 
   const templateActions = [
@@ -2005,7 +2188,7 @@ const Page = () => {
         </Stack>
       ),
       confirmText:
-        'Run [templateName] now? Pick a single covered tenant, or All Tenants in Template for the whole assignment. Standards in report-only stages are compared without changes.',
+        'Run [templateName] now? Pick a single covered tenant, or All Tenants in Template for the whole assignment. Standards in report-only stages are compared without changes. The configuration in this baseline is applied as-is: settings from other assigned baselines (even more specific ones) and tenant overrides are ignored for this run.',
       multiPost: false,
       relatedQueryKeys,
     },
@@ -2127,6 +2310,24 @@ const Page = () => {
                         }}
                       >
                         Re-evaluate Stage
+                      </Button>
+                    )}
+                    {state.currentStage > 1 && (
+                      <Button
+                        size="small"
+                        variant="outlined"
+                        startIcon={<CippIcons.ArrowBack />}
+                        onClick={() => {
+                          setAdvanceTarget({
+                            action: 'previous',
+                            tenantFilter: state.tenantFilter,
+                            templateId: row.GUID,
+                            templateName: row.templateName,
+                          })
+                          advanceDialog.handleOpen()
+                        }}
+                      >
+                        Move Back
                       </Button>
                     )}
                   </Stack>
@@ -2374,56 +2575,68 @@ const Page = () => {
                     - advances when {describeStageConditions(state.nextStage)}
                   </Typography>
                 )}
-                {state.manualAdvance && (
+                {(state.nextStage || state.currentStage > 1) && (
                   <>
                     <Box sx={{ flexGrow: 1 }} />
                     <Divider sx={{ my: 1 }} />
-                    <Stack direction="row" sx={{
+                    <Stack direction="row" spacing={1} sx={{
                       justifyContent: "flex-end"
                     }}>
-                      <Button
-                        size="small"
-                        variant="contained"
-                        startIcon={<CippIcons.ArrowForward />}
-                        onClick={() => {
-                          setAdvanceTarget({
-                            tenantFilter: tenant.tenantId,
-                            templateId: state.templateId,
-                            templateName: state.templateName,
-                            nextStageName: state.nextStageName,
-                          })
-                          advanceDialog.handleOpen()
-                        }}
-                      >
-                        Move to next stage ({state.nextStageName})
-                      </Button>
-                    </Stack>
-                  </>
-                )}
-                {state.nextStage && !state.manualAdvance && (
-                  <>
-                    <Box sx={{ flexGrow: 1 }} />
-                    <Divider sx={{ my: 1 }} />
-                    <Stack direction="row" sx={{
-                      justifyContent: "flex-end"
-                    }}>
-                      <Button
-                        size="small"
-                        variant="outlined"
-                        startIcon={<CippIcons.Refresh />}
-                        onClick={() => {
-                          setAdvanceTarget({
-                            action: 'evaluate',
-                            tenantFilter: tenant.tenantId,
-                            templateId: state.templateId,
-                            templateName: state.templateName,
-                            nextStageName: state.nextStageName,
-                          })
-                          advanceDialog.handleOpen()
-                        }}
-                      >
-                        Re-evaluate stage conditions
-                      </Button>
+                      {state.currentStage > 1 && (
+                        <Button
+                          size="small"
+                          variant="outlined"
+                          startIcon={<CippIcons.ArrowBack />}
+                          onClick={() => {
+                            setAdvanceTarget({
+                              action: 'previous',
+                              tenantFilter: tenant.tenantId,
+                              templateId: state.templateId,
+                              templateName: state.templateName,
+                            })
+                            advanceDialog.handleOpen()
+                          }}
+                        >
+                          Move back a stage
+                        </Button>
+                      )}
+                      {state.manualAdvance && (
+                        <Button
+                          size="small"
+                          variant="contained"
+                          startIcon={<CippIcons.ArrowForward />}
+                          onClick={() => {
+                            setAdvanceTarget({
+                              tenantFilter: tenant.tenantId,
+                              templateId: state.templateId,
+                              templateName: state.templateName,
+                              nextStageName: state.nextStageName,
+                            })
+                            advanceDialog.handleOpen()
+                          }}
+                        >
+                          Move to next stage ({state.nextStageName})
+                        </Button>
+                      )}
+                      {state.nextStage && !state.manualAdvance && (
+                        <Button
+                          size="small"
+                          variant="outlined"
+                          startIcon={<CippIcons.Refresh />}
+                          onClick={() => {
+                            setAdvanceTarget({
+                              action: 'evaluate',
+                              tenantFilter: tenant.tenantId,
+                              templateId: state.templateId,
+                              templateName: state.templateName,
+                              nextStageName: state.nextStageName,
+                            })
+                            advanceDialog.handleOpen()
+                          }}
+                        >
+                          Re-evaluate stage conditions
+                        </Button>
+                      )}
                     </Stack>
                   </>
                 )}
@@ -2466,10 +2679,6 @@ const Page = () => {
     />
   )
 
-  const overrideStandard = overrideTarget
-    ? catalog.find((entry) => entry.name === overrideTarget.standardName)
-    : null
-
   // The triage/override/advance dialogs are shared between the tenant layout and the
   // table page for the other views.
   const dialogs = (
@@ -2478,101 +2687,30 @@ const Page = () => {
         <CippApiDialog
           createDialog={advanceDialog}
           title={
-            advanceTarget.action === 'evaluate'
-              ? 'Re-evaluate Stage'
-              : 'Move to Next Stage'
+            {
+              evaluate: 'Re-evaluate Stage',
+              previous: 'Move Back a Stage',
+            }[advanceTarget.action] ?? 'Move to Next Stage'
           }
           api={{
             url: '/api/ExecBaselineStage',
             type: 'POST',
             data: {
-              action:
-                advanceTarget.action === 'evaluate'
-                  ? '!evaluate'
-                  : '!advanceStage',
+              action: `!${advanceTarget.action ?? 'advanceStage'}`,
               tenantFilter: 'tenantFilter',
               templateId: 'templateId',
             },
             confirmText:
-              advanceTarget.action === 'evaluate'
-                ? 'Check now whether [tenantFilter] meets the conditions for stage [nextStageName] of [templateName]? If they are met it moves there and receives the standards of that stage on the next run.'
-                : 'Move [tenantFilter] into stage [nextStageName] of [templateName]? The tenant receives all standards from that stage on the next run.',
+              {
+                evaluate:
+                  'Check now whether [tenantFilter] meets the conditions for stage [nextStageName] of [templateName]? If they are met it moves there and receives the standards of that stage on the next run.',
+                previous:
+                  'Move [tenantFilter] back one stage in [templateName]? Standards from its current stage stop applying on the next run, but settings already applied stay in place. If it still meets the conditions of the stage it left, the next scheduled run moves it forward again.',
+              }[advanceTarget.action] ??
+              'Move [tenantFilter] into stage [nextStageName] of [templateName]? The tenant receives all standards from that stage on the next run.',
             relatedQueryKeys,
           }}
           row={advanceTarget}
-        />
-      )}
-      {triageTarget && (
-        <CippApiDialog
-          createDialog={triageDialog}
-          title="Accept Deviation"
-          fields={[
-            { type: 'textField', name: 'reason', label: 'Reason' },
-            {
-              type: 'datePicker',
-              name: 'expires',
-              label: 'Expires (optional)',
-              dateTimeType: 'date',
-            },
-            {
-              type: 'switch',
-              name: 'remediateOnExpire',
-              label: 'Remediate automatically when the acceptance expires',
-            },
-          ]}
-          api={{
-            url: '/api/ExecUpdateBaselineDeviation',
-            type: 'POST',
-            data: {
-              action: '!Accept',
-              tenantFilter: 'tenantFilter',
-              standard: 'standardName',
-            },
-            confirmText:
-              'Accept the current deviation on [standardLabel] for [tenantFilter]? The tenant counts as aligned, and alerts are silenced until the acceptance expires.',
-            relatedQueryKeys,
-          }}
-          row={triageTarget}
-        />
-      )}
-      {overrideTarget && overrideStandard && (
-        <CippApiDialog
-          createDialog={overrideDialog}
-          title="Create Tenant Override"
-          children={({ formHook }) => (
-            <Stack spacing={2} sx={{ mt: 2 }}>
-              <Typography variant="body2" sx={{
-                color: "text.secondary"
-              }}>
-                The settings below are pre-filled with what{' '}
-                {overrideTarget.sourceTemplate} currently applies to{' '}
-                {overrideTarget.tenantName}. Saving creates a tenant-specific
-                override that replaces them.
-              </Typography>
-              <CippBaselineStandardSettings
-                standard={overrideStandard}
-                formControl={formHook}
-                namePrefix="variables"
-                initialValues={variableValuesFromExpected(
-                  overrideStandard,
-                  overrideTarget.expectedValue
-                )}
-              />
-            </Stack>
-          )}
-          api={{
-            url: '/api/ExecBaselineOverride',
-            type: 'POST',
-            data: {
-              action: '!createOverride',
-              tenantFilter: 'tenantFilter',
-              standard: 'standardName',
-            },
-            confirmText:
-              'Create a tenant-specific override of [standardLabel] for [tenantFilter]?',
-            relatedQueryKeys,
-          }}
-          row={overrideTarget}
         />
       )}
       {acceptPathTarget && (
@@ -2645,38 +2783,41 @@ const Page = () => {
   // entry; operator events (triage, overrides, stage changes, deletions) stand on
   // their own. View Logs opens the Baselines log drawer filtered to one run.
   if (viewMode === 'history') {
-    const historyEvents = historyApi.data?.events ?? []
-    const standardOptions = [
-      ...new Set(historyEvents.map((event) => event.standardLabel)),
+    const historyEvents = (historyApi.data?.pages ?? []).flatMap(
+      (page) => page?.events ?? []
+    )
+    const standardLabels = Object.fromEntries(
+      (resolvedApi.data?.rows ?? []).map((row) => [
+        row.standardName,
+        row.standardLabel,
+      ])
+    )
+    const standardOptions = Object.entries(standardLabels)
+      .map(([value, label]) => ({ label: label ?? value, value }))
+      .sort((a, b) => a.label.localeCompare(b.label))
+    const outcomeOptions = Object.keys(outcomeTimeline).map((value) => ({
+      label: outcomeTimeline[value]?.label ?? value,
+      value,
+    }))
+    const modeOptions = Object.keys(runModeLabels).map((value) => ({
+      label: runModeLabels[value],
+      value,
+    }))
+    const windowOptions = [
+      { label: 'All history', value: 0 },
+      { label: 'Last 24 hours', value: 1 },
+      { label: 'Last 7 days', value: 7 },
+      { label: 'Last 30 days', value: 30 },
     ]
-      .filter(Boolean)
-      .sort()
-      .map((value) => ({ label: value, value }))
-    const outcomeOptions = [
-      ...new Set(historyEvents.map((event) => event.outcome)),
-    ]
-      .filter(Boolean)
-      .sort()
-      .map((value) => ({
-        label: outcomeTimeline[value]?.label ?? value,
-        value,
-      }))
-    const modeOptions = [...new Set(historyEvents.map((event) => event.mode))]
-      .filter(Boolean)
-      .map((value) => ({ label: runModeLabels[value] ?? value, value }))
+    // Standard, outcome, event type and time range are applied by the API, a page at a
+    // time; search narrows the pages loaded so far.
     const searchTerm = historyFilters.search.trim().toLowerCase()
     const filteredEvents = historyEvents.filter(
       (event) =>
-        (historyFilters.standard.length === 0 ||
-          historyFilters.standard.includes(event.standardLabel)) &&
-        (historyFilters.outcome.length === 0 ||
-          historyFilters.outcome.includes(event.outcome)) &&
-        (historyFilters.mode.length === 0 ||
-          historyFilters.mode.includes(event.mode)) &&
-        (!searchTerm ||
-          `${event.standardLabel} ${event.outcome} ${event.detail ?? ''} ${event.triggeredBy}`
-            .toLowerCase()
-            .includes(searchTerm))
+        !searchTerm ||
+        `${event.standardLabel} ${event.outcome} ${event.detail ?? ''} ${event.triggeredBy}`
+          .toLowerCase()
+          .includes(searchTerm)
     )
     // Group by run GUID (newest-first order preserved); multi-event groups render
     // as one collapsible summary. Flattening to render rows up front lets the
@@ -2692,9 +2833,8 @@ const Page = () => {
         runGroups.push({ runId: key, events: [event] })
       }
     }
-    const visibleGroups = runGroups.slice(0, historyLimit)
     const renderRows = []
-    for (const group of visibleGroups) {
+    for (const group of runGroups) {
       if (group.events.length === 1) {
         renderRows.push({ type: 'event', event: group.events[0] })
       } else {
@@ -2735,7 +2875,7 @@ const Page = () => {
               and deletions.
             </Typography>
             <Grid container spacing={2}>
-              <Grid size={{ xs: 12, md: 4 }}>
+              <Grid size={{ xs: 12, md: 12 }}>
                 <TextField
                   fullWidth
                   label="Search Events"
@@ -2754,7 +2894,7 @@ const Page = () => {
                   }}
                 />
               </Grid>
-              <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+              <Grid size={{ xs: 12, sm: 6, md: 6 }}>
                 <CippAutoComplete
                   fullWidth
                   multiple={true}
@@ -2763,7 +2903,7 @@ const Page = () => {
                   placeholder="All standards"
                   options={standardOptions}
                   value={historyFilters.standard.map((value) => ({
-                    label: value,
+                    label: standardLabels[value] ?? value,
                     value,
                   }))}
                   onChange={(newValue) =>
@@ -2776,7 +2916,7 @@ const Page = () => {
                   }
                 />
               </Grid>
-              <Grid size={{ xs: 12, sm: 6, md: 2.5 }}>
+              <Grid size={{ xs: 12, sm: 6, md: 2 }}>
                 <CippAutoComplete
                   fullWidth
                   multiple={true}
@@ -2798,7 +2938,7 @@ const Page = () => {
                   }
                 />
               </Grid>
-              <Grid size={{ xs: 12, sm: 6, md: 2.5 }}>
+              <Grid size={{ xs: 12, sm: 6, md: 2 }}>
                 <CippAutoComplete
                   fullWidth
                   multiple={true}
@@ -2820,8 +2960,24 @@ const Page = () => {
                   }
                 />
               </Grid>
+              <Grid size={{ xs: 12, sm: 6, md: 2 }}>
+                <CippAutoComplete
+                  fullWidth
+                  multiple={false}
+                  creatable={false}
+                  disableClearable={true}
+                  label="Time Range"
+                  options={windowOptions}
+                  value={windowOptions.find(
+                    (option) => option.value === historyFilters.days
+                  )}
+                  onChange={(newValue) =>
+                    newValue && setHistoryFilter('days', newValue.value)
+                  }
+                />
+              </Grid>
             </Grid>
-            {historyApi.isFetching && (
+            {historyApi.isFetching && !historyApi.isFetchingNextPage && (
               <Box
                 sx={{
                   display: "flex",
@@ -2833,8 +2989,8 @@ const Page = () => {
             )}
             {!historyApi.isFetching && historyEvents.length === 0 && (
               <Alert severity="info">
-                No baseline run history for this tenant yet - run a baseline
-                first.
+                No baseline events match these filters in the selected time
+                range.
               </Alert>
             )}
             {!historyApi.isFetching &&
@@ -3249,13 +3405,16 @@ const Page = () => {
                 </CardContent>
               </Card>
             )}
-            {runGroups.length > historyLimit && (
+            {historyApi.hasNextPage && (
               <Button
                 variant="outlined"
                 sx={{ alignSelf: 'center' }}
-                onClick={() => setHistoryLimit((prev) => prev + 50)}
+                disabled={historyApi.isFetchingNextPage}
+                onClick={() => historyApi.fetchNextPage()}
               >
-                Load more (showing {historyLimit} of {runGroups.length} entries)
+                {historyApi.isFetchingNextPage
+                  ? 'Loading...'
+                  : `Load more (${historyEvents.length} events loaded)`}
               </Button>
             )}
             {dialogs}
@@ -3267,6 +3426,45 @@ const Page = () => {
 
   // Tenant view: custom layout so the deviation feed sits directly next to the
   // alignment table.
+  if (isTenantView && isAllTenants) {
+    return (
+      <>
+        <CippHead title={pageTitle} />
+        <Container maxWidth={false}>
+          <Stack spacing={2}>
+            {modeToggle}
+            <CippDataTable
+              queryKey="ListBaselineAlignment-byStandard-tenants-table"
+              title="Tenant Alignment"
+              data={aggregateApi.data?.tenants ?? []}
+              isFetching={aggregateApi.isFetching}
+              refreshFunction={aggregateApi}
+              actions={[
+                {
+                  label: 'View Tenant Alignment',
+                  link: '/tenant/baselines/alignment?tenantFilter=[tenantFilter]',
+                  icon: <CippIcons.EyeIcon />,
+                  target: '_self',
+                },
+              ]}
+              simpleColumns={[
+                'displayName',
+                'alignedPercentage',
+                'verifiedPercentage',
+                'drift',
+                'accepted',
+                'denied',
+                'conflicts',
+                'licenseMissing',
+                'tenantFilter',
+              ]}
+            />
+          </Stack>
+        </Container>
+      </>
+    )
+  }
+
   if (isTenantView) {
     return (
       <>

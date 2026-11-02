@@ -1685,8 +1685,11 @@ export default CippCAPolicyBuilder;
  *
  * Absent keys are fine: the backend canonicalizer (Format-CIPPCAPolicy) restores every managed
  * key it needs as its cleared form at deploy/edit time, so this stays a plain payload cleanup.
+ *
+ * Pass the stored template as `original` when editing a template: the form only holds the
+ * authentication strength id, and deploy matches a custom strength by its displayName.
  */
-export function extractCAPolicyJSON(formValues) {
+export function extractCAPolicyJSON(formValues, original) {
   const clean = (obj) => {
     if (obj === null || obj === undefined) return undefined;
 
@@ -1846,6 +1849,11 @@ export function extractCAPolicyJSON(formValues) {
     if (graphLocations.length > 0) {
       cleaned.LocationInfo = graphLocations;
     }
+  }
+
+  const originalStrength = original?.grantControls?.authenticationStrength;
+  if (originalStrength?.id && originalStrength.id === cleaned.grantControls?.authenticationStrength?.id) {
+    cleaned.grantControls.authenticationStrength = originalStrength;
   }
 
   return cleaned;

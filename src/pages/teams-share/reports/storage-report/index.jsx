@@ -1,22 +1,22 @@
 import { useMemo, useRef, useState } from 'react'
-import { Layout as DashboardLayout } from '../../../layouts/index'
-import { CippInfoBar } from '../../../components/CippCards/CippInfoBar'
-import { CippMultiQueueTracker } from '../../../components/CippComponents/CippMultiQueueTracker'
-import { CippQueryRefreshButton } from '../../../components/CippComponents/CippQueryRefreshButton'
-import { CippChartCard } from '../../../components/CippCards/CippChartCard'
-import { CippImageCard } from '../../../components/CippCards/CippImageCard'
-import { CippSharePointQuotaCard } from '../../../components/CippCards/CippSharePointQuotaCard'
-import { CippDataTable } from '../../../components/CippTable/CippDataTable'
-import { CippApiDialog } from '../../../components/CippComponents/CippApiDialog'
-import { CippStorageCleanupDrawer } from '../../../components/CippComponents/CippStorageCleanupDrawer'
-import { useDialog } from '../../../hooks/use-dialog'
-import { ApiGetCall } from '../../../api/ApiCall'
-import { useSettings } from '../../../hooks/use-settings'
-import { usePermissions } from '../../../hooks/use-permissions'
+import { Layout as DashboardLayout } from '../../../../layouts/index'
+import { CippInfoBar } from '../../../../components/CippCards/CippInfoBar'
+import { CippMultiQueueTracker } from '../../../../components/CippComponents/CippMultiQueueTracker'
+import { CippQueryRefreshButton } from '../../../../components/CippComponents/CippQueryRefreshButton'
+import { CippChartCard } from '../../../../components/CippCards/CippChartCard'
+import { CippImageCard } from '../../../../components/CippCards/CippImageCard'
+import { CippSharePointQuotaCard } from '../../../../components/CippCards/CippSharePointQuotaCard'
+import { CippDataTable } from '../../../../components/CippTable/CippDataTable'
+import { CippApiDialog } from '../../../../components/CippComponents/CippApiDialog'
+import { CippStorageCleanupDrawer } from '../../../../components/CippComponents/CippStorageCleanupDrawer'
+import { useDialog } from '../../../../hooks/use-dialog'
+import { ApiGetCall } from '../../../../api/ApiCall'
+import { useSettings } from '../../../../hooks/use-settings'
+import { usePermissions } from '../../../../hooks/use-permissions'
 import {
   CippAnonymizedReportAlert,
   isReportAnonymized,
-} from '../../../components/CippComponents/CippAnonymizedReportAlert'
+} from '../../../../components/CippComponents/CippAnonymizedReportAlert'
 import {
   Alert,
   Button,
@@ -48,13 +48,13 @@ import {
   DocumentDuplicateIcon,
   ExclamationTriangleIcon,
 } from '@heroicons/react/24/outline'
-import { CippHead } from '../../../components/CippComponents/CippHead'
+import { CippHead } from '../../../../components/CippComponents/CippHead'
 import {
   buildCleanupOpportunities,
   formatCleanupBytes,
   rollupCleanupBySite,
   summarizeCleanupSites,
-} from '../../../utils/storage-cleanup-opportunities'
+} from '../../../../utils/storage-cleanup-opportunities'
 
 const EMPTY_ROWS = []
 const EMPTY_SCANS = {}

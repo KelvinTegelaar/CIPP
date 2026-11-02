@@ -43,8 +43,7 @@ const Page = () => {
       data: { tenantFilter: "customerId" },
       confirmText: "Are you sure you want to refresh the CPV permissions for [displayName]?",
       multiPost: false,
-      condition: (row) =>
-        row.displayName !== "*Partner Tenant" && row.delegatedPrivilegeStatus !== "directTenant",
+      condition: (row) => row.delegatedPrivilegeStatus !== "directTenant",
     },
     {
       label: "Re-authenticate Connection",

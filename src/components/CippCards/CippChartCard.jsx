@@ -13,7 +13,7 @@ import { useTheme } from "@mui/material/styles";
 import { ActionsMenu } from "../actions-menu";
 import { Chart } from "../chart";
 
-const useChartOptions = (labels, chartType, colors, onSegmentClick) => {
+const useChartOptions = (labels, chartType, colors, onSegmentClick, xaxisType) => {
   const theme = useTheme();
   const longBarLabels =
     chartType === "bar" &&
@@ -59,10 +59,13 @@ const useChartOptions = (labels, chartType, colors, onSegmentClick) => {
     },
 
     xaxis: {
+      // A datetime axis picks how many date ticks fit; a category axis truncates every one.
+      type: xaxisType,
       // Categories drive the bar/line axis labels and the tooltip title. Without this, a bar
       // chart's tooltip falls back to the auto series name ("series-1") instead of the label.
-      categories: labels,
+      categories: xaxisType === "datetime" ? [] : labels,
       labels: {
+        datetimeUTC: false,
         // Long SharePoint/site names overlap when forced upright under every bar. The card already
         // lists full names below; keep categories for tooltips and hide the crowded axis text.
         show: !longBarLabels,
@@ -132,6 +135,7 @@ export const CippChartCard = ({
   totalLabel = "Total",
   customTotal,
   colors,
+  xaxisType,
 }) => {
   const [range, setRange] = useState("Last 7 days");
   const [barSeries, setBarSeries] = useState([]);
@@ -145,7 +149,8 @@ export const CippChartCard = ({
     labels,
     chartType,
     colors,
-    onSegmentClick ? handleSegment : undefined
+    onSegmentClick ? handleSegment : undefined,
+    xaxisType
   );
   chartSeries = chartSeries.filter((item) => item !== null);
   // Round to 2 decimals - summing fractional series values accumulates floating-point

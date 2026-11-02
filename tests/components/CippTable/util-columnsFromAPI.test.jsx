@@ -13,6 +13,17 @@ describe('utilColumnsFromAPI', () => {
     expect(ids).toContain('department')
   })
 
+  it('types a Yes/No column from a row past the sample when the sample has no value', () => {
+    const data = Array.from({ length: 60 }, (_, index) => ({
+      MFARegistration: index === 55 ? false : null,
+    }))
+
+    const column = utilColumnsFromAPI(data).find((c) => c.id === 'MFARegistration')
+
+    expect(column.filterVariant).toBe('select')
+    expect(column.filterFn).toBe('booleanEquals')
+  })
+
   it('includes assigned license filter options found after the heuristic sample', () => {
     const businessPremiumSku = 'cbdc14ab-d96c-4c30-b9f4-6ada7cdc1d46'
     const data = Array.from({ length: 51 }, (_, index) => ({

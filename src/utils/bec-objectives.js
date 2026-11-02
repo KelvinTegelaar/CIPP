@@ -137,6 +137,29 @@ export const BEC_ATTACKER_VERDICTS = [
 ]
 const isAttackerIp = (verdict) =>
   verdict === 'Compromised' || verdict === 'LikelyAttacker'
+const IP_VERDICT_COLUMNS = [
+  'IP',
+  'Verdict',
+  'Score',
+  'ReasonText',
+  'Source',
+  'Country',
+  'City',
+  'ASN',
+  'ASName',
+  'Org',
+  'Hosting',
+  'Proxy',
+  'SuccessfulSignIns',
+  'NonInteractiveSignIns',
+  'FailedSignIns',
+  'Activities',
+  'BaselineShare',
+  'OtherUsersBefore',
+  'OtherUsersInWindowOnly',
+  'FirstSeen',
+  'LastSeen',
+]
 
 export const BEC_GROUPS = [
   {
@@ -149,24 +172,20 @@ export const BEC_GROUPS = [
       {
         key: 'IPVerdicts',
         title: 'IP addresses behind this case',
-        columns: [
-          'IP',
-          'Verdict',
-          'Score',
-          'ReasonText',
-          'Source',
-          'Country',
-          'City',
-          'ASName',
-          'SuccessfulSignIns',
-          'NonInteractiveSignIns',
-          'FailedSignIns',
-          'Activities',
-          'BaselineShare',
-          'OtherUsersBefore',
-          'OtherUsersInWindowOnly',
-          'FirstSeen',
-          'LastSeen',
+        rows: (b) =>
+          arr(b.IPVerdicts).filter((v) =>
+            BEC_ATTACKER_VERDICTS.includes(v.Verdict)
+          ),
+        columns: IP_VERDICT_COLUMNS,
+        sections: [
+          {
+            title: "Addresses judged the user's, safe or a service",
+            rows: (b) =>
+              arr(b.IPVerdicts).filter(
+                (v) => !BEC_ATTACKER_VERDICTS.includes(v.Verdict)
+              ),
+            columns: IP_VERDICT_COLUMNS,
+          },
         ],
         summary: (b) => {
           const rows = arr(b.IPVerdicts)

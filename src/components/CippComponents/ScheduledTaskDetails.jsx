@@ -38,7 +38,7 @@ const ScheduledTaskDetails = ({ data, showActions = true, showTitle = true }) =>
     setExpanded(newExpanded ? panel : false);
   };
 
-  // Keep the page live while the task is still in flight (Planned, Running or Processing).
+  // Refreshed by the card's button: a recurring task stays Planned between runs.
   const inFlight = ["Planned", "Running", "Processing"].includes(taskDetails?.Task?.TaskState);
   const taskDetailResults = ApiGetCall({
     url: `/api/ListScheduledItemDetails`,
@@ -46,7 +46,6 @@ const ScheduledTaskDetails = ({ data, showActions = true, showTitle = true }) =>
       RowKey: data.RowKey,
     },
     queryKey: `ListScheduledItemDetails-${data.RowKey}`,
-    refetchInterval: inFlight ? 5000 : false,
   });
 
   // Live step progress for jobs that report it (e.g. user offboarding). A wizard run shares one
@@ -54,7 +53,7 @@ const ScheduledTaskDetails = ({ data, showActions = true, showTitle = true }) =>
   const deploymentId = taskDetails?.Task?.Parameters?.DeploymentId;
   const username = taskDetails?.Task?.Parameters?.Username;
   const queryClient = useQueryClient();
-  const progressConnected = useCraftJobEvents(inFlight ? deploymentId : null, (frame) => {
+  useCraftJobEvents(inFlight ? deploymentId : null, (frame) => {
     if (!frame.data) {
       progressResults.refetch();
       return;
@@ -66,7 +65,6 @@ const ScheduledTaskDetails = ({ data, showActions = true, showTitle = true }) =>
     data: { DeploymentId: deploymentId },
     queryKey: `ListAsyncDeployment-${deploymentId}`,
     waiting: !!deploymentId,
-    refetchInterval: inFlight && !progressConnected ? 5000 : false,
     staleTime: 0,
   });
   const progressRows = (Array.isArray(progressResults.data) ? progressResults.data : []).filter(
@@ -98,7 +96,7 @@ const ScheduledTaskDetails = ({ data, showActions = true, showTitle = true }) =>
     if (!searchQuery) return true;
 
     const searchLower = searchQuery.toLowerCase();
-    const tenantMatches = (result.TenantName || result.Tenant || "")
+    const tenantMatches = String(result.TenantName || result.Tenant?.label || result.Tenant || "")
       .toLowerCase()
       .includes(searchLower);
 
@@ -145,7 +143,13 @@ const ScheduledTaskDetails = ({ data, showActions = true, showTitle = true }) =>
         <CippPropertyListCard
           actionButton={
             <Tooltip title="Refresh">
-              <IconButton size="small" onClick={() => taskDetailResults.refetch()}>
+              <IconButton
+                size="small"
+                onClick={() => {
+                  taskDetailResults.refetch();
+                  if (deploymentId) progressResults.refetch();
+                }}
+              >
                 <CippIcons.Sync />
               </IconButton>
             </Tooltip>

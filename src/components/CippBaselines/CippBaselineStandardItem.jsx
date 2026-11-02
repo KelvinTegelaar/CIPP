@@ -101,11 +101,17 @@ export const CippBaselineStandardItem = ({
   // The license catalog loads as an async chunk; this re-renders once it lands so
   // the required-license chip shows friendly names instead of service plan codes.
   useM365Licenses()
-  const requiredLicenseNames = [
-    ...new Set(
-      (standard.requiredCapabilities ?? []).map(getServicePlanFriendlyName)
-    ),
-  ]
+  // Nested requiredCapabilities are AND-ed groups of any-of plans.
+  const requiredCapabilities = standard.requiredCapabilities ?? []
+  const requiredLicenseGroups = (
+    requiredCapabilities.some(Array.isArray)
+      ? requiredCapabilities
+      : [requiredCapabilities]
+  )
+    .map((group) =>
+      [...new Set(group.map(getServicePlanFriendlyName))].join(' or ')
+    )
+    .filter(Boolean)
 
   // Seed the action posture: saved configuration (editing an existing baseline) wins,
   // then the defaults for a freshly added standard - report only, never auto-remediate,
@@ -303,15 +309,15 @@ export const CippBaselineStandardItem = ({
             {(standard.tag ?? []).map((tag) => (
               <Chip key={tag} variant="outlined" size="small" label={tag} />
             ))}
-            {requiredLicenseNames.length > 0 && (
+            {requiredLicenseGroups.length > 0 && (
               <Tooltip
-                title={`Tenants without one of these licenses are excluded from scoring for this standard (${(standard.requiredCapabilities ?? []).join(', ')})`}
+                title={`Tenants without these licenses are excluded from scoring for this standard (${requiredCapabilities.flat().join(', ')})`}
               >
                 <Chip
                   variant="outlined"
                   size="small"
                   color="warning"
-                  label={`Requires: ${requiredLicenseNames.join(' or ')}`}
+                  label={`Requires: ${requiredLicenseGroups.join(' and ')}`}
                 />
               </Tooltip>
             )}

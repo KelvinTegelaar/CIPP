@@ -35,8 +35,10 @@ export const CippBaselineStandardSettings = ({
   // autoCompletes (e.g. the CA template picker) seed with a bare value; the
   // autocomplete resolves the label once its option list loads.
   const resolveSeed = (key, definition) => {
-    const seed =
-      initialValues?.[key] ?? definition.recommended ?? definition.default
+    // Locked variables run with the definition's value whatever was saved, so show that.
+    const seed = definition.locked
+      ? (definition.default ?? definition.recommended)
+      : (initialValues?.[key] ?? definition.recommended ?? definition.default)
     if (seed === undefined) return undefined
     // List pickers that replaced a comma-separated text field still load the old string.
     if (

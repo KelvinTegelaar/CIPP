@@ -145,6 +145,26 @@
     "description": "MFA registration details for users"
   },
   {
+    "type": "ServicePrincipalSignInActivities",
+    "friendlyName": "Service Principal Sign-In Activity",
+    "description": "Last sign-in of every app, delegated or app-only (Entra ID P1)"
+  },
+  {
+    "type": "AppCredentialChanges",
+    "friendlyName": "App Credential Changes",
+    "description": "Secrets and certificates added to apps in the last 30 days and who added them (Entra ID P1)"
+  },
+  {
+    "type": "ServicePrincipalRoleChanges",
+    "friendlyName": "Service Principal Role Changes",
+    "description": "Directory roles and group memberships given to apps in the last 30 days and who gave them (Entra ID P1)"
+  },
+  {
+    "type": "DelegatedGrantChanges",
+    "friendlyName": "Delegated Grant Changes",
+    "description": "Delegated permission grants added in the last 30 days and who added them, a user or an app (Entra ID P1)"
+  },
+  {
     "type": "OAuth2PermissionGrants",
     "friendlyName": "OAuth2 Permission Grants",
     "description": "OAuth2 permission grants"
@@ -213,6 +233,16 @@
     "type": "ExoAcceptedDomains",
     "friendlyName": "Exchange Accepted Domains",
     "description": "Exchange Online accepted domains"
+  },
+  {
+    "type": "ExoApplicationAccessPolicies",
+    "friendlyName": "Exchange Application Access Policies",
+    "description": "Exchange application access policies: the app, RestrictAccess or DenyAccess, the group it applies to and whether it is valid"
+  },
+  {
+    "type": "ExoAppRoleAssignments",
+    "friendlyName": "Exchange Application Role Assignments",
+    "description": "Exchange RBAC for Applications role assignments: the app, the Application role, its management scope or administrative unit and when it was created"
   },
   {
     "type": "ExoHostedContentFilterPolicy",

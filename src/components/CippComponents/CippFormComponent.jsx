@@ -47,6 +47,19 @@ const languageCodeOptions = Object.values(
   }, {}),
 ).sort((a, b) => a.label.localeCompare(b.label));
 
+// Locale tags from languageList.json (e.g. "en-GB").
+const localeOptions = Object.values(
+  languageList.reduce((acc, entry) => {
+    if (entry.tag && !acc[entry.tag]) {
+      acc[entry.tag] = {
+        label: `${entry.language} (${entry["Geographic area"]}) – ${entry.tag}`,
+        value: entry.tag,
+      };
+    }
+    return acc;
+  }, {}),
+).sort((a, b) => a.label.localeCompare(b.label));
+
 // Built-in Entra admin roles keyed by role template id, used by the AdminRolesMultiSelect type.
 // Static so the picker works without a tenant (template/baseline editors) and never hits Graph.
 const adminRoleOptions = GDAPRoles.map((role) => ({
@@ -664,6 +677,15 @@ export const CippFormComponent = (props) => {
       return renderAutoCompleteField({
         ...other,
         options: countryCodeOptions,
+        multiple: false,
+        creatable: false,
+      });
+
+    // Single locale tag (e.g. "en-GB").
+    case "LocaleSelect":
+      return renderAutoCompleteField({
+        ...other,
+        options: localeOptions,
         multiple: false,
         creatable: false,
       });

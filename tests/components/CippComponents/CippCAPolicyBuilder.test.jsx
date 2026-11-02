@@ -79,6 +79,69 @@ describe('CippCAPolicyBuilder template named locations', () => {
   })
 })
 
+// A template captured from a live policy keeps the strength as Graph expands it. Deploy matches
+// a custom strength by displayName, so the source tenant's id alone cannot deploy anywhere else.
+const authStrengthTemplate = {
+  displayName: 'CTS008 - Require TAP to Register Devices',
+  state: 'enabled',
+  conditions: {
+    clientAppTypes: ['all'],
+    applications: { includeUserActions: ['urn:user:registersecurityinfo'] },
+    users: { includeUsers: ['All'] },
+  },
+  grantControls: {
+    operator: 'OR',
+    authenticationStrength: {
+      id: '6c5ea24f-7a1b-4c2d-bbc3-f5a8441dff78',
+      displayName: 'TAP Only',
+      description: '',
+      policyType: 'custom',
+      requirementsSatisfied: 'mfa',
+      allowedCombinations: [
+        'temporaryAccessPassOneTime',
+        'temporaryAccessPassMultiUse',
+      ],
+    },
+  },
+}
+
+describe('CippCAPolicyBuilder authentication strength', () => {
+  it('saves a template with the captured strength intact', async () => {
+    renderWithProviders(<Harness existingPolicy={authStrengthTemplate} />)
+
+    await waitFor(() =>
+      expect(
+        form.getValues('grantControls.authenticationStrength.id')
+      ).toBeTruthy()
+    )
+    expect(
+      extractCAPolicyJSON(form.getValues(), authStrengthTemplate).grantControls
+        .authenticationStrength
+    ).toEqual(authStrengthTemplate.grantControls.authenticationStrength)
+  })
+
+  it('saves only the id once a different strength is picked', () => {
+    const policy = extractCAPolicyJSON(
+      {
+        grantControls: {
+          operator: 'OR',
+          authenticationStrength: {
+            id: {
+              label: 'Phishing-resistant MFA',
+              value: '00000000-0000-0000-0000-000000000004',
+            },
+          },
+        },
+      },
+      authStrengthTemplate
+    )
+
+    expect(policy.grantControls.authenticationStrength).toEqual({
+      id: '00000000-0000-0000-0000-000000000004',
+    })
+  })
+})
+
 describe('CippCAPolicyBuilder authentication flow transfer methods', () => {
   it('loads both methods of a live policy into the multi-select instead of dropping them', async () => {
     renderWithProviders(<Harness existingPolicy={livePolicy} />)

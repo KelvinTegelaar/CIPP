@@ -295,6 +295,8 @@ const Page = () => {
     return errData?.Results || compareApi.error?.message || "An error occurred";
   }, [compareApi.isError, compareApi.error]);
 
+  const { sourceA: sentA, sourceB: sentB } = compareApi.variables?.data ?? {};
+
   const comparisonRows = useMemo(() => {
     const raw = results?.Results;
     const rows = Array.isArray(raw) ? raw : raw ? [raw] : [];
@@ -362,15 +364,18 @@ const Page = () => {
                 <CippPolicyDiffTable rows={comparisonRows} />
               )}
 
+              {/* A template or repo side has no tenant of its own; its GUIDs are looked up in the other side's. */}
               <CippJsonView
                 object={results.sourceAData}
                 type="intune"
+                tenant={sentA?.tenantFilter ?? sentB?.tenantFilter}
                 title={`Source A Settings — ${results.sourceALabel}`}
               />
 
               <CippJsonView
                 object={results.sourceBData}
                 type="intune"
+                tenant={sentB?.tenantFilter ?? sentA?.tenantFilter}
                 title={`Source B Settings — ${results.sourceBLabel}`}
               />
             </Stack>

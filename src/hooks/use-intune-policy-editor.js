@@ -50,6 +50,34 @@ export const useIntunePolicyEditor = ({ policy, setPolicy, formControl }) => {
   // configuration is a fixed set of properties, so there is nothing there to add.
   const supportsStructuralEdits = Array.isArray(policy?.settings)
 
+  // Settings in a template-based policy carry template references; the ids ship in public/intune-templates.
+  const templateId = policy?.templateReference?.templateId
+  const [templateSettings, setTemplateSettings] = useState(null)
+  useEffect(() => {
+    setTemplateSettings(null)
+    if (!templateId) return undefined
+    let cancelled = false
+    fetch(`/intune-templates/${encodeURIComponent(templateId)}.json`)
+      .then((response) => (response.ok ? response.json() : null))
+      .then((template) => {
+        if (cancelled || !template) return
+        setTemplateSettings(
+          new Map(
+            (template.settingTemplates ?? []).map(
+              ({ settingInstanceTemplate }) => [
+                settingInstanceTemplate.settingDefinitionId,
+                settingInstanceTemplate,
+              ]
+            )
+          )
+        )
+      })
+      .catch(() => {})
+    return () => {
+      cancelled = true
+    }
+  }, [templateId])
+
   const leaves = useMemo(() => {
     if (!policy || isAdminTemplate || definitionsLoading) return []
     return isSettingTree
@@ -78,6 +106,22 @@ export const useIntunePolicyEditor = ({ policy, setPolicy, formControl }) => {
       const setting = buildSetting(definition, childDefinitionsById, wanted)
       if (!setting) return false
 
+      const template = templateSettings?.get(definition.id)
+      if (template) {
+        setting.settingInstance.settingInstanceTemplateReference = {
+          settingInstanceTemplateId: template.settingInstanceTemplateId,
+        }
+        const valueTemplateId =
+          template.choiceSettingValueTemplate?.settingValueTemplateId
+        if (valueTemplateId && setting.settingInstance.choiceSettingValue) {
+          setting.settingInstance.choiceSettingValue.settingValueTemplateReference =
+            {
+              settingValueTemplateId: valueTemplateId,
+              useTemplateDefault: false,
+            }
+        }
+      }
+
       const folded = foldValuesIntoPolicy()
       const settings = folded.settings ?? []
       const index = settings.findIndex(
@@ -105,7 +149,7 @@ export const useIntunePolicyEditor = ({ policy, setPolicy, formControl }) => {
       noteStructuralChange()
       return true
     },
-    [foldValuesIntoPolicy, setPolicy, noteStructuralChange]
+    [foldValuesIntoPolicy, setPolicy, noteStructuralChange, templateSettings]
   )
 
   // Intune swaps the settings nested under a choice when its option changes, so this does too.
@@ -271,5 +315,6 @@ export const useIntunePolicyEditor = ({ policy, setPolicy, formControl }) => {
     removeSetting,
     addGroupRow,
     removeGroupRow,
+    templateSettings,
   }
 }

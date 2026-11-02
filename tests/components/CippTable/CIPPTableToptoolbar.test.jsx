@@ -4,6 +4,7 @@ import { screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { renderWithProviders, settingsWith } from '../../test-utils'
 import { CippDataTable } from '../../../src/components/CippTable/CippDataTable'
+import { SettingsContext } from '../../../src/contexts/settings-context'
 
 // save-preset invalidation refetches presetList in the background (data swap, no
 // isSuccess transition), the Filters dropdown must rebuild from the refetched list
@@ -499,4 +500,64 @@ describe('CIPPTableToptoolbar bulk noConfirm customFunction', () => {
 
     await waitFor(() => expect(customFunction).toHaveBeenCalledTimes(2))
   })
+})
+
+describe('CIPPTableToptoolbar - tenant switch', () => {
+  function TenantSwitchTable() {
+    const [tenant, setTenant] = React.useState('a.com')
+    const settings = React.useMemo(() => settingsWith({ currentTenant: tenant }), [tenant])
+    return (
+      <SettingsContext.Provider value={settings}>
+        <button onClick={() => setTenant('b.com')}>switch tenant</button>
+        <CippDataTable
+          api={{
+            url: '/api/ListGraphRequest',
+            dataKey: 'Results',
+            data: { Endpoint: 'testWidgets', tenantFilter: tenant },
+          }}
+          queryKey={`SlotsTest - ${tenant}`}
+          simpleColumns={['displayName', 'mail', 'department']}
+          filters={tablePresets}
+          maxHeightOffset="100px"
+        />
+      </SettingsContext.Provider>
+    )
+  }
+
+  it('keeps the graph preset and requests the new tenant under its own key', async () => {
+    const user = userEvent.setup()
+    presetsResult = graphPresetResult
+    const routePaginated = api.paginated
+    const requests = []
+    api.paginated = (opts) => {
+      if (opts.url === '/api/ListGraphRequest') requests.push(opts)
+      return routePaginated(opts)
+    }
+    try {
+      renderWithProviders(<TenantSwitchTable />)
+      await screen.findByText('1-3 of 3')
+      await user.click(screen.getByRole('button', { name: /Filters/ }))
+      await user.click(await screen.findByRole('menuitem', { name: 'Widget View' }))
+      await waitFor(() =>
+        expect(requests.at(-1)).toMatchObject({
+          queryKey: 'SlotsTest - a.com-Widget View',
+          data: { tenantFilter: 'a.com', $filter: "state eq 'on'" },
+        })
+      )
+
+      await user.click(screen.getByRole('button', { name: 'switch tenant' }))
+      await waitFor(() =>
+        expect(requests.at(-1)).toMatchObject({
+          queryKey: 'SlotsTest - b.com-Widget View',
+          data: { tenantFilter: 'b.com', $filter: "state eq 'on'" },
+        })
+      )
+      await user.click(screen.getByRole('button', { name: /Filters/ }))
+      const menu = within(await screen.findByRole('menu'))
+      const preset = await menu.findByRole('menuitem', { name: 'Widget View' })
+      expect(within(preset).getByTestId('CheckIcon')).toBeInTheDocument()
+    } finally {
+      api.paginated = routePaginated
+    }
+  }, 30000)
 })

@@ -205,6 +205,42 @@ export const getIntuneDeviceActions = ({ tenantFilter } = {}) => [
     confirmText: 'Are you sure you want to rotate the password for [deviceName]?',
   },
   {
+    label: 'Run Remediation Script',
+    type: 'POST',
+    icon: <CippIcons.Healing />,
+    url: '/api/ExecDeviceAction',
+    data: {
+      GUID: 'id',
+      Action: '!initiateOnDemandProactiveRemediation',
+    },
+    fields: [
+      {
+        type: 'autoComplete',
+        name: 'scriptPolicyId',
+        label: 'Select Remediation Script',
+        multiple: false,
+        creatable: false,
+        validators: { required: 'Select a remediation script' },
+        api: {
+          url: '/api/ListGraphRequest',
+          data: {
+            Endpoint: 'deviceManagement/deviceHealthScripts',
+            $select: 'id,displayName,publisher',
+          },
+          queryKey: 'ListRemediationScriptsAutoComplete',
+          dataKey: 'Results',
+          labelField: (script) =>
+            script.publisher ? `${script.displayName} (${script.publisher})` : script.displayName,
+          valueField: 'id',
+          showRefresh: true,
+        },
+      },
+    ],
+    hideCondition: (row) => row.operatingSystem !== 'Windows',
+    confirmText:
+      'Select the remediation script to run on [deviceName]. Remediations need Windows Enterprise, Education or VDA licensing, or Intune Plan 2 / Intune Suite.',
+  },
+  {
     label: 'Retrieve BIOS Password',
     type: 'POST',
     icon: <CippIcons.Memory />,

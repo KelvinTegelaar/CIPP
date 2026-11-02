@@ -73,8 +73,12 @@ export const CIPPTableToptoolbar = React.memo(
     filters = [],
     exportEnabled,
     refreshFunction,
+    pagingStopped,
+    setPagingStopped,
+    tenantCoverage,
     queryKeys,
     data,
+    graphFilterData = {},
     setGraphFilterData,
     setConfiguredSimpleColumns,
     queueMetadata,
@@ -129,10 +133,11 @@ export const CIPPTableToptoolbar = React.memo(
     })
     const [offcanvasVisible, setOffcanvasVisible] = useState(false)
     const [jsonDialogOpen, setJsonDialogOpen] = useState(false) // For dialog-based JSON view
+    const [refreshHover, setRefreshHover] = useState(false)
     const [filterList, setFilterList] = useState(filters)
-    const [currentEffectiveQueryKey, setCurrentEffectiveQueryKey] = useState(
-      queryKey || title
-    )
+    const currentEffectiveQueryKey = graphFilterData.name
+      ? `${queryKey || title}-${graphFilterData.name}`
+      : queryKey || title
     const [originalSimpleColumns, setOriginalSimpleColumns] =
       useState(simpleColumns)
     const [filterCanvasVisible, setFilterCanvasVisible] = useState(false)
@@ -197,6 +202,13 @@ export const CIPPTableToptoolbar = React.memo(
         columnVisibility,
         brandingSettings: await fetchBrandingSettings(queryClient),
       })
+    }
+
+    // Only while more pages stream in: a first load cancelled with no data would leave the table empty.
+    const canStopPaging = Boolean(setPagingStopped && getRequestData?.isFetchingNextPage)
+    const stopPaging = () => {
+      setPagingStopped(true)
+      queryClient.cancelQueries({ queryKey: [currentEffectiveQueryKey], exact: true })
     }
 
     // Shared refresh dispatch — desktop refresh button and the mobile filter sheet.
@@ -273,12 +285,6 @@ export const CIPPTableToptoolbar = React.memo(
       closeMenu()
     }
 
-    // Sync currentEffectiveQueryKey with queryKey prop changes (e.g., tenant changes) — a
-    // plain re-derivation from the same props this instance was given, harmless on remount
-    useEffect(() => {
-      setCurrentEffectiveQueryKey(queryKey || title)
-    }, [queryKey, title])
-
     useEffect(() => {
       setOriginalSimpleColumns(simpleColumns)
     }, [simpleColumns])
@@ -320,14 +326,10 @@ export const CIPPTableToptoolbar = React.memo(
             }
             return acc
           }, {})
-          const resolvedGraphFilter = resolveFilterVariables(graphFilter)
-
-          const newQueryKey = `${queryKey ? queryKey : title}-${last.name}`
           setGraphFilterData({
-            data: { ...mergeCaseInsensitive(api.data, resolvedGraphFilter) },
-            queryKey: newQueryKey,
+            name: last.name,
+            filter: resolveFilterVariables(graphFilter),
           })
-          setCurrentEffectiveQueryKey(newQueryKey)
           setActiveFilters((prev) => ({
             ...prev,
             graph: { id: last.id, name: last.name },
@@ -593,22 +595,6 @@ export const CIPPTableToptoolbar = React.memo(
       setColumnsAnchor(null)
     }
 
-    const mergeCaseInsensitive = (obj1, obj2) => {
-      const merged = { ...obj1 }
-      for (const key in obj2) {
-        const lowerCaseKey = key.toLowerCase()
-        const existingKey = Object.keys(merged).find(
-          (k) => k.toLowerCase() === lowerCaseKey
-        )
-        if (existingKey) {
-          merged[existingKey] = obj2[key]
-        } else {
-          merged[key] = obj2[key]
-        }
-      }
-      return merged
-    }
-
     // Resolve variable placeholders in filter objects.
     // Supported: {DaysAgo:N} → ISO date string N days in the past
     const resolveFilterVariables = (obj) => {
@@ -812,7 +798,6 @@ export const CIPPTableToptoolbar = React.memo(
           setGraphFilterData({})
           resetToDefaultVisibility()
         }
-        setCurrentEffectiveQueryKey(queryKey || title) // Reset to original query key
         setActiveFilters({ graph: null, table: null }) // Clear active filters
         if (settings.persistFilters && settings.setLastUsedFilter) {
           settings.setLastUsedFilter(pageName, { graph: null, table: null })
@@ -837,13 +822,7 @@ export const CIPPTableToptoolbar = React.memo(
           }
           return acc
         }, {})
-        //get api.data, merge with graphFilter, set api.data
-        const newQueryKey = `${queryKey ? queryKey : title}-${filterName}`
-        setGraphFilterData({
-          data: { ...mergeCaseInsensitive(api.data, graphFilter) },
-          queryKey: newQueryKey,
-        })
-        setCurrentEffectiveQueryKey(newQueryKey)
+        setGraphFilterData({ name: filterName, filter: graphFilter })
         setActiveFilters((prev) => ({
           ...prev,
           graph: { id: presetId ?? filterName, name: filterName },
@@ -879,7 +858,6 @@ export const CIPPTableToptoolbar = React.memo(
           setGraphFilterData({})
           resetToDefaultVisibility()
         }
-        setCurrentEffectiveQueryKey(queryKey || title)
         setConfiguredSimpleColumns(originalSimpleColumns)
       }
       if (layer === 'table') {
@@ -1086,7 +1064,8 @@ export const CIPPTableToptoolbar = React.memo(
             fixedChrome={!isInDialog}
             embedded={embedded}
             queueTracker={
-              queueMetadata?.QueueId ? (
+              // An AllTenants cache's run is tracked in the Data source section instead.
+              queueMetadata?.QueueId && !queueMetadata?.ExpectedTenants ? (
                 <CippQueueTracker
                   queueId={queueMetadata?.QueueId}
                   queryKey={currentEffectiveQueryKey}
@@ -1129,26 +1108,35 @@ export const CIPPTableToptoolbar = React.memo(
                 title={
                   getRequestData?.isFetchNextPageError
                     ? 'Could not retrieve all data. Click to try again.'
-                    : getRequestData?.isFetching
-                      ? 'Retrieving more data...'
-                      : 'Refresh data'
+                    : canStopPaging
+                      ? 'Retrieving more data... Click to stop and show what is loaded.'
+                      : getRequestData?.isFetching
+                        ? 'Retrieving more data...'
+                        : pagingStopped && getRequestData?.hasNextPage
+                          ? 'Stopped loading, showing the rows retrieved so far. Click to refresh.'
+                          : 'Refresh data'
                 }
               >
                 <span>
                   <RefreshButton
-                    onClick={handleRefresh}
+                    aria-label={canStopPaging ? 'Stop loading' : 'Refresh data'}
+                    onClick={canStopPaging ? stopPaging : handleRefresh}
+                    onMouseEnter={() => setRefreshHover(true)}
+                    onMouseLeave={() => setRefreshHover(false)}
                     disabled={
-                      getRequestData?.isLoading ||
-                      getRequestData?.isFetching ||
-                      refreshFunction?.isFetching
+                      !canStopPaging &&
+                      (getRequestData?.isLoading ||
+                        getRequestData?.isFetching ||
+                        refreshFunction?.isFetching)
                     }
                   >
                     <SvgIcon
                       fontSize="small"
                       sx={{
                         animation:
-                          getRequestData?.isFetching ||
-                          refreshFunction?.isFetching
+                          (getRequestData?.isFetching ||
+                            refreshFunction?.isFetching) &&
+                          !(canStopPaging && refreshHover)
                             ? 'spin 1s linear infinite'
                             : 'none',
                         '@keyframes spin': {
@@ -1159,6 +1147,8 @@ export const CIPPTableToptoolbar = React.memo(
                     >
                       {getRequestData?.isFetchNextPageError ? (
                         <CippIcons.ExclamationCircleIcon color="red" />
+                      ) : canStopPaging && refreshHover ? (
+                        <CippIcons.XMarkIcon />
                       ) : (
                         <CippIcons.Sync />
                       )}
@@ -1608,12 +1598,16 @@ export const CIPPTableToptoolbar = React.memo(
             {/* Selected rows indicator + Bulk Actions - inline, unless portaled into the header */}
             {!bulkActionsSlot && bulkActionsContent}
 
-            {/* Queue tracker */}
-            <CippQueueTracker
-              queueId={queueMetadata?.QueueId}
-              queryKey={currentEffectiveQueryKey}
-              title={title}
-            />
+            {/* Queue tracker; an AllTenants cache's sits with its coverage, here only when the table has no header */}
+            {queueMetadata?.ExpectedTenants ? (
+              tenantCoverage
+            ) : (
+              <CippQueueTracker
+                queueId={queueMetadata?.QueueId}
+                queryKey={currentEffectiveQueryKey}
+                title={title}
+              />
+            )}
           </Box>
 
         </Box>
@@ -1714,7 +1708,7 @@ export const CIPPTableToptoolbar = React.memo(
             <Stack spacing={2}>
               <CippCodeBlock
                 type="editor"
-                code={JSON.stringify(usedData, null, 2)}
+                code={offcanvasVisible ? JSON.stringify(usedData, null, 2) : ''}
                 editorHeight="1000px"
                 showLineNumbers={!mdDown}
                 readOnly={true}
@@ -1816,7 +1810,7 @@ export const CIPPTableToptoolbar = React.memo(
             <DialogContent>
               <CippCodeBlock
                 type="editor"
-                code={JSON.stringify(usedData, null, 2)}
+                code={jsonDialogOpen ? JSON.stringify(usedData, null, 2) : ''}
                 editorHeight="600px"
                 showLineNumbers={!mdDown}
               />

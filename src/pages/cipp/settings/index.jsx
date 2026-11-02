@@ -42,8 +42,9 @@ const Page = () => {
           <CippLogRetentionSettings
             title="Report Attachment Retention"
             endpoint="ExecReportAttachmentRetentionConfig"
-            defaultDays={360}
-            description="Scheduled report attachments too large to email (over 4MB) are uploaded to storage and linked from the email instead. Configure how long those files and their download links are kept."
+            defaultDays={90}
+            maxDays={180}
+            description="Configure how long generated Report Builder reports and their PDFs are kept, along with scheduled report attachments too large to email (over 4MB), which are uploaded to storage and linked from the email instead. Download links stop working once their files are deleted."
           />
         </Grid>
         <Grid size={{ lg: 4, md: 6, sm: 12, xs: 12 }}>

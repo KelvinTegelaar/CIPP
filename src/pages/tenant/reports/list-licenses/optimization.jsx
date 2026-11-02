@@ -174,12 +174,13 @@ const Page = () => {
       confirmText: 'Remove [License] from [User]?',
       multiPost: false,
       condition: (row) => row.Type === 'Remove license' && !!row.UserId,
-      customDataformatter: (row) => ({
-        tenantFilter: tenant,
-        LicenseOperation: 'Remove',
-        Licenses: [{ label: row.License, value: row.skuId }],
-        userIds: [row.UserId],
-      }),
+      customDataformatter: (row) =>
+        [row].flat().map((r) => ({
+          tenantFilter: tenant,
+          LicenseOperation: 'Remove',
+          LicensesToRemove: [{ label: r.License, value: r.skuId }],
+          userIds: [r.UserId],
+        })),
       relatedQueryKeys,
     },
     {

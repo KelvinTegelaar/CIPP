@@ -1,0 +1,17 @@
+[
+  {
+    "label": "Windows",
+    "path": "/endpoint/autopilot/enrollment-restrictions",
+    "icon": "Window"
+  },
+  {
+    "label": "Apple",
+    "path": "/endpoint/autopilot/enrollment-restrictions/apple",
+    "icon": "Apple"
+  },
+  {
+    "label": "Android",
+    "path": "/endpoint/autopilot/enrollment-restrictions/android",
+    "icon": "Android"
+  }
+]

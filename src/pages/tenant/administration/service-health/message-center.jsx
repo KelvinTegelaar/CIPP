@@ -19,20 +19,22 @@ const Page = () => {
 
   const urlFilters = useUrlFilters()
 
-  const messages = ApiGetCall({
-    url: '/api/ListMessageCenterMessages?UseReportDB=true',
-    data: { tenantFilter: currentTenant },
-    queryKey: `messages-${currentTenant}`,
-    waiting: !!currentTenant,
-  })
+  // Live by default, matching the other service health tabs
   const reportDB = useCippReportDB({
     apiUrl: '/api/ListMessageCenterMessages',
     queryKey: 'ListMessageCenterMessages',
     cacheName: 'MessageCenterMessages',
     syncTitle: 'Sync Message Center',
     allowToggle: true,
-    defaultCached: true,
+    defaultCached: false,
     allowAllTenantSync: true,
+  })
+  // Info bar counters follow the table's Live/Cached mode
+  const messages = ApiGetCall({
+    url: reportDB.resolvedApiUrl,
+    data: { tenantFilter: currentTenant },
+    queryKey: `messages-${reportDB.resolvedQueryKey}`,
+    waiting: !!currentTenant,
   })
 
   return (

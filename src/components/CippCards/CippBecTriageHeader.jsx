@@ -30,6 +30,8 @@ export const CippBecTriageHeader = ({
   // When the user has more than one run, the case page passes the case switcher here so it takes the
   // header's title spot (in place of the static name/case); otherwise the name and case id show.
   caseSelector,
+  // Refreshed when a review or containment run finishes, e.g. the run list's score and level.
+  relatedQueryKeys = [],
 }) => {
   const score = becData?.Score
   const applied = useMemo(
@@ -167,6 +169,7 @@ export const CippBecTriageHeader = ({
               tenantFilter={tenantFilter}
               caseId={caseId}
               becData={becData}
+              relatedQueryKeys={relatedQueryKeys}
             />
           )}
           {becData && (
@@ -176,6 +179,7 @@ export const CippBecTriageHeader = ({
               tenantFilter={tenantFilter}
               caseId={caseId}
               becData={becData}
+              relatedQueryKeys={relatedQueryKeys}
               buttonText="Contain user"
             />
           )}

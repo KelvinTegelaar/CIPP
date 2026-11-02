@@ -13,6 +13,7 @@ import {
 } from '@mui/material'
 import { useSettings } from '../../hooks/use-settings'
 import { ServerPdfPane, useServerPdf } from './useServerPdf'
+import { useBrandingSettings } from './useBrandingSettings'
 
 // The report PDF is rendered server-side (ExecGetMailFlowReportPdf) by the shared CIPPSharp component
 // kit, which re-gathers and aggregates the mail flow data; the button fetches the finished PDF as a
@@ -20,10 +21,11 @@ import { ServerPdfPane, useServerPdf } from './useServerPdf'
 export const MailFlowReportButton = ({ mailFlowData, tenantName, disabled = false }) => {
   const [dialogOpen, setDialogOpen] = useState(false)
   const tenantFilter = useSettings().currentTenant
+  const branding = useBrandingSettings()
   const days = Number(mailFlowData?.days) || 14
   const hasData = Object.keys(mailFlowData?.totals ?? {}).length > 0
   const pdf = useServerPdf({
-    url: `/api/ExecGetMailFlowReportPdf?tenantFilter=${encodeURIComponent(tenantFilter)}&days=${days}`,
+    url: `/api/ExecGetMailFlowReportPdf?tenantFilter=${encodeURIComponent(tenantFilter)}&days=${days}&brandingPresetId=${encodeURIComponent(branding?.reportDefaults?.mailFlow ?? '')}`,
     enabled: dialogOpen,
   })
   const handleOpen = () => setDialogOpen(true)

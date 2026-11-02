@@ -8,5 +8,10 @@
     "label": "Permissions",
     "path": "/tenant/administration/applications/enterprise-app/permissions",
     "icon": "Key"
+  },
+  {
+    "label": "Roles",
+    "path": "/tenant/administration/applications/enterprise-app/roles",
+    "icon": "AdminPanelSettings"
   }
 ]

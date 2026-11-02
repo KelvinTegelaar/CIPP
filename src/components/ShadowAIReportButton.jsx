@@ -18,6 +18,7 @@ import {
 import { CippOffCanvas } from './CippComponents/CippOffCanvas'
 import { useSettings } from '../hooks/use-settings'
 import { ServerPdfPane, useServerPdf } from './CippPdf/useServerPdf'
+import { useBrandingSettings } from './CippPdf/useBrandingSettings'
 
 const sectionOptions = [
   {
@@ -69,6 +70,7 @@ const sectionOptions = [
 
 export const ShadowAIReportButton = ({ data, tenantName, disabled }) => {
   const tenantFilter = useSettings().currentTenant
+  const branding = useBrandingSettings()
   const [previewOpen, setPreviewOpen] = useState(false)
   // Below md the 320px config rail would leave the preview about 70px wide, so it moves into
   // a drawer and the preview takes the whole dialog. Same treatment as the executive report.
@@ -100,7 +102,11 @@ export const ShadowAIReportButton = ({ data, tenantName, disabled }) => {
   // re-rendered while the dialog is open whenever the selected sections change.
   const pdf = useServerPdf({
     url: '/api/ExecGetShadowAIReportPdf',
-    body: { tenantFilter, sectionConfig },
+    body: {
+      tenantFilter,
+      sectionConfig,
+      brandingPresetId: branding?.reportDefaults?.shadowAI ?? '',
+    },
     enabled: previewOpen,
   })
 

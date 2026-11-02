@@ -20,6 +20,11 @@ export const fromCraftRun = (run) => {
   return {
     PartitionKey: 'CippQueue',
     RowKey: run.runName,
+    // Craft names a queue's run '<Orchestrator>-<QueueId>'; owner rows, cancels and trackers key on the id.
+    QueueId:
+      String(run.runName).match(
+        /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+      )?.[0] ?? run.runName,
     Name: run.label || run.runName,
     Link: run.link ?? '',
     Reference: run.reference,
@@ -30,6 +35,8 @@ export const fromCraftRun = (run) => {
     PercentComplete: percent(done, divisor),
     PercentFailed: percent(failed, divisor),
     PercentRunning: percent(running, divisor),
+    QueuedAhead: Number(run.ahead) || 0,
+    RunsAhead: Number(run.runsAhead) || 0,
     // Craft names a task by its job name; CIPP's are Function_Tenant and the tracker shows the tenant.
     Tasks: (run.tasks ?? []).map((task) => ({
       Timestamp: task.at,
