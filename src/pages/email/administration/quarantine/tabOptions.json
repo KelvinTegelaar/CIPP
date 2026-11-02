@@ -1,0 +1,22 @@
+[
+  {
+    "label": "Email",
+    "path": "/email/administration/quarantine",
+    "icon": "Email"
+  },
+  {
+    "label": "Files",
+    "path": "/email/administration/quarantine/files",
+    "icon": "FilePresent"
+  },
+  {
+    "label": "Teams Messages",
+    "path": "/email/administration/quarantine/teams",
+    "icon": "Groups"
+  },
+  {
+    "label": "User Reported",
+    "path": "/email/administration/quarantine/user-reported",
+    "icon": "Flag"
+  }
+]

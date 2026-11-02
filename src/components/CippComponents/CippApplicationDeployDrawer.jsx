@@ -1,11 +1,16 @@
 import React, { useEffect, useCallback, useState } from 'react'
+import { CippIcons } from '../../utils/icon-registry'
 import { Divider, Button, Alert, CircularProgress } from '@mui/material'
 import { Grid } from '@mui/system'
 import { useForm, useWatch } from 'react-hook-form'
-import { Add } from '@mui/icons-material'
 import { CippOffCanvas } from './CippOffCanvas'
 import CippFormComponent from './CippFormComponent'
 import { CippFormTenantSelector } from './CippFormTenantSelector'
+import {
+  applyPickedGroups,
+  getGroupPickerField,
+  getSingleDeployTenant,
+} from './CippIntunePolicyActions'
 import { CippFormCondition } from './CippFormCondition'
 import { CippApiResults } from './CippApiResults'
 import languageList from '../../data/languageList.json'
@@ -25,6 +30,18 @@ export const CippApplicationDeployDrawer = ({
     control: formControl.control,
     name: 'selectedTenants',
   })
+  // With exactly one tenant selected, groups are picked by id from that tenant. Otherwise the
+  // name fields stay, since only names can span tenants.
+  const groupTenant = getSingleDeployTenant(selectedTenants)
+  const singleTenant = Boolean(groupTenant)
+  // A group selection is only valid for the tenant it was loaded from, and a stale name from
+  // the other mode must not ship either.
+  useEffect(() => {
+    formControl.setValue('groupTargets', [])
+    formControl.setValue('excludeGroupTargets', [])
+    formControl.setValue('customGroup', '')
+    formControl.setValue('excludeGroup', '')
+  }, [groupTenant, formControl])
 
   const applicationType = useWatch({
     control: formControl.control,
@@ -60,6 +77,7 @@ export const CippApplicationDeployDrawer = ({
     winGetApp: '/api/AddwinGetApp',
     chocolateyApp: '/api/AddChocoApp',
     officeApp: '/api/AddOfficeApp',
+    edgeApp: '/api/AddEdgeApp',
     win32ScriptApp: '/api/AddWin32ScriptApp',
   }
 
@@ -96,7 +114,7 @@ export const CippApplicationDeployDrawer = ({
 
   const handleSubmit = () => {
     const formData = formControl.getValues()
-    const formattedData = { ...formData }
+    const formattedData = singleTenant ? applyPickedGroups(formData) : { ...formData }
     formattedData.tenantFilter = 'allTenants' //added to prevent issues with location check. temp fix
     formattedData.selectedTenants = selectedTenants.map((tenant) => ({
       defaultDomainName: tenant.value,
@@ -118,9 +136,9 @@ export const CippApplicationDeployDrawer = ({
   return (
     <>
       <PermissionButton
-        requiredPermissions={requiredPermissions}
+        {...(PermissionButton !== Button ? { requiredPermissions } : {})}
         onClick={() => setDrawerVisible(true)}
-        startIcon={<Add />}
+        startIcon={<CippIcons.Add />}
       >
         {buttonText}
       </PermissionButton>
@@ -161,6 +179,7 @@ export const CippApplicationDeployDrawer = ({
                 // uncomment after release { label: "WinGet App", value: "winGetApp" },
                 { label: 'Chocolatey App', value: 'chocolateyApp' },
                 { label: 'Microsoft Office', value: 'officeApp' },
+                { label: 'Microsoft Edge', value: 'edgeApp' },
                 { label: 'Custom Application', value: 'win32ScriptApp' },
               ]}
               multiple={false}
@@ -208,6 +227,7 @@ export const CippApplicationDeployDrawer = ({
                     label: 'CW Command',
                     isSponsor: false,
                   },
+                  { value: 'ninja', label: 'NinjaOne', isSponsor: false },
                 ]}
                 formControl={formControl}
                 multiple={false}
@@ -375,52 +395,24 @@ export const CippApplicationDeployDrawer = ({
               ))}
             </CippFormCondition>
 
-            {/* Assign To Options */}
-            <Grid size={{ xs: 12 }}>
-              <CippFormComponent
-                type="radio"
-                name="AssignTo"
-                options={[
-                  { label: 'Do not assign', value: 'On' },
-                  { label: 'Assign to all users', value: 'allLicensedUsers' },
-                  { label: 'Assign to all devices', value: 'AllDevices' },
-                  { label: 'Assign to all users and devices', value: 'AllDevicesAndUsers' },
-                  { label: 'Assign to Custom Group', value: 'customGroup' },
-                ]}
-                formControl={formControl}
-                row
-              />
-            </Grid>
+            {/* For "ninja" */}
             <CippFormCondition
               formControl={formControl}
-              field="AssignTo"
+              field="rmmname.value"
               compareType="is"
-              compareValue="customGroup"
+              compareValue="ninja"
             >
-              <Grid size={{ xs: 12 }}>
-                <CippFormComponent
-                  type="textField"
-                  label="Custom Group Names separated by comma. Wildcards (*) are allowed"
-                  name="customGroup"
-                  formControl={formControl}
-                  validators={{ required: 'Please specify custom group names' }}
-                />
-              </Grid>
-            </CippFormCondition>
-            <CippFormCondition
-              formControl={formControl}
-              field="AssignTo"
-              compareType="isNot"
-              compareValue="On"
-            >
-              <Grid size={{ xs: 12 }}>
-                <CippFormComponent
-                  type="textField"
-                  label="Exclude Group Names separated by comma. Wildcards (*) are allowed"
-                  name="excludeGroup"
-                  formControl={formControl}
-                />
-              </Grid>
+              {selectedTenants?.map((tenant, index) => (
+                <Grid size={{ md: 6, xs: 12 }} key={tenant.addedFields.customerId || index}>
+                  <CippFormComponent
+                    type="textFieldWithVariables"
+                    label={`Installer Token for ${tenant.label} (e.g., %NinjaOneToken%)`}
+                    name={`params.NinjaToken.${tenant.addedFields.customerId}`}
+                    formControl={formControl}
+                    validators={{ required: `Installer Token for ${tenant.label} is required` }}
+                  />
+                </Grid>
+              ))}
             </CippFormCondition>
           </CippFormCondition>
 
@@ -439,7 +431,7 @@ export const CippApplicationDeployDrawer = ({
                 formControl={formControl}
               />
             </Grid>
-            <Grid size={{ xs: 5 }}>
+            <Grid size={{ xs: 12 }}>
               <Button
                 onClick={() => {
                   searchApp(formControl.getValues('searchQuery'), 'StoreApp')
@@ -500,59 +492,18 @@ export const CippApplicationDeployDrawer = ({
             <Grid size={{ xs: 12 }}>
               <CippFormComponent
                 type="switch"
+                label="Install as system"
+                name="InstallAsSystem"
+                formControl={formControl}
+                defaultValue={true}
+              />
+              <CippFormComponent
+                type="switch"
                 label="Mark for Uninstallation"
                 name="InstallationIntent"
                 formControl={formControl}
               />
             </Grid>
-
-            {/* Assign To Options */}
-            <Grid size={{ xs: 12 }}>
-              <CippFormComponent
-                type="radio"
-                name="AssignTo"
-                options={[
-                  { label: 'Do not assign', value: 'On' },
-                  { label: 'Assign to all users', value: 'allLicensedUsers' },
-                  { label: 'Assign to all devices', value: 'AllDevices' },
-                  { label: 'Assign to all users and devices', value: 'AllDevicesAndUsers' },
-                  { label: 'Assign to Custom Group', value: 'customGroup' },
-                ]}
-                formControl={formControl}
-                row
-              />
-            </Grid>
-            <CippFormCondition
-              formControl={formControl}
-              field="AssignTo"
-              compareType="is"
-              compareValue="customGroup"
-            >
-              <Grid size={{ xs: 12 }}>
-                <CippFormComponent
-                  type="textField"
-                  label="Custom Group Names separated by comma. Wildcards (*) are allowed"
-                  name="customGroup"
-                  formControl={formControl}
-                  validators={{ required: 'Please specify custom group names' }}
-                />
-              </Grid>
-            </CippFormCondition>
-            <CippFormCondition
-              formControl={formControl}
-              field="AssignTo"
-              compareType="isNot"
-              compareValue="On"
-            >
-              <Grid size={{ xs: 12 }}>
-                <CippFormComponent
-                  type="textField"
-                  label="Exclude Group Names separated by comma. Wildcards (*) are allowed"
-                  name="excludeGroup"
-                  formControl={formControl}
-                />
-              </Grid>
-            </CippFormCondition>
           </CippFormCondition>
 
           {/* Chocolatey App Section */}
@@ -570,7 +521,7 @@ export const CippApplicationDeployDrawer = ({
                 formControl={formControl}
               />
             </Grid>
-            <Grid size={{ xs: 5 }}>
+            <Grid size={{ xs: 12 }}>
               <Button
                 onClick={() => {
                   searchApp(formControl.getValues('searchQuery'), 'choco')
@@ -666,54 +617,6 @@ export const CippApplicationDeployDrawer = ({
                 formControl={formControl}
               />
             </Grid>
-
-            {/* Assign To Options */}
-            <Grid size={{ xs: 12 }}>
-              <CippFormComponent
-                type="radio"
-                name="AssignTo"
-                options={[
-                  { label: 'Do not assign', value: 'On' },
-                  { label: 'Assign to all users', value: 'allLicensedUsers' },
-                  { label: 'Assign to all devices', value: 'AllDevices' },
-                  { label: 'Assign to all users and devices', value: 'AllDevicesAndUsers' },
-                  { label: 'Assign to Custom Group', value: 'customGroup' },
-                ]}
-                formControl={formControl}
-                row
-              />
-            </Grid>
-            <CippFormCondition
-              formControl={formControl}
-              field="AssignTo"
-              compareType="is"
-              compareValue="customGroup"
-            >
-              <Grid size={{ xs: 12 }}>
-                <CippFormComponent
-                  type="textField"
-                  label="Custom Group Names separated by comma. Wildcards (*) are allowed"
-                  name="customGroup"
-                  formControl={formControl}
-                  validators={{ required: 'Please specify custom group names' }}
-                />
-              </Grid>
-            </CippFormCondition>
-            <CippFormCondition
-              formControl={formControl}
-              field="AssignTo"
-              compareType="isNot"
-              compareValue="On"
-            >
-              <Grid size={{ xs: 12 }}>
-                <CippFormComponent
-                  type="textField"
-                  label="Exclude Group Names separated by comma. Wildcards (*) are allowed"
-                  name="excludeGroup"
-                  formControl={formControl}
-                />
-              </Grid>
-            </CippFormCondition>
           </CippFormCondition>
 
           {/* Office App Section */}
@@ -844,54 +747,43 @@ export const CippApplicationDeployDrawer = ({
                 </Alert>
               </Grid>
             </CippFormCondition>
+          </CippFormCondition>
 
-            {/* Assign To Options */}
-            <Grid size={{ xs: 12 }}>
+          {/* Edge App Section */}
+          <CippFormCondition
+            formControl={formControl}
+            field="appType.value"
+            compareType="is"
+            compareValue="edgeApp"
+          >
+            <Grid size={{ md: 6, xs: 12 }}>
               <CippFormComponent
-                type="radio"
-                name="AssignTo"
+                type="autoComplete"
+                label="Edge Channel"
+                name="edgeChannel"
                 options={[
-                  { label: 'Do not assign', value: 'On' },
-                  { label: 'Assign to all users', value: 'allLicensedUsers' },
-                  { label: 'Assign to all devices', value: 'AllDevices' },
-                  { label: 'Assign to all users and devices', value: 'AllDevicesAndUsers' },
-                  { label: 'Assign to Custom Group', value: 'customGroup' },
+                  { value: 'stable', label: 'Stable' },
+                  { value: 'beta', label: 'Beta' },
+                  { value: 'dev', label: 'Dev' },
                 ]}
+                multiple={false}
                 formControl={formControl}
-                row
+                validators={{ required: 'Please select an Edge channel' }}
               />
             </Grid>
-            <CippFormCondition
-              formControl={formControl}
-              field="AssignTo"
-              compareType="is"
-              compareValue="customGroup"
-            >
-              <Grid size={{ xs: 12 }}>
-                <CippFormComponent
-                  type="textField"
-                  label="Custom Group Names separated by comma. Wildcards (*) are allowed"
-                  name="customGroup"
-                  formControl={formControl}
-                  validators={{ required: 'Please specify custom group names' }}
-                />
-              </Grid>
-            </CippFormCondition>
-            <CippFormCondition
-              formControl={formControl}
-              field="AssignTo"
-              compareType="isNot"
-              compareValue="On"
-            >
-              <Grid size={{ xs: 12 }}>
-                <CippFormComponent
-                  type="textField"
-                  label="Exclude Group Names separated by comma. Wildcards (*) are allowed"
-                  name="excludeGroup"
-                  formControl={formControl}
-                />
-              </Grid>
-            </CippFormCondition>
+            <Grid size={{ md: 6, xs: 12 }}>
+              <CippFormComponent
+                type="autoComplete"
+                label="Display Language (optional)"
+                name="displayLanguageLocale"
+                options={languageList.map(({ language, tag }) => ({
+                  value: tag,
+                  label: `${language} (${tag})`,
+                }))}
+                multiple={false}
+                formControl={formControl}
+              />
+            </Grid>
           </CippFormCondition>
 
           {/* Win32 Script App Section */}
@@ -1032,17 +924,20 @@ export const CippApplicationDeployDrawer = ({
                 formControl={formControl}
               />
             </Grid>
+          </CippFormCondition>
 
-            {/* Assign To Options */}
+          {/* Assign To Options: shared by every app type. With one tenant selected, groups are
+              picked by id from that tenant; with several tenants only names can span them. */}
+          <CippFormCondition formControl={formControl} field="appType" compareType="hasValue">
             <Grid size={{ xs: 12 }}>
               <CippFormComponent
                 type="radio"
                 name="AssignTo"
                 options={[
-                  { label: 'Do not assign', value: 'On' },
-                  { label: 'Assign to all users', value: 'allLicensedUsers' },
-                  { label: 'Assign to all devices', value: 'AllDevices' },
-                  { label: 'Assign to all users and devices', value: 'AllDevicesAndUsers' },
+                  { label: 'Do Not Assign', value: 'On' },
+                  { label: 'Assign to All Users', value: 'allLicensedUsers' },
+                  { label: 'Assign to All Devices', value: 'AllDevices' },
+                  { label: 'Assign to All Users and Devices', value: 'AllDevicesAndUsers' },
                   { label: 'Assign to Custom Group', value: 'customGroup' },
                 ]}
                 formControl={formControl}
@@ -1056,13 +951,20 @@ export const CippApplicationDeployDrawer = ({
               compareValue="customGroup"
             >
               <Grid size={{ xs: 12 }}>
-                <CippFormComponent
-                  type="textField"
-                  label="Custom Group Names separated by comma. Wildcards (*) are allowed"
-                  name="customGroup"
-                  formControl={formControl}
-                  validators={{ required: 'Please specify custom group names' }}
-                />
+                {singleTenant ? (
+                  <CippFormComponent
+                    {...getGroupPickerField(groupTenant, 'groupTargets', 'Group(s)', true)}
+                    formControl={formControl}
+                  />
+                ) : (
+                  <CippFormComponent
+                    type="textField"
+                    label="Custom Group Names separated by comma. Wildcards (*) are allowed"
+                    name="customGroup"
+                    formControl={formControl}
+                    validators={{ required: 'Please specify custom group names' }}
+                  />
+                )}
               </Grid>
             </CippFormCondition>
             <CippFormCondition
@@ -1072,12 +974,24 @@ export const CippApplicationDeployDrawer = ({
               compareValue="On"
             >
               <Grid size={{ xs: 12 }}>
-                <CippFormComponent
-                  type="textField"
-                  label="Exclude Group Names separated by comma. Wildcards (*) are allowed"
-                  name="excludeGroup"
-                  formControl={formControl}
-                />
+                {singleTenant ? (
+                  <CippFormComponent
+                    {...getGroupPickerField(
+                      groupTenant,
+                      'excludeGroupTargets',
+                      'Exclude group(s) (Optional)',
+                      false,
+                    )}
+                    formControl={formControl}
+                  />
+                ) : (
+                  <CippFormComponent
+                    type="textField"
+                    label="Exclude Group Names separated by comma. Wildcards (*) are allowed"
+                    name="excludeGroup"
+                    formControl={formControl}
+                  />
+                )}
               </Grid>
             </CippFormCondition>
           </CippFormCondition>

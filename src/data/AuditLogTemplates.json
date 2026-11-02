@@ -268,8 +268,8 @@
           "Property": { "value": "List:Operation", "label": "Operation" },
           "Operator": { "value": "EQ", "label": "Equals to" },
           "Input": {
-            "value": "Remove Member from a role.",
-            "label": "Remove Member from a role."
+            "value": "Remove member from role.",
+            "label": "Remove member from role."
           }
         }
       ]
@@ -364,6 +364,455 @@
     }
   },
   {
+    "value": "AppAddedSecretToServicePrincipal",
+    "name": "An application added a client secret to a service principal",
+    "template": {
+      "preset": {
+        "value": "AppAddedSecretToServicePrincipal",
+        "label": "An application added a client secret to a service principal"
+      },
+      "logbook": { "value": "Audit.AzureActiveDirectory", "label": "Azure AD" },
+      "conditions": [
+        {
+          "Property": { "value": "List:Operation", "label": "Operation" },
+          "Operator": { "value": "EQ", "label": "Equals to" },
+          "Input": {
+            "value": "Add service principal credentials.",
+            "label": "Add service principal credentials."
+          }
+        },
+        {
+          "Property": { "value": "String", "label": "UserId" },
+          "Operator": { "value": "like", "label": "Like" },
+          "Input": { "value": "ServicePrincipal_*" }
+        },
+        {
+          "Property": { "value": "String", "label": "CIPPAddedKeyTypes" },
+          "Operator": { "value": "like", "label": "Like" },
+          "Input": { "value": "*Password*" }
+        }
+      ]
+    }
+  },
+  {
+    "value": "AppAddedCertificateToServicePrincipal",
+    "name": "An application added a certificate to a service principal",
+    "template": {
+      "preset": {
+        "value": "AppAddedCertificateToServicePrincipal",
+        "label": "An application added a certificate to a service principal"
+      },
+      "logbook": { "value": "Audit.AzureActiveDirectory", "label": "Azure AD" },
+      "conditions": [
+        {
+          "Property": { "value": "List:Operation", "label": "Operation" },
+          "Operator": { "value": "EQ", "label": "Equals to" },
+          "Input": {
+            "value": "Add service principal credentials.",
+            "label": "Add service principal credentials."
+          }
+        },
+        {
+          "Property": { "value": "String", "label": "UserId" },
+          "Operator": { "value": "like", "label": "Like" },
+          "Input": { "value": "ServicePrincipal_*" }
+        },
+        {
+          "Property": { "value": "String", "label": "CIPPAddedKeyTypes" },
+          "Operator": { "value": "like", "label": "Like" },
+          "Input": { "value": "*AsymmetricX509Cert*" }
+        }
+      ]
+    }
+  },
+  {
+    "value": "AppAddedSecretToAppRegistration",
+    "name": "An application added a client secret to an app registration",
+    "template": {
+      "preset": {
+        "value": "AppAddedSecretToAppRegistration",
+        "label": "An application added a client secret to an app registration"
+      },
+      "logbook": { "value": "Audit.AzureActiveDirectory", "label": "Azure AD" },
+      "conditions": [
+        {
+          "Property": { "value": "String", "label": "Operation" },
+          "Operator": { "value": "like", "label": "Like" },
+          "Input": { "value": "*application*Certificates and secrets management*" }
+        },
+        {
+          "Property": { "value": "String", "label": "UserId" },
+          "Operator": { "value": "like", "label": "Like" },
+          "Input": { "value": "ServicePrincipal_*" }
+        },
+        {
+          "Property": { "value": "String", "label": "CIPPAddedKeyTypes" },
+          "Operator": { "value": "like", "label": "Like" },
+          "Input": { "value": "*Password*" }
+        }
+      ]
+    }
+  },
+  {
+    "value": "AppAddedCertificateToAppRegistration",
+    "name": "An application added a certificate to an app registration",
+    "template": {
+      "preset": {
+        "value": "AppAddedCertificateToAppRegistration",
+        "label": "An application added a certificate to an app registration"
+      },
+      "logbook": { "value": "Audit.AzureActiveDirectory", "label": "Azure AD" },
+      "conditions": [
+        {
+          "Property": { "value": "String", "label": "Operation" },
+          "Operator": { "value": "like", "label": "Like" },
+          "Input": { "value": "*application*Certificates and secrets management*" }
+        },
+        {
+          "Property": { "value": "String", "label": "UserId" },
+          "Operator": { "value": "like", "label": "Like" },
+          "Input": { "value": "ServicePrincipal_*" }
+        },
+        {
+          "Property": { "value": "String", "label": "CIPPAddedKeyTypes" },
+          "Operator": { "value": "like", "label": "Like" },
+          "Input": { "value": "*AsymmetricX509Cert*" }
+        }
+      ]
+    }
+  },
+  {
+    "value": "AppGrantedApplicationPermission",
+    "name": "An application granted an application permission to a service principal",
+    "template": {
+      "preset": {
+        "value": "AppGrantedApplicationPermission",
+        "label": "An application granted an application permission to a service principal"
+      },
+      "logbook": { "value": "Audit.AzureActiveDirectory", "label": "Azure AD" },
+      "conditions": [
+        {
+          "Property": { "value": "List:Operation", "label": "Operation" },
+          "Operator": { "value": "EQ", "label": "Equals to" },
+          "Input": {
+            "value": "Add app role assignment to service principal.",
+            "label": "Add app role assignment to service principal."
+          }
+        },
+        {
+          "Property": { "value": "String", "label": "UserId" },
+          "Operator": { "value": "like", "label": "Like" },
+          "Input": { "value": "ServicePrincipal_*" }
+        }
+      ]
+    }
+  },
+  {
+    "value": "AppGrantedDelegatedPermission",
+    "name": "An application granted a delegated permission",
+    "template": {
+      "preset": {
+        "value": "AppGrantedDelegatedPermission",
+        "label": "An application granted a delegated permission"
+      },
+      "logbook": { "value": "Audit.AzureActiveDirectory", "label": "Azure AD" },
+      "conditions": [
+        {
+          "Property": { "value": "List:Operation", "label": "Operation" },
+          "Operator": { "value": "EQ", "label": "Equals to" },
+          "Input": {
+            "value": "Add delegated permission grant.",
+            "label": "Add delegated permission grant."
+          }
+        },
+        {
+          "Property": { "value": "String", "label": "UserId" },
+          "Operator": { "value": "like", "label": "Like" },
+          "Input": { "value": "ServicePrincipal_*" }
+        }
+      ]
+    }
+  },
+  {
+    "value": "AppAddedOwnerToApp",
+    "name": "An application added an owner to an app registration or service principal",
+    "template": {
+      "preset": {
+        "value": "AppAddedOwnerToApp",
+        "label": "An application added an owner to an app registration or service principal"
+      },
+      "logbook": { "value": "Audit.AzureActiveDirectory", "label": "Azure AD" },
+      "conditions": [
+        {
+          "Property": { "value": "List:Operation", "label": "Operation" },
+          "Operator": { "value": "in", "label": "In" },
+          "Input": [
+            { "value": "Add owner to application.", "label": "Add owner to application." },
+            { "value": "Add owner to service principal.", "label": "Add owner to service principal." }
+          ]
+        },
+        {
+          "Property": { "value": "String", "label": "UserId" },
+          "Operator": { "value": "like", "label": "Like" },
+          "Input": { "value": "ServicePrincipal_*" }
+        }
+      ]
+    }
+  },
+  {
+    "value": "AppAddedDirectoryRoleMember",
+    "name": "An application added a member to a directory role",
+    "template": {
+      "preset": {
+        "value": "AppAddedDirectoryRoleMember",
+        "label": "An application added a member to a directory role"
+      },
+      "logbook": { "value": "Audit.AzureActiveDirectory", "label": "Azure AD" },
+      "conditions": [
+        {
+          "Property": { "value": "List:Operation", "label": "Operation" },
+          "Operator": { "value": "EQ", "label": "Equals to" },
+          "Input": {
+            "value": "Add member to role.",
+            "label": "Add member to role."
+          }
+        },
+        {
+          "Property": { "value": "String", "label": "UserId" },
+          "Operator": { "value": "like", "label": "Like" },
+          "Input": { "value": "ServicePrincipal_*" }
+        },
+        {
+          "Property": { "value": "String", "label": "CIPPActor" },
+          "Operator": { "value": "notlike", "label": "Not like" },
+          "Input": { "value": "*MS-PIM*" }
+        }
+      ]
+    }
+  },
+  {
+    "value": "UserAddedSecretToServicePrincipal",
+    "name": "A user added a client secret to a service principal",
+    "template": {
+      "preset": {
+        "value": "UserAddedSecretToServicePrincipal",
+        "label": "A user added a client secret to a service principal"
+      },
+      "logbook": { "value": "Audit.AzureActiveDirectory", "label": "Azure AD" },
+      "conditions": [
+        {
+          "Property": { "value": "List:Operation", "label": "Operation" },
+          "Operator": { "value": "EQ", "label": "Equals to" },
+          "Input": {
+            "value": "Add service principal credentials.",
+            "label": "Add service principal credentials."
+          }
+        },
+        {
+          "Property": { "value": "String", "label": "UserId" },
+          "Operator": { "value": "notlike", "label": "Not like" },
+          "Input": { "value": "ServicePrincipal_*" }
+        },
+        {
+          "Property": { "value": "String", "label": "CIPPAddedKeyTypes" },
+          "Operator": { "value": "like", "label": "Like" },
+          "Input": { "value": "*Password*" }
+        }
+      ]
+    }
+  },
+  {
+    "value": "UserAddedCertificateToServicePrincipal",
+    "name": "A user added a certificate to a service principal",
+    "template": {
+      "preset": {
+        "value": "UserAddedCertificateToServicePrincipal",
+        "label": "A user added a certificate to a service principal"
+      },
+      "logbook": { "value": "Audit.AzureActiveDirectory", "label": "Azure AD" },
+      "conditions": [
+        {
+          "Property": { "value": "List:Operation", "label": "Operation" },
+          "Operator": { "value": "EQ", "label": "Equals to" },
+          "Input": {
+            "value": "Add service principal credentials.",
+            "label": "Add service principal credentials."
+          }
+        },
+        {
+          "Property": { "value": "String", "label": "UserId" },
+          "Operator": { "value": "notlike", "label": "Not like" },
+          "Input": { "value": "ServicePrincipal_*" }
+        },
+        {
+          "Property": { "value": "String", "label": "CIPPAddedKeyTypes" },
+          "Operator": { "value": "like", "label": "Like" },
+          "Input": { "value": "*AsymmetricX509Cert*" }
+        }
+      ]
+    }
+  },
+  {
+    "value": "UserAddedSecretToAppRegistration",
+    "name": "A user added a client secret to an app registration",
+    "template": {
+      "preset": {
+        "value": "UserAddedSecretToAppRegistration",
+        "label": "A user added a client secret to an app registration"
+      },
+      "logbook": { "value": "Audit.AzureActiveDirectory", "label": "Azure AD" },
+      "conditions": [
+        {
+          "Property": { "value": "String", "label": "Operation" },
+          "Operator": { "value": "like", "label": "Like" },
+          "Input": { "value": "*application*Certificates and secrets management*" }
+        },
+        {
+          "Property": { "value": "String", "label": "UserId" },
+          "Operator": { "value": "notlike", "label": "Not like" },
+          "Input": { "value": "ServicePrincipal_*" }
+        },
+        {
+          "Property": { "value": "String", "label": "CIPPAddedKeyTypes" },
+          "Operator": { "value": "like", "label": "Like" },
+          "Input": { "value": "*Password*" }
+        }
+      ]
+    }
+  },
+  {
+    "value": "UserAddedCertificateToAppRegistration",
+    "name": "A user added a certificate to an app registration",
+    "template": {
+      "preset": {
+        "value": "UserAddedCertificateToAppRegistration",
+        "label": "A user added a certificate to an app registration"
+      },
+      "logbook": { "value": "Audit.AzureActiveDirectory", "label": "Azure AD" },
+      "conditions": [
+        {
+          "Property": { "value": "String", "label": "Operation" },
+          "Operator": { "value": "like", "label": "Like" },
+          "Input": { "value": "*application*Certificates and secrets management*" }
+        },
+        {
+          "Property": { "value": "String", "label": "UserId" },
+          "Operator": { "value": "notlike", "label": "Not like" },
+          "Input": { "value": "ServicePrincipal_*" }
+        },
+        {
+          "Property": { "value": "String", "label": "CIPPAddedKeyTypes" },
+          "Operator": { "value": "like", "label": "Like" },
+          "Input": { "value": "*AsymmetricX509Cert*" }
+        }
+      ]
+    }
+  },
+  {
+    "value": "UserGrantedApplicationPermission",
+    "name": "A user granted an application permission to a service principal",
+    "template": {
+      "preset": {
+        "value": "UserGrantedApplicationPermission",
+        "label": "A user granted an application permission to a service principal"
+      },
+      "logbook": { "value": "Audit.AzureActiveDirectory", "label": "Azure AD" },
+      "conditions": [
+        {
+          "Property": { "value": "List:Operation", "label": "Operation" },
+          "Operator": { "value": "EQ", "label": "Equals to" },
+          "Input": {
+            "value": "Add app role assignment to service principal.",
+            "label": "Add app role assignment to service principal."
+          }
+        },
+        {
+          "Property": { "value": "String", "label": "UserId" },
+          "Operator": { "value": "notlike", "label": "Not like" },
+          "Input": { "value": "ServicePrincipal_*" }
+        }
+      ]
+    }
+  },
+  {
+    "value": "UserGrantedDelegatedPermission",
+    "name": "A user granted a delegated permission",
+    "template": {
+      "preset": {
+        "value": "UserGrantedDelegatedPermission",
+        "label": "A user granted a delegated permission"
+      },
+      "logbook": { "value": "Audit.AzureActiveDirectory", "label": "Azure AD" },
+      "conditions": [
+        {
+          "Property": { "value": "List:Operation", "label": "Operation" },
+          "Operator": { "value": "EQ", "label": "Equals to" },
+          "Input": {
+            "value": "Add delegated permission grant.",
+            "label": "Add delegated permission grant."
+          }
+        },
+        {
+          "Property": { "value": "String", "label": "UserId" },
+          "Operator": { "value": "notlike", "label": "Not like" },
+          "Input": { "value": "ServicePrincipal_*" }
+        }
+      ]
+    }
+  },
+  {
+    "value": "UserAddedOwnerToApp",
+    "name": "A user added an owner to an app registration or service principal",
+    "template": {
+      "preset": {
+        "value": "UserAddedOwnerToApp",
+        "label": "A user added an owner to an app registration or service principal"
+      },
+      "logbook": { "value": "Audit.AzureActiveDirectory", "label": "Azure AD" },
+      "conditions": [
+        {
+          "Property": { "value": "List:Operation", "label": "Operation" },
+          "Operator": { "value": "in", "label": "In" },
+          "Input": [
+            { "value": "Add owner to application.", "label": "Add owner to application." },
+            { "value": "Add owner to service principal.", "label": "Add owner to service principal." }
+          ]
+        },
+        {
+          "Property": { "value": "String", "label": "UserId" },
+          "Operator": { "value": "notlike", "label": "Not like" },
+          "Input": { "value": "ServicePrincipal_*" }
+        }
+      ]
+    }
+  },
+  {
+    "value": "UserAddedDirectoryRoleMember",
+    "name": "A user added a member to a directory role",
+    "template": {
+      "preset": {
+        "value": "UserAddedDirectoryRoleMember",
+        "label": "A user added a member to a directory role"
+      },
+      "logbook": { "value": "Audit.AzureActiveDirectory", "label": "Azure AD" },
+      "conditions": [
+        {
+          "Property": { "value": "List:Operation", "label": "Operation" },
+          "Operator": { "value": "EQ", "label": "Equals to" },
+          "Input": {
+            "value": "Add member to role.",
+            "label": "Add member to role."
+          }
+        },
+        {
+          "Property": { "value": "String", "label": "UserId" },
+          "Operator": { "value": "notlike", "label": "Not like" },
+          "Input": { "value": "ServicePrincipal_*" }
+        }
+      ]
+    }
+  },
+  {
     "value": "badRepIP",
     "name": "A user has logged in a using a known VPN, Proxy, Or anonymizer",
     "template": {
@@ -443,6 +892,100 @@
           "Property": { "value": "String", "label": "SecuredAccessPassData" },
           "Operator": { "value": "like", "label": "Like" },
           "Input": { "value": "*PassId*" }
+        }
+      ]
+    }
+  },
+  {
+    "value": "Set-MailboxForwardingExternal",
+    "name": "External email forwarding has been configured on a mailbox",
+    "template": {
+      "preset": {
+        "value": "Set-MailboxForwardingExternal",
+        "label": "External email forwarding has been configured on a mailbox"
+      },
+      "logbook": { "value": "Audit.Exchange", "label": "Exchange" },
+      "conditions": [
+        {
+          "Property": { "value": "List:Operation", "label": "Operation" },
+          "Operator": { "value": "EQ", "label": "Equals to" },
+          "Input": {
+            "value": "Set-Mailbox",
+            "label": "mailbox settings were changed"
+          }
+        },
+        {
+          "Property": { "value": "String", "label": "ForwardingSmtpAddress" },
+          "Operator": { "value": "like", "label": "Like" },
+          "Input": { "value": "*@*" }
+        }
+      ]
+    }
+  },
+  {
+    "value": "Add-RoleGroupMember",
+    "name": "A user has been granted Exchange admin privileges",
+    "template": {
+      "preset": {
+        "value": "Add-RoleGroupMember",
+        "label": "A user has been granted Exchange admin privileges"
+      },
+      "logbook": { "value": "Audit.Exchange", "label": "Exchange" },
+      "conditions": [
+        {
+          "Property": { "value": "List:Operation", "label": "Operation" },
+          "Operator": { "value": "EQ", "label": "Equals to" },
+          "Input": {
+            "value": "Add-RoleGroupMember",
+            "label": "added a member to an Exchange role group"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "value": "PIMRoleAssigned",
+    "name": "A directory role was assigned or activated through PIM",
+    "template": {
+      "preset": {
+        "value": "PIMRoleAssigned",
+        "label": "A directory role was assigned or activated through PIM"
+      },
+      "logbook": { "value": "Audit.AzureActiveDirectory", "label": "Azure AD" },
+      "conditions": [
+        {
+          "Property": { "value": "List:Operation", "label": "Operation" },
+          "Operator": { "value": "EQ", "label": "Equals to" },
+          "Input": {
+            "value": "Add member to role.",
+            "label": "Add member to role."
+          }
+        },
+        {
+          "Property": { "value": "String", "label": "CIPPActor" },
+          "Operator": { "value": "like", "label": "Like" },
+          "Input": { "value": "*MS-PIM*" }
+        }
+      ]
+    }
+  },
+  {
+    "value": "PIMEligibleRoleAssigned",
+    "name": "A user was made eligible for a directory role in PIM",
+    "template": {
+      "preset": {
+        "value": "PIMEligibleRoleAssigned",
+        "label": "A user was made eligible for a directory role in PIM"
+      },
+      "logbook": { "value": "Audit.AzureActiveDirectory", "label": "Azure AD" },
+      "conditions": [
+        {
+          "Property": { "value": "List:Operation", "label": "Operation" },
+          "Operator": { "value": "EQ", "label": "Equals to" },
+          "Input": {
+            "value": "Add eligible member to role.",
+            "label": "Add eligible member to role."
+          }
         }
       ]
     }

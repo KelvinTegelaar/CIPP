@@ -1,5 +1,5 @@
-import { Search } from "@mui/icons-material";
 import { Chip, IconButton, SvgIcon, Tooltip } from "@mui/material";
+import { CippIcons } from "../../utils/icon-registry";
 import { useState } from "react";
 
 export const CippDocsLookup = (props) => {
@@ -22,7 +22,7 @@ export const CippDocsLookup = (props) => {
       <Tooltip title="Search in documentation">
         <IconButton size="small" onClick={handleDocsLookup}>
           <SvgIcon fontSize="small">
-            <Search />
+            <CippIcons.Search />
           </SvgIcon>
         </IconButton>
       </Tooltip>

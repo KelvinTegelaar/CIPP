@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { CippIcons } from "../../utils/icon-registry";
 import {
   Button,
   Collapse,
@@ -13,14 +14,6 @@ import {
   FormControlLabel,
 } from "@mui/material";
 import { Grid } from "@mui/system";
-import SearchIcon from "@mui/icons-material/Search";
-import ClearIcon from "@mui/icons-material/Clear";
-import SettingsIcon from "@mui/icons-material/Settings";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import ErrorIcon from "@mui/icons-material/Error";
-import WarningIcon from "@mui/icons-material/Warning";
-import HelpIcon from "@mui/icons-material/Help";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { Controller, useForm } from "react-hook-form";
 import { ApiGetCall } from "../../api/ApiCall";
 import CippButtonCard from "./CippButtonCard";
@@ -38,7 +31,7 @@ const ResultList = ({ passes = [], warns = [], fails = [] }) => (
         key={index}
         sx={{ display: "flex", alignItems: "center", marginBottom: "8px" }}
       >
-        <CheckCircleIcon style={{ color: "green", marginRight: "4px" }} />
+        <CippIcons.CheckCircle style={{ color: "green", marginRight: "4px" }} />
         {pass}
       </Typography>
     ))}
@@ -48,7 +41,7 @@ const ResultList = ({ passes = [], warns = [], fails = [] }) => (
         key={index}
         sx={{ display: "flex", alignItems: "center", marginBottom: "8px" }}
       >
-        <WarningIcon style={{ color: "orange", marginRight: "4px" }} />
+        <CippIcons.Warning style={{ color: "orange", marginRight: "4px" }} />
         {warn}
       </Typography>
     ))}
@@ -58,7 +51,7 @@ const ResultList = ({ passes = [], warns = [], fails = [] }) => (
         key={index}
         sx={{ display: "flex", alignItems: "center", marginBottom: "8px" }}
       >
-        <ErrorIcon style={{ color: "red", marginRight: "4px" }} />
+        <CippIcons.Error style={{ color: "red", marginRight: "4px" }} />
         {fail}
       </Typography>
     ))}
@@ -85,7 +78,7 @@ const MXResultsCard = ({ domain, mxData, isFetching }) => {
     <CippButtonCard
       title={
         <div style={{ display: "flex", alignItems: "center" }}>
-          {allPassed && <CheckCircleIcon style={{ color: "green", marginRight: "8px" }} />}
+          {allPassed && <CippIcons.CheckCircle style={{ color: "green", marginRight: "8px" }} />}
           MX Records
         </div>
       }
@@ -95,13 +88,13 @@ const MXResultsCard = ({ domain, mxData, isFetching }) => {
           {helpUrl && (
             <Tooltip title="Help">
               <IconButton href={helpUrl} target="_blank">
-                <HelpIcon />
+                <CippIcons.Help />
               </IconButton>
             </Tooltip>
           )}
           <Tooltip title="Details">
             <IconButton onClick={handleDetailsClick}>
-              <MoreVertIcon />
+              <CippIcons.MoreVert />
             </IconButton>
           </Tooltip>
           <CippOffCanvas
@@ -152,7 +145,7 @@ function DomainResultCard({ title, data, isFetching, info, type }) {
       ? {
           children: (
             <Grid container spacing={2}>
-              <Grid size={{ xs: 12 }}>
+              <Grid size={{ xs: 12, md: 8 }}>
                 {info}
               </Grid>
             </Grid>
@@ -331,13 +324,13 @@ function DomainResultCard({ title, data, isFetching, info, type }) {
       title={
         <div style={{ display: "flex", alignItems: "center" }}>
           {data?.ValidationFails?.length === 0 && data?.ValidationWarns?.length === 0 && (
-            <CheckCircleIcon style={{ color: "green", marginRight: "8px" }} />
+            <CippIcons.CheckCircle style={{ color: "green", marginRight: "8px" }} />
           )}
           {data?.ValidationFails?.length > 0 && (
-            <ErrorIcon style={{ color: "red", marginRight: "8px" }} />
+            <CippIcons.Error style={{ color: "red", marginRight: "8px" }} />
           )}
           {data?.ValidationWarns?.length > 0 && (
-            <WarningIcon style={{ color: "orange", marginRight: "8px" }} />
+            <CippIcons.Warning style={{ color: "orange", marginRight: "8px" }} />
           )}
           {title}
         </div>
@@ -348,13 +341,13 @@ function DomainResultCard({ title, data, isFetching, info, type }) {
           {data?._Comment && (
             <Tooltip title="Help">
               <IconButton href={data?._Comment} target="_blank">
-                <HelpIcon />
+                <CippIcons.Help />
               </IconButton>
             </Tooltip>
           )}
           <Tooltip title="Details">
             <IconButton onClick={() => setVisible(true)}>
-              <MoreVertIcon />
+              <CippIcons.MoreVert />
             </IconButton>
           </Tooltip>
         </>
@@ -497,13 +490,13 @@ export const CippDomainCards = ({ domain: propDomain = "", fullwidth = false }) 
             cardActions={
               <Tooltip title="Settings">
                 <IconButton onClick={() => setOptionsVisible(!optionsVisible)}>
-                  <SettingsIcon />
+                  <CippIcons.Settings />
                 </IconButton>
               </Tooltip>
             }
           >
             <Grid container spacing={2}>
-              <Grid size={{ xs: 8 }}>
+              <Grid size={{ xs: 12, md: 4 }}>
                 <Controller
                   name="domain"
                   control={control}
@@ -512,8 +505,8 @@ export const CippDomainCards = ({ domain: propDomain = "", fullwidth = false }) 
                   )}
                 />
               </Grid>
-              <Grid size={{ xs: 4 }}>
-                <Button type="submit" variant="contained" startIcon={<SearchIcon />}>
+              <Grid size={{ xs: 12 }}>
+                <Button type="submit" variant="contained" startIcon={<CippIcons.Search />}>
                   Check
                 </Button>
               </Grid>
@@ -556,7 +549,7 @@ export const CippDomainCards = ({ domain: propDomain = "", fullwidth = false }) 
                 <Button
                   variant="outlined"
                   color="error"
-                  startIcon={<ClearIcon />}
+                  startIcon={<CippIcons.Clear />}
                   onClick={handleClear}
                   className="mt-2"
                 >

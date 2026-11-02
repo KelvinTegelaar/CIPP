@@ -1,8 +1,8 @@
 ﻿import React, { useState, useEffect } from "react";
 import { Button, Divider } from "@mui/material";
+import { CippIcons } from "../../utils/icon-registry";
 import { Grid } from "@mui/system";
 import { useForm, useFormState } from "react-hook-form";
-import { AddBusiness } from "@mui/icons-material";
 import { CippOffCanvas } from "./CippOffCanvas";
 import CippFormComponent from "./CippFormComponent";
 import { CippFormDomainSelector } from "./CippFormDomainSelector";
@@ -79,9 +79,9 @@ export const CippAddEquipmentDrawer = ({
   return (
     <>
       <PermissionButton
-        requiredPermissions={requiredPermissions}
+        {...(PermissionButton !== Button ? { requiredPermissions } : {})}
         onClick={() => setDrawerVisible(true)}
-        startIcon={<AddBusiness />}
+        startIcon={<CippIcons.AddBusiness />}
       >
         {buttonText}
       </PermissionButton>

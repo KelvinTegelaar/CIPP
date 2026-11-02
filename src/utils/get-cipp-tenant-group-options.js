@@ -1,5 +1,4 @@
-import M365LicensesDefault from "../data/M365Licenses.json";
-import M365LicensesAdditional from "../data/M365Licenses-additional.json";
+import { getM365Licenses } from "./m365-licenses-data";
 
 /**
  * Get all available licenses for tenant group dynamic rules
@@ -7,7 +6,7 @@ import M365LicensesAdditional from "../data/M365Licenses-additional.json";
  */
 export const getTenantGroupLicenseOptions = () => {
   // Combine both license files
-  const allLicenses = [...M365LicensesDefault, ...M365LicensesAdditional];
+  const allLicenses = getM365Licenses();
 
   // Create unique licenses map using String_Id as key for better deduplication
   const uniqueLicensesMap = new Map();
@@ -48,7 +47,7 @@ export const getTenantGroupLicenseOptions = () => {
  */
 export const getTenantGroupServicePlanOptions = () => {
   // Combine both license files
-  const allLicenses = [...M365LicensesDefault, ...M365LicensesAdditional];
+  const allLicenses = getM365Licenses();
 
   // Create unique service plans map using Service_Plan_Name as key for better deduplication
   const uniqueServicePlansMap = new Map();
@@ -135,6 +134,11 @@ export const getTenantGroupPropertyOptions = () => {
       value: "customVariable",
       type: "customVariable",
     },
+    {
+      label: "GDAP Relationship Age (days)",
+      value: "gdapRelationshipAge",
+      type: "gdapAge",
+    },
   ];
 };
 
@@ -176,9 +180,33 @@ export const getTenantGroupOperatorOptions = (propertyType) => {
     },
   ];
 
+  const numericOperators = [
+    {
+      label: "Greater Than",
+      value: "gt",
+    },
+    {
+      label: "Greater Than or Equal",
+      value: "ge",
+    },
+    {
+      label: "Less Than",
+      value: "lt",
+    },
+    {
+      label: "Less Than or Equal",
+      value: "le",
+    },
+  ];
+
   // Custom Variable supports text comparison
   if (propertyType === "customVariable") {
     return [...baseOperators, ...textOperators];
+  }
+
+  // GDAP relationship age is numeric
+  if (propertyType === "gdapAge") {
+    return [...numericOperators, ...baseOperators];
   }
 
   // Delegated Access Status only supports equals/not equals
@@ -213,6 +241,9 @@ export const getTenantGroupValueOptions = (propertyType) => {
       return [];
     case "customVariable":
       // Return empty array - uses free-text input with variable name
+      return [];
+    case "gdapAge":
+      // Return empty array - uses a plain number input
       return [];
     default:
       return [];

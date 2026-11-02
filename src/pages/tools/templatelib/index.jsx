@@ -1,17 +1,23 @@
-import { useEffect } from "react";
-import { Divider, Typography, Alert, Chip } from "@mui/material";
+import { useEffect, useMemo } from "react";
+import { Divider, Typography, Alert, Chip, Link } from "@mui/material";
+import NextLink from "next/link";
 import { useForm, useWatch } from "react-hook-form";
-import { Layout as DashboardLayout } from "../../../layouts/index.js";
+import { Layout as DashboardLayout } from "../../../layouts/index";
 import CippFormPage from "../../../components/CippFormPages/CippFormPage";
 import CippFormComponent from "../../../components/CippComponents/CippFormComponent";
-import { useSettings } from "../../../hooks/use-settings";
 import { CippFormTenantSelector } from "../../../components/CippComponents/CippFormTenantSelector";
 import { Grid } from "@mui/system";
 import { CippFormCondition } from "../../../components/CippComponents/CippFormCondition";
+import { CippDataTable } from "../../../components/CippTable/CippDataTable";
+import { ApiGetCall } from "../../../api/ApiCall";
+import { CippIcons } from "../../../utils/icon-registry";
+import { usePermissions } from "../../../hooks/use-permissions";
+
+// react-query key for the "configured template libraries" table below. Passed to CippFormPage as a
+// related query key so creating a new library refreshes the table without a manual reload.
+const TEMPLATE_LIBRARY_JOBS_KEY = "TemplateLibraryJobs";
 
 const TemplateLibrary = () => {
-  const currentTenant = useSettings().currentTenant;
-
   const formControl = useForm({
     mode: "onChange",
     defaultValues: {
@@ -22,12 +28,65 @@ const TemplateLibrary = () => {
     },
   });
 
+  const { checkPermissions } = usePermissions();
+  const canWriteScheduler = checkPermissions(["CIPP.Scheduler.ReadWrite"]);
+
+  const tenantFilter = useWatch({ control: formControl.control, name: "tenantFilter" });
   const templateRepo = useWatch({ control: formControl.control, name: "templateRepo" });
+
+  // All configured template libraries (across every tenant/repo). ListScheduledItems filters by
+  // command via the Type parameter, and ApiGetCall does not inject a tenantFilter, so this returns
+  // every template-library job the caller is allowed to see rather than just the current tenant's.
+  const existingJobs = ApiGetCall({
+    url: "/api/ListScheduledItems",
+    data: { Type: "New-CIPPTemplateRun" },
+    queryKey: TEMPLATE_LIBRARY_JOBS_KEY,
+  });
+  const jobRows = Array.isArray(existingJobs.data) ? existingJobs.data : [];
+
+  // Same RemoveScheduledItem contract as the Scheduler page. Deleting the library job stops
+  // future syncs; templates already imported into CIPP are left alone.
+  const libraryActions = useMemo(
+    () => [
+      {
+        label: "Delete Library",
+        icon: <CippIcons.Delete />,
+        type: "POST",
+        url: "/api/RemoveScheduledItem",
+        data: { id: "RowKey" },
+        confirmText:
+          "Stop syncing [Name]? Already imported templates stay in CIPP and will not be re-imported. Delete those separately from the Conditional Access or Intune template pages if you no longer need them.",
+        multiPost: false,
+        relatedQueryKeys: [TEMPLATE_LIBRARY_JOBS_KEY],
+        condition: () => canWriteScheduler,
+      },
+    ],
+    [canWriteScheduler]
+  );
+
+  // A library targets either a tenant or a community repository; the job name and payload are both
+  // built from whichever one is chosen.
+  const targetValue = tenantFilter?.value || templateRepo?.value;
+  const hasTarget = Boolean(targetValue);
+  const selectedName = `CIPP Template ${targetValue}`;
+
+  // Drive form validity from a hidden required field so Submit stays disabled until a target is
+  // chosen - this is what stops the "No tenant" job ("CIPP Template undefined") that used to be
+  // created and reported as success.
+  useEffect(() => {
+    formControl.setValue("_libraryTarget", hasTarget ? "ok" : "", { shouldValidate: true });
+  }, [hasTarget]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Spot an existing library for the picked target so we can warn before the server rejects it.
+  const duplicateJob = hasTarget ? jobRows.find((job) => job?.Name === selectedName) : null;
 
   const customDataFormatter = (values) => {
     const startDate = new Date();
     startDate.setHours(0, 0, 0, 0);
     const unixTime = Math.floor(startDate.getTime() / 1000) - 45;
+
+    // _libraryTarget only exists to gate Submit; keep it out of the stored TemplateSettings.
+    const { _libraryTarget, ...templateSettings } = values;
 
     return {
       TenantFilter: values?.tenantFilter?.value ? values?.tenantFilter?.value : "No tenant",
@@ -35,7 +94,7 @@ const TemplateLibrary = () => {
         values.tenantFilter?.value ? values.tenantFilter?.value : values.templateRepo?.value
       }`,
       Command: { value: `New-CIPPTemplateRun` },
-      Parameters: { TemplateSettings: { ...values } },
+      Parameters: { TemplateSettings: { ...templateSettings } },
       ScheduledTime: unixTime,
       Recurrence: { value: values.tenantFilter?.value ? "4h" : "7d" },
     };
@@ -53,7 +112,7 @@ const TemplateLibrary = () => {
   return (
     <CippFormPage
       formControl={formControl}
-      queryKey="TemplateLibrary"
+      queryKey={TEMPLATE_LIBRARY_JOBS_KEY}
       title="Template Library"
       hideBackButton
       postUrl="/api/AddScheduledItem?DisallowDuplicateName=true"
@@ -77,6 +136,17 @@ const TemplateLibrary = () => {
           </Alert>
         </Grid>
 
+        {/* Hidden field: registered with a required rule and toggled from `hasTarget` so the Submit
+            button reflects whether a tenant or repository has been chosen. */}
+        <CippFormComponent
+          type="hidden"
+          name="_libraryTarget"
+          formControl={formControl}
+          validators={{
+            required: { value: true, message: "Select a tenant or a community repository." },
+          }}
+        />
+
         <Divider sx={{ mt: 2, width: "100%" }} />
         <Grid
           container
@@ -92,6 +162,7 @@ const TemplateLibrary = () => {
               formControl={formControl}
               multiple={false}
               disableClearable={false}
+              required={false}
             />
           </Grid>
           <Grid size={{ md: 2, xs: 12 }} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
@@ -117,6 +188,24 @@ const TemplateLibrary = () => {
             />
           </Grid>
         </Grid>
+
+        {!hasTarget && (
+          <Grid size={12}>
+            <Alert severity="info">
+              Select a tenant or a community repository to set up a template library.
+            </Alert>
+          </Grid>
+        )}
+        {duplicateJob && (
+          <Grid size={12}>
+            <Alert severity="warning">
+              A template library for <strong>{selectedName}</strong> is already set up
+              {duplicateJob.TaskState ? ` (current state: ${duplicateJob.TaskState})` : ""}. Saving
+              again will be rejected as a duplicate - it appears in the list below.
+            </Alert>
+          </Grid>
+        )}
+
         <Divider sx={{ mt: 2, width: "100%" }} />
         {templateRepo?.value && (
           <Grid size={12}>
@@ -221,6 +310,37 @@ const TemplateLibrary = () => {
             />
           </Grid>
         </CippFormCondition>
+
+        <Grid size={12}>
+          <Divider sx={{ mt: 2, mb: 2, width: "100%" }} />
+          <Typography variant="h6" sx={{ mb: 1 }}>
+            Configured Template Libraries
+          </Typography>
+          <Typography variant="body2" sx={{ mb: 2, color: "text.secondary" }}>
+            Template libraries that are already set up and running. Use Delete Library to stop
+            syncing, or manage the underlying job on the{" "}
+            <Link component={NextLink} href="/cipp/scheduler">
+              Scheduled Tasks
+            </Link>{" "}
+            page (set the tenant filter to All Tenants for community repository libraries).
+          </Typography>
+          <CippDataTable
+            title="Configured Template Libraries"
+            noCard
+            data={jobRows}
+            isFetching={existingJobs.isFetching}
+            refreshFunction={() => existingJobs.refetch()}
+            actions={libraryActions}
+            simpleColumns={[
+              "Name",
+              "Tenant",
+              "Recurrence",
+              "TaskState",
+              "ExecutedTime",
+              "Results",
+            ]}
+          />
+        </Grid>
       </Grid>
     </CippFormPage>
   );

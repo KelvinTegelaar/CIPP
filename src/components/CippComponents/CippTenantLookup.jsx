@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { CippIcons } from "../../utils/icon-registry"
 import {
   Box,
   Button,
@@ -12,13 +13,6 @@ import {
   TextField,
   InputAdornment,
 } from "@mui/material";
-import {
-  Search,
-  Public,
-  Language,
-  LocationOn,
-  Cloud,
-} from "@mui/icons-material";
 import { useForm, useWatch } from "react-hook-form";
 import CippButtonCard from "../CippCards/CippButtonCard";
 import { ApiGetCall } from "../../api/ApiCall";
@@ -29,20 +23,20 @@ const getRegionIcon = (region) => {
   const regionUpper = region?.toUpperCase();
   switch (regionUpper) {
     case "EU":
-      return <Language sx={{ fontSize: 20 }} />;
+      return <CippIcons.Language sx={{ fontSize: 20 }} />;
     case "US":
-      return <Public sx={{ fontSize: 20 }} />;
+      return <CippIcons.Public sx={{ fontSize: 20 }} />;
     case "ASIA":
-      return <Language sx={{ fontSize: 20 }} />;
+      return <CippIcons.Language sx={{ fontSize: 20 }} />;
     case "GCC":
     case "GCC-HIGH":
-      return <Cloud sx={{ fontSize: 20 }} />;
+      return <CippIcons.Cloud sx={{ fontSize: 20 }} />;
     case "DE":
-      return <Language sx={{ fontSize: 20 }} />;
+      return <CippIcons.Language sx={{ fontSize: 20 }} />;
     case "CN":
-      return <Language sx={{ fontSize: 20 }} />;
+      return <CippIcons.Language sx={{ fontSize: 20 }} />;
     default:
-      return <LocationOn sx={{ fontSize: 20 }} />;
+      return <CippIcons.LocationOn sx={{ fontSize: 20 }} />;
   }
 };
 
@@ -210,28 +204,30 @@ export const CippTenantLookup = () => {
               placeholder="Domain name or tenant ID"
               value={domain || ""}
               onChange={(e) => formControl.setValue("domain", e.target.value)}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment
-                    position="start"
-                    sx={{ display: "flex", alignItems: "center", mb: 0, mt: "12px" }}
-                  >
-                    <Search color="action" sx={{ fontSize: 20 }} />
-                  </InputAdornment>
-                ),
-                sx: {
-                  "& .MuiInputAdornment-root": {
-                    marginTop: "0 !important",
-                    alignSelf: "center",
+              slotProps={{
+                input: {
+                  startAdornment: (
+                    <InputAdornment
+                      position="start"
+                      sx={{ display: "flex", alignItems: "center", mb: 0, mt: "12px" }}
+                    >
+                      <CippIcons.Search color="action" sx={{ fontSize: 20 }} />
+                    </InputAdornment>
+                  ),
+                  sx: {
+                    "& .MuiInputAdornment-root": {
+                      marginTop: "0 !important",
+                      alignSelf: "center",
+                    },
                   },
-                },
+                }
               }}
             />
             <Button
               variant="contained"
               onClick={() => getTenant.refetch()}
               disabled={!domain || getTenant.isFetching}
-              startIcon={<Search />}
+              startIcon={<CippIcons.MagnifyingGlassIcon />}
               sx={{ flexShrink: 0 }}
             >
               Check
@@ -306,7 +302,9 @@ export const CippTenantLookup = () => {
                     </Typography>
                     <Grid container spacing={2}>
                       <Grid size={{ xs: 12, sm: 6 }}>
-                        <Typography variant="body2" color="text.secondary" gutterBottom>
+                        <Typography variant="body2" gutterBottom sx={{
+                          color: "text.secondary"
+                        }}>
                           Tenant Name
                         </Typography>
                         <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1.5 }}>
@@ -317,7 +315,9 @@ export const CippTenantLookup = () => {
                         </Box>
                       </Grid>
                       <Grid size={{ xs: 12, sm: 6 }}>
-                        <Typography variant="body2" color="text.secondary" gutterBottom>
+                        <Typography variant="body2" gutterBottom sx={{
+                          color: "text.secondary"
+                        }}>
                           Default Domain Name
                         </Typography>
                         <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1.5 }}>
@@ -328,7 +328,9 @@ export const CippTenantLookup = () => {
                         </Box>
                       </Grid>
                       <Grid size={{ xs: 12, sm: 6 }}>
-                        <Typography variant="body2" color="text.secondary" gutterBottom>
+                        <Typography variant="body2" gutterBottom sx={{
+                          color: "text.secondary"
+                        }}>
                           Tenant ID
                         </Typography>
                         <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1.5 }}>
@@ -339,7 +341,9 @@ export const CippTenantLookup = () => {
                         </Box>
                       </Grid>
                       <Grid size={{ xs: 12, sm: 6 }}>
-                        <Typography variant="body2" color="text.secondary" gutterBottom>
+                        <Typography variant="body2" gutterBottom sx={{
+                          color: "text.secondary"
+                        }}>
                           Tenant Region
                         </Typography>
                         {openIdData?.tenant_region_scope ? (
@@ -378,7 +382,9 @@ export const CippTenantLookup = () => {
                         alignSelf: { xs: "stretch", md: "stretch" },
                       }}
                     >
-                      <Typography variant="body2" color="text.secondary" gutterBottom>
+                      <Typography variant="body2" gutterBottom sx={{
+                        color: "text.secondary"
+                      }}>
                         Tenant Logo
                       </Typography>
                       {tileLogoUrl ? (

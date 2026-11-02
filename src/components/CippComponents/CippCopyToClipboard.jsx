@@ -1,5 +1,5 @@
-import { CopyAll, Visibility, VisibilityOff } from "@mui/icons-material";
 import { Chip, IconButton, SvgIcon, Tooltip } from "@mui/material";
+import { CippIcons } from "../../utils/icon-registry";
 import { useState } from "react";
 
 export const CippCopyToClipBoard = (props) => {
@@ -47,7 +47,7 @@ export const CippCopyToClipBoard = (props) => {
       <Tooltip title={copied ? "Copied!" : "Copy to clipboard"}>
         <IconButton size="small" onClick={handleCopy} {...other}>
           <SvgIcon fontSize="small">
-            <CopyAll />
+            <CippIcons.CopyAll />
           </SvgIcon>
         </IconButton>
       </Tooltip>
@@ -75,7 +75,7 @@ export const CippCopyToClipBoard = (props) => {
       <>
         <Tooltip title={showPassword ? "Hide password" : "Show password"}>
           <IconButton size="small" onClick={handleTogglePassword}>
-            <SvgIcon>{showPassword ? <VisibilityOff /> : <Visibility />}</SvgIcon>
+            <SvgIcon>{showPassword ? <CippIcons.VisibilityOff /> : <CippIcons.Visibility />}</SvgIcon>
           </IconButton>
         </Tooltip>
         <Tooltip title={copied ? "Copied!" : "Copy to clipboard"}>

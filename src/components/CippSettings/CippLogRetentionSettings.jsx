@@ -4,18 +4,23 @@ import { ApiGetCall, ApiPostCall } from "../../api/ApiCall";
 import { CippApiResults } from "../CippComponents/CippApiResults";
 import { useState, useEffect } from "react";
 
-const CippLogRetentionSettings = () => {
+const CippLogRetentionSettings = ({
+  title = "Log Retention",
+  endpoint = "ExecLogRetentionConfig",
+  defaultDays = 90,
+  description = "Configure how long to keep CIPP log entries. Logs will be automatically deleted after this period.",
+}) => {
   const retentionSetting = ApiGetCall({
-    url: "/api/ExecLogRetentionConfig?List=true",
-    queryKey: "LogRetentionSettings",
+    url: `/api/${endpoint}?List=true`,
+    queryKey: `${endpoint}Settings`,
   });
 
   const retentionChange = ApiPostCall({
     datafromUrl: true,
-    relatedQueryKeys: "LogRetentionSettings",
+    relatedQueryKeys: `${endpoint}Settings`,
   });
 
-  const [retentionDays, setRetentionDays] = useState(90);
+  const [retentionDays, setRetentionDays] = useState(defaultDays);
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -39,9 +44,9 @@ const CippLogRetentionSettings = () => {
 
     setError("");
     retentionChange.mutate({
-      url: "/api/ExecLogRetentionConfig",
+      url: `/api/${endpoint}`,
       data: { RetentionDays: days },
-      queryKey: "LogRetentionPost",
+      queryKey: `${endpoint}Post`,
     });
   };
 
@@ -63,7 +68,7 @@ const CippLogRetentionSettings = () => {
 
   return (
     <CippButtonCard
-      title="Log Retention"
+      title={title}
       cardSx={{ display: "flex", flexDirection: "column", height: "100%" }}
       CardButton={
         <Box sx={{ display: "flex", gap: 1, alignItems: "flex-start" }}>
@@ -73,11 +78,13 @@ const CippLogRetentionSettings = () => {
             value={retentionDays}
             onChange={handleInputChange}
             disabled={retentionChange.isPending || retentionSetting.isLoading}
-            inputProps={{ min: 7, max: 365 }}
             error={!!error}
             helperText={error}
             sx={{ width: "120px" }}
             label="Days"
+            slotProps={{
+              htmlInput: { min: 7, max: 365 }
+            }}
           />
           <Button
             variant="contained"
@@ -93,8 +100,7 @@ const CippLogRetentionSettings = () => {
       }
     >
       <Typography variant="body2">
-        Configure how long to keep CIPP log entries. Logs will be automatically deleted after this
-        period. Minimum retention is 7 days, maximum is 365 days, default is 90 days.
+        {description} Minimum retention is 7 days, maximum is 365 days, default is {defaultDays} days.
       </Typography>
       <CippApiResults apiObject={retentionChange} />
     </CippButtonCard>

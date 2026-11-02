@@ -242,9 +242,16 @@ export const CippVariableAutocomplete = React.memo(
               border: `1px solid ${theme.palette.divider}`,
             }}
           >
-            <Box display="flex" alignItems="center" gap={1}>
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 1
+              }}>
               <CircularProgress size={16} />
-              <Typography variant="caption" color="text.secondary">
+              <Typography variant="caption" sx={{
+                color: "text.secondary"
+              }}>
                 Loading variables...
               </Typography>
             </Box>
@@ -277,8 +284,12 @@ export const CippVariableAutocomplete = React.memo(
             borderRadius: 1,
             maxHeight: 240,
             overflow: "auto",
-            minWidth: 300,
-            maxWidth: 500,
+            // Clamped to the viewport: the Paper shrink-to-fits against unclamped variable
+            // descriptions, and popper.js can only shift a too-wide popper, not shrink it —
+            // at the 500px cap a phone got ~110px hanging off the right edge, scrolling the
+            // whole document sideways.
+            minWidth: "min(300px, calc(100vw - 32px))",
+            maxWidth: "min(500px, calc(100vw - 32px))",
           }}
           onClick={(e) => {
             e.stopPropagation();
@@ -335,13 +346,12 @@ export const CippVariableAutocomplete = React.memo(
                 </Typography>
                 <Typography
                   variant="caption"
-                  color="text.secondary"
                   sx={{
+                    color: "text.secondary",
                     display: "block",
                     mt: 0.25,
-                    fontSize: "0.75rem",
-                  }}
-                >
+                    fontSize: "0.75rem"
+                  }}>
                   {variable.description}
                 </Typography>
               </Box>

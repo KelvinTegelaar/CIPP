@@ -1,4 +1,5 @@
 import { differenceInDays } from "date-fns";
+import { CippIcons } from "../../utils/icon-registry";
 import {
   Dialog,
   DialogActions,
@@ -30,16 +31,6 @@ import {
   ListItemSecondaryAction,
 } from "@mui/material";
 import { Grid } from "@mui/system";
-import {
-  Add,
-  Sort,
-  Clear,
-  FilterList,
-  ExpandMore,
-  ExpandLess,
-  ViewModule,
-  ViewList,
-} from "@mui/icons-material";
 import { useState, useCallback, useMemo, memo, useEffect } from "react";
 import { debounce } from "lodash";
 import { Virtuoso } from "react-virtuoso";
@@ -242,7 +233,9 @@ const StandardCard = memo(
                   <Typography variant="subtitle2" sx={{ mt: 2 }}>
                     Recommended By:
                   </Typography>
-                  <Typography variant="body2" color="textSecondary" paragraph>
+                  <Typography variant="body2" color="textSecondary" sx={{
+                    marginBottom: "16px"
+                  }}>
                     {standard.recommendedBy.join(", ")}
                   </Typography>
                 </>
@@ -295,7 +288,7 @@ const StandardCard = memo(
                   disabled={isButtonDisabled}
                   onClick={() => handleAddClick(standard.name)}
                 >
-                  <Add />
+                  <CippIcons.Add />
                 </IconButton>
               ) : (
                 <FormControlLabel
@@ -504,16 +497,15 @@ const CompactStandardList = memo(
                             p: ({ children }) => (
                               <Typography
                                 variant="body2"
-                                color="text.secondary"
                                 sx={{
+                                  color: "text.secondary",
                                   display: "-webkit-box",
                                   WebkitLineClamp: 2,
                                   WebkitBoxOrient: "vertical",
                                   overflow: "hidden",
                                   textOverflow: "ellipsis",
-                                  mb: 0,
-                                }}
-                              >
+                                  mb: 0
+                                }}>
                                 {children}
                               </Typography>
                             ),
@@ -542,7 +534,9 @@ const CompactStandardList = memo(
                             ))}
                           {standard.tag.filter((tag) => !tag.toLowerCase().includes("impact"))
                             .length > 3 && (
-                            <Typography variant="caption" color="text.secondary">
+                            <Typography variant="caption" sx={{
+                              color: "text.secondary"
+                            }}>
                               +
                               {standard.tag.filter((tag) => !tag.toLowerCase().includes("impact"))
                                 .length - 3}{" "}
@@ -552,12 +546,16 @@ const CompactStandardList = memo(
                         </Box>
                       )}
                       {standard.recommendedBy?.length > 0 && (
-                        <Typography variant="caption" color="text.secondary">
+                        <Typography variant="caption" sx={{
+                          color: "text.secondary"
+                        }}>
                           • Recommended by: {standard.recommendedBy.join(", ")}
                         </Typography>
                       )}
                       {standard.addedDate && (
-                        <Typography variant="caption" color="text.secondary">
+                        <Typography variant="caption" sx={{
+                          color: "text.secondary"
+                        }}>
                           • Added: {standard.addedDate}
                         </Typography>
                       )}
@@ -596,7 +594,7 @@ const CompactStandardList = memo(
                     onClick={() => handleAddClick(standard.name)}
                     sx={{ mr: 1 }}
                   >
-                    <Add />
+                    <CippIcons.Add />
                   </IconButton>
                 ) : (
                   <FormControlLabel
@@ -1053,19 +1051,21 @@ const CippStandardDialog = ({
       fullWidth
       fullScreen
       keepMounted={false}
-      TransitionProps={{
-        onExited: () => {
-          // Clear processed items on dialog close to free up memory
-          setProcessedItems([]);
+      slotProps={{
+        transition: {
+          onExited: () => {
+            // Clear processed items on dialog close to free up memory
+            setProcessedItems([]);
+          },
         },
-      }}
-      PaperProps={{
-        sx: {
-          display: "flex",
-          flexDirection: "column",
-        },
-      }}
-    >
+
+        paper: {
+          sx: {
+            display: "flex",
+            flexDirection: "column",
+          },
+        }
+      }}>
       <DialogTitle sx={{ p: 2 }}>Select a Standard to Add</DialogTitle>
       <DialogContent
         sx={{
@@ -1113,12 +1113,17 @@ const CippStandardDialog = ({
               }}
             >
               <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                <FilterList sx={{ color: "text.secondary", fontSize: "1.1rem" }} />
+                <CippIcons.FilterList sx={{ color: "text.secondary", fontSize: "1.1rem" }} />
                 <Typography variant="body2" sx={{ color: "text.primary", fontWeight: "medium" }}>
                   View, Sort & Filter Options
                 </Typography>
                 {!filtersExpanded && (
-                  <Typography variant="caption" color="text.secondary" sx={{ ml: 1 }}>
+                  <Typography
+                    variant="caption"
+                    sx={{
+                      color: "text.secondary",
+                      ml: 1
+                    }}>
                     ({viewMode === "card" ? "Card" : "List"} •{" "}
                     {sortBy === "addedDate" ? "Date" : "Name"} {sortOrder === "desc" ? "↓" : "↑"}
                     {activeFiltersCount > 0
@@ -1128,7 +1133,7 @@ const CippStandardDialog = ({
                   </Typography>
                 )}
               </Box>
-              {filtersExpanded ? <ExpandLess /> : <ExpandMore />}
+              {filtersExpanded ? <CippIcons.ExpandLess /> : <CippIcons.ExpandMore />}
             </Box>
 
             {/* Single line controls when expanded */}
@@ -1158,11 +1163,11 @@ const CippStandardDialog = ({
                   }}
                 >
                   <ToggleButton value="card" aria-label="card view">
-                    <ViewModule sx={{ mr: 1 }} />
+                    <CippIcons.ViewModule sx={{ mr: 1 }} />
                     Cards
                   </ToggleButton>
                   <ToggleButton value="list" aria-label="list view">
-                    <ViewList sx={{ mr: 1 }} />
+                    <CippIcons.ViewList sx={{ mr: 1 }} />
                     List
                   </ToggleButton>
                 </ToggleButtonGroup>
@@ -1306,7 +1311,7 @@ const CippStandardDialog = ({
                 {activeFiltersCount > 0 && (
                   <Button
                     variant="outlined"
-                    startIcon={<Clear />}
+                    startIcon={<CippIcons.Clear />}
                     onClick={clearAllFilters}
                     sx={{ ml: "auto", height: 45 }}
                   >
@@ -1320,7 +1325,9 @@ const CippStandardDialog = ({
           {/* Active Filter Chips */}
           {activeFiltersCount > 0 && (
             <Box sx={{ mb: 2 }}>
-              <Stack direction="row" spacing={1} flexWrap="wrap">
+              <Stack useFlexGap direction="row" spacing={1} sx={{
+                flexWrap: "wrap"
+              }}>
                 {selectedCategories.map((category) => (
                   <Chip
                     key={category}

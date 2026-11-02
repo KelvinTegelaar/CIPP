@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { Divider } from "@mui/material";
 import { Grid } from "@mui/system";
 import { useForm, useWatch } from "react-hook-form";
-import { Layout as DashboardLayout } from "../../../../layouts/index.js";
+import { Layout as DashboardLayout } from "../../../../layouts/index";
 import CippFormPage from "../../../../components/CippFormPages/CippFormPage";
 import CippFormComponent from "../../../../components/CippComponents/CippFormComponent";
 import { CippFormTenantSelector } from "../../../../components/CippComponents/CippFormTenantSelector";
@@ -40,7 +40,7 @@ const AddPolicy = () => {
       postUrl="/api/AddQuarantinePolicy"
     >
       <Grid container spacing={2} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-        <Grid xs={12}>
+        <Grid size={12}>
           <CippFormTenantSelector
             label="Select Tenants"
             formControl={formControl}
@@ -73,7 +73,7 @@ const AddPolicy = () => {
         </Grid> */}
 
         <Divider sx={{ my: 2, width: "100%" }} />
-        <Grid xs={6}>
+        <Grid size={{ xs: 12, sm: 6 }}>
           <CippFormComponent
             type="textField"
             label="Policy Name"
@@ -98,7 +98,7 @@ const AddPolicy = () => {
           />
         </Grid>
 
-        <Grid xs={2}>
+        <Grid size={{ xs: 12, md: 2 }}>
           <CippFormComponent type="switch" label="Delete" name="Delete" formControl={formControl} />
           <CippFormComponent
             type="switch"
@@ -119,7 +119,7 @@ const AddPolicy = () => {
             formControl={formControl}
           />
         </Grid>
-        <Grid xs={4}>
+        <Grid size={{ xs: 12, md: 4 }}>
           <CippFormComponent
             type="switch"
             label="Quarantine Notification"

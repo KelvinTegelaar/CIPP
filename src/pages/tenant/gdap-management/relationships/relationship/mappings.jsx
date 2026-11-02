@@ -1,0 +1,73 @@
+import { Layout as DashboardLayout } from "../../../../../layouts/index";
+import { CippIcons } from "../../../../../utils/icon-registry"
+import { useRouter } from "next/router";
+import { ApiGetCall } from "../../../../../api/ApiCall";
+import { HeaderedTabbedLayout } from "../../../../../layouts/HeaderedTabbedLayout";
+import { CippGdapRelationshipSwitcher } from "../../../../../components/CippComponents/CippGdapRelationshipSwitcher";
+import tabOptions from "./tabOptions.json";
+import { CippTimeAgo } from "../../../../../components/CippComponents/CippTimeAgo";
+import { CippDataTable } from "../../../../../components/CippTable/CippDataTable";
+
+const Page = () => {
+  const router = useRouter();
+  const { id } = router.query;
+
+  const relationshipRequest = ApiGetCall({
+    url: `/api/ListGDAPRelationships?id=${id}`,
+    queryKey: `ListRelationships-${id}`,
+  });
+
+  // Set the title and subtitle for the layout
+  const title = relationshipRequest.isSuccess
+    ? relationshipRequest.data?.Results?.[0]?.customer?.displayName +
+      " - " +
+      relationshipRequest.data?.Results?.[0]?.displayName
+    : "Loading...";
+
+  const subtitle = relationshipRequest.isSuccess
+    ? [
+        {
+          icon: <CippIcons.Schedule />,
+          text: (
+            <>
+              Created{" "}
+              <CippTimeAgo
+                data={new Date(relationshipRequest.data?.Results?.[0]?.createdDateTime)}
+              />{" "}
+            </>
+          ),
+        },
+      ]
+    : [];
+
+  const data = relationshipRequest?.data?.Results?.[0];
+
+  return (
+    <HeaderedTabbedLayout
+      tabOptions={tabOptions}
+      title={title}
+      titleControl={<CippGdapRelationshipSwitcher title={title} currentRelationshipId={id} />}
+      subtitle={subtitle}
+      isFetching={relationshipRequest.isLoading}
+      backUrl="/tenant/gdap-management/relationships"
+    >
+      {id && (
+        <CippDataTable
+          title="Role Mappings"
+          api={{
+            url: `/api/ListGDAPAccessAssignments`,
+            data: { id },
+            dataKey: "Results",
+          }}
+          simpleColumns={["group.displayName", "status", "createdDateTime", "roles", "members"]}
+          queryKey={`AccessAssignments-${id}`}
+          maxHeightOffset="550px"
+        />
+      )}
+    </HeaderedTabbedLayout>
+  );
+};
+
+Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+
+export default Page;

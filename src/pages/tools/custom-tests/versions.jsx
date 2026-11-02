@@ -1,4 +1,5 @@
-import { Layout as DashboardLayout } from "../../../layouts/index.js";
+import { Layout as DashboardLayout } from "../../../layouts/index";
+import { CippIcons } from "../../../utils/icon-registry";
 import { CippTablePage } from "../../../components/CippComponents/CippTablePage.jsx";
 import {
   Alert,
@@ -13,8 +14,6 @@ import {
   Box,
 } from "@mui/material";
 import { useRouter } from "next/router";
-import { ArrowPathIcon, DocumentMagnifyingGlassIcon } from "@heroicons/react/24/outline";
-import { Close } from "@mui/icons-material";
 import { useState } from "react";
 import { CippScriptDiff } from "../../../components/CippComponents/CippScriptDiff.jsx";
 import { ApiGetCall } from "../../../api/ApiCall";
@@ -75,7 +74,7 @@ const Page = () => {
             label: "Restore to This Version",
             type: "POST",
             url: "/api/AddCustomScript",
-            icon: <ArrowPathIcon />,
+            icon: <CippIcons.ArrowPathIcon />,
             relatedQueryKeys: [
               "Custom PowerShell Tests",
               "CustomTest*",
@@ -90,7 +89,7 @@ const Page = () => {
           },
           {
             label: "Compare to Latest",
-            icon: <DocumentMagnifyingGlassIcon />,
+            icon: <CippIcons.DocumentMagnifyingGlassIcon />,
             noConfirm: true,
             customFunction: (row) => {
               setCompareVersion(row);
@@ -114,7 +113,7 @@ const Page = () => {
             onClick={() => setCompareOpen(false)}
             sx={{ color: (theme) => theme.palette.grey[500] }}
           >
-            <Close />
+            <CippIcons.Close />
           </IconButton>
         </DialogTitle>
         <DialogContent dividers>

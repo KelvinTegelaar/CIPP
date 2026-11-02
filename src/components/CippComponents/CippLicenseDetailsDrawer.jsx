@@ -28,7 +28,12 @@ const Field = ({ label, value, mono = false }) => {
       }}
     >
       <Box sx={{ minWidth: 160 }}>
-        <Typography variant="caption" color="text.secondary" sx={{ textTransform: "uppercase" }}>
+        <Typography
+          variant="caption"
+          sx={{
+            color: "text.secondary",
+            textTransform: "uppercase"
+          }}>
           {label}
         </Typography>
       </Box>
@@ -90,7 +95,9 @@ export const CippLicenseDetailsDrawer = ({ data }) => {
         <Typography variant="h6">
           {merged.displayName || merged.skuPartNumber || "License"}
         </Typography>
-        <Typography variant="caption" color="text.secondary">
+        <Typography variant="caption" sx={{
+          color: "text.secondary"
+        }}>
           {hasUsage
             ? `${merged.tenantCount || 0} tenant${merged.tenantCount === 1 ? "" : "s"} · ${
                 merged.totalAssigned || 0
@@ -118,7 +125,9 @@ export const CippLicenseDetailsDrawer = ({ data }) => {
       {usageLoading && (
         <Box sx={{ display: "flex", alignItems: "center", gap: 1, py: 2 }}>
           <CircularProgress size={16} />
-          <Typography variant="body2" color="text.secondary">
+          <Typography variant="body2" sx={{
+            color: "text.secondary"
+          }}>
             Looking up tenant usage…
           </Typography>
         </Box>

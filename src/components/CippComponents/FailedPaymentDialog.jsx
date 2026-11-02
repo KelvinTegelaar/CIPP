@@ -26,7 +26,6 @@ export const FailedPaymentDialog = ({ hostedFailedPayments }) => {
       open={open}
       maxWidth="sm"
       fullWidth
-      disableEscapeKeyDown
       slotProps={{ backdrop: { onClick: (e) => e.stopPropagation() } }}
     >
       <DialogTitle>Payment Issue</DialogTitle>

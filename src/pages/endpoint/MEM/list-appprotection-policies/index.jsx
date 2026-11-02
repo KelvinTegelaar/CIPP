@@ -1,0 +1,84 @@
+import { Layout as DashboardLayout } from '../../../../layouts/index'
+import { CippTablePage } from '../../../../components/CippComponents/CippTablePage.jsx'
+import { PermissionButton } from '../../../../utils/permissions'
+import { CippPolicyDeployDrawer } from '../../../../components/CippComponents/CippPolicyDeployDrawer.jsx'
+import { useSettings } from '../../../../hooks/use-settings.js'
+import { useCippIntunePolicyActions } from '../../../../components/CippComponents/CippIntunePolicyActions.jsx'
+import { useCippReportDB } from '../../../../components/CippComponents/CippReportDBControls'
+import { Stack } from '@mui/system'
+
+const Page = () => {
+  const pageTitle = 'App Protection & Configuration Policies'
+  const cardButtonPermissions = ['Endpoint.MEM.ReadWrite']
+  const tenant = useSettings().currentTenant
+
+  const reportDB = useCippReportDB({
+    apiUrl: '/api/ListAppProtectionPolicies',
+    queryKey: 'ListAppProtectionPolicies',
+    cacheName: 'IntuneAppProtectionPolicies',
+    syncTitle: 'Sync App Protection Policies Report',
+    allowToggle: true,
+    defaultCached: false,
+    serverPagination: true,
+  })
+
+  // Route create-template / clone by each row's own URLName (the concrete @odata.type for app
+  // protection / MAM rows, 'mobileAppConfigurations' for device app config) instead of forcing the
+  // generic managedAppPolicies collection, which cannot fetch an app configuration policy by id.
+  const actions = useCippIntunePolicyActions(tenant, 'URLName', {
+    platformType: 'deviceAppManagement',
+    deleteUrlName: 'URLName',
+  })
+
+  const offCanvas = {
+    extendedInfoFields: [
+      'createdDateTime',
+      'displayName',
+      'description',
+      'lastModifiedDateTime',
+      'PolicyTypeName',
+      'PolicySource',
+    ],
+    actions: actions,
+  }
+
+  const simpleColumns = [
+    ...reportDB.cacheColumns,
+    'displayName',
+    'PolicyTypeName',
+    'PolicyAssignment',
+    'PolicyExclude',
+    'lastModifiedDateTime',
+  ]
+
+  return (
+    <>
+      <CippTablePage
+        title={pageTitle}
+        apiUrl={reportDB.resolvedApiUrl}
+        apiData={reportDB.resolvedApiData}
+        apiDataKey={reportDB.apiDataKey}
+        queryKey={reportDB.resolvedQueryKey}
+        actions={actions}
+        offCanvas={offCanvas}
+        simpleColumns={simpleColumns}
+        cardButton={
+          <Stack direction="row" spacing={1} sx={{
+            alignItems: "center"
+          }}>
+            <CippPolicyDeployDrawer
+              buttonText="Deploy Policy"
+              requiredPermissions={cardButtonPermissions}
+              PermissionButton={PermissionButton}
+            />
+          </Stack>
+        }
+        dataSourceControls={reportDB.controls}
+      />
+      {reportDB.syncDialog}
+    </>
+  );
+}
+
+Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>
+export default Page

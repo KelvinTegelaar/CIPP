@@ -7,19 +7,19 @@ import {
   SvgIcon,
   Stack,
   CardActions,
-} from "@mui/material";
-import { ActionList } from "../../components/action-list";
-import { ActionListItem } from "../../components/action-list-item";
-import { PropertyList } from "../../components/property-list";
-import { PropertyListItem } from "../../components/property-list-item";
-import { useDialog } from "../../hooks/use-dialog";
-import { CippApiDialog } from "../CippComponents/CippApiDialog";
-import { useState } from "react";
-import { getIconByName } from "../../utils/icon-registry";
+} from '@mui/material'
+import { ActionList } from '../../components/action-list'
+import { ActionListItem } from '../../components/action-list-item'
+import { PropertyList } from '../../components/property-list'
+import { PropertyListItem } from '../../components/property-list-item'
+import { useDialog } from '../../hooks/use-dialog'
+import { CippApiDialog } from '../CippComponents/CippApiDialog'
+import { useState } from 'react'
+import { getIconByName } from '../../utils/icon-registry'
 
 export const CippPropertyListCard = (props) => {
   const {
-    align = "vertical",
+    align = 'vertical',
     actionItems = [],
     propertyItems = [],
     isFetching,
@@ -27,57 +27,66 @@ export const CippPropertyListCard = (props) => {
     actionButton,
     copyItems = false,
     data,
-    layout = "single",
+    layout = 'single',
     showDivider = true,
     cardButton,
-    cardSx = { width: "100%", height: "100%" },
+    cardSx = { width: '100%', height: '100%' },
     ...other
-  } = props;
-  const createDialog = useDialog();
-  const [actionData, setActionData] = useState({ data: {}, action: {}, ready: false });
+  } = props
+  const createDialog = useDialog()
+  const [actionData, setActionData] = useState({
+    data: {},
+    action: {},
+    ready: false,
+  })
 
-  const half = Math.ceil(propertyItems.length / 2);
-  const firstHalf = propertyItems.slice(0, half);
-  const secondHalf = propertyItems.slice(half, propertyItems.length);
+  const half = Math.ceil(propertyItems.length / 2)
+  const firstHalf = propertyItems.slice(0, half)
+  const secondHalf = propertyItems.slice(half, propertyItems.length)
 
   const isLabelPresent = (item) => {
-    return item?.label === "" || item?.label === undefined || item?.label === null;
-  };
+    return (
+      item?.label === '' || item?.label === undefined || item?.label === null
+    )
+  }
 
-  const setPadding = isLabelPresent ? { py: 0.5, px: 3 } : { py: 1.5, px: 3 };
+  const setPadding = isLabelPresent ? { py: 0.5, px: { xs: 2, md: 3 } } : { py: 1.5, px: { xs: 2, md: 3 } }
   const handleActionDisabled = (row, action) => {
     if (action?.condition) {
-      return !action.condition(row);
+      return !action.condition(row)
     }
-    return false;
-  };
+    return false
+  }
 
   const renderActionIcon = (icon) => {
-    if (!icon) return null;
-    if (typeof icon === "string") return getIconByName(icon, { fontSize: "small" });
-    return <SvgIcon fontSize="small">{icon}</SvgIcon>;
-  };
+    if (!icon) return null
+    if (typeof icon === 'string')
+      return getIconByName(icon, { fontSize: 'small' })
+    return <SvgIcon fontSize="small">{icon}</SvgIcon>
+  }
 
   return (
     <>
       <Card sx={cardSx} {...other}>
         <CardHeader action={actionButton} title={title} />
-        <CardContent sx={{ p: 0, marginBottom: "auto" }}>
+        <CardContent sx={{ p: 0, marginBottom: 'auto' }}>
           <Divider />
 
-          {layout === "single" ? (
+          {layout === 'single' ? (
             <PropertyList>
               {isFetching ? (
                 <>
-                  {Array.from({ length: propertyItems?.length || 3 }).map((_, index) => (
-                    <PropertyListItem
-                      key={`${index}-skeleton-PropertyListOffCanvas`}
-                      align={align}
-                      label={propertyItems?.[index]?.label || ""}
-                      value={<Skeleton width={280} />}
-                      sx={setPadding}
-                    />
-                  ))}
+                  {Array.from({ length: propertyItems?.length || 3 }).map(
+                    (_, index) => (
+                      <PropertyListItem
+                        key={`${index}-skeleton-PropertyListOffCanvas`}
+                        align={align}
+                        label={propertyItems?.[index]?.label || ''}
+                        value={<Skeleton width={280} />}
+                        sx={setPadding}
+                      />
+                    )
+                  )}
                 </>
               ) : (
                 propertyItems.map((item, index) => (
@@ -96,13 +105,13 @@ export const CippPropertyListCard = (props) => {
             // Two-column layout
             <Stack
               direction={{
-                xs: "column",
-                md: "row",
+                xs: 'column',
+                md: 'row',
               }}
               sx={{
-                "& > *": {
+                '& > *': {
                   width: {
-                    md: "50%",
+                    md: '50%',
                   },
                 },
               }}
@@ -110,7 +119,9 @@ export const CippPropertyListCard = (props) => {
               <PropertyList>
                 {isFetching ? (
                   <>
-                    {Array.from({ length: Math.max(1, firstHalf?.length || 1) }).map((_, index) => (
+                    {Array.from({
+                      length: Math.max(1, firstHalf?.length || 1),
+                    }).map((_, index) => (
                       <PropertyListItem
                         key={`${index}-skeleton-first`}
                         align={align}
@@ -135,17 +146,17 @@ export const CippPropertyListCard = (props) => {
               <PropertyList>
                 {isFetching ? (
                   <>
-                    {Array.from({ length: Math.max(1, secondHalf?.length || 1) }).map(
-                      (_, index) => (
-                        <PropertyListItem
-                          key={`${index}-skeleton-second`}
-                          align={align}
-                          divider={showDivider}
-                          label=""
-                          value={<Skeleton width={280} />}
-                        />
-                      )
-                    )}
+                    {Array.from({
+                      length: Math.max(1, secondHalf?.length || 1),
+                    }).map((_, index) => (
+                      <PropertyListItem
+                        key={`${index}-skeleton-second`}
+                        align={align}
+                        divider={showDivider}
+                        label=""
+                        value={<Skeleton width={280} />}
+                      />
+                    ))}
                   </>
                 ) : (
                   secondHalf.map((item, index) => (
@@ -164,26 +175,34 @@ export const CippPropertyListCard = (props) => {
         </CardContent>
         <ActionList>
           {actionItems?.length > 0 &&
-            actionItems.map((item, index) => (
-              <ActionListItem
-                key={`${item.label}-${index}-ActionList-OffCanvas`}
-                icon={renderActionIcon(item.icon)}
-                label={item.label}
-                onClick={() => {
-                  setActionData({
-                    data: data,
-                    action: item,
-                    ready: true,
-                  });
-                  if (item?.noConfirm) {
-                    item.customFunction(item, data, {});
-                  } else {
-                    createDialog.handleOpen();
-                  }
-                }}
-                disabled={handleActionDisabled(data, item)}
-              />
-            ))}
+            actionItems
+              .filter(
+                // hideCondition removes the action for this record entirely (vs.
+                // condition, which renders it disabled).
+                (item) =>
+                  typeof item.hideCondition !== 'function' ||
+                  !item.hideCondition(data)
+              )
+              .map((item, index) => (
+                <ActionListItem
+                  key={`${item.label}-${index}-ActionList-OffCanvas`}
+                  icon={renderActionIcon(item.icon)}
+                  label={item.label}
+                  onClick={() => {
+                    setActionData({
+                      data: data,
+                      action: item,
+                      ready: true,
+                    })
+                    if (item?.noConfirm) {
+                      item.customFunction(item, data, {})
+                    } else {
+                      createDialog.handleOpen()
+                    }
+                  }}
+                  disabled={handleActionDisabled(data, item)}
+                />
+              ))}
         </ActionList>
 
         {actionData.ready && (
@@ -203,5 +222,5 @@ export const CippPropertyListCard = (props) => {
         )}
       </Card>
     </>
-  );
-};
+  )
+}

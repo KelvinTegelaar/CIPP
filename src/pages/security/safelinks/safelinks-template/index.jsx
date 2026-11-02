@@ -1,8 +1,7 @@
-import { Layout as DashboardLayout } from "../../../../layouts/index.js";
+import { Layout as DashboardLayout } from "../../../../layouts/index";
+import { CippIcons } from "../../../../utils/icon-registry"
 import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
-import { TrashIcon } from "@heroicons/react/24/outline";
 import { Button } from "@mui/material";
-import { RocketLaunch, GitHub, Edit, Add } from "@mui/icons-material";
 import Link from "next/link";
 import { ApiGetCall } from "../../../../api/ApiCall";
 
@@ -21,7 +20,8 @@ const Page = () => {
     {
       label: "Edit Template",
       link: "/security/safelinks/safelinks-template/edit?ID=[GUID]",
-      icon: <Edit />,
+      pinned: true,
+      icon: <CippIcons.Edit />,
       color: "success",
       target: "_self",
     },
@@ -29,7 +29,7 @@ const Page = () => {
       label: "Save to GitHub",
       type: "POST",
       url: "/api/ExecCommunityRepo",
-      icon: <GitHub />,
+      icon: <CippIcons.GitHub />,
       data: {
         Action: "UploadTemplate",
         GUID: "GUID",
@@ -75,7 +75,7 @@ const Page = () => {
       url: "/api/RemoveSafeLinksPolicyTemplate",
       data: { ID: "GUID" },
       confirmText: "Do you want to delete the template?",
-      icon: <TrashIcon />,
+      icon: <CippIcons.Delete />,
       color: "danger",
     },
   ];
@@ -99,7 +99,7 @@ const Page = () => {
           <Button
             component={Link}
             href="/security/safelinks/safelinks-template/create"
-            startIcon={<Add />}
+            startIcon={<CippIcons.Add />}
             sx={{ mr: 1 }}
           >
             Create New Template
@@ -107,7 +107,7 @@ const Page = () => {
           <Button
             component={Link}
             href="/security/safelinks/safelinks-template/add"
-            startIcon={<RocketLaunch />}
+            startIcon={<CippIcons.RocketLaunch />}
           >
             Deploy Template
           </Button>

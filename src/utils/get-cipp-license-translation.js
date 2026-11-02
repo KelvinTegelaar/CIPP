@@ -1,18 +1,26 @@
-import M365LicensesDefault from "../data/M365Licenses.json";
-import M365LicensesAdditional from "../data/M365Licenses-additional.json";
+import { getM365Licenses } from "./m365-licenses-data";
 import { getCachedLicense } from "./cipp-license-cache";
 import licenseBackfillManager from "./cipp-license-backfill-manager";
 
-// Create a Map for O(1) lookups of GUID to Product_Display_Name
-const licenseByGuid = new Map();
-[...M365LicensesDefault, ...M365LicensesAdditional].forEach((entry) => {
-  if (entry.GUID) {
-    const key = entry.GUID.toLowerCase();
-    if (!licenseByGuid.has(key)) {
-      licenseByGuid.set(key, entry.Product_Display_Name);
+// Lazily build a Map for O(1) GUID -> Product_Display_Name lookups once the license data has loaded.
+let _licenseByGuid = null;
+const licenseByGuidMap = () => {
+  if (!_licenseByGuid) {
+    const all = getM365Licenses();
+    if (all.length) {
+      _licenseByGuid = new Map();
+      all.forEach((entry) => {
+        if (entry.GUID) {
+          const key = entry.GUID.toLowerCase();
+          if (!_licenseByGuid.has(key)) {
+            _licenseByGuid.set(key, entry.Product_Display_Name);
+          }
+        }
+      });
     }
   }
-});
+  return _licenseByGuid || new Map();
+};
 
 export const getCippLicenseTranslation = (licenseArray) => {
   let licenses = [];
@@ -35,11 +43,11 @@ export const getCippLicenseTranslation = (licenseArray) => {
 
     // First, check static JSON map (O(1) lookup)
     const skuLower = licenseAssignment.skuId?.toLowerCase();
-    const displayName = skuLower ? licenseByGuid.get(skuLower) : undefined;
+    const displayName = skuLower ? licenseByGuidMap().get(skuLower) : undefined;
     if (displayName) {
       licenses.push(displayName);
       found = true;
-    } else if (skuLower && licenseByGuid.has(skuLower)) {
+    } else if (skuLower && licenseByGuidMap().has(skuLower)) {
       // Entry exists but Product_Display_Name is falsy — fall back to skuPartNumber
       licenses.push(licenseAssignment.skuPartNumber || licenseAssignment.skuId);
       found = true;

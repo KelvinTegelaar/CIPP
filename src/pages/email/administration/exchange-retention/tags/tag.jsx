@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
-import { Layout as DashboardLayout } from "../../../../../layouts/index.js";
+import { Layout as DashboardLayout } from "../../../../../layouts/index";
 import CippFormPage from "../../../../../components/CippFormPages/CippFormPage";
 import CippFormSkeleton from "../../../../../components/CippFormPages/CippFormSkeleton";
 import { useSettings } from "../../../../../hooks/use-settings";
@@ -111,7 +111,7 @@ const RetentionTag = () => {
     <CippFormPage
       formControl={formControl}
       queryKey={isEdit ? `RetentionTag-${name}` : "AddRetentionTag"}
-      title={isEdit ? `Edit Retention Tag: ${name}` : "Add Retention Tag"}
+      title={isEdit ? `Retention Tag: ${name}` : "Retention Tag"}
       backButtonTitle="Retention Tags"
       formPageType={isEdit ? "Edit" : "Add"}
       postUrl="/api/ExecManageRetentionTags"
@@ -134,7 +134,7 @@ const RetentionTag = () => {
             ? values.RetentionAction 
             : values.RetentionAction.value;
         }
-        if (values.AgeLimitForRetention) {
+        if (values.AgeLimitForRetention != null) {
           tagData.AgeLimitForRetention = parseInt(values.AgeLimitForRetention);
         }
         if (values.LocalizedComment) {

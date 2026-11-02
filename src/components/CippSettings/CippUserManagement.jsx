@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { CippIcons } from "../../utils/icon-registry";
 import {
   Alert,
   Box,
@@ -17,7 +18,6 @@ import {
 } from "@mui/material";
 import { Grid } from "@mui/system";
 import { useForm } from "react-hook-form";
-import { TrashIcon, PlusIcon, PencilIcon } from "@heroicons/react/24/outline";
 import { CippDataTable } from "../CippTable/CippDataTable";
 import CippFormComponent from "../CippComponents/CippFormComponent";
 import { CippApiResults } from "../CippComponents/CippApiResults";
@@ -96,7 +96,7 @@ export const CippUserManagement = () => {
       label: "Edit Roles",
       icon: (
         <SvgIcon>
-          <PencilIcon />
+          <CippIcons.PencilIcon />
         </SvgIcon>
       ),
       noConfirm: true,
@@ -112,7 +112,7 @@ export const CippUserManagement = () => {
       label: "Delete User",
       icon: (
         <SvgIcon>
-          <TrashIcon />
+          <CippIcons.TrashIcon />
         </SvgIcon>
       ),
       confirmText: "Are you sure you want to remove this user's access to CIPP?",
@@ -143,24 +143,35 @@ export const CippUserManagement = () => {
     children: (row) => (
       <Stack spacing={2} sx={{ p: 2 }}>
         <Box>
-          <Typography variant="subtitle2" color="text.secondary">
+          <Typography variant="subtitle2" sx={{
+            color: "text.secondary"
+          }}>
             Email / UPN
           </Typography>
           <Typography variant="body1">{row.UPN}</Typography>
         </Box>
         <Divider />
         <Box>
-          <Typography variant="subtitle2" color="text.secondary">
+          <Typography variant="subtitle2" sx={{
+            color: "text.secondary"
+          }}>
             Source
           </Typography>
           <Typography variant="body2">{sourceLabel(row.Source)}</Typography>
         </Box>
         <Divider />
         <Box>
-          <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 1 }}>
+          <Typography
+            variant="subtitle2"
+            sx={{
+              color: "text.secondary",
+              mb: 1
+            }}>
             Effective Roles
           </Typography>
-          <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+          <Stack direction="row" spacing={1} useFlexGap sx={{
+            flexWrap: "wrap"
+          }}>
             {(row.Roles ?? []).map((role, idx) => (
               <Chip key={idx} label={role} size="small" color="primary" variant="outlined" />
             ))}
@@ -170,10 +181,17 @@ export const CippUserManagement = () => {
           <>
             <Divider />
             <Box>
-              <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 1 }}>
+              <Typography
+                variant="subtitle2"
+                sx={{
+                  color: "text.secondary",
+                  mb: 1
+                }}>
                 Manual Roles
               </Typography>
-              <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+              <Stack direction="row" spacing={1} useFlexGap sx={{
+                flexWrap: "wrap"
+              }}>
                 {row.ManualRoles.map((role, idx) => (
                   <Chip key={idx} label={role} size="small" color="info" variant="outlined" />
                 ))}
@@ -185,10 +203,17 @@ export const CippUserManagement = () => {
           <>
             <Divider />
             <Box>
-              <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 1 }}>
+              <Typography
+                variant="subtitle2"
+                sx={{
+                  color: "text.secondary",
+                  mb: 1
+                }}>
                 Auto Roles (from Entra groups)
               </Typography>
-              <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+              <Stack direction="row" spacing={1} useFlexGap sx={{
+                flexWrap: "wrap"
+              }}>
                 {row.AutoRoles.map((role, idx) => (
                   <Chip key={idx} label={role} size="small" color="success" variant="outlined" />
                 ))}
@@ -200,7 +225,9 @@ export const CippUserManagement = () => {
           <>
             <Divider />
             <Box>
-              <Typography variant="subtitle2" color="text.secondary">
+              <Typography variant="subtitle2" sx={{
+                color: "text.secondary"
+              }}>
                 Last Synced
               </Typography>
               <Typography variant="body2">
@@ -217,14 +244,14 @@ export const CippUserManagement = () => {
     <Box>
       <CippDataTable
         actions={actions}
-        title="CIPP Users"
+        title="Users"
         cardButton={
           <Button
             variant="contained"
             size="small"
             startIcon={
               <SvgIcon>
-                <PlusIcon />
+                <CippIcons.PlusIcon />
               </SvgIcon>
             }
             onClick={openAddDialog}
@@ -270,10 +297,17 @@ export const CippUserManagement = () => {
             </Alert>
             {bulkEditUsers && (
               <Box>
-                <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 1 }}>
+                <Typography
+                  variant="subtitle2"
+                  sx={{
+                    color: "text.secondary",
+                    mb: 1
+                  }}>
                   Selected Users
                 </Typography>
-                <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+                <Stack direction="row" spacing={1} useFlexGap sx={{
+                  flexWrap: "wrap"
+                }}>
                   {bulkEditUsers.map((u, idx) => (
                     <Chip key={idx} label={u.UPN} size="small" variant="outlined" />
                   ))}

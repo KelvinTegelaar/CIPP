@@ -3,7 +3,7 @@ import { Typography } from "@mui/material";
 import { Grid } from "@mui/system";
 import { useForm } from "react-hook-form";
 import { omit } from "lodash";
-import { Layout as DashboardLayout } from "../../../../layouts/index.js";
+import { Layout as DashboardLayout } from "../../../../layouts/index";
 import CippFormPage from "../../../../components/CippFormPages/CippFormPage";
 import CippFormComponent from "../../../../components/CippComponents/CippFormComponent";
 import { useSettings } from "../../../../hooks/use-settings";
@@ -25,6 +25,7 @@ const CreateBackup = () => {
       intuneprotection: true,
       antispam: true,
       antiphishing: true,
+      teamsvoice: true,
       CippWebhookAlerts: true,
       CippScriptedAlerts: true,
     },
@@ -148,6 +149,19 @@ const CreateBackup = () => {
             formControl={formControl}
           />
         </Grid>
+
+        <Grid size={{ xs: 12 }}>
+          <Typography variant="h6">Teams</Typography>
+        </Grid>
+        <Grid size={{ md: 6, xs: 12 }}>
+          <CippFormComponent
+            type="switch"
+            label="Teams Phone Number Assignments"
+            name="teamsvoice"
+            formControl={formControl}
+          />
+        </Grid>
+        <Grid size={{ md: 6, xs: 12 }}></Grid>
 
         <Grid size={{ xs: 12 }}>
           <Typography variant="h6">CIPP</Typography>

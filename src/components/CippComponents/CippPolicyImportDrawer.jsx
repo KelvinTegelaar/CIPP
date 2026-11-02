@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { CippIcons } from '../../utils/icon-registry'
 import {
   Button,
   Stack,
@@ -10,16 +11,80 @@ import {
   DialogContent,
   DialogActions,
   Skeleton,
+  ToggleButton,
+  ToggleButtonGroup,
 } from '@mui/material'
-import { CloudUpload, Search, Visibility } from '@mui/icons-material'
 import { useForm, useWatch } from 'react-hook-form'
 import { CippOffCanvas } from './CippOffCanvas'
 import { ApiGetCall, ApiPostCall } from '../../api/ApiCall'
-import CippFormComponent from './CippFormComponent'
 import CippJsonView from '../CippFormPages/CippJSONView'
 import { CippApiResults } from './CippApiResults'
 import { CippFormTenantSelector } from './CippFormTenantSelector'
-import { CippFolderNavigation } from './CippFolderNavigation'
+import { CippTemplateCatalog } from './CippTemplateCatalog'
+
+const modeConfig = {
+  Intune: {
+    label: 'Intune Policy',
+    types: ['IntuneTemplate'],
+    tenantSource: true,
+    relatedQueryKeys: ['ListIntuneTemplates-table', 'ListIntuneTemplates-autcomplete'],
+  },
+  ConditionalAccess: {
+    label: 'Conditional Access',
+    types: ['CATemplate'],
+    tenantSource: true,
+    relatedQueryKeys: ['ListCATemplates-table'],
+  },
+  Standards: {
+    label: 'Standards',
+    types: ['StandardsTemplate', 'StandardsTemplateV2'],
+    tenantSource: true,
+    relatedQueryKeys: ['listStandardTemplates'],
+  },
+  ReportBuilder: {
+    label: 'Report Template',
+    types: ['ReportBuilderTemplate'],
+    tenantSource: false,
+    relatedQueryKeys: ['ListReportBuilderTemplates'],
+  },
+  CustomTest: {
+    label: 'Custom Test',
+    types: ['CustomTest'],
+    tenantSource: false,
+    relatedQueryKeys: ['Custom Tests'],
+  },
+  SensitiveInfoType: {
+    label: 'Sensitive Info Type',
+    types: ['SensitiveInfoTypeTemplate'],
+    tenantSource: false,
+    relatedQueryKeys: ['ListSensitiveInfoTypeTemplates'],
+  },
+  RetentionCompliancePolicy: {
+    label: 'Retention Policy',
+    types: ['RetentionCompliancePolicyTemplate'],
+    tenantSource: false,
+    relatedQueryKeys: ['ListRetentionCompliancePolicyTemplates'],
+  },
+  SensitivityLabel: {
+    label: 'Sensitivity Label',
+    types: ['SensitivityLabelTemplate'],
+    tenantSource: false,
+    relatedQueryKeys: ['ListSensitivityLabelTemplates'],
+  },
+  DlpCompliancePolicy: {
+    label: 'DLP Policy',
+    types: ['DlpCompliancePolicyTemplate'],
+    tenantSource: false,
+    relatedQueryKeys: ['ListDlpCompliancePolicyTemplates'],
+  },
+  PIMRoleSettings: {
+    label: 'PIM Role Settings',
+    types: ['PIMRoleSettingsTemplate'],
+    tenantSource: false,
+    // The list queryKey is tenant-suffixed (ListPIMRoleSettingsTemplates-<tenant>), so match with a wildcard.
+    relatedQueryKeys: ['ListPIMRoleSettingsTemplates*'],
+  },
+}
 
 export const CippPolicyImportDrawer = ({
   buttonText = 'Browse Catalog',
@@ -27,140 +92,77 @@ export const CippPolicyImportDrawer = ({
   PermissionButton = Button,
   mode = 'Intune',
 }) => {
+  const config = modeConfig[mode] ?? modeConfig.Intune
   const [drawerVisible, setDrawerVisible] = useState(false)
+  const [sourceMode, setSourceMode] = useState('catalog')
   const [searchQuery, setSearchQuery] = useState('')
   const [viewDialogOpen, setViewDialogOpen] = useState(false)
   const [viewingPolicy, setViewingPolicy] = useState(null)
-  const [selectedFile, setSelectedFile] = useState(null)
   const formControl = useForm()
 
-  const selectedSource = useWatch({ control: formControl.control, name: 'policySource' })
   const tenantFilter = useWatch({ control: formControl.control, name: 'tenantFilter' })
-
-  // API calls
-  const communityRepos = ApiGetCall({
-    url: '/api/ListCommunityRepos',
-    queryKey: 'CommunityRepos-List',
-  })
 
   const tenantPolicies = ApiGetCall({
     url:
       mode === 'ConditionalAccess'
-        ? `/api/ListCATemplates?TenantFilter=${tenantFilter?.value || ''}`
+        ? `/api/ListConditionalAccessPolicies?TenantFilter=${tenantFilter?.value || ''}`
         : mode === 'Standards'
           ? `/api/listStandardTemplates?TenantFilter=${tenantFilter?.value || ''}`
           : `/api/ListIntunePolicy?type=ESP&TenantFilter=${tenantFilter?.value || ''}`,
     queryKey: `TenantPolicies-${mode}-${tenantFilter?.value || 'none'}`,
-    // Enable fetching only after a tenant is selected when source is tenant
-    waiting: selectedSource?.value === 'tenant' && !!tenantFilter?.value,
-  })
-
-  const repoPolicies = ApiGetCall({
-    url: `/api/ExecGitHubAction?Action=GetFileTree&FullName=${
-      selectedSource?.value || ''
-    }&Branch=main`,
-    queryKey: `RepoPolicies-${mode}-${selectedSource?.value || 'none'}`,
-    waiting: !!(selectedSource?.value && selectedSource?.value !== 'tenant'),
-  })
-
-  const repositoryFiles = ApiGetCall({
-    url: `/api/ExecGitHubAction?Action=GetFileTree&FullName=${
-      selectedSource?.value || ''
-    }&Branch=main`,
-    queryKey: `RepositoryFiles-${selectedSource?.value || 'none'}`,
-    waiting: !!(selectedSource?.value && selectedSource?.value !== 'tenant'),
+    waiting: sourceMode === 'tenant' && !!tenantFilter?.value,
   })
 
   const importPolicy = ApiPostCall({
     urlFromData: true,
-    relatedQueryKeys:
-      mode === 'ConditionalAccess'
-        ? ['ListCATemplates-table']
-        : mode === 'Standards'
-          ? ['listStandardTemplates']
-          : mode === 'ReportBuilder'
-            ? ['ListReportBuilderTemplates']
-            : ['ListIntuneTemplates-table', 'ListIntuneTemplates-autcomplete'],
-  })
-
-  const viewPolicyQuery = ApiPostCall({
-    onResult: (resp) => {
-      let content = resp?.Results?.content?.trim() || '{}'
-      content = content.replace(
-        /^[\u0000-\u001F\u007F-\u009F]+|[\u0000-\u001F\u007F-\u009F]+$/g,
-        ''
-      )
-      try {
-        setViewingPolicy(JSON.parse(content))
-      } catch (e) {
-        console.error('Invalid JSON content:', e)
-        setViewingPolicy({})
-      }
-    },
+    relatedQueryKeys: config.relatedQueryKeys,
   })
 
   const handleImportPolicy = (policy) => {
     if (!policy) return
 
     try {
-      if (selectedSource?.value === 'tenant') {
-        // For tenant policies, use appropriate API based on mode
-        if (mode === 'ConditionalAccess') {
-          // For Conditional Access, convert RawJSON to object and send the contents
-          let policyData = policy
+      if (mode === 'ConditionalAccess') {
+        // For Conditional Access, convert RawJSON to object and send the contents
+        let policyData = policy
 
-          // If the policy has RawJSON, parse it and use that as the data
-          if (policy.RawJSON) {
-            try {
-              policyData = JSON.parse(policy.RawJSON)
-            } catch (e) {
-              console.error('Failed to parse RawJSON:', e)
-              policyData = policy
-            }
+        // If the policy has rawjson, parse it and use that as the data.
+        // ListConditionalAccessPolicies returns the raw Graph policy as lowercase `rawjson`.
+        const rawJson = policy.rawjson ?? policy.RawJSON
+        if (rawJson) {
+          try {
+            policyData = JSON.parse(rawJson)
+          } catch (e) {
+            console.error('Failed to parse rawjson:', e)
+            policyData = policy
           }
+        }
 
-          // Send the object contents directly with tenantFilter
-          const caTemplateData = {
+        importPolicy.mutate({
+          url: '/api/AddCATemplate',
+          data: {
             tenantFilter: tenantFilter?.value,
             ...policyData,
-          }
-
-          importPolicy.mutate({
-            url: '/api/AddCATemplate',
-            data: caTemplateData,
-          })
-        } else if (mode === 'Standards') {
-          // For Standards templates, clone the template
-          importPolicy.mutate({
-            url: '/api/AddStandardsTemplate',
-            data: {
-              tenantFilter: tenantFilter?.value,
-              templateId: policy.GUID,
-              clone: true,
-            },
-          })
-        } else {
-          // For Intune policies, use existing format
-          importPolicy.mutate({
-            url: '/api/AddIntuneTemplate',
-            data: {
-              tenantFilter: tenantFilter?.value,
-              ID: policy.id,
-              URLName: policy.URLName || 'GroupPolicyConfigurations',
-            },
-          })
-        }
-      } else {
-        // For community repository files, use ExecCommunityRepo
+          },
+        })
+      } else if (mode === 'Standards') {
+        // For Standards templates, clone the template
         importPolicy.mutate({
-          url: '/api/ExecCommunityRepo',
+          url: '/api/AddStandardsTemplate',
           data: {
-            tenantFilter: tenantFilter?.value || 'AllTenants',
-            Action: 'ImportTemplate',
-            FullName: selectedSource?.value,
-            Path: policy.path,
-            Branch: 'main',
-            Type: mode,
+            tenantFilter: tenantFilter?.value,
+            templateId: policy.GUID,
+            clone: true,
+          },
+        })
+      } else {
+        // For Intune policies, use existing format
+        importPolicy.mutate({
+          url: '/api/AddIntuneTemplate',
+          data: {
+            tenantFilter: tenantFilter?.value,
+            ID: policy.id,
+            URLName: policy.URLName || 'GroupPolicyConfigurations',
           },
         })
       }
@@ -172,38 +174,25 @@ export const CippPolicyImportDrawer = ({
   const handleViewPolicy = (policy) => {
     if (!policy) return
 
-    try {
-      if (selectedSource?.value !== 'tenant' && selectedSource?.value) {
-        // For community repository files, fetch the file content
-        viewPolicyQuery.mutate({
-          url: '/api/ExecGitHubAction',
-          data: {
-            Action: 'GetFileContents',
-            FullName: selectedSource.value,
-            Path: policy.path || '',
-            Branch: 'main',
-          },
-        })
-      } else {
-        // For tenant policies, use the policy object directly
+    // ConditionalAccess returns the Graph policy as lowercase `rawjson`.
+    const rawJson = policy?.rawjson ?? policy?.RawJSON
+    if (mode === 'ConditionalAccess' && rawJson) {
+      try {
+        setViewingPolicy(JSON.parse(rawJson))
+      } catch (e) {
+        console.error('Failed to parse rawjson for view:', e)
         setViewingPolicy(policy || {})
       }
-      setViewDialogOpen(true)
-    } catch (error) {
-      console.error('Error viewing policy:', error)
+    } else {
+      setViewingPolicy(policy || {})
     }
+    setViewDialogOpen(true)
   }
 
   const handleCloseDrawer = () => {
     setDrawerVisible(false)
     setSearchQuery('')
     setViewingPolicy(null)
-    setSelectedFile(null)
-    // Don't reset form at all to avoid any potential issues
-  }
-
-  const handleFileSelect = (file) => {
-    setSelectedFile(file)
   }
 
   const handleCloseViewDialog = () => {
@@ -212,78 +201,35 @@ export const CippPolicyImportDrawer = ({
   }
 
   const formatPolicyName = (policy) => {
-    // Safety check
     if (!policy) return 'Unnamed Policy'
-
-    // For tenant policies, use displayName or name
-    if (policy.displayName || policy.name) {
-      return policy.displayName || policy.name
-    }
-
-    // For repository files, format the path nicely
-    if (policy.path) {
-      try {
-        // Remove file extension
-        let name = policy.path.replace(/\.(json|yaml|yml)$/i, '')
-
-        // Remove directory path, keep only filename
-        name = name.split('/').pop()
-
-        // Replace underscores with spaces and clean up
-        name = name.replace(/_/g, ' ')
-
-        // Remove common prefixes like "CIPP_"
-        name = name.replace(/^CIPP\s*/i, '')
-
-        // Capitalize first letter of each word
-        name = name.replace(/\b\w/g, (l) => l.toUpperCase())
-
-        return name || 'Unnamed Policy'
-      } catch (error) {
-        console.warn('Error formatting policy name:', error)
-        return policy.path || 'Unnamed Policy'
-      }
-    }
-
-    return 'Unnamed Policy'
+    return policy.displayName || policy.name || policy.templateName || 'Unnamed Policy'
   }
 
-  // Get policies based on source
+  // Tenant policies list
   let availablePolicies = []
-  if (selectedSource?.value === 'tenant' && tenantPolicies.isSuccess && tenantFilter?.value) {
+  if (sourceMode === 'tenant' && tenantPolicies.isSuccess && tenantFilter?.value) {
     const tpData = tenantPolicies.data
     if (Array.isArray(tpData)) {
       availablePolicies = tpData
     } else if (Array.isArray(tpData?.Results)) {
       availablePolicies = tpData.Results
     } else if (tpData?.Results && typeof tpData.Results === 'object') {
-      // Handle edge case where Results might be an object of keyed items
       availablePolicies = Object.values(tpData.Results).filter(Boolean)
     } else {
       availablePolicies = []
     }
-  } else if (
-    selectedSource?.value &&
-    selectedSource?.value !== 'tenant' &&
-    repoPolicies.isSuccess
-  ) {
-    const repoData = repoPolicies.data?.Results || repoPolicies.data || []
-    availablePolicies = Array.isArray(repoData) ? repoData : []
   }
 
   const filteredPolicies = (() => {
     if (!Array.isArray(availablePolicies)) return []
-
     if (!searchQuery?.trim()) return availablePolicies
-
     return availablePolicies.filter((policy) => {
       if (!policy) return false
       const searchLower = searchQuery.toLowerCase()
       return (
         policy.displayName?.toLowerCase().includes(searchLower) ||
         policy.description?.toLowerCase().includes(searchLower) ||
-        policy.name?.toLowerCase().includes(searchLower) ||
-        policy.path?.toLowerCase().includes(searchLower)
+        policy.name?.toLowerCase().includes(searchLower)
       )
     })
   })()
@@ -291,19 +237,21 @@ export const CippPolicyImportDrawer = ({
   return (
     <>
       <PermissionButton
-        requiredPermissions={requiredPermissions}
+        {...(PermissionButton === Button ? {} : { requiredPermissions })}
         onClick={() => setDrawerVisible(true)}
-        startIcon={<CloudUpload />}
+        startIcon={<CippIcons.CloudUpload />}
       >
         {buttonText}
       </PermissionButton>
       <CippOffCanvas
-        title={`Browse ${mode === 'ReportBuilder' ? 'Report Template' : mode + ' Policy'} Catalog`}
+        title={`Browse ${config.label} Catalog`}
         visible={drawerVisible}
         onClose={handleCloseDrawer}
-        size="lg"
+        size="xl"
         footer={
-          <Stack direction="row" justifyContent="flex-start" spacing={2}>
+          <Stack direction="row" spacing={2} sx={{
+            justifyContent: "flex-start"
+          }}>
             <Button variant="outlined" onClick={handleCloseDrawer}>
               Close
             </Button>
@@ -311,31 +259,33 @@ export const CippPolicyImportDrawer = ({
         }
       >
         <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
-          <Box sx={{ flexShrink: 0, mb: 3 }}>
-            <CippFormComponent
-              name="policySource"
-              type="autoComplete"
-              label="Select Policy Source"
-              isFetching={communityRepos.isLoading}
-              multiple={false}
-              formControl={formControl}
-              options={[
-                ...(communityRepos.isSuccess &&
-                communityRepos.data?.Results &&
-                Array.isArray(communityRepos.data.Results)
-                  ? communityRepos.data.Results.map((repo) => ({
-                      label: `${repo?.Name || 'Unknown'} (${repo?.URL || 'Unknown'})`,
-                      value: repo?.FullName || '',
-                    })).filter((option) => option.value)
-                  : []),
-                ...(mode !== 'ReportBuilder'
-                  ? [{ label: 'Get template from existing tenant', value: 'tenant' }]
-                  : []),
-              ]}
-            />
+          {config.tenantSource && (
+            <Box sx={{ flexShrink: 0, mb: 2 }}>
+              <ToggleButtonGroup
+                value={sourceMode}
+                exclusive
+                size="small"
+                onChange={(e, newMode) => {
+                  if (newMode !== null) setSourceMode(newMode)
+                }}
+              >
+                <ToggleButton value="catalog">Community Catalog</ToggleButton>
+                <ToggleButton value="tenant">From a Tenant</ToggleButton>
+              </ToggleButtonGroup>
+            </Box>
+          )}
 
-            {selectedSource?.value === 'tenant' && (
-              <Box sx={{ mt: 3 }}>
+          {sourceMode === 'catalog' ? (
+            <Box sx={{ flexGrow: 1, minHeight: 0 }}>
+              <CippTemplateCatalog
+                variant="drawer"
+                typeFilter={config.types}
+                relatedQueryKeys={config.relatedQueryKeys}
+              />
+            </Box>
+          ) : (
+            <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', minHeight: 0 }}>
+              <Box sx={{ mb: 3 }}>
                 <CippFormTenantSelector
                   formControl={formControl}
                   name="tenantFilter"
@@ -345,39 +295,37 @@ export const CippPolicyImportDrawer = ({
                   type="single"
                 />
               </Box>
-            )}
-          </Box>
 
-          {/* Content based on source */}
-          <Box
-            sx={{
-              flexGrow: 1,
-              display: 'flex',
-              flexDirection: 'column',
-              height: '100%',
-            }}
-          >
-            {selectedSource?.value === 'tenant' ? (
-              // Tenant policies - show traditional list
-              <>
-                <TextField
-                  fullWidth
-                  label="Search Policies"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  InputProps={{
-                    startAdornment: <Search sx={{ mr: 1, color: 'text.secondary' }} />,
-                  }}
-                  placeholder="Search by policy name or description..."
-                />
+              <TextField
+                fullWidth
+                label="Search Policies"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search by policy name or description..."
+                sx={{ mb: 2 }}
+                slotProps={{
+                  input: {
+                    startAdornment: <CippIcons.Search sx={{ mr: 1, color: 'text.secondary' }} />,
+                  }
+                }}
+              />
 
-                <Typography variant="h6">Available Policies ({filteredPolicies.length})</Typography>
+              <Typography variant="h6" sx={{ mb: 1 }}>
+                Available Policies ({filteredPolicies.length})
+              </Typography>
 
+              <Box sx={{ flexGrow: 1, overflow: 'auto', minHeight: 0 }}>
                 {tenantPolicies.isLoading ? (
                   <>
                     {[...Array(3)].map((_, index) => (
                       <Box key={index} sx={{ mb: 3 }}>
-                        <Stack direction="row" spacing={2} alignItems="center" sx={{ mb: 1 }}>
+                        <Stack
+                          direction="row"
+                          spacing={2}
+                          sx={{
+                            alignItems: "center",
+                            mb: 1
+                          }}>
                           <Skeleton variant="rectangular" width={80} height={36} />
                           <Skeleton variant="rectangular" width={120} height={36} />
                           <Skeleton variant="text" width={300} height={32} />
@@ -390,20 +338,26 @@ export const CippPolicyImportDrawer = ({
                   filteredPolicies.map((policy, index) => {
                     if (!policy) return null
                     return (
-                      <Box key={policy.id || policy.path || index} sx={{ mb: 3 }}>
-                        <Stack direction="row" spacing={2} alignItems="flex-start" sx={{ mb: 1 }}>
+                      <Box key={policy.id || policy.GUID || index} sx={{ mb: 3 }}>
+                        <Stack
+                          direction="row"
+                          spacing={2}
+                          sx={{
+                            alignItems: "flex-start",
+                            mb: 1
+                          }}>
                           <Button
                             variant="contained"
                             color="primary"
                             onClick={() => handleImportPolicy(policy)}
-                            disabled={importPolicy.isLoading}
+                            disabled={importPolicy.isPending}
                             sx={{ minWidth: 80, flexShrink: 0 }}
                           >
                             Import
                           </Button>
                           <Button
                             variant="outlined"
-                            startIcon={<Visibility />}
+                            startIcon={<CippIcons.EyeIcon />}
                             onClick={() => handleViewPolicy(policy)}
                             sx={{ minWidth: 120, flexShrink: 0 }}
                           >
@@ -414,118 +368,58 @@ export const CippPolicyImportDrawer = ({
                               {formatPolicyName(policy)}
                             </Typography>
                             {policy?.description && (
-                              <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+                              <Typography
+                                variant="body2"
+                                sx={{
+                                  color: "text.secondary",
+                                  mt: 0.5
+                                }}>
                                 {policy.description}
                               </Typography>
                             )}
                           </Box>
                         </Stack>
                       </Box>
-                    )
+                    );
                   })
-                ) : (
-                  <Typography variant="body2" color="text.secondary">
+                ) : tenantFilter?.value ? (
+                  <Typography variant="body2" sx={{
+                    color: "text.secondary"
+                  }}>
                     No policies available.
                   </Typography>
-                )}
-
-                <CippApiResults apiObject={tenantPolicies} errorsOnly />
-              </>
-            ) : selectedSource?.value ? (
-              // Repository source - show iOS-style folder navigation
-              <>
-                <Typography variant="h6" sx={{ mb: 2 }}>
-                  Browse Repository Files
-                </Typography>
-                {repositoryFiles.isLoading ? (
-                  <Box sx={{ flexGrow: 1 }}>
-                    {/* Navigation skeleton */}
-                    <Box sx={{ p: 2, borderBottom: 1, borderColor: 'divider' }}>
-                      <Skeleton variant="text" width={200} height={24} />
-                    </Box>
-
-                    {/* File/folder list skeleton */}
-                    <Box sx={{ p: 1 }}>
-                      {[...Array(5)].map((_, index) => (
-                        <Box key={index} sx={{ mb: 1 }}>
-                          <Stack direction="row" spacing={2} alignItems="center" sx={{ p: 1 }}>
-                            <Skeleton variant="circular" width={20} height={20} />
-                            <Skeleton
-                              variant="text"
-                              width={Math.random() * 200 + 100}
-                              height={20}
-                            />
-                            <Box sx={{ flexGrow: 1 }} />
-                            <Skeleton variant="rectangular" width={16} height={16} />
-                          </Stack>
-                        </Box>
-                      ))}
-                    </Box>
-                  </Box>
-                ) : repositoryFiles.isSuccess ? (
-                  <Box
-                    sx={{
-                      flexGrow: 1,
-                      display: 'flex',
-                      flexDirection: 'column',
-                      minHeight: 0,
-                      height: '100%',
-                    }}
-                  >
-                    <CippFolderNavigation
-                      data={repositoryFiles.data?.Results || []}
-                      onFileSelect={handleFileSelect}
-                      selectedFile={selectedFile}
-                      searchable={true}
-                      showFileInfo={true}
-                      onImportFile={handleImportPolicy}
-                      onViewFile={handleViewPolicy}
-                      isImporting={importPolicy.isLoading}
-                    />
-                  </Box>
                 ) : (
-                  <Typography variant="body2" color="text.secondary">
-                    Unable to load repository files.
+                  <Typography variant="body2" sx={{
+                    color: "text.secondary"
+                  }}>
+                    Select a tenant to browse its policies.
                   </Typography>
                 )}
+              </Box>
 
-                <Box sx={{ flexShrink: 0 }}>
-                  <CippApiResults apiObject={repositoryFiles} errorsOnly />
-                </Box>
-              </>
-            ) : (
-              <Typography variant="body2" color="text.secondary">
-                Please select a policy source to continue.
-              </Typography>
-            )}
-
-            <Box sx={{ flexShrink: 0 }}>
-              <CippApiResults apiObject={importPolicy} />
+              <Box sx={{ flexShrink: 0 }}>
+                <CippApiResults apiObject={tenantPolicies} errorsOnly />
+                <CippApiResults apiObject={importPolicy} />
+              </Box>
             </Box>
-          </Box>
+          )}
         </Box>
       </CippOffCanvas>
 
       <Dialog fullWidth maxWidth="xl" open={viewDialogOpen} onClose={handleCloseViewDialog}>
         <DialogTitle>Policy Details</DialogTitle>
         <DialogContent>
-          {viewPolicyQuery.isPending ? (
-            <Box>
-              <Skeleton height={300} variant="rectangular" />
-            </Box>
-          ) : (
-            <CippJsonView
-              object={viewingPolicy || {}}
-              type={
-                mode === 'ConditionalAccess'
-                  ? 'conditionalaccess'
-                  : mode === 'Standards'
-                    ? 'standards'
-                    : 'intune'
-              }
-              defaultOpen={true}
-            />
-          )}
+          <CippJsonView
+            object={viewingPolicy || {}}
+            type={
+              mode === 'ConditionalAccess'
+                ? 'conditionalaccess'
+                : mode === 'Standards'
+                  ? 'standards'
+                  : 'intune'
+            }
+            defaultOpen={true}
+          />
         </DialogContent>
         <DialogActions>
           <Button variant="outlined" onClick={handleCloseViewDialog}>
@@ -534,5 +428,5 @@ export const CippPolicyImportDrawer = ({
         </DialogActions>
       </Dialog>
     </>
-  )
+  );
 }

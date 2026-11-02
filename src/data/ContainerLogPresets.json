@@ -48,5 +48,25 @@
     "name": "Full Log (Last 1h, no heartbeats)",
     "id": "cl-preset-full-clean",
     "query": "where Timestamp > ago(1h)\n| where Message !contains \"heartbeat\"\n| take 1000\n| sort by Timestamp desc"
+  },
+  {
+    "name": "API Client Access (Last 24h)",
+    "id": "cl-preset-api-client-access",
+    "query": "search all files\n| where Message contains \"API Access: AppName=\"\n| where Timestamp > ago(24h)\n| take 1000\n| sort by Timestamp desc"
+  },
+  {
+    "name": "Out of Memory / Watchdog Restarts",
+    "id": "cl-preset-oom-watchdog",
+    "query": "search all files\n| where Message matches regex \"OutOfMemoryException|Container startup attempt|Restart counter\"\n| take 500\n| sort by Timestamp desc"
+  },
+  {
+    "name": "HTTP Pool Exhausted",
+    "id": "cl-preset-http-pool-exhausted",
+    "query": "search all files\n| where Message contains \"HTTP pool exhausted\"\n| where Timestamp > ago(24h)\n| take 500\n| sort by Timestamp desc"
+  },
+  {
+    "name": "Slow Requests (HTTP timings)",
+    "id": "cl-preset-slow-requests",
+    "query": "where Message matches regex \"\\\\[HTTP\\\\] \\\\S+ \\\\S+ \\\\d{3} \\\\d{5,}ms\"\n| where Timestamp > ago(24h)\n| take 500\n| sort by Timestamp desc"
   }
 ]

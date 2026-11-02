@@ -1,9 +1,9 @@
-import { Box, Button, Container, Stack, Typography, SvgIcon, Skeleton } from '@mui/material'
+import { Box, Button, Chip, Container, Stack, Typography, SvgIcon, Skeleton } from '@mui/material'
+import { CippIcons } from '../../../../utils/icon-registry'
 import { Grid } from '@mui/system'
-import { Layout as DashboardLayout } from '../../../../layouts/index.js'
+import { Layout as DashboardLayout } from '../../../../layouts/index'
 import { useForm, useWatch } from 'react-hook-form'
 import { useRouter } from 'next/router'
-import { Add, SaveRounded } from '@mui/icons-material'
 import { useEffect, useState, useCallback, useMemo, useRef, lazy, Suspense } from 'react'
 import standards from '../../../../data/standards'
 import CippStandardAccordion from '../../../../components/CippStandards/CippStandardAccordion'
@@ -16,7 +16,7 @@ import { ArrowLeftIcon } from '@mui/x-date-pickers'
 import { useDialog } from '../../../../hooks/use-dialog'
 import { ApiGetCall } from '../../../../api/ApiCall'
 import { get } from 'lodash'
-import { createDriftManagementActions } from '../../manage/driftManagementActions'
+import { createDriftManagementActions } from '../../../../components/CippComponents/CippDriftManagementActions'
 import { ActionsMenu } from '../../../../components/actions-menu'
 import { useSettings } from '../../../../hooks/use-settings'
 import { CippHead } from '../../../../components/CippComponents/CippHead'
@@ -57,6 +57,16 @@ const Page = () => {
     queryKey: `listStandardTemplates-${router.query.id}`,
     waiting: editMode,
   })
+
+  // A clone isn't pushed to the source repo yet, so it drops the synced badge/option.
+  const templateSource =
+    !router.query.clone && existingTemplate.data?.[0]?.source
+      ? existingTemplate.data[0].source
+      : null
+  const templateSourceUrl = !router.query.clone ? existingTemplate.data?.[0]?.sourceUrl : null
+  const templateHasLocalChanges = !router.query.clone
+    ? existingTemplate.data?.[0]?.hasLocalChanges ?? null
+    : null
 
   // Check if the template configuration is valid and update currentStep
   useEffect(() => {
@@ -367,27 +377,33 @@ const Page = () => {
 
       <Stack spacing={2}>
         <Stack
-          direction="row"
-          justifyContent="space-between"
-          alignItems="center"
-          spacing={4}
-          sx={{ mb: 3 }}
-        >
-          <Typography variant="h4">
-            {editMode
-              ? isDriftMode
-                ? 'Edit Drift Template'
-                : 'Edit Standards Template'
-              : isDriftMode
-                ? 'Add Drift Template'
-                : 'Add Standards Template'}
-          </Typography>
-          <Stack direction="row" spacing={2}>
+          direction={{ xs: 'column', sm: 'row' }}
+          spacing={{ xs: 2, sm: 4 }}
+          sx={{
+            justifyContent: "space-between",
+            alignItems: { xs: 'stretch', sm: 'center' },
+            mb: 3
+          }}>
+            <Typography variant="h4">
+              {editMode
+                ? isDriftMode
+                  ? 'Edit Drift Template'
+                  : 'Edit Standards Template'
+                : isDriftMode
+                  ? 'Add Drift Template'
+                  : 'Add Standards Template'}
+            </Typography>
+          <Stack
+            direction="row"
+            spacing={2}
+            useFlexGap
+            sx={{ flexWrap: 'wrap' }}
+          >
             <Button
               variant="contained"
               color="primary"
               onClick={handleSave}
-              startIcon={<SaveRounded />}
+              startIcon={<CippIcons.SaveRounded />}
               disabled={isSaveDisabled}
             >
               Save Template
@@ -396,7 +412,7 @@ const Page = () => {
               variant="outlined"
               color="primary"
               onClick={handleOpenDialog}
-              startIcon={<Add />}
+              startIcon={<CippIcons.Add />}
             >
               Add Standard to Template
             </Button>
@@ -409,6 +425,30 @@ const Page = () => {
             )}
           </Stack>
         </Stack>
+        {templateSource && (
+          <Box sx={{ mb: 2 }}>
+            <Chip
+              size="small"
+              variant="outlined"
+              icon={CippIcons.GitHub ? <CippIcons.GitHub /> : undefined}
+              color={templateHasLocalChanges ? 'warning' : 'default'}
+              label={
+                templateHasLocalChanges
+                  ? `Modified since last push to ${templateSource}`
+                  : `Synced from ${templateSource}`
+              }
+              {...(templateSourceUrl
+                ? {
+                    component: 'a',
+                    href: templateSourceUrl,
+                    target: '_blank',
+                    rel: 'noopener noreferrer',
+                    clickable: true,
+                  }
+                : {})}
+            />
+          </Box>
+        )}
 
         <Box sx={{ flexGrow: 1, height: 'calc(100vh - 240px)', overflow: 'hidden' }}>
           <Grid container spacing={3} sx={{ height: '100%' }}>
@@ -423,6 +463,8 @@ const Page = () => {
                 formControl={formControl}
                 selectedStandards={selectedStandards}
                 edit={editMode}
+                source={templateSource}
+                hasLocalChanges={templateHasLocalChanges}
                 updatedAt={updatedAt}
                 isDriftMode={isDriftMode}
                 onDriftConflictChange={setHasDriftConflict}
@@ -474,7 +516,7 @@ const Page = () => {
         </Suspense>
       )}
     </Box>
-  )
+  );
 }
 
 Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>

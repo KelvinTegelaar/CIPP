@@ -1,6 +1,6 @@
 import { Box, CircularProgress } from "@mui/material";
 import CippFormPage from "../../../../components/CippFormPages/CippFormPage";
-import { Layout as DashboardLayout } from "../../../../layouts/index.js";
+import { Layout as DashboardLayout } from "../../../../layouts/index";
 import { useForm } from "react-hook-form";
 import { useSettings } from "../../../../hooks/use-settings";
 import CippAddAssignmentFilterTemplateForm from "../../../../components/CippFormPages/CippAddAssignmentFilterTemplateForm";
@@ -55,7 +55,8 @@ const Page = () => {
         resetForm={false}
         queryKey={[`ListAssignmentFilterTemplates`, `AssignmentFilterTemplate-${id}`]}
         formControl={formControl}
-        title="Edit Assignment Filter Template"
+        title="Assignment Filter Template"
+        formPageType="Edit"
         backButtonTitle="Assignment Filter Overview"
         postUrl="/api/AddAssignmentFilterTemplate"
         isFetching={isFetching}

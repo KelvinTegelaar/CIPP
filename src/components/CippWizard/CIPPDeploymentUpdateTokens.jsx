@@ -1,6 +1,6 @@
 import { useState } from "react";
+import { CippIcons } from "../../utils/icon-registry";
 import { Stack, Typography, CircularProgress, SvgIcon, Box, Chip, Skeleton } from "@mui/material";
-import { CheckCircle, Person, Apartment } from "@mui/icons-material";
 import CippButtonCard from "../CippCards/CippButtonCard";
 import { ApiGetCall } from "../../api/ApiCall";
 import { CippApiResults } from "../CippComponents/CippApiResults";
@@ -27,14 +27,16 @@ export const CIPPDeploymentUpdateTokens = ({ formControl }) => {
       <CippButtonCard
         variant="outlined"
         title={
-          <Stack direction="row" justifyContent={"space-between"}>
+          <Stack direction="row" sx={{
+            justifyContent: "space-between"
+          }}>
             <Box>Update Tokens</Box>
             <Stack direction="row" spacing={2}>
               {appId.isLoading ? (
                 <CircularProgress size="1rem" />
               ) : (
                 <SvgIcon color="primary">
-                  <CheckCircle />
+                  <CippIcons.CheckCircle />
                 </SvgIcon>
               )}
             </Stack>
@@ -61,10 +63,11 @@ export const CIPPDeploymentUpdateTokens = ({ formControl }) => {
           <Stack
             direction="row"
             spacing={2}
-            alignItems="center"
-            justifyContent="space-between"
-            sx={{ mb: 2 }}
-          >
+            sx={{
+              alignItems: "center",
+              justifyContent: "space-between",
+              mb: 2
+            }}>
             <Stack direction="column" spacing={1} sx={{ flex: 1 }}>
               <Skeleton variant="text" width="60%" height={24} />
               <Skeleton variant="text" width="80%" height={20} />
@@ -76,37 +79,52 @@ export const CIPPDeploymentUpdateTokens = ({ formControl }) => {
           <Stack
             direction="row"
             spacing={2}
-            alignItems="center"
-            justifyContent="space-between"
-            sx={{ mt: 2 }}
-          >
+            sx={{
+              alignItems: "center",
+              justifyContent: "space-between",
+              mt: 2
+            }}>
             <Stack direction="column" spacing={0.5}>
-              <Stack direction="row" spacing={0.75} alignItems="center">
+              <Stack direction="row" spacing={0.75} sx={{
+                alignItems: "center"
+              }}>
                 <SvgIcon fontSize="small">
-                  <Apartment />
+                  <CippIcons.Apartment />
                 </SvgIcon>
-                <Typography variant="body2" fontWeight="medium">
+                <Typography variant="body2" sx={{
+                  fontWeight: "medium"
+                }}>
                   {appId.data.orgName}
                 </Typography>
-                <Typography variant="caption" color="text.secondary">
+                <Typography variant="caption" sx={{
+                  color: "text.secondary"
+                }}>
                   {appId.data.tenantId}
                 </Typography>
               </Stack>
               {appId.data.authenticatedUserDisplayName && (
-                <Stack direction="row" spacing={0.75} alignItems="center">
+                <Stack direction="row" spacing={0.75} sx={{
+                  alignItems: "center"
+                }}>
                   <SvgIcon fontSize="small">
-                    <Person />
+                    <CippIcons.Person />
                   </SvgIcon>
-                  <Typography variant="body2" fontWeight="medium">
+                  <Typography variant="body2" sx={{
+                    fontWeight: "medium"
+                  }}>
                     {appId.data.authenticatedUserDisplayName}
                   </Typography>
-                  <Typography variant="caption" color="text.secondary">
+                  <Typography variant="caption" sx={{
+                    color: "text.secondary"
+                  }}>
                     {appId.data.authenticatedUserPrincipalName}
                   </Typography>
                 </Stack>
               )}
             </Stack>
-            <Stack direction="row" spacing={1} alignItems="center">
+            <Stack direction="row" spacing={1} sx={{
+              alignItems: "center"
+            }}>
               {appId.data.isPartnerTenant ? (
                 <Chip
                   label={getCippTranslation(appId.data.partnerTenantType)}

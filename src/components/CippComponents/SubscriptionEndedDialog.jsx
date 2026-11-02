@@ -8,7 +8,6 @@ export const SubscriptionEndedDialog = ({ hostedSubscriptionEnded }) => {
       open={open}
       maxWidth="sm"
       fullWidth
-      disableEscapeKeyDown
       slotProps={{ backdrop: { onClick: (e) => e.stopPropagation() } }}
     >
       <DialogTitle>Subscription Ended</DialogTitle>

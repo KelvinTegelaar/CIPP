@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
+import { CippIcons } from "../../utils/icon-registry";
 import { Button, Box, Typography, Alert, AlertTitle } from "@mui/material";
 import { useForm, useFormState } from "react-hook-form";
-import { CalendarDaysIcon } from "@heroicons/react/24/outline";
 import { CippOffCanvas } from "./CippOffCanvas";
 import CippSchedulerForm from "../CippFormPages/CippSchedulerForm";
 import { useSettings } from "../../hooks/use-settings";
@@ -61,9 +61,9 @@ export const CippSchedulerDrawer = ({
   return (
     <>
       <PermissionButton
-        requiredPermissions={requiredPermissions}
+        {...(PermissionButton !== Button ? { requiredPermissions } : {})}
         onClick={handleOpenDrawer}
-        startIcon={<CalendarDaysIcon />}
+        startIcon={<CippIcons.CalendarDaysIcon />}
       >
         {buttonText}
       </PermissionButton>
@@ -80,7 +80,7 @@ export const CippSchedulerDrawer = ({
               ? "Clone this task with the same configuration. Modify the settings as needed and save to create a new task."
               : taskId
               ? "Edit the task configuration. Changes will be applied when you save."
-              : "Create a scheduled task or event-triggered task. Scheduled tasks run PowerShell commands at specified times, while triggered tasks respond to events like Azure AD changes."}
+              : "Create a scheduled task or event-triggered task. Scheduled tasks run PowerShell commands at specified times, while triggered tasks respond to events like Microsoft Entra changes."}
           </Alert>
 
           <CippSchedulerForm

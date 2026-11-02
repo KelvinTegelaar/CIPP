@@ -1,26 +1,44 @@
 import React, { useState, useRef, useEffect, useMemo } from "react";
+import { CippIcons } from "../../utils/icon-registry";
 import {
   TextField,
   Box,
   Typography,
   Skeleton,
   MenuItem,
+  MenuList,
   ListItemText,
   Paper,
   CircularProgress,
   InputAdornment,
   Portal,
   Button,
+  Chip,
+  List,
+  ListItemButton,
+  ListItemIcon,
+  ListSubheader,
+  Stack,
 } from "@mui/material";
-import { Search as SearchIcon } from "@mui/icons-material";
 import { ApiGetCall } from "../../api/ApiCall";
 import { useRouter } from "next/router";
 import { BulkActionsMenu } from "../bulk-actions-menu";
 import { CippOffCanvas } from "../CippComponents/CippOffCanvas";
 import { CippBitlockerKeySearch } from "../CippComponents/CippBitlockerKeySearch";
 import { nativeMenuItems } from "../../layouts/config";
+import { getHiddenPages } from "../../utils/filter-menu-items";
 import { usePermissions } from "../../hooks/use-permissions";
+import { useIsMobileLayout } from "../../hooks/use-breakpoint";
+import { useUserBookmarks } from "../../hooks/use-user-bookmarks";
+import { useSettings } from "../../hooks/use-settings";
+import { useTenantPreferences } from "../../hooks/use-tenant-preferences";
 import { searchLocalLicenseCatalog } from "../../utils/get-cipp-license-catalog";
+import extensions from "../../data/Extensions.json";
+
+// Scopes that match in memory as the user types; the rest hit the API on Enter / Search.
+const LOCAL_SCOPES = ["Pages", "Licenses", "Tenants"];
+// Group-driven tenant searches can match hundreds of tenants — cap what is rendered.
+const MAX_TENANT_RESULTS = 50;
 
 function getLeafItems(items = []) {
   let result = [];
@@ -36,45 +54,31 @@ function getLeafItems(items = []) {
   return result;
 }
 
-async function loadTabOptions() {
-  const tabOptionPaths = [
-    "/email/administration/exchange-retention",
-    "/cipp/custom-data",
-    "/cipp/advanced/super-admin",
-    "/endpoint/MEM/enrollment-profiles",
-    "/tenant/standards",
-    "/tenant/manage",
-    "/tenant/administration/applications",
-    "/tenant/administration/tenants",
-    "/tenant/administration/audit-logs",
-    "/identity/administration/users/user",
-    "/tenant/administration/securescore",
-    "/tenant/gdap-management",
-    "/tenant/gdap-management/relationships/relationship",
-    "/cipp/settings",
-  ];
+/**
+ * Load every tabOptions.json under pages/ at build time. Globbed rather than listed so a new
+ * tabbed page is searchable without anyone remembering to register it here. The previous
+ * hardcoded list had drifted to cover only half of the tabbed pages (issue #668).
+ */
+function loadTabOptions() {
+  const context = require.context("../../pages", true, /tabOptions\.json$/);
 
-  const tabOptions = [];
+  return context.keys().flatMap((key) => {
+    const tabModule = context(key);
+    const options = tabModule.default || tabModule;
+    if (!Array.isArray(options)) return [];
 
-  for (const basePath of tabOptionPaths) {
-    try {
-      const module = await import(`../../pages${basePath}/tabOptions.json`);
-      const options = module.default || module;
+    // './tenant/manage/tabOptions.json' -> '/tenant/manage'
+    const basePath = key.replace(/^\./, "").replace(/\/tabOptions\.json$/, "");
 
-      options.forEach((option) => {
-        tabOptions.push({
-          title: option.label,
-          path: option.path,
-          type: "tab",
-          basePath,
-        });
-      });
-    } catch (error) {
-      console.debug(`Could not load tabOptions for ${basePath}:`, error);
-    }
-  }
-
-  return tabOptions;
+    return options
+      .filter((option) => option?.label && option?.path)
+      .map((option) => ({
+        title: option.label,
+        path: option.path,
+        type: "tab",
+        basePath,
+      }));
+  });
 }
 
 function filterItemsByPermissionsAndRoles(items, userPermissions, userRoles) {
@@ -123,7 +127,7 @@ export const CippUniversalSearchV2 = React.forwardRef(
     const [searchValue, setSearchValue] = useState(value);
     const [searchType, setSearchType] = useState(defaultSearchType);
     const [bitlockerLookupType, setBitlockerLookupType] = useState("keyId");
-    const [tabOptions, setTabOptions] = useState([]);
+    const [tabOptions] = useState(loadTabOptions);
     const [showDropdown, setShowDropdown] = useState(false);
     const [highlightedIndex, setHighlightedIndex] = useState(-1);
     const [bitlockerDrawerVisible, setBitlockerDrawerVisible] = useState(false);
@@ -138,6 +142,27 @@ export const CippUniversalSearchV2 = React.forwardRef(
     const dropdownRef = useRef(null);
     const router = useRouter();
     const { userPermissions, userRoles } = usePermissions();
+    const isMobile = useIsMobileLayout();
+    const { bookmarks } = useUserBookmarks();
+    const settings = useSettings();
+    const { trackRecent } = useTenantPreferences();
+
+    // Same url/data/queryKey as the top-nav tenant selector and the form group selector, so
+    // both are served from the cache those already filled rather than fetched again.
+    const tenantList = ApiGetCall({
+      url: "/api/listTenants",
+      data: { AllTenantSelector: true },
+      queryKey: "TenantSelector",
+      waiting: searchType === "Tenants",
+      refetchOnMount: false,
+      refetchOnReconnect: false,
+    });
+    const tenantGroupList = ApiGetCall({
+      url: "/api/ListTenantGroups",
+      data: { AllTenantSelector: true },
+      queryKey: "TenantGroupSelector",
+      waiting: searchType === "Tenants",
+    });
 
     const universalSearch = ApiGetCall({
       url: `/api/ExecUniversalSearchV2`,
@@ -170,8 +195,24 @@ export const CippUniversalSearchV2 = React.forwardRef(
     const activeSearch =
       searchType === "BitLocker" ? bitlockerSearch : searchType === "Pages" ? null : universalSearch;
 
+    // Same flags the side nav and tab layouts filter by, so a page switched off by a feature
+    // flag doesn't resurface as a search result (issue #760).
+    const featureFlags = ApiGetCall({
+      url: "/api/ListFeatureFlags",
+      queryKey: "featureFlags",
+      staleTime: 600000,
+    });
+    const hiddenPages = useMemo(
+      () =>
+        featureFlags.isSuccess
+          ? getHiddenPages(featureFlags.data).map((page) => page.replace(/\/$/, ""))
+          : [],
+      [featureFlags.isSuccess, featureFlags.data],
+    );
+
     const flattenedMenuItems = useMemo(() => {
-      const allLeafItems = getLeafItems(nativeMenuItems);
+      const isHidden = (path) => !!path && hiddenPages.includes(path.replace(/\/$/, ""));
+      const allLeafItems = getLeafItems(nativeMenuItems).filter((item) => !isHidden(item.path));
 
       const buildBreadcrumbPath = (items, targetPath) => {
         const searchRecursive = (nestedItems, currentPath = []) => {
@@ -238,7 +279,9 @@ export const CippUniversalSearchV2 = React.forwardRef(
             });
           }
 
-          if (!pageItem) return null;
+          // A tab of a flag-hidden page resolves to no pageItem above; the tab's own path can
+          // also be listed on a flag directly.
+          if (!pageItem || isHidden(tab.path)) return null;
 
           const hasAccessToPage =
             filterItemsByPermissionsAndRoles([pageItem], userPermissions, userRoles).length > 0;
@@ -257,8 +300,26 @@ export const CippUniversalSearchV2 = React.forwardRef(
         })
         .filter(Boolean);
 
-      return [...filteredMainMenu, ...filteredTabOptions];
-    }, [userPermissions, userRoles, tabOptions]);
+      // Each integration is a query-string page under /cipp/integrations, so it has no menu entry.
+      const integrationsPage = filteredMainMenu.find((item) => item.path === "/cipp/integrations");
+      const integrationItems = integrationsPage
+        ? [
+            { title: "Sync Jobs", path: "/cipp/integrations/sync" },
+            ...extensions
+              .filter((extension) => !extension.comingSoon)
+              .map((extension) => ({
+                title: extension.name,
+                path: `/cipp/integrations/configure?id=${extension.id}`,
+              })),
+          ].map((item) => ({
+            ...item,
+            scope: "global",
+            breadcrumbs: [...integrationsPage.breadcrumbs, integrationsPage.title],
+          }))
+        : [];
+
+      return [...filteredMainMenu, ...integrationItems, ...filteredTabOptions];
+    }, [userPermissions, userRoles, tabOptions, hiddenPages]);
 
     const normalizedSearch = searchValue.trim().toLowerCase();
     const pageResults = flattenedMenuItems.filter((leaf) => {
@@ -272,6 +333,74 @@ export const CippUniversalSearchV2 = React.forwardRef(
       return normalizedSearch ? inTitle || inPath || inBreadcrumbs || inScope : false;
     });
 
+    // Tenants match on their own fields or on the name of any group they belong to, so
+    // "All Tenants (Excluding Partner)" lists every member and "cyberdrain04" shows which
+    // groups that one tenant is in. Direct hits sort ahead of group-only hits.
+    const tenantResults = useMemo(() => {
+      if (searchType !== "Tenants" || !normalizedSearch) return [];
+      const tenants = Array.isArray(tenantList.data) ? tenantList.data : [];
+      const groups = Array.isArray(tenantGroupList.data?.Results)
+        ? tenantGroupList.data.Results
+        : [];
+
+      const groupsByCustomerId = new Map();
+      for (const group of groups) {
+        for (const member of group.Members ?? []) {
+          if (!member?.customerId) continue;
+          if (!groupsByCustomerId.has(member.customerId)) {
+            groupsByCustomerId.set(member.customerId, []);
+          }
+          groupsByCustomerId.get(member.customerId).push({
+            Id: group.Id,
+            Name: group.Name,
+            GroupType: group.GroupType,
+          });
+        }
+      }
+
+      const matches = [];
+      for (const tenant of tenants) {
+        const tenantGroups = groupsByCustomerId.get(tenant.customerId) ?? [];
+        const ownFields = [
+          tenant.displayName,
+          tenant.defaultDomainName,
+          tenant.initialDomainName,
+          tenant.customerId,
+        ];
+        const directHit = ownFields.some((field) =>
+          field?.toLowerCase().includes(normalizedSearch),
+        );
+        const matchedGroups = tenantGroups.filter((group) =>
+          group.Name?.toLowerCase().includes(normalizedSearch),
+        );
+        if (!directHit && matchedGroups.length === 0) continue;
+        matches.push({
+          Type: "Tenant",
+          displayName: tenant.displayName,
+          defaultDomainName: tenant.defaultDomainName,
+          initialDomainName: tenant.initialDomainName,
+          customerId: tenant.customerId,
+          groups: tenantGroups,
+          matchedGroupIds: matchedGroups.map((group) => group.Id),
+          directHit,
+        });
+      }
+
+      matches.sort((a, b) => {
+        if (a.directHit !== b.directHit) return a.directHit ? -1 : 1;
+        return (a.displayName ?? "").localeCompare(b.displayName ?? "");
+      });
+      return matches;
+    }, [searchType, normalizedSearch, tenantList.data, tenantGroupList.data]);
+    const tenantResultsTruncated = tenantResults.length > MAX_TENANT_RESULTS;
+    const visibleTenantResults = tenantResultsTruncated
+      ? tenantResults.slice(0, MAX_TENANT_RESULTS)
+      : tenantResults;
+    const tenantsLoading =
+      searchType === "Tenants" &&
+      ((tenantList.isFetching && !tenantList.data) ||
+        (tenantGroupList.isFetching && !tenantGroupList.data));
+
     const handleChange = (event) => {
       const newValue = event.target.value;
       setSearchValue(newValue);
@@ -279,20 +408,21 @@ export const CippUniversalSearchV2 = React.forwardRef(
 
       if (newValue.length === 0) {
         setShowDropdown(false);
-      } else if (searchType === "Pages") {
-        updateDropdownPosition();
-        setShowDropdown(true);
-      } else if (searchType === "Licenses") {
-        // Local catalog is in-memory, so reveal results as the user types.
-        // The API fallback still requires the Search button (handleSearch).
+      } else if (LOCAL_SCOPES.includes(searchType)) {
+        // These scopes match in memory, so reveal results as the user types. The Licenses
+        // API fallback still requires the Search button (handleSearch).
         updateDropdownPosition();
         setShowDropdown(true);
       }
     };
 
     const updateDropdownPosition = () => {
-      if (textFieldRef.current) {
-        const rect = textFieldRef.current.getBoundingClientRect();
+      // Anchored to the whole joined control, not the field inset within it: results then
+      // span the full search width instead of starting past the scope button, which is
+      // what was clipping every email, UPN and route path.
+      const anchor = containerRef.current ?? textFieldRef.current;
+      if (anchor) {
+        const rect = anchor.getBoundingClientRect();
         const availableHeight = Math.max(220, window.innerHeight - rect.bottom - 16);
         setDropdownPosition({
           top: rect.bottom + window.scrollY + 4,
@@ -303,7 +433,29 @@ export const CippUniversalSearchV2 = React.forwardRef(
       }
     };
 
+    // Tab cycles the scope (Users -> Groups -> ... -> Pages) while the field has focus, the
+    // way the omnibox and command palettes do. The typed text is kept so "john" can be
+    // re-scoped from Users to Groups without retyping; Escape still leaves the dialog.
+    const cycleSearchType = (direction) => {
+      const labels = typeMenuActions.map((action) => action.label);
+      const currentIndex = Math.max(0, labels.indexOf(searchType));
+      const nextType = labels[(currentIndex + direction + labels.length) % labels.length];
+      handleTypeChange(nextType);
+      const hasValue = searchValue.trim().length > 0;
+      if (hasValue && LOCAL_SCOPES.includes(nextType)) {
+        // These scopes match locally as you type, so the results can reappear straight away
+        updateDropdownPosition();
+        setShowDropdown(true);
+      }
+    };
+
     const handleKeyDown = (event) => {
+      if (event.key === "Tab") {
+        event.preventDefault();
+        cycleSearchType(event.shiftKey ? -1 : 1);
+        return;
+      }
+
       if (event.key === "Escape" && showDropdown) {
         event.preventDefault();
         setShowDropdown(false);
@@ -324,9 +476,13 @@ export const CippUniversalSearchV2 = React.forwardRef(
         return;
       }
 
-      if (event.key === "Enter" && showDropdown && hasResults && highlightedIndex >= 0) {
+      // Enter opens the highlighted row, or the only row when the search produced exactly one
+      // hit, so a single result never needs an arrow-down before it can be selected.
+      const enterTargetIndex =
+        highlightedIndex >= 0 ? highlightedIndex : activeResults.length === 1 ? 0 : -1;
+      if (event.key === "Enter" && showDropdown && hasResults && enterTargetIndex >= 0) {
         event.preventDefault();
-        const selectedItem = activeResults[highlightedIndex];
+        const selectedItem = activeResults[enterTargetIndex];
         if (!selectedItem) {
           return;
         }
@@ -351,7 +507,7 @@ export const CippUniversalSearchV2 = React.forwardRef(
           if (localLicenseResults.length === 0) {
             activeSearch?.refetch();
           }
-        } else if (searchType !== "Pages") {
+        } else if (!LOCAL_SCOPES.includes(searchType)) {
           activeSearch?.refetch();
         }
         setShowDropdown(true);
@@ -381,6 +537,29 @@ export const CippUniversalSearchV2 = React.forwardRef(
         }
       } else if (searchType === "Pages") {
         router.push(match.path, undefined, { shallow: true });
+      } else if (searchType === "Tenants") {
+        // The URL is the tenant selector's source of truth: its watcher picks the new
+        // tenantFilter up and syncs its own state. Settings are updated here too so the
+        // switch sticks when the selector is not mounted (mobile drawer closed).
+        const domain = match.defaultDomainName;
+        router.replace(
+          { pathname: router.pathname, query: { ...router.query, tenantFilter: domain } },
+          undefined,
+          { shallow: true },
+        );
+        settings?.handleUpdate?.({ currentTenant: domain });
+        if (domain !== "AllTenants") {
+          trackRecent({
+            value: domain,
+            label: `${match.displayName} (${domain})`,
+            addedFields: {
+              defaultDomainName: domain,
+              displayName: match.displayName,
+              customerId: match.customerId,
+              initialDomainName: match.initialDomainName,
+            },
+          });
+        }
       } else if (searchType === "Licenses") {
         if (typeof onLicenseSelect === "function") {
           onLicenseSelect(itemData);
@@ -414,6 +593,11 @@ export const CippUniversalSearchV2 = React.forwardRef(
     };
 
     const typeMenuActions = [
+      {
+        label: "Tenants",
+        icon: "Business",
+        onClick: () => handleTypeChange("Tenants"),
+      },
       {
         label: "Users",
         icon: "Groups",
@@ -465,7 +649,10 @@ export const CippUniversalSearchV2 = React.forwardRef(
         if (
           containerRef.current &&
           !containerRef.current.contains(event.target) &&
-          !event.target.closest("[data-dropdown-portal]")
+          !event.target.closest("[data-dropdown-portal]") &&
+          // the in-flow mobile results are outside the joined control — this ran on
+          // mousedown and unmounted a row before its click could navigate
+          !event.target.closest("[data-search-results]")
         ) {
           setShowDropdown(false);
         }
@@ -492,7 +679,8 @@ export const CippUniversalSearchV2 = React.forwardRef(
           window.removeEventListener("resize", handleResize);
         };
       }
-    }, [showDropdown]);
+      // isMobile changes the search button's width, so the anchor's box changes with it
+    }, [showDropdown, isMobile]);
 
     useEffect(() => {
       setHighlightedIndex(-1);
@@ -511,10 +699,6 @@ export const CippUniversalSearchV2 = React.forwardRef(
         activeRow.scrollIntoView({ block: "nearest" });
       }
     }, [highlightedIndex, showDropdown]);
-
-    useEffect(() => {
-      loadTabOptions().then(setTabOptions);
-    }, []);
 
     useEffect(() => {
       setSearchType(defaultSearchType);
@@ -538,17 +722,12 @@ export const CippUniversalSearchV2 = React.forwardRef(
         ? bitlockerResults
         : searchType === "Pages"
           ? pageResults
-          : searchType === "Licenses"
-            ? licenseResults
-            : universalResults;
-    const hasResults =
-      searchType === "BitLocker"
-        ? bitlockerResults.length > 0
-        : searchType === "Pages"
-          ? pageResults.length > 0
-          : searchType === "Licenses"
-            ? licenseResults.length > 0
-            : universalResults.length > 0;
+          : searchType === "Tenants"
+            ? visibleTenantResults
+            : searchType === "Licenses"
+              ? licenseResults
+              : universalResults;
+    const hasResults = activeResults.length > 0;
     const shouldShowDropdown = showDropdown && searchValue.length > 0;
 
     const getLabel = () => {
@@ -562,26 +741,119 @@ export const CippUniversalSearchV2 = React.forwardRef(
           : "Search BitLocker by Recovery Key ID";
       } else if (searchType === "Pages") {
         return "Search pages, tabs, paths, or scope";
+      } else if (searchType === "Tenants") {
+        return "Search tenants by name, domain, ID, or tenant group";
       } else if (searchType === "Licenses") {
         return "Search licenses by SKU ID, part number, name, or service plan";
       }
       return "Search";
     };
 
+    // One results body, two surfaces: desktop anchors it under the joined control as a
+    // floating panel; the phone dialog IS the surface, so it renders in flow.
+    const resultsBody = (
+      <>
+              {activeSearch?.isFetching || tenantsLoading ? (
+                <Box sx={{ p: 2 }}>
+                  <Skeleton height={60} sx={{ mb: 1 }} />
+                  <Skeleton height={60} />
+                </Box>
+              ) : hasResults ? (
+                // MenuItem requires a MenuList ancestor in MUI v9 — this list provides the
+                // context on both surfaces (desktop floating panel and phone in-flow dialog).
+                <MenuList disablePadding sx={{ py: 0 }}>
+                  {searchType === "BitLocker" ? (
+                    <BitlockerResults
+                      items={bitlockerResults}
+                      onResultClick={handleBitlockerResultClick}
+                      highlightedIndex={highlightedIndex}
+                      setHighlightedIndex={setHighlightedIndex}
+                    />
+                  ) : searchType === "Tenants" ? (
+                    <TenantResults
+                      items={visibleTenantResults}
+                      totalCount={tenantResults.length}
+                      searchValue={searchValue}
+                      currentTenant={settings?.currentTenant}
+                      onResultClick={handleResultClick}
+                      highlightedIndex={highlightedIndex}
+                      setHighlightedIndex={setHighlightedIndex}
+                    />
+                  ) : searchType === "Pages" ? (
+                    <PageResults
+                      items={pageResults}
+                      searchValue={searchValue}
+                      onResultClick={handleResultClick}
+                      highlightedIndex={highlightedIndex}
+                      setHighlightedIndex={setHighlightedIndex}
+                    />
+                  ) : (
+                    <Results
+                      items={searchType === "Licenses" ? licenseResults : universalResults}
+                      searchValue={searchValue}
+                      onResultClick={handleResultClick}
+                      searchType={searchType}
+                      highlightedIndex={highlightedIndex}
+                      setHighlightedIndex={setHighlightedIndex}
+                    />
+                  )}
+                </MenuList>
+              ) : (
+                <Box sx={{ p: 3, textAlign: "center" }}>
+                  <Typography variant="body2" sx={{
+                    color: "text.secondary"
+                  }}>
+                    No results found.
+                  </Typography>
+                </Box>
+              )}
+      </>
+    );
+
     return (
       <>
-        <Box ref={containerRef} sx={{ width: "100%", display: "flex", gap: 1, alignItems: "flex-start" }}>
-          <BulkActionsMenu
-            buttonName={searchType}
-            actions={typeMenuActions}
-          />
-          {searchType === "BitLocker" && (
+        {/* One joined control: the scope button, the field and the search button share a
+            single bordered row, so they line up by construction and the results panel can
+            anchor to the whole row rather than to the field inset within it. */}
+        <Box
+          ref={containerRef}
+          sx={{
+            width: "100%",
+            display: "flex",
+            alignItems: "stretch",
+            "& > *": { flexShrink: 0 },
+            // Collapse the doubled borders where the controls meet
+            "& > * + *": { ml: "-1px" },
+            "& .MuiButton-root": { borderRadius: 0, whiteSpace: "nowrap" },
+            "& > :first-of-type .MuiButton-root, & > :first-of-type": {
+              borderTopLeftRadius: (theme) => theme.shape.borderRadius,
+              borderBottomLeftRadius: (theme) => theme.shape.borderRadius,
+            },
+            "& > :last-child .MuiButton-root, & > :last-child": {
+              borderTopRightRadius: (theme) => theme.shape.borderRadius,
+              borderBottomRightRadius: (theme) => theme.shape.borderRadius,
+            },
+            "& .MuiOutlinedInput-root": { borderRadius: 0, height: "100%" },
+            // The field is the only part that should absorb the leftover width
+            "& > .MuiFormControl-root": { flex: "1 1 auto", minWidth: 0 },
+            // Keep the focused field's outline on top of the adjacent borders
+            "& .MuiOutlinedInput-root.Mui-focused": { zIndex: 1 },
+          }}
+        >
+          {!isMobile && (
+            <BulkActionsMenu buttonName={searchType} actions={typeMenuActions} />
+          )}
+          {!isMobile && searchType === "BitLocker" && (
             <BulkActionsMenu
               buttonName={bitlockerLookupType === "deviceId" ? "Device ID" : "Key ID"}
               actions={bitlockerLookupActions}
             />
           )}
           <TextField
+            // The theme defaults TextField to the filled variant, whose own rounded border
+            // ignores every join rule above (they target .MuiOutlinedInput-root) — which is
+            // why the scope button and the field rendered as two separate boxes.
+            variant="outlined"
             ref={(node) => {
               textFieldRef.current = node;
               if (typeof ref === "function") {
@@ -597,42 +869,145 @@ export const CippUniversalSearchV2 = React.forwardRef(
             onKeyDown={handleKeyDown}
             onChange={handleChange}
             value={searchValue}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment
-                  position="start"
-                  sx={{ display: "flex", alignItems: "center", mb: 0, mt: "12px" }}
-                >
-                  <SearchIcon color="action" sx={{ fontSize: 20 }} />
-                </InputAdornment>
-              ),
-              endAdornment: activeSearch?.isFetching ? (
-                <InputAdornment position="end">
-                  <CircularProgress size={20} />
-                </InputAdornment>
-              ) : null,
-              sx: {
-                "& .MuiInputAdornment-root": {
-                  marginTop: "0 !important",
-                  alignSelf: "center",
+            slotProps={{
+              input: {
+                startAdornment: (
+                  <InputAdornment
+                    position="start"
+                    sx={{ display: "flex", alignItems: "center", mb: 0, mt: "12px" }}
+                  >
+                    <CippIcons.Search color="action" sx={{ fontSize: 20 }} />
+                  </InputAdornment>
+                ),
+                endAdornment: activeSearch?.isFetching ? (
+                  <InputAdornment position="end">
+                    <CircularProgress size={20} />
+                  </InputAdornment>
+                ) : null,
+                sx: {
+                  "& .MuiInputAdornment-root": {
+                    marginTop: "0 !important",
+                    alignSelf: "center",
+                  },
                 },
-              },
+              }
             }}
           />
-          {searchType !== "Pages" && (
+          {searchType !== "Pages" && searchType !== "Tenants" && (
             <Button
               variant="contained"
               onClick={handleSearch}
               disabled={searchValue.length === 0 || activeSearch?.isFetching}
-              startIcon={<SearchIcon />}
-              sx={{ flexShrink: 0 }}
+              startIcon={isMobile ? undefined : <CippIcons.Search />}
+              aria-label="Search"
+              // Icon-only on phones: the label costs the field width it needs more
+              sx={{ flexShrink: 0, minWidth: isMobile ? 48 : undefined, px: isMobile ? 0 : undefined }}
             >
-              Search
+              {isMobile ? <CippIcons.Search /> : "Search"}
             </Button>
           )}
         </Box>
 
-        {shouldShowDropdown && (
+        {/* One tap to any scope — the desktop dropdown cost two, and the recorded mobile
+            gap was that entity search had no direct entry point at all. */}
+        {isMobile && (
+          <Stack
+            direction="row"
+            useFlexGap
+            spacing={1}
+            sx={{
+              flexWrap: "wrap",
+              mt: 1.5
+            }}>
+            {typeMenuActions.map((action) => {
+              const active = action.label === searchType;
+              return (
+                <Chip
+                  key={action.label}
+                  label={action.label}
+                  color={active ? "primary" : "default"}
+                  variant={active ? "filled" : "outlined"}
+                  onClick={action.onClick}
+                  sx={{ height: 36, borderRadius: 999 }}
+                />
+              );
+            })}
+          </Stack>
+        )}
+        {isMobile && searchType === "BitLocker" && (
+          <Stack
+            direction="row"
+            useFlexGap
+            spacing={1}
+            sx={{
+              flexWrap: "wrap",
+              mt: 1
+            }}>
+            {bitlockerLookupActions.map((action) => {
+              const active =
+                (action.label === "Device ID") === (bitlockerLookupType === "deviceId");
+              return (
+                <Chip
+                  key={action.label}
+                  label={action.label}
+                  color={active ? "primary" : "default"}
+                  variant={active ? "filled" : "outlined"}
+                  onClick={action.onClick}
+                  sx={{ height: 36, borderRadius: 999 }}
+                />
+              );
+            })}
+          </Stack>
+        )}
+        {/* The phone dialog is the surface: results render in flow, and the dead space
+            before a query becomes the user's bookmarks. */}
+        {isMobile && shouldShowDropdown && (
+          <Box
+            data-search-results
+            sx={{
+              mt: 1.5,
+              overflowX: "hidden",
+              overflowWrap: "anywhere",
+              borderTop: 1,
+              borderColor: "divider",
+            }}
+          >
+            {resultsBody}
+          </Box>
+        )}
+        {isMobile && !shouldShowDropdown && (bookmarks?.length ?? 0) > 0 && (
+          <List
+            sx={{ mt: 1.5, py: 0, borderTop: 1, borderColor: "divider" }}
+            subheader={
+              <ListSubheader disableSticky sx={{ bgcolor: "transparent", px: 0 }}>
+                Bookmarks
+              </ListSubheader>
+            }
+          >
+            {bookmarks.map((bookmark) => (
+              <ListItemButton
+                key={bookmark.path}
+                sx={{ minHeight: 48, px: 0.5 }}
+                onClick={() => {
+                  router.push(bookmark.path);
+                  onConfirm(bookmark);
+                }}
+              >
+                <ListItemIcon sx={{ minWidth: 40 }}>
+                  <CippIcons.Star fontSize="small" color="primary" />
+                </ListItemIcon>
+                <ListItemText
+                  primary={bookmark.label}
+                  secondary={bookmark.category || undefined}
+                  slotProps={{
+                    primary: { noWrap: true }
+                  }}
+                />
+              </ListItemButton>
+            ))}
+          </List>
+        )}
+        {!isMobile && shouldShowDropdown && (
           <Portal>
             <Paper
               data-dropdown-portal
@@ -644,51 +1019,19 @@ export const CippUniversalSearchV2 = React.forwardRef(
                 left: `${dropdownPosition.left}px`,
                 width: `${dropdownPosition.width}px`,
                 maxHeight: `${dropdownMaxHeight}px`,
-                overflow: "auto",
+                overflowY: "auto",
+                // Emails, UPNs and route paths are single unbreakable tokens: whiteSpace
+                // normal can't wrap them, so without this they widen the panel and the
+                // result text runs off the right edge.
+                overflowX: "hidden",
+                overflowWrap: "anywhere",
                 zIndex: 9999,
                 boxShadow: 3,
                 border: "1px solid",
                 borderColor: "divider",
               }}
             >
-              {activeSearch?.isFetching ? (
-                <Box sx={{ p: 2 }}>
-                  <Skeleton height={60} sx={{ mb: 1 }} />
-                  <Skeleton height={60} />
-                </Box>
-              ) : hasResults ? (
-                searchType === "BitLocker" ? (
-                  <BitlockerResults
-                    items={bitlockerResults}
-                    onResultClick={handleBitlockerResultClick}
-                    highlightedIndex={highlightedIndex}
-                    setHighlightedIndex={setHighlightedIndex}
-                  />
-                ) : searchType === "Pages" ? (
-                  <PageResults
-                    items={pageResults}
-                    searchValue={searchValue}
-                    onResultClick={handleResultClick}
-                    highlightedIndex={highlightedIndex}
-                    setHighlightedIndex={setHighlightedIndex}
-                  />
-                ) : (
-                  <Results
-                    items={searchType === "Licenses" ? licenseResults : universalResults}
-                    searchValue={searchValue}
-                    onResultClick={handleResultClick}
-                    searchType={searchType}
-                    highlightedIndex={highlightedIndex}
-                    setHighlightedIndex={setHighlightedIndex}
-                  />
-                )
-              ) : (
-                <Box sx={{ p: 3, textAlign: "center" }}>
-                  <Typography variant="body2" color="text.secondary">
-                    No results found.
-                  </Typography>
-                </Box>
-              )}
+              {resultsBody}
             </Paper>
           </Portal>
         )}
@@ -727,7 +1070,9 @@ const Results = ({
     const parts = text?.split(new RegExp(`(${escapedSearch})`, "gi"));
     return parts?.map((part, index) =>
       part.toLowerCase() === searchValue.toLowerCase() ? (
-        <Box component="span" fontWeight="bold" key={index}>
+        <Box component="span" key={index} sx={{
+          fontWeight: "bold"
+        }}>
           {part}
         </Box>
       ) : (
@@ -769,7 +1114,9 @@ const Results = ({
               <ListItemText
                 primary={
                   <Box sx={{ display: "flex", alignItems: "center", gap: 1, flexWrap: "wrap" }}>
-                    <Typography variant="body1" fontWeight="medium">
+                    <Typography variant="body1" sx={{
+                      fontWeight: "medium"
+                    }}>
                       {highlightMatch(itemData.displayName || itemData.skuPartNumber || "Unknown SKU")}
                     </Typography>
                     {itemData.skuPartNumber && (
@@ -792,7 +1139,13 @@ const Results = ({
                         {highlightMatch(itemData.skuId)}
                       </Typography>
                     )}
-                    <Typography variant="caption" color="text.secondary" sx={{ display: "block", mt: 0.5 }}>
+                    <Typography
+                      variant="caption"
+                      sx={{
+                        color: "text.secondary",
+                        display: "block",
+                        mt: 0.5
+                      }}>
                       {itemData.tenantCount || 0} tenant{itemData.tenantCount === 1 ? "" : "s"}
                       {" · "}
                       {itemData.totalAssigned || 0}/{itemData.totalAvailable || 0} assigned
@@ -801,16 +1154,15 @@ const Results = ({
                     {planNames && (
                       <Typography
                         variant="caption"
-                        color="text.secondary"
                         sx={{
+                          color: "text.secondary",
                           display: "-webkit-box",
                           mt: 0.5,
                           overflow: "hidden",
                           textOverflow: "ellipsis",
                           WebkitLineClamp: 2,
-                          WebkitBoxOrient: "vertical",
-                        }}
-                      >
+                          WebkitBoxOrient: "vertical"
+                        }}>
                         {highlightMatch(planNames)}
                       </Typography>
                     )}
@@ -841,26 +1193,37 @@ const Results = ({
           >
             <ListItemText
               primary={
-                <Typography variant="body1" fontWeight="medium">
+                <Typography variant="body1" sx={{
+                  fontWeight: "medium"
+                }}>
                   {highlightMatch(itemData.displayName || "")}
                 </Typography>
               }
               secondary={
                 <Box>
                   {searchType === "Users" && (
-                    <Typography variant="body2" color="text.secondary">
+                    <Typography variant="body2" sx={{
+                      color: "text.secondary"
+                    }}>
                       {highlightMatch(itemData.userPrincipalName || "")}
                     </Typography>
                   )}
                   {searchType === "Groups" && (
                     <>
                       {itemData.mail && (
-                        <Typography variant="body2" color="text.secondary">
+                        <Typography variant="body2" sx={{
+                          color: "text.secondary"
+                        }}>
                           {highlightMatch(itemData.mail || "")}
                         </Typography>
                       )}
                       {itemData.description && (
-                        <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+                        <Typography
+                          variant="body2"
+                          sx={{
+                            color: "text.secondary",
+                            mt: 0.5
+                          }}>
                           {highlightMatch(itemData.description || "")}
                         </Typography>
                       )}
@@ -869,12 +1232,19 @@ const Results = ({
                   {searchType === "Applications" && (
                     <>
                       {itemData.appId && (
-                        <Typography variant="body2" color="text.secondary">
+                        <Typography variant="body2" sx={{
+                          color: "text.secondary"
+                        }}>
                           {highlightMatch(itemData.appId || "")}
                         </Typography>
                       )}
                       {itemData.publisherName && (
-                        <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+                        <Typography
+                          variant="body2"
+                          sx={{
+                            color: "text.secondary",
+                            mt: 0.5
+                          }}>
                           {highlightMatch(itemData.publisherName || "")}
                         </Typography>
                       )}
@@ -882,9 +1252,11 @@ const Results = ({
                   )}
                   <Typography
                     variant="caption"
-                    color="text.secondary"
-                    sx={{ display: "block", mt: 0.5 }}
-                  >
+                    sx={{
+                      color: "text.secondary",
+                      display: "block",
+                      mt: 0.5
+                    }}>
                     Tenant: {tenantDomain}
                   </Typography>
                 </Box>
@@ -910,7 +1282,9 @@ const PageResults = ({
     const parts = text.split(new RegExp(`(${escapedSearch})`, "gi"));
     return parts.map((part, index) =>
       part.toLowerCase() === searchValue.toLowerCase() ? (
-        <Box component="span" fontWeight="bold" key={index}>
+        <Box component="span" key={index} sx={{
+          fontWeight: "bold"
+        }}>
           {part}
         </Box>
       ) : (
@@ -947,13 +1321,19 @@ const PageResults = ({
             <ListItemText
               primary={
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1, flexWrap: "wrap" }}>
-                  <Typography variant="body1" fontWeight="medium">
+                  <Typography variant="body1" sx={{
+                    fontWeight: "medium"
+                  }}>
                     {highlightMatch(item.title || "")}
                   </Typography>
-                  <Typography variant="caption" color="text.secondary">
+                  <Typography variant="caption" sx={{
+                    color: "text.secondary"
+                  }}>
                     {itemType}
                   </Typography>
-                  <Typography variant="caption" color="text.secondary">
+                  <Typography variant="caption" sx={{
+                    color: "text.secondary"
+                  }}>
                     {isGlobal ? "Global" : "Tenant"}
                   </Typography>
                 </Box>
@@ -961,7 +1341,9 @@ const PageResults = ({
               secondary={
                 <Box>
                   {item.breadcrumbs && item.breadcrumbs.length > 0 && (
-                    <Typography variant="body2" color="text.secondary">
+                    <Typography variant="body2" sx={{
+                      color: "text.secondary"
+                    }}>
                       {item.breadcrumbs.map((crumb, idx) => (
                         <React.Fragment key={idx}>
                           {highlightMatch(crumb)}
@@ -972,7 +1354,13 @@ const PageResults = ({
                       {highlightMatch(item.title || "")}
                     </Typography>
                   )}
-                  <Typography variant="caption" color="text.secondary" sx={{ display: "block", mt: 0.5 }}>
+                  <Typography
+                    variant="caption"
+                    sx={{
+                      color: "text.secondary",
+                      display: "block",
+                      mt: 0.5
+                    }}>
                     Path: {highlightMatch(item.path || "")}
                   </Typography>
                 </Box>
@@ -981,6 +1369,116 @@ const PageResults = ({
           </MenuItem>
         );
       })}
+    </>
+  );
+};
+
+const TenantResults = ({
+  items = [],
+  totalCount = 0,
+  searchValue = "",
+  currentTenant,
+  onResultClick,
+  highlightedIndex = -1,
+  setHighlightedIndex = () => {},
+}) => {
+  const highlightMatch = (text) => {
+    if (!searchValue || !text) return text;
+    const escapedSearch = searchValue.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const parts = text.split(new RegExp(`(${escapedSearch})`, "gi"));
+    return parts.map((part, index) =>
+      part.toLowerCase() === searchValue.toLowerCase() ? (
+        <Box component="span" key={index} sx={{ fontWeight: "bold" }}>
+          {part}
+        </Box>
+      ) : (
+        part
+      ),
+    );
+  };
+
+  return (
+    <>
+      {items.map((tenant, index) => {
+        const isAllTenants = tenant.defaultDomainName === "AllTenants";
+        const isCurrent = tenant.defaultDomainName === currentTenant;
+        return (
+          <MenuItem
+            key={tenant.customerId || tenant.defaultDomainName || index}
+            data-result-index={index}
+            onClick={() => onResultClick(tenant)}
+            onMouseEnter={() => setHighlightedIndex(index)}
+            selected={highlightedIndex === index}
+            sx={{
+              py: 1.5,
+              px: 2,
+              borderBottom: index < items.length - 1 ? "1px solid" : "none",
+              borderColor: "divider",
+              alignItems: "flex-start",
+              whiteSpace: "normal",
+              backgroundColor: highlightedIndex === index ? "action.selected" : "transparent",
+              "&:hover": { backgroundColor: "action.hover" },
+            }}
+          >
+            <ListItemText
+              primary={
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1, flexWrap: "wrap" }}>
+                  <Typography variant="body1" sx={{ fontWeight: "medium" }}>
+                    {highlightMatch(tenant.displayName || tenant.defaultDomainName || "")}
+                  </Typography>
+                  {!isAllTenants && (
+                    <Typography variant="caption" sx={{ color: "text.secondary" }}>
+                      {highlightMatch(tenant.defaultDomainName || "")}
+                    </Typography>
+                  )}
+                  {isCurrent && (
+                    <Chip
+                      label="Current"
+                      size="small"
+                      variant="outlined"
+                      sx={{ height: 20, color: "text.secondary" }}
+                    />
+                  )}
+                </Box>
+              }
+              secondary={
+                tenant.groups?.length > 0 ? (
+                  // The groups this tenant belongs to; the ones the query matched are filled
+                  <Stack
+                    direction="row"
+                    useFlexGap
+                    spacing={0.5}
+                    component="span"
+                    sx={{ flexWrap: "wrap", mt: 0.75 }}
+                  >
+                    {tenant.groups.map((group) => {
+                      const matched = tenant.matchedGroupIds?.includes(group.Id);
+                      return (
+                        <Chip
+                          key={group.Id || group.Name}
+                          label={group.Name}
+                          size="small"
+                          color={matched ? "primary" : "default"}
+                          variant={matched ? "filled" : "outlined"}
+                          sx={{ height: 22 }}
+                        />
+                      );
+                    })}
+                  </Stack>
+                ) : null
+              }
+              slotProps={{ secondary: { component: "div" } }}
+            />
+          </MenuItem>
+        );
+      })}
+      {totalCount > items.length && (
+        <Box sx={{ px: 2, py: 1 }}>
+          <Typography variant="caption" sx={{ color: "text.secondary" }}>
+            Showing {items.length} of {totalCount} tenants. Keep typing to narrow the list.
+          </Typography>
+        </Box>
+      )}
     </>
   );
 };
@@ -1013,19 +1511,31 @@ const BitlockerResults = ({
         >
           <ListItemText
             primary={
-              <Typography variant="body1" fontWeight="medium">
+              <Typography variant="body1" sx={{
+                fontWeight: "medium"
+              }}>
                 {result.deviceName || "Unknown Device"}
               </Typography>
             }
             secondary={
               <Box>
-                <Typography variant="body2" color="text.secondary">
+                <Typography variant="body2" sx={{
+                  color: "text.secondary"
+                }}>
                   Key ID: {result.keyId || "N/A"}
                 </Typography>
-                <Typography variant="body2" color="text.secondary">
+                <Typography variant="body2" sx={{
+                  color: "text.secondary"
+                }}>
                   Device ID: {result.deviceId || "N/A"}
                 </Typography>
-                <Typography variant="caption" color="text.secondary" sx={{ display: "block", mt: 0.5 }}>
+                <Typography
+                  variant="caption"
+                  sx={{
+                    color: "text.secondary",
+                    display: "block",
+                    mt: 0.5
+                  }}>
                   Tenant: {result.tenant || "N/A"}
                 </Typography>
               </Box>

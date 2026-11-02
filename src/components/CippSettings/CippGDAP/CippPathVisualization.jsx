@@ -1,14 +1,6 @@
 import React from "react";
+import { CippIcons } from "../../../utils/icon-registry"
 import { Box, Typography, Chip, Stack, Paper } from "@mui/material";
-import {
-  Person,
-  Group,
-  Security,
-  AccountTree,
-  CheckCircle,
-  Cancel,
-  Warning,
-} from "@mui/icons-material";
 import { CippFlowDiagram } from "./CippFlowDiagram";
 
 /**
@@ -44,7 +36,7 @@ export const CippPathVisualization = ({
         id: "user",
         label: userDisplayName || userUPN,
         subLabel: "User",
-        icon: <Person sx={{ color: colors.user }} />,
+        icon: <CippIcons.Person sx={{ color: colors.user }} />,
         backgroundColor: `${colors.user}20`, // 20% opacity
         borderColor: colors.user,
         chips: [],
@@ -53,7 +45,7 @@ export const CippPathVisualization = ({
         id: "group",
         label: groupName || "Unknown Group",
         subLabel: "Security Group",
-        icon: isMember ? <CheckCircle sx={{ color: colors.success }} /> : <Cancel sx={{ color: colors.error }} />,
+        icon: isMember ? <CippIcons.CheckCircle sx={{ color: colors.success }} /> : <CippIcons.Cancel sx={{ color: colors.error }} />,
         backgroundColor: isMember ? `${colors.success}20` : `${colors.error}20`,
         borderColor: isMember ? colors.success : colors.error,
         chips: [
@@ -68,7 +60,7 @@ export const CippPathVisualization = ({
         id: "role",
         label: roleName || "Role",
         subLabel: "GDAP Role",
-        icon: <Security sx={{ color: isMember ? colors.success : colors.grey }} />,
+        icon: <CippIcons.Security />,
         backgroundColor: isMember ? `${colors.success}20` : `${colors.grey}20`,
         borderColor: isMember ? colors.success : colors.grey,
         chips: [
@@ -84,7 +76,13 @@ export const CippPathVisualization = ({
     return (
       <Box sx={{ my: 2 }} {...other}>
         {relationshipName && (
-          <Typography variant="caption" color="text.secondary" sx={{ mb: 1, display: "block" }}>
+          <Typography
+            variant="caption"
+            sx={{
+              color: "text.secondary",
+              mb: 1,
+              display: "block"
+            }}>
             Relationship: {relationshipName}
             {customerTenantName && ` → ${customerTenantName}`}
           </Typography>
@@ -110,7 +108,7 @@ export const CippPathVisualization = ({
     id: "user",
     label: userDisplayName || userUPN,
     subLabel: "User",
-    icon: <Person sx={{ color: colors.user }} />,
+    icon: <CippIcons.Person sx={{ color: colors.user }} />,
     backgroundColor: `${colors.user}20`,
     borderColor: colors.user,
     chips: [],
@@ -131,13 +129,13 @@ export const CippPathVisualization = ({
       chips.push({
         label: "Not Member",
         sx: { backgroundColor: colors.error, color: "white" },
-        icon: <Cancel />,
+        icon: <CippIcons.Cancel />,
       });
     } else if (isDirect) {
       chips.push({
         label: "Direct",
         sx: { backgroundColor: colors.success, color: "white" },
-        icon: <Group />,
+        icon: <CippIcons.Group />,
       });
     } else if (isNested) {
       if (isLastGroup && sortedPath.length === 1) {
@@ -146,7 +144,7 @@ export const CippPathVisualization = ({
         chips.push({
           label: "Nested",
           sx: { backgroundColor: colors.info, color: "white" },
-          icon: <AccountTree />,
+          icon: <CippIcons.AccountTree />,
         });
       }
     }
@@ -209,9 +207,9 @@ export const CippPathVisualization = ({
       subLabel: subLabel,
       icon:
         isNotMember ? (
-          <Cancel sx={{ color: colors.error }} />
+          <CippIcons.Cancel sx={{ color: colors.error }} />
         ) : (
-          <Group sx={{ color: groupColor, fontSize: isLastGroup ? "2rem" : "1.5rem" }} />
+          <CippIcons.Group sx={{ color: groupColor, fontSize: isLastGroup ? "2rem" : "1.5rem" }} />
         ),
       backgroundColor: `${groupColor}${isLastGroup ? "30" : "20"}`,
       borderColor: groupColor,
@@ -227,14 +225,14 @@ export const CippPathVisualization = ({
     id: "role",
     label: roleName || "Role",
     subLabel: "GDAP Role",
-    icon: <Security sx={{ color: roleColor }} />,
+    icon: <CippIcons.Security />,
     backgroundColor: `${roleColor}20`,
     borderColor: roleColor,
     chips: [
       {
         label: hasAccess ? "Has Access" : "No Access",
         sx: { backgroundColor: roleColor, color: "white" },
-        icon: hasAccess ? <CheckCircle /> : <Cancel />,
+        icon: hasAccess ? <CippIcons.CheckCircle /> : <CippIcons.Cancel />,
       },
     ],
   });
@@ -243,16 +241,29 @@ export const CippPathVisualization = ({
     <Box sx={{ my: 2 }} {...other}>
       {relationshipName && (
         <Paper elevation={0} sx={{ p: 1, mb: 2, bgcolor: "background.default" }}>
-          <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap">
-            <Typography variant="caption" color="text.secondary">
+          <Stack
+            useFlexGap
+            direction="row"
+            spacing={1}
+            sx={{
+              alignItems: "center",
+              flexWrap: "wrap"
+            }}>
+            <Typography variant="caption" sx={{
+              color: "text.secondary"
+            }}>
               <strong>Relationship:</strong> {relationshipName}
             </Typography>
             {customerTenantName && (
               <>
-                <Typography variant="caption" color="text.secondary">
+                <Typography variant="caption" sx={{
+                  color: "text.secondary"
+                }}>
                   →
                 </Typography>
-                <Typography variant="caption" color="text.secondary">
+                <Typography variant="caption" sx={{
+                  color: "text.secondary"
+                }}>
                   <strong>Customer:</strong> {customerTenantName}
                 </Typography>
               </>

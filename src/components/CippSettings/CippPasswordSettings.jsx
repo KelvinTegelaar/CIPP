@@ -1,7 +1,7 @@
 import { Button, Chip, SvgIcon, Tooltip, Typography } from "@mui/material";
+import { CippIcons } from "../../utils/icon-registry";
 import CippButtonCard from "../CippCards/CippButtonCard";
 import { useRouter } from "next/router";
-import { Cog6ToothIcon } from "@heroicons/react/24/outline";
 import { ApiGetCall } from "../../api/ApiCall";
 
 // Password configuration constants
@@ -67,7 +67,7 @@ const CippPasswordSettings = () => {
             size="small"
             startIcon={
               <SvgIcon fontSize="small">
-                <Cog6ToothIcon />
+                <CippIcons.Cog6ToothIcon />
               </SvgIcon>
             }
             onClick={handleConfigureClick}

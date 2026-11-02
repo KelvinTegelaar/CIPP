@@ -1,7 +1,7 @@
 import { useState, useMemo, useCallback } from "react";
+import { CippIcons } from "../../utils/icon-registry";
 import { Button, Chip, SvgIcon, Tooltip } from "@mui/material";
 import { Stack } from "@mui/system";
-import { Sync, CloudDone, Bolt } from "@mui/icons-material";
 import { useSettings } from "../../hooks/use-settings";
 import { useDialog } from "../../hooks/use-dialog";
 import { CippApiDialog } from "./CippApiDialog";
@@ -23,6 +23,8 @@ import { CippQueueTracker } from "../CippTable/CippQueueTracker";
  * @param {string[]} [config.cacheColumns=["CacheTimestamp"]] - Extra columns to show when in cached mode.
  * @param {string} [config.tenantColumn="Tenant"] - Column name for tenant (shown in AllTenants mode).
  * @param {Object} [config.apiData]       - Additional static API data to merge (e.g. extra params).
+ * @param {boolean} [config.serverPagination=false] - Server-side paging for cached reads; the
+ *   endpoint must support manualPagination and the page must pass apiDataKey={reportDB.apiDataKey}.
  *
  * @returns {Object}
  *   - useReportDB {boolean}          - Current cache mode
@@ -31,6 +33,7 @@ import { CippQueueTracker } from "../CippTable/CippQueueTracker";
  *   - resolvedApiUrl {string}        - API URL with ?UseReportDB=true appended when needed
  *   - resolvedApiData {Object|undefined} - Merged apiData (for pages that use apiData instead of URL params)
  *   - resolvedQueryKey {string}      - Query key including tenant and cache mode
+ *   - apiDataKey {string|undefined}  - Pass as apiDataKey when serverPagination is set ('Results' in cached mode)
  *   - cacheColumns {string[]}        - Columns to prepend/append when cached (includes Tenant for AllTenants)
  *   - controls {JSX.Element}         - Ready-to-render JSX for the cache toggle, sync button, and queue tracker
  *   - syncDialog {JSX.Element}       - The CippApiDialog element to render alongside CippTablePage
@@ -49,6 +52,7 @@ export function useCippReportDB(config) {
     cacheColumns = ['CacheTimestamp'],
     tenantColumn = 'Tenant',
     apiData: extraApiData,
+    serverPagination = false,
   } = config
 
   const currentTenant = useSettings().currentTenant;
@@ -85,12 +89,18 @@ export function useCippReportDB(config) {
   }, [apiUrl, useReportDB])
 
   // Keep mode flag in the URL only; CippTablePage merges apiData into query params.
+  // serverPagination adds manualPagination on cached reads.
   const resolvedApiData = useMemo(() => {
-    if (!extraApiData) return undefined
+    const paging = serverPagination && useReportDB ? { manualPagination: true } : {}
+    if (!extraApiData && !serverPagination) return undefined
     return {
+      ...paging,
       ...extraApiData,
     }
-  }, [extraApiData])
+  }, [extraApiData, serverPagination, useReportDB])
+
+  // Paged responses nest rows under Results; the legacy bare array needs no dataKey.
+  const apiDataKey = serverPagination && useReportDB ? 'Results' : undefined
 
   // Query key that includes tenant + mode for proper cache separation
   const resolvedQueryKey = useMemo(() => {
@@ -130,14 +140,16 @@ export function useCippReportDB(config) {
 
   // The controls JSX
   const controls = (
-    <Stack direction="row" spacing={1} alignItems="center">
+    <Stack direction="row" spacing={1} sx={{
+      alignItems: "center"
+    }}>
       {useReportDB && (
         <>
           <CippQueueTracker queueId={syncQueueId} queryKey={resolvedQueryKey} title={syncTitle} />
           <Button
             startIcon={
               <SvgIcon fontSize="small">
-                <Sync />
+                <CippIcons.Sync />
               </SvgIcon>
             }
             size="xs"
@@ -148,16 +160,17 @@ export function useCippReportDB(config) {
           </Button>
         </>
       )}
+      {/* Not `disabled` when it cannot be toggled: this is a status badge, and MUI's disabled
+          fade drops the label to ~2:1. Not clickable and without onClick it is already inert. */}
       <Tooltip title={tooltipText}>
         <span>
           <Chip
-            icon={useReportDB ? <CloudDone /> : <Bolt />}
+            icon={useReportDB ? <CippIcons.CloudDone /> : <CippIcons.Bolt />}
             label={useReportDB ? 'Cached' : 'Live'}
             color="primary"
             size="small"
             onClick={canToggle ? () => setUseReportDB((prev) => !prev) : undefined}
             clickable={canToggle}
-            disabled={!canToggle}
             variant="outlined"
           />
         </span>
@@ -193,6 +206,7 @@ export function useCippReportDB(config) {
     resolvedApiUrl,
     resolvedApiData,
     resolvedQueryKey,
+    apiDataKey,
     cacheColumns: extraColumns,
     controls,
     syncDialog: syncDialogElement,

@@ -1,4 +1,5 @@
 import PropTypes from "prop-types";
+import { CippIcons } from "../../utils/icon-registry";
 import {
   Avatar,
   Button,
@@ -11,24 +12,31 @@ import {
   SvgIcon,
   Typography,
 } from "@mui/material";
-import { ArrowRightIcon, CubeIcon } from "@heroicons/react/24/outline";
 
 export const CippInfoCard = (props) => {
   const { isFetching, actionLink, actionText, value, icon, label, cardSize, ...other } = props;
 
   return (
     <Card {...other}>
-      <Stack alignItems="center" direction="row" spacing={2} sx={{ p: 2 }}>
+      <Stack
+        direction="row"
+        spacing={2}
+        sx={{
+          alignItems: "center",
+          p: 2
+        }}>
         <Avatar
           sx={{
             backgroundColor: "primary.alpha12",
             color: "primary.main",
           }}
         >
-          <SvgIcon fontSize="small">{icon ? icon : <CubeIcon />}</SvgIcon>
+          <SvgIcon fontSize="small">{icon ? icon : <CippIcons.CubeIcon />}</SvgIcon>
         </Avatar>
         <div>
-          <Typography color="text.secondary" variant="overline">
+          <Typography variant="overline" sx={{
+            color: "text.secondary"
+          }}>
             {isFetching ? <Skeleton width={150} /> : label}
           </Typography>
           <Typography variant="h6">{isFetching ? <Skeleton width={200} /> : value}</Typography>
@@ -48,7 +56,7 @@ export const CippInfoCard = (props) => {
               component={Link}
               endIcon={
                 <SvgIcon fontSize="small">
-                  <ArrowRightIcon />
+                  <CippIcons.ArrowRightIcon />
                 </SvgIcon>
               }
               href={actionLink}

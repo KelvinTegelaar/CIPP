@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'
+import { CippIcons } from '../../utils/icon-registry'
 import { Button, Box, Typography, Alert, AlertTitle, Divider, Chip, Stack } from '@mui/material'
 import { Grid } from '@mui/system'
 import { useForm, useFormState } from 'react-hook-form'
-import { SettingsBackupRestore } from '@mui/icons-material'
 import { CippOffCanvas } from './CippOffCanvas'
 import CippFormComponent from './CippFormComponent'
 import { CippFormCondition } from './CippFormCondition'
@@ -34,6 +34,7 @@ export const CippRestoreBackupDrawer = ({
       intuneprotection: true,
       antispam: true,
       antiphishing: true,
+      teamsvoice: true,
       CippWebhookAlerts: true,
       CippScriptedAlerts: true,
       CippCustomVariables: true,
@@ -65,6 +66,7 @@ export const CippRestoreBackupDrawer = ({
         intuneprotection: true,
         antispam: true,
         antiphishing: true,
+        teamsvoice: true,
         CippWebhookAlerts: true,
         CippScriptedAlerts: true,
         CippCustomVariables: true,
@@ -109,6 +111,7 @@ export const CippRestoreBackupDrawer = ({
           intuneprotection: values.intuneprotection,
           antispam: values.antispam,
           antiphishing: values.antiphishing,
+          teamsvoice: values.teamsvoice,
           CippWebhookAlerts: values.CippWebhookAlerts,
           CippScriptedAlerts: values.CippScriptedAlerts,
           CippCustomVariables: values.CippCustomVariables,
@@ -142,6 +145,7 @@ export const CippRestoreBackupDrawer = ({
       intuneprotection: true,
       antispam: true,
       antiphishing: true,
+      teamsvoice: true,
       CippWebhookAlerts: true,
       CippScriptedAlerts: true,
       CippCustomVariables: true,
@@ -159,7 +163,7 @@ export const CippRestoreBackupDrawer = ({
       <PermissionButton
         {...(PermissionButton !== Button ? { requiredPermissions } : {})}
         onClick={() => setDrawerVisible(true)}
-        startIcon={<SettingsBackupRestore />}
+        startIcon={<CippIcons.SettingsBackupRestore />}
         {...props}
       >
         {buttonText}
@@ -303,6 +307,17 @@ export const CippRestoreBackupDrawer = ({
               />
             </Grid>
 
+            {/* Teams */}
+            <Grid size={{ md: 6, xs: 12 }}>
+              <Typography variant="subtitle1">Teams</Typography>
+              <CippFormComponent
+                type="switch"
+                label="Teams Phone Number Assignments"
+                name="teamsvoice"
+                formControl={formControl}
+              />
+            </Grid>
+
             {/* CIPP */}
             <Grid size={{ md: 6, xs: 12 }}>
               <Typography variant="subtitle1">CIPP</Typography>
@@ -380,5 +395,5 @@ export const CippRestoreBackupDrawer = ({
         <CippApiResults apiObject={restoreBackup} />
       </CippOffCanvas>
     </>
-  )
+  );
 }

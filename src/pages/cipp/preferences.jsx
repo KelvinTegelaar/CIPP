@@ -1,0 +1,552 @@
+import Head from "next/head";
+import { Alert, Box, Button, Container, Stack, Tooltip } from "@mui/material";
+import { Grid } from "@mui/system";
+import { Layout as DashboardLayout } from "../../layouts/index";
+import { CippPropertyListCard } from "../../components/CippCards/CippPropertyListCard";
+import CippFormComponent from "../../components/CippComponents/CippFormComponent";
+import { useForm, useWatch } from "react-hook-form";
+import { useSettings } from "../../hooks/use-settings";
+import countryList from "../../data/countryList.json";
+import { CippSettingsSideBar } from "../../components/CippComponents/CippSettingsSideBar";
+import CippDevOptions from "../../components/CippComponents/CippDevOptions";
+import { CippOffboardingDefaultSettings } from "../../components/CippComponents/CippOffboardingDefaultSettings";
+import { ApiGetCall } from "../../api/ApiCall";
+import { getCippFormatting } from "../../utils/get-cipp-formatting";
+import { useCallback, useEffect, useState } from "react";
+import { CippApiResults } from "../../components/CippComponents/CippApiResults";
+import { usePushDevices, usePushSubscription } from "../../hooks/use-push-subscription";
+import { CippDataTable } from "../../components/CippTable/CippDataTable";
+import { CippIcons } from "../../utils/icon-registry";
+
+// Web Push devices for the signed-in user. Deliberately outside the settings form: the
+// settings blob is saved wholesale from the sidebar, while devices are a collection with
+// their own endpoints.
+const PushDevicesCard = () => {
+  // Same paginated query the table runs, so the VAPID public key costs no extra request.
+  const push = usePushSubscription({ publicKey: usePushDevices().publicKey });
+  // CippDataTable re-maps its rows whenever dataMap changes identity, so keep it stable or the
+  // table flickers on every render of this card.
+  const currentEndpoint = push.currentEndpoint;
+  const markThisDevice = useCallback(
+    (d) => ({
+      ...d,
+      DeviceName: d.Endpoint === currentEndpoint ? `${d.DeviceName} (this device)` : d.DeviceName,
+    }),
+    [currentEndpoint],
+  );
+  const [enableStatus, setEnableStatus] = useState(null);
+
+  const enableButton = (
+    <Button
+      size="small"
+      variant="contained"
+      disabled={!!push.blockedReason || push.register.isPending}
+      onClick={() => {
+        setEnableStatus({
+          severity: "info",
+          text: "Waiting for the browser's notification permission. If no prompt appears, check for a bell icon in the address bar.",
+        });
+        push
+          .subscribe()
+          .then(() => setEnableStatus(null))
+          .catch((e) => setEnableStatus({ severity: "error", text: e?.message || String(e) }));
+      }}
+    >
+      Enable on this device
+    </Button>
+  );
+
+  return (
+    <Stack spacing={1}>
+      <CippDataTable
+        title="Push Notification Devices"
+        queryKey="ListPushSubscriptions"
+        api={{ url: "/api/ListPushSubscriptions", dataKey: "Devices" }}
+        dataMap={markThisDevice}
+        simpleColumns={["DeviceName", "Created"]}
+        exportEnabled={false}
+        showBulkExportAction={false}
+        cardButton={[
+          push.blockedReason ? (
+            <Tooltip key="enable" title={push.blockedReason}>
+              <span>{enableButton}</span>
+            </Tooltip>
+          ) : (
+            enableButton
+          ),
+          {
+            label: "Send test notification",
+            url: "/api/ExecPushSubscription",
+            data: { Action: "Test" },
+            confirmText: "Send a test notification to every device registered to you?",
+          },
+        ]}
+        actions={[
+          {
+            label: "Remove device",
+            icon: <CippIcons.TrashIcon />,
+            color: "danger",
+            url: "/api/ExecPushSubscription",
+            type: "POST",
+            data: { Action: "Unsubscribe", RowKey: "RowKey" },
+            relatedQueryKeys: ["ListPushSubscriptions"],
+            confirmText: "Stop sending push notifications to [DeviceName]?",
+          },
+        ]}
+      />
+      {enableStatus && <Alert severity={enableStatus.severity}>{enableStatus.text}</Alert>}
+      <CippApiResults apiObject={push.register} />
+    </Stack>
+  );
+};
+
+const Page = () => {
+  const settings = useSettings();
+  const [initialUserType, setInitialUserType] = useState(null);
+
+  // Default portal links configuration
+  const defaultPortalLinks = {
+    M365_Portal: true,
+    Exchange_Portal: true,
+    Entra_Portal: true,
+    Teams_Portal: true,
+    Azure_Portal: true,
+    Intune_Portal: true,
+    SharePoint_Admin: true,
+    Security_Portal: true,
+    Compliance_Portal: true,
+    Power_Platform_Portal: true,
+    Power_BI_Portal: true,
+    Login_Hint: false,
+  };
+
+  const auth = ApiGetCall({
+    url: "/api/me",
+    queryKey: "authmecipp",
+  });
+
+  // Test suites for the default Home page suite selector (shared cache with the dashboard)
+  const reportsApi = ApiGetCall({
+    url: "/api/ListTestReports",
+    queryKey: "ListTestReports",
+  });
+
+  const cleanedSettings = { ...settings };
+
+  if (cleanedSettings.offboardingDefaults?.keepCopy) {
+    delete cleanedSettings.offboardingDefaults.keepCopy;
+    settings.handleUpdate(cleanedSettings);
+  }
+
+  // Determine if we have user-specific settings and set initial user type
+  useEffect(() => {
+    if (cleanedSettings && auth.data?.clientPrincipal?.userDetails && initialUserType === null) {
+      const hasUserSpecificSettings =
+        cleanedSettings.UserSpecificSettings &&
+        Object.keys(cleanedSettings.UserSpecificSettings).length > 0;
+
+      setInitialUserType(hasUserSpecificSettings ? "currentUser" : "allUsers");
+    }
+  }, [cleanedSettings, auth.data?.clientPrincipal?.userDetails, initialUserType]);
+
+  // Set default portal links if they don't exist at global level
+  if (!cleanedSettings.portalLinks) {
+    cleanedSettings.portalLinks = defaultPortalLinks;
+  }
+
+  // Determine initial portal links based on user type
+  const getInitialPortalLinks = () => {
+    if (initialUserType === "currentUser" && cleanedSettings.UserSpecificSettings?.portalLinks) {
+      // Merge with defaults to ensure all keys exist
+      return { ...defaultPortalLinks, ...cleanedSettings.UserSpecificSettings.portalLinks };
+    }
+
+    // Use global settings or defaults
+    return { ...defaultPortalLinks, ...cleanedSettings.portalLinks };
+  };
+
+  // Set up initial form values with proper user selector default
+  const initialFormValues = {
+    ...cleanedSettings,
+    user:
+      initialUserType === "currentUser"
+        ? {
+            label: "Current User",
+            value: auth.data?.clientPrincipal?.userDetails || "currentUser",
+          }
+        : {
+            label: "All Users",
+            value: "allUsers",
+          },
+    portalLinks: getInitialPortalLinks(),
+  };
+
+  const formcontrol = useForm({
+    mode: "onChange",
+    defaultValues: initialFormValues,
+  });
+
+  // Watch the user selector to determine which settings to show
+  const selectedUser = useWatch({
+    control: formcontrol.control,
+    name: "user",
+  });
+
+  // Update form when initial user type is determined
+  useEffect(() => {
+    if (initialUserType !== null && auth.data?.clientPrincipal?.userDetails) {
+      const userValue =
+        initialUserType === "currentUser"
+          ? {
+              label: "Current User",
+              value: auth.data.clientPrincipal.userDetails,
+            }
+          : {
+              label: "All Users",
+              value: "allUsers",
+            };
+
+      const newFormValues = {
+        ...cleanedSettings,
+        user: userValue,
+        portalLinks: getInitialPortalLinks(),
+      };
+
+      // Reset the entire form with new values
+      formcontrol.reset(newFormValues);
+    }
+  }, [initialUserType, auth.data?.clientPrincipal?.userDetails]);
+
+  // Handle switching between user types
+  useEffect(() => {
+    if (selectedUser?.value && initialUserType !== null) {
+      const getPortalLinksForUserType = () => {
+        if (selectedUser.value === "allUsers") {
+          // Show global settings (root level)
+          return { ...defaultPortalLinks, ...cleanedSettings.portalLinks };
+        } else {
+          // Show user-specific settings if they exist, otherwise show global settings
+          const userSpecificLinks = cleanedSettings.UserSpecificSettings?.portalLinks;
+          const globalLinks = cleanedSettings.portalLinks;
+          return { ...defaultPortalLinks, ...globalLinks, ...userSpecificLinks };
+        }
+      };
+
+      const newPortalLinks = getPortalLinksForUserType();
+      const currentPortalLinks = formcontrol.getValues("portalLinks");
+
+      // Only update if the portal links actually changed
+      if (JSON.stringify(currentPortalLinks) !== JSON.stringify(newPortalLinks)) {
+        // Reset form with updated portal links but preserve other values
+        const currentValues = formcontrol.getValues();
+        formcontrol.reset({
+          ...currentValues,
+          portalLinks: newPortalLinks,
+        });
+      }
+    }
+  }, [selectedUser?.value, cleanedSettings, initialUserType]);
+
+  const addedAttributes = [
+    { value: "consentProvidedForMinor", label: "consentProvidedForMinor" },
+    { value: "employeeId", label: "employeeId" },
+    { value: "employeeHireDate", label: "employeeHireDate" },
+    { value: "employeeLeaveDateTime", label: "employeeLeaveDateTime" },
+    { value: "employeeType", label: "employeeType" },
+    { value: "faxNumber", label: "faxNumber" },
+    { value: "legalAgeGroupClassification", label: "legalAgeGroupClassification" },
+    { value: "officeLocation", label: "officeLocation" },
+    { value: "otherMails", label: "otherMails" },
+    { value: "showInAddressList", label: "showInAddressList" },
+    { value: "sponsor", label: "sponsor" },
+  ];
+
+  const pageSizes = [
+    { value: "25", label: "25" },
+    { value: "50", label: "50" },
+    { value: "100", label: "100" },
+    { value: "250", label: "250" },
+  ];
+
+  const languageListOptions = countryList.map((language) => {
+    return { value: language.Code, label: language.Name };
+  });
+
+  // Portal links configuration
+  const portalLinksConfig = [
+    {
+      name: "portalLinks.M365_Portal",
+      label: "M365",
+    },
+    {
+      name: "portalLinks.Exchange_Portal",
+      label: "Exchange",
+    },
+    {
+      name: "portalLinks.Entra_Portal",
+      label: "Entra",
+    },
+    {
+      name: "portalLinks.Teams_Portal",
+      label: "Teams",
+    },
+    {
+      name: "portalLinks.Azure_Portal",
+      label: "Azure",
+    },
+    {
+      name: "portalLinks.Intune_Portal",
+      label: "Intune",
+    },
+    {
+      name: "portalLinks.SharePoint_Admin",
+      label: "SharePoint",
+    },
+    {
+      name: "portalLinks.Security_Portal",
+      label: "Security",
+    },
+    {
+      name: "portalLinks.Compliance_Portal",
+      label: "Purview",
+    },
+    {
+      name: "portalLinks.Power_Platform_Portal",
+      label: "Power Platform",
+    },
+    {
+      name: "portalLinks.Power_BI_Portal",
+      label: "Power BI",
+    },
+    {
+      name: "portalLinks.Login_Hint",
+      label: "Preselect my account (login_hint)",
+    },
+  ];
+
+  // Don't render until we've determined the initial user type
+  if (initialUserType === null || !auth.data?.clientPrincipal?.userDetails) {
+    return <div>Loading...</div>;
+  }
+
+  return (
+    <>
+      <Head>
+        <title>Preferences</title>
+      </Head>
+      <Box
+        sx={{
+          flexGrow: 1,
+          py: 4,
+        }}
+      >
+        <Container maxWidth="xl" sx={{ height: "100%" }}>
+          <Stack spacing={4}>
+            <div>
+              <Grid container spacing={3}>
+                <Grid size={{ xs: 12, lg: 8 }}>
+                  <Stack spacing={3}>
+                    <CippPropertyListCard
+                      showDivider={false}
+                      title="General Settings"
+                      propertyItems={[
+                        {
+                          label: "Default usage location for users *",
+                          value: (
+                            <CippFormComponent
+                              type="autoComplete"
+                              creatable={false}
+                              disableClearable={true}
+                              name="usageLocation"
+                              formControl={formcontrol}
+                              multiple={false}
+                              options={languageListOptions}
+                              validators={{
+                                required: { value: true, message: "This field is required" },
+                              }}
+                            />
+                          ),
+                        },
+                        {
+                          label: "Default Page Size *",
+                          value: (
+                            <CippFormComponent
+                              type="autoComplete"
+                              disableClearable={true}
+                              defaultValue={{ value: "25", label: "25" }}
+                              name="tablePageSize"
+                              formControl={formcontrol}
+                              multiple={false}
+                              options={pageSizes}
+                              validators={{
+                                required: { value: true, message: "This field is required" },
+                              }}
+                            />
+                          ),
+                        },
+                        {
+                          label: "Table view on small screens",
+                          value: (
+                            <CippFormComponent
+                              type="autoComplete"
+                              creatable={false}
+                              disableClearable={true}
+                              defaultValue={{ value: "auto", label: "Automatic (cards on mobile)" }}
+                              name="tableViewMode"
+                              formControl={formcontrol}
+                              multiple={false}
+                              options={[
+                                { value: "auto", label: "Automatic (cards on mobile)" },
+                                { value: "cards", label: "Always card list" },
+                                { value: "table", label: "Always classic table" },
+                              ]}
+                            />
+                          ),
+                        },
+                        {
+                          label: "Default test suite on the Home page",
+                          value: (
+                            <CippFormComponent
+                              type="autoComplete"
+                              creatable={false}
+                              name="defaultTestSuite"
+                              formControl={formcontrol}
+                              multiple={false}
+                              options={(reportsApi.data || []).map((report) => ({
+                                value: report.id,
+                                label: report.name,
+                              }))}
+                              isFetching={reportsApi.isFetching}
+                            />
+                          ),
+                        },
+                        {
+                          label: "Added Attributes when creating a new user",
+                          value: (
+                            <CippFormComponent
+                              type="autoComplete"
+                              options={addedAttributes}
+                              name="userAttributes"
+                              formControl={formcontrol}
+                              multiple={true}
+                            />
+                          ),
+                        },
+                        {
+                          label: "Save last used table filter",
+                          value: (
+                            <CippFormComponent
+                              type="switch"
+                              name="persistFilters"
+                              formControl={formcontrol}
+                            />
+                          ),
+                        },
+                      ]}
+                    />
+                    <CippPropertyListCard
+                      layout="two"
+                      showDivider={false}
+                      title="Navigation Settings"
+                      propertyItems={[
+                        {
+                          label: "Show Sidebar Bookmarks",
+                          value: (
+                            <CippFormComponent
+                              type="switch"
+                              name="bookmarkSidebar"
+                              formControl={formcontrol}
+                            />
+                          ),
+                        },
+                        {
+                          label: "Show Popover Bookmarks",
+                          value: (
+                            <CippFormComponent
+                              type="switch"
+                              name="bookmarkPopover"
+                              formControl={formcontrol}
+                            />
+                          ),
+                        },
+                        {
+                          label: "Bookmark Reorder Mode",
+                          value: (
+                            <CippFormComponent
+                              type="radio"
+                              name="bookmarkReorderMode"
+                              formControl={formcontrol}
+                              row={true}
+                              options={[
+                                { value: "arrows", label: "Arrow Buttons" },
+                                { value: "drag", label: "Drag and Drop" },
+                              ]}
+                            />
+                          ),
+                        },
+                        {
+                          label: "Compact Navigation",
+                          value: (
+                            <CippFormComponent
+                              type="switch"
+                              name="compactNav"
+                              formControl={formcontrol}
+                            />
+                          ),
+                        },
+                      ]}
+                    />
+                    <CippOffboardingDefaultSettings
+                      formControl={formcontrol}
+                      defaultsSource={cleanedSettings.offboardingDefaultsSource}
+                    />
+                    <PushDevicesCard />
+                  </Stack>
+                </Grid>
+                <Grid size={{ xs: 12, lg: 4 }}>
+                  <Stack spacing={3}>
+                    <CippPropertyListCard
+                      title={`CIPP Roles for ${auth?.data?.clientPrincipal?.userDetails}`}
+                      propertyItems={(auth?.data?.clientPrincipal?.userRoles ?? [])
+                        .filter((role) => !["anonymous", "authenticated"].includes(role))
+                        .map((role) => ({
+                          label: "",
+                          value: getCippFormatting(role, "role"),
+                        }))}
+                      showDivider={false}
+                    />
+
+                    <CippSettingsSideBar
+                      formcontrol={formcontrol}
+                      initialUserType={initialUserType}
+                    />
+                    <CippDevOptions />
+                    <CippPropertyListCard
+                      layout="two"
+                      showDivider={false}
+                      title="Portal Links Configuration"
+                      propertyItems={portalLinksConfig.map((portal) => ({
+                        label: portal.label,
+                        value: (
+                          <CippFormComponent
+                            type="switch"
+                            name={portal.name}
+                            formControl={formcontrol}
+                          />
+                        ),
+                      }))}
+                    />
+                  </Stack>
+                </Grid>
+              </Grid>
+            </div>
+          </Stack>
+        </Container>
+      </Box>
+    </>
+  );
+};
+
+Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+
+export default Page;

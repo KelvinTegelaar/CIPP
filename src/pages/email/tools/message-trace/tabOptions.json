@@ -1,0 +1,12 @@
+[
+  {
+    "label": "Message Trace",
+    "path": "/email/tools/message-trace",
+    "icon": "ManageSearch"
+  },
+  {
+    "label": "Historical Search",
+    "path": "/email/tools/message-trace/historical-search",
+    "icon": "Storage"
+  }
+]

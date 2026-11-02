@@ -16,7 +16,9 @@ L.Icon.Default.mergeOptions({
 export default function CippMap({
   markers = [],
   zoom = 11,
-  mapSx = { height: "400px", width: "600px" },
+  // maxWidth instead of a fixed width: a hard 600px canvas scrolled the page sideways in any
+  // narrower cell (the View User sign-in map renders in an xs: 12 grid item on a phone).
+  mapSx = { height: "400px", width: "100%", maxWidth: "600px" },
   ...props
 }) {
   const mapRef = useRef();

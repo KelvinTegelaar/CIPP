@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Box, Button, Divider, Typography } from "@mui/material";
 import { Grid } from "@mui/system";
 import { useForm } from "react-hook-form";
-import { Layout as DashboardLayout } from "../../../../../layouts/index.js";
+import { Layout as DashboardLayout } from "../../../../../layouts/index";
 import CippFormPage from "../../../../../components/CippFormPages/CippFormPage";
 import CippFormComponent from "../../../../../components/CippComponents/CippFormComponent";
 import { CippFormUserSelector } from "../../../../../components/CippComponents/CippFormUserSelector";
@@ -95,9 +95,13 @@ const EditRoomList = () => {
       <CippFormPage
         formControl={formControl}
         queryKey={[`ListRoomLists-${groupId}`]}
-        title={`Room List: ${
-          groupInfo.data?.groupInfo?.DisplayName || groupInfo.data?.groupInfo?.displayName || ""
-        }`}
+        title={
+          groupInfo.data?.groupInfo?.DisplayName || groupInfo.data?.groupInfo?.displayName
+            ? `Room List: ${
+                groupInfo.data?.groupInfo?.DisplayName || groupInfo.data?.groupInfo?.displayName
+              }`
+            : "Room List"
+        }
         formPageType="Edit"
         backButtonTitle="Room Lists"
         postUrl="/api/EditRoomList"
@@ -234,7 +238,16 @@ const EditRoomList = () => {
                   isFetching={groupInfo.isFetching}
                   disabled={groupInfo.isFetching}
                   api={{
-                    url: "/api/ListUsers",
+                    url: "/api/ListGraphRequest",
+                    dataKey: "Results",
+                    data: {
+                      Endpoint: "users",
+                      manualPagination: true,
+                      $select: "id,userPrincipalName,displayName,mail",
+                      $count: true,
+                      $orderby: "displayName",
+                      $top: 999,
+                    },
                     labelField: (user) =>
                       `${user.displayName || "Unknown"} (${
                         user.userPrincipalName || user.mail || "No email"

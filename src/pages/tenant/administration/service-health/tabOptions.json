@@ -1,0 +1,22 @@
+[
+  {
+    "label": "Overview",
+    "path": "/tenant/administration/service-health",
+    "icon": "Cloud"
+  },
+  {
+    "label": "Status",
+    "path": "/tenant/administration/service-health/status",
+    "icon": "CheckCircle"
+  },
+  {
+    "label": "Issues",
+    "path": "/tenant/administration/service-health/issues",
+    "icon": "Warning"
+  },
+  {
+    "label": "Message Center",
+    "path": "/tenant/administration/service-health/message-center",
+    "icon": "NewReleases"
+  }
+]

@@ -5,6 +5,11 @@
     "icon": "Notifications"
   },
   {
+    "label": "Alert History",
+    "path": "/tenant/administration/alert-configuration/history",
+    "icon": "History"
+  },
+  {
     "label": "Snoozed Alerts",
     "path": "/tenant/administration/alert-configuration/snoozed-alerts",
     "icon": "ShieldMoon"

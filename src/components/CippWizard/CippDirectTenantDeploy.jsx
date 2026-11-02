@@ -45,7 +45,9 @@ export const CippDirectTenantDeploy = (props) => {
         </Typography>
 
         <Box sx={{ display: "flex", justifyContent: "flex-start", mt: 2, mb: 2 }}>
-          <Stack direction="row" spacing={2} alignItems="center">
+          <Stack direction="row" spacing={2} sx={{
+            alignItems: "center"
+          }}>
             <CIPPM365OAuthButton
               onAuthSuccess={(tokenData) => {
                 const updatedTokenData = {

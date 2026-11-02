@@ -1,9 +1,9 @@
 import { useState } from 'react'
+import { CippIcons } from '../../utils/icon-registry'
 import { Button, Box } from '@mui/material'
-import { ReceiptLongOutlined } from '@mui/icons-material'
-import { EyeIcon } from '@heroicons/react/24/outline'
 import { CippOffCanvas } from './CippOffCanvas'
 import { CippDataTable } from '../CippTable/CippDataTable'
+import { usePermissions } from '../../hooks/use-permissions'
 
 export const CippApiLogsDrawer = ({
   buttonText = 'View API Logs',
@@ -11,12 +11,17 @@ export const CippApiLogsDrawer = ({
   tenantFilter = null,
   standardFilter = null,
   scheduledTaskFilter = null,
+  baselineRunFilter = null,
   requiredPermissions = [],
   PermissionButton = Button,
   title = 'API Logs',
   ...props
 }) => {
   const [drawerVisible, setDrawerVisible] = useState(false)
+  const { checkPermissions } = usePermissions()
+  // ListLogs sits behind CIPP.Logs rather than the sign-in permission, so a role without it
+  // gets no button instead of a 403 inside the drawer.
+  const canReadLogs = checkPermissions(['CIPP.Logs.*'])
 
   const handleCloseDrawer = () => {
     setDrawerVisible(false)
@@ -26,12 +31,15 @@ export const CippApiLogsDrawer = ({
     setDrawerVisible(true)
   }
 
-  // Build the API URL with the filter
+  // Build the API URL with the filter. Scoped drawers (a standard template, a scheduled task or a
+  // baseline run) cover the last 7 days: their runs are scheduled, so "today only" is empty for
+  // most of the day after a run that finished overnight.
+  const isScoped = Boolean(standardFilter || scheduledTaskFilter || baselineRunFilter)
   const apiUrl = `/api/ListLogs?Filter=true${apiFilter ? `&API=${apiFilter}` : ''}${
     tenantFilter ? `&Tenant=${tenantFilter}` : ''
   }${standardFilter ? `&StandardTemplateId=${standardFilter}` : ''}${
     scheduledTaskFilter ? `&ScheduledTaskId=${scheduledTaskFilter}` : ''
-  }`
+  }${baselineRunFilter ? `&BaselineRunId=${baselineRunFilter}` : ''}${isScoped ? '&Days=7' : ''}`
 
   // Define the columns for the logs table
   const simpleColumns = [
@@ -51,22 +59,30 @@ export const CippApiLogsDrawer = ({
     {
       label: 'View Log Entry',
       link: '/cipp/logs/logentry?logentry=[RowKey]',
-      icon: <EyeIcon />,
+      pinned: true,
+      icon: <CippIcons.EyeIcon />,
       color: 'primary',
     },
   ]
+
+  if (!canReadLogs) return null
 
   return (
     <>
       <PermissionButton
         {...(PermissionButton !== Button ? { requiredPermissions } : {})}
         onClick={handleOpenDrawer}
-        startIcon={<ReceiptLongOutlined />}
+        startIcon={<CippIcons.ReceiptLongOutlined />}
         {...props}
       >
         {buttonText}
       </PermissionButton>
-      <CippOffCanvas title={title} visible={drawerVisible} onClose={handleCloseDrawer} size="xl">
+      <CippOffCanvas
+        title={title}
+        visible={drawerVisible}
+        onClose={handleCloseDrawer}
+        size="xl"
+      >
         <Box sx={{ mb: 2 }}>
           <CippDataTable
             title={title}
@@ -79,7 +95,7 @@ export const CippApiLogsDrawer = ({
             }}
             queryKey={`APILogs-${apiFilter || 'All'}-${tenantFilter || 'AllTenants'}-${
               standardFilter || 'NoStandard'
-            }-${scheduledTaskFilter || 'NoTask'}`}
+            }-${scheduledTaskFilter || 'NoTask'}-${baselineRunFilter || 'NoRun'}`}
             simpleColumns={simpleColumns}
             exportEnabled={true}
             offCanvas={{

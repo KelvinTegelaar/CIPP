@@ -1,33 +1,49 @@
-import { useEffect } from "react";
-import { Box, Stack, Tooltip } from "@mui/material";
-import CippFormComponent from "./CippFormComponent";
-import { useWatch } from "react-hook-form";
+import { useEffect } from 'react'
+import { Box, FormControlLabel, Stack, Switch, Tooltip } from '@mui/material'
+import CippFormComponent from './CippFormComponent'
+import { useWatch } from 'react-hook-form'
+import { GroupHeader, GroupItems } from './CippAutocompleteGrouping'
 
-const CippCalendarPermissionsDialog = ({ formHook, combinedOptions, isUserGroupLoading }) => {
+const CippCalendarPermissionsDialog = ({
+  formHook,
+  combinedOptions,
+  isUserGroupLoading,
+  includeGroups,
+  onIncludeGroupsChange,
+}) => {
   const permissionLevel = useWatch({
     control: formHook.control,
-    name: "Permissions",
-  });
+    name: 'Permissions',
+  })
 
-  const isEditor = permissionLevel?.value === "Editor";
+  const isEditor = permissionLevel?.value === 'Editor'
 
   useEffect(() => {
     if (!isEditor) {
-      formHook.setValue("CanViewPrivateItems", false);
+      formHook.setValue('CanViewPrivateItems', false)
     }
-  }, [isEditor, formHook]);
+  }, [isEditor, formHook])
 
   // default SendNotificationToUser to false on mount
   useEffect(() => {
-    formHook.setValue("SendNotificationToUser", false);
-  }, [formHook]);
+    formHook.setValue('SendNotificationToUser', false)
+  }, [formHook])
 
   // Only certain permission levels support sending a notification when calendar permissions are added
-  const notifyAllowed = ["AvailabilityOnly", "LimitedDetails", "Reviewer", "Editor"];
-  const isNotifyAllowed = notifyAllowed.includes(permissionLevel?.value ?? permissionLevel);
+  const notifyAllowed = ['AvailabilityOnly', 'LimitedDetails', 'Reviewer', 'Editor']
+  const isNotifyAllowed = notifyAllowed.includes(permissionLevel?.value ?? permissionLevel)
 
   return (
     <Stack spacing={3} sx={{ mt: 1 }}>
+      <FormControlLabel
+        control={
+          <Switch
+            checked={includeGroups}
+            onChange={(_, checked) => onIncludeGroupsChange(checked)}
+          />
+        }
+        label="Include mail-enabled security groups"
+      />
       <Box>
         <CippFormComponent
           type="autoComplete"
@@ -37,8 +53,15 @@ const CippCalendarPermissionsDialog = ({ formHook, combinedOptions, isUserGroupL
           formControl={formHook}
           isFetching={isUserGroupLoading}
           options={combinedOptions}
+          groupBy={(option) => option.group}
+          renderGroup={(params) => (
+            <li key={params.key}>
+              <GroupHeader>{params.group}</GroupHeader>
+              <GroupItems>{params.children}</GroupItems>
+            </li>
+          )}
           creatable={false}
-          validators={{ required: "Select a user or group to assign permissions to" }}
+          validators={{ required: 'Select a user or group to assign permissions to' }}
           placeholder="Select a user or group to assign permissions to"
         />
       </Box>
@@ -48,19 +71,19 @@ const CippCalendarPermissionsDialog = ({ formHook, combinedOptions, isUserGroupL
           label="Permission Level"
           name="Permissions"
           creatable={false}
-          validators={{ required: "Select the permission level for the calendar" }}
+          validators={{ required: 'Select the permission level for the calendar' }}
           options={[
-            { value: "Author", label: "Author" },
-            { value: "Contributor", label: "Contributor" },
-            { value: "Editor", label: "Editor" },
-            { value: "Owner", label: "Owner" },
-            { value: "NonEditingAuthor", label: "Non Editing Author" },
-            { value: "PublishingAuthor", label: "Publishing Author" },
-            { value: "PublishingEditor", label: "Publishing Editor" },
-            { value: "Reviewer", label: "Reviewer" },
-            { value: "LimitedDetails", label: "Limited Details" },
-            { value: "AvailabilityOnly", label: "Availability Only" },
-            { value: "None", label: "None" },
+            { value: 'Author', label: 'Author' },
+            { value: 'Contributor', label: 'Contributor' },
+            { value: 'Editor', label: 'Editor' },
+            { value: 'Owner', label: 'Owner' },
+            { value: 'NonEditingAuthor', label: 'Non Editing Author' },
+            { value: 'PublishingAuthor', label: 'Publishing Author' },
+            { value: 'PublishingEditor', label: 'Publishing Editor' },
+            { value: 'Reviewer', label: 'Reviewer' },
+            { value: 'LimitedDetails', label: 'Limited Details' },
+            { value: 'AvailabilityOnly', label: 'Availability Only' },
+            { value: 'None', label: 'None' },
           ]}
           multiple={false}
           formControl={formHook}
@@ -68,7 +91,11 @@ const CippCalendarPermissionsDialog = ({ formHook, combinedOptions, isUserGroupL
       </Box>
       <Box>
         <Tooltip
-          title={!isEditor ? "Only usable when permission level is Editor" : "Enables delegate access, which forwards meeting requests to this user"}
+          title={
+            !isEditor
+              ? 'Only usable when permission level is Editor'
+              : 'Enables delegate access, which forwards meeting requests to this user'
+          }
           followCursor
           placement="right"
         >
@@ -89,8 +116,8 @@ const CippCalendarPermissionsDialog = ({ formHook, combinedOptions, isUserGroupL
         <Tooltip
           title={
             !isNotifyAllowed
-              ? `Send notification is only supported for: ${notifyAllowed.join(", ")}`
-              : ""
+              ? `Send notification is only supported for: ${notifyAllowed.join(', ')}`
+              : ''
           }
           followCursor
           placement="right"
@@ -108,7 +135,7 @@ const CippCalendarPermissionsDialog = ({ formHook, combinedOptions, isUserGroupL
         </Tooltip>
       </Box>
     </Stack>
-  );
-};
+  )
+}
 
-export default CippCalendarPermissionsDialog;
+export default CippCalendarPermissionsDialog

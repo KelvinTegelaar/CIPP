@@ -60,6 +60,8 @@ export const CippSettingsSideBar = (props) => {
       // General Settings
       usageLocation: formValues.usageLocation,
       tablePageSize: formValues.tablePageSize,
+      tableViewMode: formValues.tableViewMode,
+      defaultTestSuite: formValues.defaultTestSuite,
       userAttributes: formValues.userAttributes,
 
       // Table Filter Preferences
@@ -84,12 +86,14 @@ export const CippSettingsSideBar = (props) => {
         Compliance_Portal: formValues.portalLinks?.Compliance_Portal,
         Power_Platform_Portal: formValues.portalLinks?.Power_Platform_Portal,
         Power_BI_Portal: formValues.portalLinks?.Power_BI_Portal,
+        Login_Hint: formValues.portalLinks?.Login_Hint,
       },
 
       // Offboarding Defaults
       offboardingDefaults: {
         ConvertToShared: formValues.offboardingDefaults?.ConvertToShared,
         RemoveGroups: formValues.offboardingDefaults?.RemoveGroups,
+        RemoveGroupOwnership: formValues.offboardingDefaults?.RemoveGroupOwnership,
         HideFromGAL: formValues.offboardingDefaults?.HideFromGAL,
         RemoveLicenses: formValues.offboardingDefaults?.RemoveLicenses,
         removeCalendarInvites: formValues.offboardingDefaults?.removeCalendarInvites,
@@ -100,10 +104,20 @@ export const CippSettingsSideBar = (props) => {
         KeepCopy: formValues.offboardingDefaults?.KeepCopy,
         DeleteUser: formValues.offboardingDefaults?.DeleteUser,
         RemoveMobile: formValues.offboardingDefaults?.RemoveMobile,
+        WipeMobile: formValues.offboardingDefaults?.WipeMobile,
         DisableSignIn: formValues.offboardingDefaults?.DisableSignIn,
         RemoveMFADevices: formValues.offboardingDefaults?.RemoveMFADevices,
         RemoveTeamsPhoneDID: formValues.offboardingDefaults?.RemoveTeamsPhoneDID,
         ClearImmutableId: formValues.offboardingDefaults?.ClearImmutableId,
+        removeCalendarPermissions: formValues.offboardingDefaults?.removeCalendarPermissions,
+        DisableOneDriveSharing: formValues.offboardingDefaults?.DisableOneDriveSharing,
+        OOO: formValues.offboardingDefaults?.OOO,
+        postExecution: {
+          psa: formValues.offboardingDefaults?.postExecution?.psa,
+          email: formValues.offboardingDefaults?.postExecution?.email,
+          webhook: formValues.offboardingDefaults?.postExecution?.webhook,
+          push: formValues.offboardingDefaults?.postExecution?.push,
+        },
       },
     };
 

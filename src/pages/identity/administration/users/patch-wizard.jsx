@@ -1,6 +1,8 @@
 import { useState, useEffect, useMemo } from 'react'
+import { useWatch } from 'react-hook-form'
+import { CippIcons } from '../../../../utils/icon-registry'
 import { useRouter } from 'next/router'
-import { Layout as DashboardLayout } from '../../../../layouts/index.js'
+import { Layout as DashboardLayout } from '../../../../layouts/index'
 import CippWizardPage from '../../../../components/CippWizard/CippWizardPage.jsx'
 import {
   Stack,
@@ -23,7 +25,7 @@ import { CippApiResults } from '../../../../components/CippComponents/CippApiRes
 import { CippDataTable } from '../../../../components/CippTable/CippDataTable'
 import { CippFormDomainSelector } from '../../../../components/CippComponents/CippFormDomainSelector'
 import { CippFormUserSelector } from '../../../../components/CippComponents/CippFormUserSelector'
-import { Delete } from '@mui/icons-material'
+import { useSettings } from '../../../../hooks/use-settings'
 
 // User properties that can be patched
 const PATCHABLE_PROPERTIES = [
@@ -132,10 +134,59 @@ const PATCHABLE_PROPERTIES = [
 // Step 1: Display users to be updated
 const UsersDisplayStep = (props) => {
   const { onNextStep, onPreviousStep, formControl, currentStep, users, onUsersChange } = props
+  const settings = useSettings()
+  const usersToAdd = useWatch({ control: formControl.control, name: 'usersToAdd' })
+
+  const existingUserIds = useMemo(
+    () => new Set((users || []).map((user) => user.id).filter(Boolean)),
+    [users]
+  )
+
+  // Prefer the tenant already represented in the selection; otherwise the active tenant.
+  const tenantForAdd = useMemo(() => {
+    const fromUsers = [
+      ...new Set((users || []).map((user) => user.Tenant || user.tenantFilter).filter(Boolean)),
+    ]
+    if (fromUsers.length === 1) return fromUsers[0]
+    if (settings.currentTenant && settings.currentTenant !== 'AllTenants') {
+      return settings.currentTenant
+    }
+    return null
+  }, [users, settings.currentTenant])
+
+  useEffect(() => {
+    if (!tenantForAdd) return
+    const currentTenantFilter = formControl.getValues('tenantFilter')
+    if (currentTenantFilter?.value !== tenantForAdd) {
+      formControl.setValue('tenantFilter', { value: tenantForAdd })
+    }
+  }, [tenantForAdd, formControl])
 
   const handleRemoveUser = (userToRemove) => {
     const updatedUsers = users.filter((user) => user.id !== userToRemove.id)
     onUsersChange(updatedUsers)
+  }
+
+  const handleAddUsers = () => {
+    const selected = Array.isArray(usersToAdd) ? usersToAdd : usersToAdd ? [usersToAdd] : []
+    if (!selected.length || !tenantForAdd) return
+
+    const newUsers = selected
+      .filter((option) => option?.value && !existingUserIds.has(option.value))
+      .map((option) => ({
+        id: option.value,
+        displayName: option.addedFields?.displayName || option.label,
+        userPrincipalName: option.addedFields?.userPrincipalName,
+        jobTitle: option.addedFields?.jobTitle,
+        department: option.addedFields?.department,
+        Tenant: tenantForAdd,
+        tenantFilter: tenantForAdd,
+      }))
+
+    if (newUsers.length) {
+      onUsersChange([...(users || []), ...newUsers])
+    }
+    formControl.setValue('usersToAdd', [])
   }
 
   // Clean user data without circular references
@@ -155,21 +206,70 @@ const UsersDisplayStep = (props) => {
   const rowActions = [
     {
       label: 'Remove from List',
-      icon: <Delete />,
+      icon: <CippIcons.Delete />,
       color: 'error',
       customFunction: (user) => handleRemoveUser(user),
       noConfirm: true,
     },
   ]
 
+  const canAddUsers = Boolean(tenantForAdd)
+  const hasUsersToAdd = Array.isArray(usersToAdd)
+    ? usersToAdd.length > 0
+    : Boolean(usersToAdd?.value)
+
   return (
     <Stack spacing={3}>
       <Stack spacing={1}>
         <Typography variant="h6">Users to be updated</Typography>
-        <Typography color="text.secondary" variant="body2">
+        <Typography variant="body2" sx={{
+          color: "text.secondary"
+        }}>
           The following users will be updated with the properties you select in the next step. You
-          can remove users from this list if needed.
+          can remove users from this list or add more without returning to the Users page.
         </Typography>
+      </Stack>
+
+      <Stack spacing={1}>
+        <Stack
+          direction={{ xs: 'column', sm: 'row' }}
+          spacing={1}
+          sx={{ alignItems: { sm: 'flex-start' } }}
+        >
+          <Box sx={{ flex: 1, minWidth: 0 }}>
+            <CippFormUserSelector
+              formControl={formControl}
+              name="usersToAdd"
+              label="Add users"
+              multiple={true}
+              disabled={!canAddUsers}
+              select="id,userPrincipalName,displayName,jobTitle,department"
+              addedField={{
+                id: 'id',
+                userPrincipalName: 'userPrincipalName',
+                displayName: 'displayName',
+                jobTitle: 'jobTitle',
+                department: 'department',
+              }}
+              dataFilter={(option) => !existingUserIds.has(option.value)}
+              showRefresh={true}
+            />
+          </Box>
+          <Button
+            variant="outlined"
+            onClick={handleAddUsers}
+            disabled={!canAddUsers || !hasUsersToAdd}
+            sx={{ flexShrink: 0, mt: { sm: 0.5 } }}
+          >
+            Add
+          </Button>
+        </Stack>
+        {!canAddUsers && (
+          <Alert severity="info">
+            Select a specific tenant in CIPP to add users from here, or go back to the Users page
+            with a tenant selected.
+          </Alert>
+        )}
       </Stack>
 
       {users && users.length > 0 ? (
@@ -189,8 +289,15 @@ const UsersDisplayStep = (props) => {
       ) : (
         <Card variant="outlined">
           <CardContent>
-            <Typography color="text.secondary" variant="body2" sx={{ textAlign: 'center', py: 2 }}>
-              No users selected. Please go back and select users from the main table.
+            <Typography
+              variant="body2"
+              sx={{
+                color: "text.secondary",
+                textAlign: 'center',
+                py: 2
+              }}>
+              No users selected yet. Use the picker above to add users, or go back and select them
+              from the Users table.
             </Typography>
           </CardContent>
         </Card>
@@ -204,7 +311,7 @@ const UsersDisplayStep = (props) => {
         noNextButton={!users || users.length === 0}
       />
     </Stack>
-  )
+  );
 }
 
 // Step 2: Property selection and input
@@ -367,14 +474,21 @@ const PropertySelectionStep = (props) => {
     <Stack spacing={3}>
       <Stack spacing={1}>
         <Typography variant="h6">Select Properties to update</Typography>
-        <Typography color="text.secondary" variant="body2">
+        <Typography variant="body2" sx={{
+          color: "text.secondary"
+        }}>
           Choose which user properties you want to modify and provide the new values.
           {customDataProperties.length > 0 && (
             <> Custom data fields are available based on your tenant's manual entry mappings.</>
           )}
         </Typography>
         {customDataMappings.isLoading && (
-          <Typography color="text.secondary" variant="body2" sx={{ fontStyle: 'italic' }}>
+          <Typography
+            variant="body2"
+            sx={{
+              color: "text.secondary",
+              fontStyle: 'italic'
+            }}>
             Loading custom data mappings...
           </Typography>
         )}
@@ -473,28 +587,31 @@ const PropertySelectionStep = (props) => {
             label="Properties to update"
             placeholder="Select properties to update..."
             slotProps={{
+              ...params.slotProps,
+
               inputLabel: {
                 shrink: true,
                 sx: { transition: 'none' },
               },
+
               input: {
-                ...params.InputProps,
+                ...params.slotProps.input,
                 sx: {
                   transition: 'none',
                   '& .MuiOutlinedInput-notchedOutline': {
                     transition: 'none',
                   },
                 },
-              },
+              }
             }}
           />
         )}
-        renderTags={(value, getTagProps) =>
+        renderValue={(value, getItemProps) =>
           value
             .filter((option) => !option.isSelectAll)
             .map((option, index) => (
               <Chip
-                {...getTagProps({ index })}
+                {...getItemProps({ index })}
                 key={option.property}
                 label={option.label}
                 size="small"
@@ -527,7 +644,7 @@ const PropertySelectionStep = (props) => {
         formControl={formControl}
       />
     </Stack>
-  )
+  );
 }
 
 // Step 3: Confirmation
@@ -629,7 +746,9 @@ const ConfirmationStep = (props) => {
     <Stack spacing={3}>
       <Stack spacing={1}>
         <Typography variant="h6">Confirm User Updates</Typography>
-        <Typography color="text.secondary" variant="body2">
+        <Typography variant="body2" sx={{
+          color: "text.secondary"
+        }}>
           Review the users that will be updated with {selectedProperties.length} selected{' '}
           {selectedProperties.length === 1 ? 'property' : 'properties'}, then click Submit to apply
           the changes.
@@ -666,11 +785,16 @@ const ConfirmationStep = (props) => {
                     >
                       {property?.label || propName}:
                     </Typography>
-                    <Typography variant="body2" color="text.secondary" sx={{ flex: 1 }}>
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        color: "text.secondary",
+                        flex: 1
+                      }}>
                       {displayValue}
                     </Typography>
                   </Box>
-                )
+                );
               })}
             </Stack>
           </CardContent>
@@ -693,7 +817,13 @@ const ConfirmationStep = (props) => {
       ) : (
         <Card variant="outlined">
           <CardContent>
-            <Typography color="text.secondary" variant="body2" sx={{ textAlign: 'center', py: 2 }}>
+            <Typography
+              variant="body2"
+              sx={{
+                color: "text.secondary",
+                textAlign: 'center',
+                py: 2
+              }}>
               No users to update. Please go back and select users.
             </Typography>
           </CardContent>
@@ -703,12 +833,13 @@ const ConfirmationStep = (props) => {
       <CippApiResults apiObject={patchUsersApi} />
 
       <Stack
-        alignItems="center"
         direction="row"
-        justifyContent="flex-end"
         spacing={2}
-        sx={{ mt: 3 }}
-      >
+        sx={{
+          alignItems: "center",
+          justifyContent: "flex-end",
+          mt: 3
+        }}>
         {currentStep > 0 && (
           <Button color="inherit" onClick={onPreviousStep} size="large" type="button">
             Back
@@ -730,7 +861,7 @@ const ConfirmationStep = (props) => {
         </Button>
       </Stack>
     </Stack>
-  )
+  );
 }
 
 const Page = () => {

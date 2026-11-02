@@ -1,9 +1,9 @@
 import { useEffect } from "react";
-import { Box, Divider, IconButton, Tooltip, Typography } from "@mui/material";
-import { Sync } from "@mui/icons-material";
+import { CippIcons } from "../../../../../utils/icon-registry";
+import { Alert, Box, Divider, IconButton, Tooltip, Typography } from "@mui/material";
 import { Grid } from "@mui/system";
-import { useForm } from "react-hook-form";
-import { Layout as DashboardLayout } from "../../../../../layouts/index.js";
+import { useForm, useWatch } from "react-hook-form";
+import { Layout as DashboardLayout } from "../../../../../layouts/index";
 import CippFormPage from "../../../../../components/CippFormPages/CippFormPage";
 import CippFormComponent from "../../../../../components/CippComponents/CippFormComponent";
 import CippFormSkeleton from "../../../../../components/CippFormPages/CippFormSkeleton";
@@ -34,6 +34,34 @@ const automateProcessingOptions = [
   { value: "AutoAccept", label: "AutoAccept - Accept and delete" },
 ];
 
+const calendarPermissionOptions = [
+  { value: "Owner", label: "Owner" },
+  { value: "PublishingEditor", label: "Publishing Editor" },
+  { value: "Editor", label: "Editor" },
+  { value: "PublishingAuthor", label: "Publishing Author" },
+  { value: "Author", label: "Author" },
+  { value: "NonEditingAuthor", label: "Non Editing Author" },
+  { value: "Reviewer", label: "Reviewer" },
+  { value: "Contributor", label: "Contributor" },
+  { value: "LimitedDetails", label: "Limited Details" },
+  { value: "AvailabilityOnly", label: "Availability Only" },
+  { value: "None", label: "None" },
+];
+
+const getCalendarPermissionOption = (permission) => {
+  if (!permission) {
+    return null;
+  }
+
+  const value = Array.isArray(permission) ? permission.join(",") : permission;
+  return (
+    calendarPermissionOptions.find((option) => option.value === value) || {
+      value,
+      label: value,
+    }
+  );
+};
+
 const EditRoomMailbox = () => {
   const router = useRouter();
   const { roomId } = router.query;
@@ -41,6 +69,19 @@ const EditRoomMailbox = () => {
   const formControl = useForm({
     mode: "onChange",
   });
+  const addOrganizerToSubject = useWatch({
+    control: formControl.control,
+    name: "AddOrganizerToSubject",
+  });
+  const defaultCalendarPermission = useWatch({
+    control: formControl.control,
+    name: "DefaultCalendarPermission",
+  });
+  const defaultCalendarPermissionValue =
+    defaultCalendarPermission?.value || defaultCalendarPermission;
+  const showOrganizerVisibilityWarning =
+    Boolean(addOrganizerToSubject) &&
+    ["AvailabilityOnly", "None"].includes(defaultCalendarPermissionValue);
 
   const roomInfo = ApiGetCall({
     url: `/api/ListRooms?roomId=${roomId}&tenantFilter=${tenantDomain}`,
@@ -92,8 +133,12 @@ const EditRoomMailbox = () => {
         ScheduleOnlyDuringWorkHours: room.ScheduleOnlyDuringWorkHours,
         AutomateProcessing: room.AutomateProcessing,
         AddOrganizerToSubject: room.AddOrganizerToSubject,
+        DeleteComments: room.DeleteComments,
         DeleteSubject: room.DeleteSubject,
+        RemovePrivateProperty: room.RemovePrivateProperty,
         RemoveCanceledMeetings: room.RemoveCanceledMeetings,
+        RemoveOldMeetingMessages: room.RemoveOldMeetingMessages,
+        DefaultCalendarPermission: getCalendarPermissionOption(room.DefaultCalendarPermission),
 
         // Calendar Configuration
         WorkDays:
@@ -129,7 +174,9 @@ const EditRoomMailbox = () => {
     <CippFormPage
       formControl={formControl}
       queryKey={`Room-${roomId}`}
-      title="Edit Room Mailbox"
+      title="Room Mailbox"
+      formPageType="Edit"
+      hideSubmit={!roomId}
       backButtonTitle="Room Mailboxes Overview"
       postUrl="/api/EditRoomMailbox"
       customDataformatter={(values) => ({
@@ -172,8 +219,13 @@ const EditRoomMailbox = () => {
         ScheduleOnlyDuringWorkHours: values.ScheduleOnlyDuringWorkHours,
         AutomateProcessing: values.AutomateProcessing?.value || values.AutomateProcessing,
         AddOrganizerToSubject: values.AddOrganizerToSubject,
+        DeleteComments: values.DeleteComments,
         DeleteSubject: values.DeleteSubject,
+        RemovePrivateProperty: values.RemovePrivateProperty,
         RemoveCanceledMeetings: values.RemoveCanceledMeetings,
+        RemoveOldMeetingMessages: values.RemoveOldMeetingMessages,
+        DefaultCalendarPermission:
+          values.DefaultCalendarPermission?.value || values.DefaultCalendarPermission,
 
         // Calendar Configuration
         WorkDays: values.WorkDays?.map((day) => day.value).join(","),
@@ -182,6 +234,11 @@ const EditRoomMailbox = () => {
         WorkingHoursTimeZone: values.WorkingHoursTimeZone?.value || values.WorkingHoursTimeZone,
       })}
     >
+      {!roomId && (
+        <Alert severity="info">
+          No room mailbox selected. Open this page from the Room Mailboxes list.
+        </Alert>
+      )}
       {roomInfo.isFetching && (
         <CippFormSkeleton layout={[2, 3, 1, 2, 3, 2, 1, 2, 3, 1, 3, 1, 3, 1]} />
       )}
@@ -193,7 +250,7 @@ const EditRoomMailbox = () => {
               <Typography variant="subtitle1">Basic Information</Typography>
               <Tooltip title="Refresh">
                 <IconButton size="small" onClick={() => roomInfo.refetch()}>
-                  <Sync fontSize="small" />
+                  <CippIcons.Sync fontSize="small" />
                 </IconButton>
               </Tooltip>
             </Box>
@@ -230,9 +287,7 @@ const EditRoomMailbox = () => {
               label="Room Capacity"
               name="capacity"
               formControl={formControl}
-              InputProps={{
-                inputProps: { min: 0 },
-              }}
+              slotProps={{ htmlInput: { min: 0 } }}
             />
           </Grid>
           <Grid size={{ md: 4, xs: 12 }}>
@@ -245,9 +300,7 @@ const EditRoomMailbox = () => {
                 min: { value: 1, message: "Minimum duration is 1 minute" },
                 max: { value: 1440, message: "Maximum duration is 1440 minutes (24 hours)" },
               }}
-              InputProps={{
-                inputProps: { min: 1, max: 1440 },
-              }}
+              slotProps={{ htmlInput: { min: 1, max: 1440 } }}
               fullWidth
             />
           </Grid>
@@ -261,9 +314,7 @@ const EditRoomMailbox = () => {
                 min: { value: 0, message: "Minimum is 0 days" },
                 max: { value: 1080, message: "Maximum is 1080 days (3 years)" },
               }}
-              InputProps={{
-                inputProps: { min: 0, max: 1080 },
-              }}
+              slotProps={{ htmlInput: { min: 0, max: 1080 } }}
               fullWidth
             />
           </Grid>
@@ -328,6 +379,26 @@ const EditRoomMailbox = () => {
           </Grid>
           <Grid size={{ md: 4, xs: 12 }}>
             <CippFormComponent
+              type="autoComplete"
+              label="Default Calendar Permission"
+              name="DefaultCalendarPermission"
+              multiple={false}
+              creatable={false}
+              options={calendarPermissionOptions}
+              formControl={formControl}
+            />
+          </Grid>
+          {showOrganizerVisibilityWarning && (
+            <Grid size={{ xs: 12 }}>
+              <Alert severity="warning">
+                Users will not be able to see the organizer while Default calendar permissions are
+                set to Availability Only or None. Set Default to at least Limited Details to show
+                the organizer.
+              </Alert>
+            </Grid>
+          )}
+          <Grid size={{ md: 4, xs: 12 }}>
+            <CippFormComponent
               type="switch"
               label="Delete Subject"
               name="DeleteSubject"
@@ -337,8 +408,32 @@ const EditRoomMailbox = () => {
           <Grid size={{ md: 4, xs: 12 }}>
             <CippFormComponent
               type="switch"
+              label="Delete Comments"
+              name="DeleteComments"
+              formControl={formControl}
+            />
+          </Grid>
+          <Grid size={{ md: 4, xs: 12 }}>
+            <CippFormComponent
+              type="switch"
+              label="Remove Private Property"
+              name="RemovePrivateProperty"
+              formControl={formControl}
+            />
+          </Grid>
+          <Grid size={{ md: 4, xs: 12 }}>
+            <CippFormComponent
+              type="switch"
               label="Remove Canceled Meetings"
               name="RemoveCanceledMeetings"
+              formControl={formControl}
+            />
+          </Grid>
+          <Grid size={{ md: 4, xs: 12 }}>
+            <CippFormComponent
+              type="switch"
+              label="Remove Old Meeting Messages"
+              name="RemoveOldMeetingMessages"
               formControl={formControl}
             />
           </Grid>

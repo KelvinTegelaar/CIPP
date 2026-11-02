@@ -1,5 +1,5 @@
 import { Button, Typography, Alert, Box, TextField, InputAdornment } from "@mui/material";
-import { Key } from "@mui/icons-material";
+import { CippIcons } from "../../utils/icon-registry";
 import CippButtonCard from "../CippCards/CippButtonCard";
 import { ApiPostCall } from "../../api/ApiCall";
 import { CippCopyToClipBoard } from "../CippComponents/CippCopyToClipboard";
@@ -38,7 +38,7 @@ const CippSiemSettings = () => {
           size="small"
           onClick={handleGenerate}
           disabled={generateSas.isPending || !formControl.formState.isValid}
-          startIcon={<Key style={{ width: 16, height: 16 }} />}
+          startIcon={<CippIcons.Key style={{ width: 16, height: 16 }} />}
         >
           Generate SAS Token
         </Button>

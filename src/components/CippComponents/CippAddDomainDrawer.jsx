@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
+import { CippIcons } from "../../utils/icon-registry";
 import { Button, Box, Alert } from "@mui/material";
 import { useForm, useFormState } from "react-hook-form";
-import { AddCircleOutline } from "@mui/icons-material";
 import { CippOffCanvas } from "./CippOffCanvas";
 import { CippApiResults } from "./CippApiResults";
 import { useSettings } from "../../hooks/use-settings";
@@ -66,9 +66,9 @@ export const CippAddDomainDrawer = ({
   return (
     <>
       <PermissionButton
-        requiredPermissions={requiredPermissions}
+        {...(PermissionButton !== Button ? { requiredPermissions } : {})}
         onClick={() => setDrawerVisible(true)}
-        startIcon={<AddCircleOutline />}
+        startIcon={<CippIcons.AddCircleOutlined />}
       >
         {buttonText}
       </PermissionButton>

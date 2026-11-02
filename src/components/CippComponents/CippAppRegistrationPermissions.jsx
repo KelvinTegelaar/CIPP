@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { CippIcons } from "../../utils/icon-registry";
 import {
   Accordion,
   AccordionSummary,
@@ -14,7 +15,6 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { ExpandMore, WarningAmber } from "@mui/icons-material";
 import { useTheme } from "@mui/material/styles";
 import { ApiGetCall } from "../../api/ApiCall";
 import riskyPermissionsJson from "../../data/RiskyPermissions.json";
@@ -161,8 +161,22 @@ const ResourcePermissionsAccordion = ({
       }}
       disableGutters
     >
-      <AccordionSummary expandIcon={<ExpandMore />}>
-        <Stack direction="row" spacing={2} alignItems="center" sx={{ width: "100%", pr: 1 }}>
+      <AccordionSummary
+        expandIcon={<CippIcons.ExpandMore />}
+        // summary is a centered ButtonBase, an unshrinkable row spills both edges
+        sx={{ "& .MuiAccordionSummary-content": { minWidth: 0 } }}
+      >
+        <Stack
+          direction="row"
+          spacing={2}
+          useFlexGap
+          sx={{
+            alignItems: "center",
+            width: "100%",
+            pr: 1,
+            flexWrap: "wrap",
+            rowGap: 1
+          }}>
           <Typography variant="subtitle2" sx={{ flexGrow: 1 }}>
             {title}
           </Typography>
@@ -172,7 +186,7 @@ const ResourcePermissionsAccordion = ({
             >
               <Chip
                 size="small"
-                icon={<WarningAmber sx={{ fontSize: 18 }} />}
+                icon={<CippIcons.WarningAmber sx={{ fontSize: 18 }} />}
                 label={`${accordionRisk.worst} (${accordionRisk.count})`}
                 color={riskChipColor(accordionRisk.worst)}
                 variant={accordionRisk.worst === "Low" ? "outlined" : "filled"}
@@ -180,7 +194,12 @@ const ResourcePermissionsAccordion = ({
               />
             </Tooltip>
           )}
-          <Chip size="small" label={resourceAppId} variant="outlined" sx={{ maxWidth: 280 }} />
+          <Chip
+            size="small"
+            label={resourceAppId}
+            variant="outlined"
+            sx={{ maxWidth: 280, minWidth: 0 }}
+          />
           <Chip size="small" label={`${resourceAccess.length}`} />
         </Stack>
       </AccordionSummary>
@@ -244,9 +263,10 @@ const ResourcePermissionsAccordion = ({
                   <ListItemText
                     primary={details.name}
                     secondary={details.description || undefined}
-                    primaryTypographyProps={{ variant: "body2", fontWeight: "medium" }}
-                    secondaryTypographyProps={{ variant: "caption" }}
-                  />
+                    slotProps={{
+                      primary: { variant: "body2", fontWeight: "medium" },
+                      secondary: { variant: "caption" }
+                    }} />
                 </ListItem>
               );
             })}
@@ -342,7 +362,12 @@ const CippAppRegistrationPermissions = ({ requiredResourceAccess }) => {
         <Typography variant="h6" sx={{ mb: 0.5 }}>
           Application permissions
         </Typography>
-        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+        <Typography
+          variant="body2"
+          sx={{
+            color: "text.secondary",
+            mb: 2
+          }}>
           App-only (admin consent) permissions, grouped by resource API.
         </Typography>
         {listBusy && <Skeleton variant="rectangular" height={100} sx={{ mb: 1 }} />}
@@ -366,7 +391,12 @@ const CippAppRegistrationPermissions = ({ requiredResourceAccess }) => {
         <Typography variant="h6" sx={{ mb: 0.5 }}>
           Delegated permissions
         </Typography>
-        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+        <Typography
+          variant="body2"
+          sx={{
+            color: "text.secondary",
+            mb: 2
+          }}>
           Delegated (user or admin consent) permissions, grouped by resource API.
         </Typography>
         {listBusy && <Skeleton variant="rectangular" height={100} sx={{ mb: 1 }} />}

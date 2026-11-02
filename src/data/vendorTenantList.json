@@ -1,254 +1,695 @@
 [
     {
         "vendorName": "Augmentt",
-        "vendorTenantId": "29f0611d-e8d3-4946-914c-677d2ad8065b"
+        "vendorTenantId": "29f0611d-e8d3-4946-914c-677d2ad8065b",
+        "companyName": "Augmentt",
+        "website": "https://www.augmentt.com",
+        "description": "SaaS management and Microsoft 365 security platform for MSPs: discovers SaaS usage, monitors security posture and automates user lifecycle tasks across client tenants.",
+        "category": "Microsoft 365 Management",
+        "tags": ["SaaS management", "Microsoft 365 security", "Security monitoring", "User lifecycle", "Multi-tenant management"],
+        "vendorType": "MSP",
+        "removeOnOffboarding": true
     },
     {
         "vendorName": "Rewst",
-        "vendorTenantId": "5a9dda56-5beb-4840-83e1-9afc1ada2388"
+        "vendorTenantId": "5a9dda56-5beb-4840-83e1-9afc1ada2388",
+        "companyName": "Rewst",
+        "website": "https://rewst.io",
+        "description": "Robotic process automation platform for MSPs that builds low-code workflows across PSA, RMM, Microsoft 365 and other tools.",
+        "category": "Automation",
+        "tags": ["Workflow automation", "RPA", "Low-code", "User onboarding", "Integrations"],
+        "vendorType": "MSP",
+        "removeOnOffboarding": true
     },
     {
         "vendorName": "Datto Backupify",
-        "vendorTenantId": "8ebde5a4-a587-497c-9881-8a5c272dd1c4"
+        "vendorTenantId": "8ebde5a4-a587-497c-9881-8a5c272dd1c4",
+        "companyName": "Datto (Kaseya)",
+        "website": "https://www.datto.com",
+        "description": "Backupify / Datto SaaS Protection: cloud-to-cloud backup and restore for Microsoft 365 and Google Workspace, sold through MSPs.",
+        "category": "Backup & Recovery",
+        "tags": ["SaaS backup", "Microsoft 365 backup", "Google Workspace backup"],
+        "vendorType": "MSP",
+        "removeOnOffboarding": true
     },
     {
         "vendorName": "BitTitan",
-        "vendorTenantId": "6690473e-14f0-4f77-bf88-2ae5ade8746c"
+        "vendorTenantId": "6690473e-14f0-4f77-bf88-2ae5ade8746c",
+        "companyName": "BitTitan",
+        "website": "https://www.bittitan.com",
+        "description": "Cloud migration tools (MigrationWiz) for moving mailboxes, documents and Teams between tenants and platforms.",
+        "category": "Migration",
+        "tags": ["Tenant-to-tenant migration", "Mailbox migration", "OneDrive and SharePoint migration", "Teams migration"],
+        "vendorType": "MSP",
+        "removeOnOffboarding": true
     },
     {
         "vendorName": "Ingram Micro CPV",
-        "vendorTenantId": "5abe7315-18a5-4ca1-8e51-99753bef0d96"
+        "vendorTenantId": "5abe7315-18a5-4ca1-8e51-99753bef0d96",
+        "companyName": "Ingram Micro",
+        "website": "https://www.ingrammicro.com",
+        "description": "Global IT distributor; its Control Panel Vendor (CPV) app provisions and manages Microsoft CSP subscriptions bought through Ingram Micro's cloud marketplace.",
+        "category": "Cloud Distribution & Licensing",
+        "tags": ["Microsoft CSP", "Distribution", "License provisioning", "Cloud marketplace"],
+        "vendorType": "MSP",
+        "removeOnOffboarding": true
     },
     {
         "vendorName": "CodeTwo",
-        "vendorTenantId": "d4fd5c8b-42b0-4e2d-b330-498809917d07"
+        "vendorTenantId": "d4fd5c8b-42b0-4e2d-b330-498809917d07",
+        "companyName": "CodeTwo",
+        "website": "https://www.codetwo.com",
+        "description": "Email signature management for Microsoft 365 and Exchange, plus mailbox migration and Microsoft 365 backup tools.",
+        "category": "Email Signatures & Mail Management",
+        "tags": ["Email signatures", "Exchange migration", "Microsoft 365 backup"],
+        "vendorType": "Business",
+        "removeOnOffboarding": true
     },
     {
         "vendorName": "Anywhere365",
-        "vendorTenantId": "4179dd4d-e485-4535-9d45-b3539f584cad"
+        "vendorTenantId": "4179dd4d-e485-4535-9d45-b3539f584cad",
+        "companyName": "Anywhere365",
+        "website": "https://anywhere365.io",
+        "description": "Contact centre and customer dialogue platform that runs natively in Microsoft Teams.",
+        "category": "Communications",
+        "tags": ["Contact center", "Microsoft Teams", "Telephony", "Omnichannel"],
+        "vendorType": "Business",
+        "removeOnOffboarding": true
     },
     {
         "vendorName": "Roger365",
-        "vendorTenantId": "3c59ec71-67c8-4f3d-b2bd-19152b2629e1"
+        "vendorTenantId": "3c59ec71-67c8-4f3d-b2bd-19152b2629e1",
+        "companyName": "ROGER365.io",
+        "website": "https://www.roger365.io",
+        "description": "Dutch AI-powered omnichannel contact centre and attendant console that runs natively in Microsoft Teams.",
+        "category": "Communications",
+        "tags": ["Contact center", "Attendant console", "Microsoft Teams", "Omnichannel"],
+        "vendorType": "Business",
+        "removeOnOffboarding": true
     },
     {
         "vendorName": "ESET",
-        "vendorTenantId": "01f7e0e8-c680-4293-8068-d572231a88f4"
+        "vendorTenantId": "01f7e0e8-c680-4293-8068-d572231a88f4",
+        "companyName": "ESET",
+        "website": "https://www.eset.com",
+        "description": "Endpoint security vendor whose Microsoft 365 integrations, such as ESET Cloud Office Security, protect Exchange Online, OneDrive, SharePoint and Teams.",
+        "category": "Endpoint Security",
+        "tags": ["Antivirus", "EDR", "Microsoft 365 protection", "Email security"],
+        "vendorType": "Business",
+        "removeOnOffboarding": true
     },
     {
         "vendorName": "CyberTwice",
-        "vendorTenantId": "0c1fb16c-0190-47e0-b839-5ec8665eb699"
+        "vendorTenantId": "0c1fb16c-0190-47e0-b839-5ec8665eb699",
+        "companyName": "CyberTwice",
+        "website": "https://www.cybertwice.com",
+        "description": "Dutch vendor that connects SIP intercoms, paging systems and IP cameras to Microsoft Teams and records Teams communication for compliance.",
+        "category": "Communications",
+        "tags": ["Microsoft Teams", "Intercom", "Video surveillance", "Compliance recording"],
+        "vendorType": "Business",
+        "removeOnOffboarding": true
     },
     {
         "vendorName": "CloudMore AB",
-        "vendorTenantId": "0cc4f6a9-d96a-4508-b938-32386e1c44cf"
+        "vendorTenantId": "0cc4f6a9-d96a-4508-b938-32386e1c44cf",
+        "companyName": "Cloudmore",
+        "website": "https://cloudmore.com",
+        "description": "Cloud commerce platform for Microsoft CSP partners: subscription provisioning, billing, pricing and renewal management.",
+        "category": "Cloud Distribution & Licensing",
+        "tags": ["Microsoft CSP", "Billing", "Subscription management", "Cloud marketplace"],
+        "vendorType": "MSP",
+        "removeOnOffboarding": true
     },
     {
         "vendorName": "Citrix Cloud",
-        "vendorTenantId": "13d925d3-c1fe-4447-9600-bb8572753a33"
+        "vendorTenantId": "13d925d3-c1fe-4447-9600-bb8572753a33",
+        "companyName": "Citrix (Cloud Software Group)",
+        "website": "https://www.citrix.com",
+        "description": "Virtual apps and desktops managed from the Citrix Cloud control plane, which uses Entra ID for sign-in.",
+        "category": "Virtualization & Remote Access",
+        "tags": ["Virtual desktops", "Application virtualization", "DaaS", "Remote access"],
+        "vendorType": "Business",
+        "removeOnOffboarding": true
     },
     {
         "vendorName": "Proofpoint",
-        "vendorTenantId": "1d308ae7-d771-4a4a-8857-409aee86644a"
+        "vendorTenantId": "1d308ae7-d771-4a4a-8857-409aee86644a",
+        "companyName": "Proofpoint",
+        "website": "https://www.proofpoint.com",
+        "description": "Email security and compliance vendor: threat protection, data loss prevention, archiving and security awareness training.",
+        "category": "Email Security",
+        "tags": ["Email security", "Threat protection", "DLP", "Archiving", "Security awareness"],
+        "vendorType": "Business",
+        "removeOnOffboarding": true
     },
     {
         "vendorName": "Datto RMM",
-        "vendorTenantId": "353488c3-d84b-48e4-95ba-2456645d67bf"
+        "vendorTenantId": "353488c3-d84b-48e4-95ba-2456645d67bf",
+        "companyName": "Datto (Kaseya)",
+        "website": "https://www.datto.com",
+        "description": "Remote monitoring and management platform for MSPs to monitor, patch and run scripts on managed endpoints.",
+        "category": "RMM & Endpoint Management",
+        "tags": ["RMM", "Patch management", "Remote access", "Monitoring", "Scripting"],
+        "vendorType": "MSP",
+        "removeOnOffboarding": true
     },
     {
         "vendorName": "Avepoint",
-        "vendorTenantId": "3ee8362e-4c3c-447b-9a9e-910eec5d89c8"
+        "vendorTenantId": "3ee8362e-4c3c-447b-9a9e-910eec5d89c8",
+        "companyName": "AvePoint",
+        "website": "https://www.avepoint.com",
+        "description": "Microsoft 365 data management: backup, governance, migration and multi-tenant management for partners.",
+        "category": "Backup & Recovery",
+        "tags": ["Microsoft 365 backup", "Governance", "Migration", "Multi-tenant management"],
+        "vendorType": "Business",
+        "removeOnOffboarding": true
     },
     {
         "vendorName": "SkyKick",
-        "vendorTenantId": "3f9cd7a0-127a-4ed4-bf06-2f830d5616b7"
+        "vendorTenantId": "3f9cd7a0-127a-4ed4-bf06-2f830d5616b7",
+        "companyName": "SkyKick",
+        "website": "https://www.skykick.com",
+        "description": "Cloud tools for Microsoft partners: Microsoft 365 migration, cloud backup and multi-tenant management.",
+        "category": "Backup & Recovery",
+        "tags": ["Microsoft 365 backup", "Migration", "Multi-tenant management"],
+        "vendorType": "MSP",
+        "removeOnOffboarding": true
     },
     {
         "vendorName": "Carbonite",
-        "vendorTenantId": "4f0566c5-7c80-40a4-b3e8-7cfcb6c423ff"
+        "vendorTenantId": "4f0566c5-7c80-40a4-b3e8-7cfcb6c423ff",
+        "companyName": "Carbonite (OpenText)",
+        "website": "https://www.carbonite.com",
+        "description": "Backup and recovery for endpoints, servers and Microsoft 365, part of OpenText.",
+        "category": "Backup & Recovery",
+        "tags": ["Endpoint backup", "Server backup", "Microsoft 365 backup"],
+        "vendorType": "Business",
+        "removeOnOffboarding": true
     },
     {
         "vendorName": "Hornet Security/Altaro",
-        "vendorTenantId": "58fba382-61c2-47f8-92b1-296e14787b85"
+        "vendorTenantId": "58fba382-61c2-47f8-92b1-296e14787b85",
+        "companyName": "Hornetsecurity",
+        "website": "https://www.hornetsecurity.com",
+        "description": "Microsoft 365 email security, backup and security awareness vendor, also behind Altaro VM Backup; sold largely through MSPs.",
+        "category": "Email Security",
+        "tags": ["Email security", "Microsoft 365 backup", "Security awareness", "VM backup"],
+        "vendorType": "MSP",
+        "removeOnOffboarding": true
     },
     {
         "vendorName": "N-able",
-        "vendorTenantId": "6324f4fb-86ee-4493-ba16-c819a916b487"
+        "vendorTenantId": "6324f4fb-86ee-4493-ba16-c819a916b487",
+        "companyName": "N-able",
+        "website": "https://www.n-able.com",
+        "description": "MSP software vendor: RMM (N-central, N-sight), backup, EDR/MDR and email security.",
+        "category": "RMM & Endpoint Management",
+        "tags": ["RMM", "Patch management", "Backup", "EDR", "MDR"],
+        "vendorType": "MSP",
+        "removeOnOffboarding": true
     },
     {
         "vendorName": "Freshdesk",
-        "vendorTenantId": "6cdfee3a-1922-41c3-8e74-f4ae694fae8a"
+        "vendorTenantId": "6cdfee3a-1922-41c3-8e74-f4ae694fae8a",
+        "companyName": "Freshworks",
+        "website": "https://www.freshworks.com/freshdesk/",
+        "description": "Cloud customer support and helpdesk ticketing software from Freshworks.",
+        "category": "Service Desk & PSA",
+        "tags": ["Helpdesk", "Ticketing", "Customer support"],
+        "vendorType": "Business",
+        "removeOnOffboarding": true
     },
     {
         "vendorName": "3CX",
-        "vendorTenantId": "6e2eadce-56c5-4116-a790-14d391b48eac"
+        "vendorTenantId": "6e2eadce-56c5-4116-a790-14d391b48eac",
+        "companyName": "3CX",
+        "website": "https://www.3cx.com",
+        "description": "Software-based phone system (PBX) with Microsoft 365 integration for user sync, contacts and Teams calling.",
+        "category": "Communications",
+        "tags": ["PBX", "VoIP", "Telephony", "Microsoft Teams integration"],
+        "vendorType": "Business",
+        "removeOnOffboarding": true
     },
     {
         "vendorName": "Pckgr",
-        "vendorTenantId": "6fd3fafe-81c9-41da-b84b-143ba2908cbb"
+        "vendorTenantId": "6fd3fafe-81c9-41da-b84b-143ba2908cbb",
+        "companyName": "Pckgr",
+        "website": "https://www.pckgr.com",
+        "description": "Australian vendor that automates application packaging, deployment and patching through Microsoft Intune, with a standalone RMM option, for IT teams and MSPs.",
+        "category": "Application Management",
+        "tags": ["Application packaging", "Intune", "Patch management", "RMM"],
+        "vendorType": "MSP",
+        "removeOnOffboarding": true
     },
     {
         "vendorName": "AdminDroid",
-        "vendorTenantId": "7228f07f-efee-4159-9393-be6efb253fd0"
+        "vendorTenantId": "7228f07f-efee-4159-9393-be6efb253fd0",
+        "companyName": "AdminDroid",
+        "website": "https://admindroid.com",
+        "description": "Microsoft 365 reporting, auditing and analytics tool for administrators and MSPs.",
+        "category": "Reporting & Auditing",
+        "tags": ["Microsoft 365 reporting", "Audit logs", "Analytics", "Alerting"],
+        "vendorType": "Business",
+        "removeOnOffboarding": true
     },
     {
         "vendorName": "Exclaimer",
-        "vendorTenantId": "74bebcc8-1c15-4717-b538-bf84dea9e50f"
+        "vendorTenantId": "74bebcc8-1c15-4717-b538-bf84dea9e50f",
+        "companyName": "Exclaimer",
+        "website": "https://exclaimer.com",
+        "description": "Cloud email signature management for Microsoft 365 and Google Workspace.",
+        "category": "Email Signatures & Mail Management",
+        "tags": ["Email signatures", "Microsoft 365", "Google Workspace"],
+        "vendorType": "Business",
+        "removeOnOffboarding": true
     },
     {
         "vendorName": "Bastion365",
-        "vendorTenantId": "7bfd6512-414b-4fb1-9529-3ac3f9e7ec26"
+        "vendorTenantId": "7bfd6512-414b-4fb1-9529-3ac3f9e7ec26",
+        "companyName": "Bastion 365",
+        "website": "https://bastion365.com",
+        "description": "Dutch secure email and file sharing for Microsoft 365 without Outlook plugins, aimed at healthcare, government and legal organisations (NTA 7516).",
+        "category": "Email Security",
+        "tags": ["Secure email", "Email encryption", "Secure file sharing", "Compliance"],
+        "vendorType": "Business",
+        "removeOnOffboarding": true
     },
     {
         "vendorName": "Ricoh",
-        "vendorTenantId": "7e7a67d3-42f4-4a40-b8f0-f998ca7018ab"
+        "vendorTenantId": "7e7a67d3-42f4-4a40-b8f0-f998ca7018ab",
+        "companyName": "Ricoh",
+        "website": "https://www.ricoh.com",
+        "description": "Printer, multifunction device and document management vendor whose cloud services integrate with Microsoft 365.",
+        "category": "Printing & Devices",
+        "tags": ["Printing", "Multifunction devices", "Document management", "Scan to cloud"],
+        "vendorType": "Business",
+        "removeOnOffboarding": true
     },
     {
         "vendorName": "Hubspot",
-        "vendorTenantId": "8c6c4f2c-3b97-427e-ab0f-1b982441831a"
+        "vendorTenantId": "8c6c4f2c-3b97-427e-ab0f-1b982441831a",
+        "companyName": "HubSpot",
+        "website": "https://www.hubspot.com",
+        "description": "CRM platform for marketing, sales and customer service, with Microsoft 365 mail and calendar integration.",
+        "category": "CRM & Marketing",
+        "tags": ["CRM", "Marketing automation", "Sales", "Email integration"],
+        "vendorType": "Business",
+        "removeOnOffboarding": true
     },
     {
         "vendorName": "TrendMicro",
-        "vendorTenantId": "8d3dd3ec-a7ee-4c65-8cea-01e3f1492f1b"
+        "vendorTenantId": "8d3dd3ec-a7ee-4c65-8cea-01e3f1492f1b",
+        "companyName": "Trend Micro",
+        "website": "https://www.trendmicro.com",
+        "description": "Cybersecurity vendor for endpoints, email, cloud and networks, including protection for Microsoft 365 email and collaboration.",
+        "category": "Endpoint Security",
+        "tags": ["Endpoint security", "Email security", "XDR", "Cloud security"],
+        "vendorType": "Business",
+        "removeOnOffboarding": true
     },
     {
         "vendorName": "Synology",
-        "vendorTenantId": "9ba572a0-0623-4ab6-96ad-74cf9f3631fe"
+        "vendorTenantId": "9ba572a0-0623-4ab6-96ad-74cf9f3631fe",
+        "companyName": "Synology",
+        "website": "https://www.synology.com",
+        "description": "NAS and storage vendor; Active Backup for Microsoft 365 backs up mailboxes, OneDrive, SharePoint and Teams to Synology hardware.",
+        "category": "Backup & Recovery",
+        "tags": ["NAS", "Microsoft 365 backup", "On-premises storage"],
+        "vendorType": "Business",
+        "removeOnOffboarding": true
     },
     {
         "vendorName": "Scappman",
-        "vendorTenantId": "b2de4365-2ff4-4021-ac3b-fd1d2abb8de7"
+        "vendorTenantId": "b2de4365-2ff4-4021-ac3b-fd1d2abb8de7",
+        "companyName": "Patch My PC",
+        "website": "https://patchmypc.com",
+        "description": "Scappman automated third-party application packaging and patching through Intune; it is now part of Patch My PC.",
+        "category": "Application Management",
+        "tags": ["Application packaging", "Intune", "Patch management", "Third-party updates"],
+        "vendorType": "MSP",
+        "removeOnOffboarding": true
     },
     {
         "vendorName": "Barracuda Networks",
-        "vendorTenantId": "b893e0b8-2743-4fa7-81eb-0155a9060350"
+        "vendorTenantId": "b893e0b8-2743-4fa7-81eb-0155a9060350",
+        "companyName": "Barracuda Networks",
+        "website": "https://www.barracuda.com",
+        "description": "Security vendor for email protection, Microsoft 365 backup, archiving, firewalls and network security, with an MSP programme.",
+        "category": "Email Security",
+        "tags": ["Email security", "Microsoft 365 backup", "Archiving", "Firewall"],
+        "vendorType": "Business",
+        "removeOnOffboarding": true
     },
     {
         "vendorName": "Zivver",
-        "vendorTenantId": "c3ea126d-08dd-4b6a-a23a-4a513160c11e"
+        "vendorTenantId": "c3ea126d-08dd-4b6a-a23a-4a513160c11e",
+        "companyName": "Zivver (Kiteworks)",
+        "website": "https://www.zivver.com",
+        "description": "Secure email and file transfer with outbound data-leak prevention, threat protection and DMARC; part of Kiteworks.",
+        "category": "Email Security",
+        "tags": ["Secure email", "Email encryption", "DLP", "DMARC", "Compliance"],
+        "vendorType": "Business",
+        "removeOnOffboarding": true
     },
     {
         "vendorName": "HP",
-        "vendorTenantId": "ca7981a2-785a-463d-b82a-3db87dfc3ce6"
+        "vendorTenantId": "ca7981a2-785a-463d-b82a-3db87dfc3ce6",
+        "companyName": "HP Inc.",
+        "website": "https://www.hp.com",
+        "description": "PC and printer manufacturer whose cloud device management, security and print services integrate with Entra ID and Microsoft 365.",
+        "category": "Printing & Devices",
+        "tags": ["Printing", "Device management", "Endpoint security", "Hardware"],
+        "vendorType": "Business",
+        "removeOnOffboarding": true
     },
     {
         "vendorName": "ManageEngine",
-        "vendorTenantId": "dab88ba4-c480-4a0f-a42b-6d66fba460ff"
+        "vendorTenantId": "dab88ba4-c480-4a0f-a42b-6d66fba460ff",
+        "companyName": "ManageEngine (Zoho)",
+        "website": "https://www.manageengine.com",
+        "description": "IT management suite from Zoho covering endpoint management, service desk, Active Directory and Microsoft 365 administration, and security tooling.",
+        "category": "RMM & Endpoint Management",
+        "tags": ["Endpoint management", "Service desk", "Microsoft 365 management", "Active Directory", "Reporting"],
+        "vendorType": "Business",
+        "removeOnOffboarding": true
     },
     {
         "vendorName": "Action1",
-        "vendorTenantId": "e1a62259-76ab-47a0-9e9d-b91f3b08cbd5"
+        "vendorTenantId": "e1a62259-76ab-47a0-9e9d-b91f3b08cbd5",
+        "companyName": "Action1",
+        "website": "https://www.action1.com",
+        "description": "Cloud-based patch management and remote endpoint management for Windows, third-party software and macOS.",
+        "category": "RMM & Endpoint Management",
+        "tags": ["Patch management", "Software deployment", "Remote access", "Vulnerability management"],
+        "vendorType": "Business",
+        "removeOnOffboarding": true
     },
     {
         "vendorName": "ShareGate",
-        "vendorTenantId": "eb39acb7-fae3-4bc3-974c-b765aa1d6355"
+        "vendorTenantId": "eb39acb7-fae3-4bc3-974c-b765aa1d6355",
+        "companyName": "ShareGate",
+        "website": "https://sharegate.com",
+        "description": "Microsoft 365 migration and governance tools for SharePoint, OneDrive and Teams.",
+        "category": "Migration",
+        "tags": ["SharePoint migration", "Tenant-to-tenant migration", "Teams governance", "Permissions reporting"],
+        "vendorType": "Business",
+        "removeOnOffboarding": true
     },
     {
         "vendorName": "Liquit",
-        "vendorTenantId": "2ea2a5a1-1e01-4ecc-ba61-12fb51c1c12d"
+        "vendorTenantId": "2ea2a5a1-1e01-4ecc-ba61-12fb51c1c12d",
+        "companyName": "Recast Software",
+        "website": "https://www.recastsoftware.com/application-workspace",
+        "description": "Liquit Application Workspace for application delivery, packaging and a unified app launcher; Liquit is now part of Recast Software.",
+        "category": "Application Management",
+        "tags": ["Application delivery", "Application packaging", "Digital workspace"],
+        "vendorType": "Business",
+        "removeOnOffboarding": true
     },
     {
         "vendorName": "Phished",
-        "vendorTenantId": "9f7b0cc1-2df8-442e-b902-84371e12af00"
+        "vendorTenantId": "9f7b0cc1-2df8-442e-b902-84371e12af00",
+        "companyName": "Phished",
+        "website": "https://phished.io",
+        "description": "Belgian automated security awareness training platform with AI-driven phishing simulations, sold directly and through MSP partners.",
+        "category": "Security Awareness Training",
+        "tags": ["Security awareness", "Phishing simulation", "Training"],
+        "vendorType": "Business",
+        "removeOnOffboarding": true
     },
     {
         "vendorName": "Octiga Security",
-        "vendorTenantId": "b7453564-2f58-4ad6-b7ba-c6e35e8de6bb"
+        "vendorTenantId": "b7453564-2f58-4ad6-b7ba-c6e35e8de6bb",
+        "companyName": "Octiga",
+        "website": "https://www.octiga.io",
+        "description": "Microsoft 365 security baselines, monitoring and auto-remediation across client tenants, built for MSPs.",
+        "category": "Microsoft 365 Management",
+        "tags": ["Security baselines", "Microsoft 365 security", "Monitoring", "Auto-remediation", "Multi-tenant management"],
+        "vendorType": "MSP",
+        "removeOnOffboarding": true
     },
     {
         "vendorName": "Printix",
-        "vendorTenantId": "2e5d89d1-0b98-45d8-b70f-c79db10feb54"
+        "vendorTenantId": "2e5d89d1-0b98-45d8-b70f-c79db10feb54",
+        "companyName": "Printix",
+        "website": "https://printix.net",
+        "description": "Cloud print management that replaces print servers, with Entra ID sign-in and user sync.",
+        "category": "Printing & Devices",
+        "tags": ["Cloud printing", "Print management", "Serverless printing"],
+        "vendorType": "Business",
+        "removeOnOffboarding": true
     },
     {
         "vendorName": "Usecure",
-        "vendorTenantId": "7d88f9a5-1574-4b92-82e4-e05712338cf4"
+        "vendorTenantId": "7d88f9a5-1574-4b92-82e4-e05712338cf4",
+        "companyName": "usecure",
+        "website": "https://usecure.io",
+        "description": "Human risk management for MSPs and IT teams: adaptive security awareness training, phishing simulation, policy management and dark web breach monitoring.",
+        "category": "Security Awareness Training",
+        "tags": ["Security awareness", "Phishing simulation", "Policy management", "Dark web monitoring"],
+        "vendorType": "MSP",
+        "removeOnOffboarding": true
     },
     {
         "vendorName": "Redstor",
-        "vendorTenantId": "24ac53ae-15a7-4211-afef-61d8f34e2571"
+        "vendorTenantId": "24ac53ae-15a7-4211-afef-61d8f34e2571",
+        "companyName": "Redstor (CyberSentriq)",
+        "website": "https://www.redstor.com",
+        "description": "Multi-tenant cloud backup and recovery for Microsoft 365, Entra ID, Azure, Google Workspace, servers and endpoints, built for MSPs; part of CyberSentriq.",
+        "category": "Backup & Recovery",
+        "tags": ["Microsoft 365 backup", "Entra ID backup", "Server backup", "Email security"],
+        "vendorType": "MSP",
+        "removeOnOffboarding": true
     },
     {
         "vendorName": "Axcient",
-        "vendorTenantId": "adc01291-a3ea-4fb8-8fa7-d8f6dd816182"
+        "vendorTenantId": "adc01291-a3ea-4fb8-8fa7-d8f6dd816182",
+        "companyName": "Axcient",
+        "website": "https://axcient.com",
+        "description": "Business continuity and disaster recovery for MSPs, including x360Cloud backup for Microsoft 365 and Google Workspace.",
+        "category": "Backup & Recovery",
+        "tags": ["BCDR", "Microsoft 365 backup", "Server backup", "Disaster recovery"],
+        "vendorType": "MSP",
+        "removeOnOffboarding": true
     },
     {
         "vendorName": "NinjaOne",
-        "vendorTenantId": "0e0adb39-f83f-4576-9102-db1b902ca108"
+        "vendorTenantId": "0e0adb39-f83f-4576-9102-db1b902ca108",
+        "companyName": "NinjaOne",
+        "website": "https://www.ninjaone.com",
+        "description": "Endpoint management platform for IT teams and MSPs: RMM, patching, backup, remote access and documentation.",
+        "category": "RMM & Endpoint Management",
+        "tags": ["RMM", "Patch management", "Backup", "Remote access", "Documentation"],
+        "vendorType": "MSP",
+        "removeOnOffboarding": true
     },
     {
         "vendorName": "SuperVision (KPN)",
-        "vendorTenantId": "8edc1ef5-a81d-4229-badb-e2634a284461"
+        "vendorTenantId": "8edc1ef5-a81d-4229-badb-e2634a284461",
+        "companyName": "KPN",
+        "website": "https://www.kpn.com",
+        "description": "Managed IT service from KPN, the Dutch telecom and IT services provider, with a multi-tenant app in customers' Microsoft 365 tenants.",
+        "category": "Managed IT Services",
+        "tags": ["Managed services", "Microsoft 365", "Telecom"],
+        "vendorType": "MSP",
+        "removeOnOffboarding": true
     },
     {
         "vendorName": "SimeonCloud",
-        "vendorTenantId": "3d945cb7-f7da-444c-8c9e-93c3226581ec"
+        "vendorTenantId": "3d945cb7-f7da-444c-8c9e-93c3226581ec",
+        "companyName": "CoreView (formerly Simeon Cloud)",
+        "website": "https://www.coreview.com/configuration-manager",
+        "description": "Microsoft 365 and Intune configuration management as code: baselines, drift detection and configuration backup; now CoreView Configuration Manager.",
+        "category": "Microsoft 365 Management",
+        "tags": ["Configuration management", "Intune baselines", "Drift detection", "Configuration backup"],
+        "vendorType": "MSP",
+        "removeOnOffboarding": true
     },
     {
         "vendorName": "KeepIt",
-        "vendorTenantId": "55c67891-c2e6-4278-a07e-5391e269777e"
+        "vendorTenantId": "55c67891-c2e6-4278-a07e-5391e269777e",
+        "companyName": "Keepit",
+        "website": "https://www.keepit.com",
+        "description": "Danish vendor-independent cloud backup for SaaS data: Microsoft 365, Entra ID, Dynamics 365, Google Workspace and Salesforce.",
+        "category": "Backup & Recovery",
+        "tags": ["SaaS backup", "Microsoft 365 backup", "Entra ID backup", "Dynamics 365 backup"],
+        "vendorType": "Business",
+        "removeOnOffboarding": true
     },
     {
         "vendorName": "Arrow Sphere",
-        "vendorTenantId": "0beb0c35-9cbb-4feb-99e5-589e415c7944"
+        "vendorTenantId": "0beb0c35-9cbb-4feb-99e5-589e415c7944",
+        "companyName": "Arrow Electronics",
+        "website": "https://www.arrow.com",
+        "description": "ArrowSphere, the cloud marketplace of distributor Arrow Electronics, used by partners to provision and bill Microsoft CSP and other cloud subscriptions.",
+        "category": "Cloud Distribution & Licensing",
+        "tags": ["Microsoft CSP", "Distribution", "Cloud marketplace", "Billing"],
+        "vendorType": "MSP",
+        "removeOnOffboarding": true
     },
     {
         "vendorName": "Auvik",
-        "vendorTenantId": "408f0e54-582e-46fa-8b7d-4068bb176500"
+        "vendorTenantId": "408f0e54-582e-46fa-8b7d-4068bb176500",
+        "companyName": "Auvik",
+        "website": "https://www.auvik.com",
+        "description": "Cloud network monitoring and management, plus SaaS management that discovers SaaS usage through Microsoft 365.",
+        "category": "Network Monitoring",
+        "tags": ["Network monitoring", "Network mapping", "SaaS management"],
+        "vendorType": "MSP",
+        "removeOnOffboarding": true
     },
     {
         "vendorName": "Avanan",
-        "vendorTenantId": "5c37d5b5-54f7-46e7-bc09-2eaa1ef1b541"
+        "vendorTenantId": "5c37d5b5-54f7-46e7-bc09-2eaa1ef1b541",
+        "companyName": "Check Point (Avanan)",
+        "website": "https://www.avanan.com",
+        "description": "API-based email and collaboration security for Microsoft 365 and Google Workspace, sold as Check Point Harmony Email & Collaboration.",
+        "category": "Email Security",
+        "tags": ["Email security", "Anti-phishing", "Collaboration security", "DLP"],
+        "vendorType": "Business",
+        "removeOnOffboarding": true
     },
     {
         "vendorName": "CloudRadial",
-        "vendorTenantId": "845fbb26-e9d0-465d-8d4f-40f490928179"
+        "vendorTenantId": "845fbb26-e9d0-465d-8d4f-40f490928179",
+        "companyName": "CloudRadial",
+        "website": "https://www.cloudradial.com",
+        "description": "Client portal and service catalog for MSPs that connects to the PSA and Microsoft 365 for ticket intake, onboarding requests and reporting.",
+        "category": "Service Desk & PSA",
+        "tags": ["Client portal", "Service catalog", "Ticket intake", "QBR reporting"],
+        "vendorType": "MSP",
+        "removeOnOffboarding": true
     },
     {
         "vendorName": "Duo",
-        "vendorTenantId": "3c453cf7-43fe-4e45-a9b9-f168f480f0f8"
+        "vendorTenantId": "3c453cf7-43fe-4e45-a9b9-f168f480f0f8",
+        "companyName": "Cisco Duo",
+        "website": "https://duo.com",
+        "description": "Multi-factor authentication, single sign-on and device trust from Cisco, usable as an external authentication method for Entra ID.",
+        "category": "Identity & Access",
+        "tags": ["MFA", "SSO", "Device trust", "Zero trust"],
+        "vendorType": "Business",
+        "removeOnOffboarding": true
     },
     {
         "vendorName": "Metallic",
-        "vendorTenantId": "da72dd62-58c6-4062-abf9-47be4e73c0f6"
+        "vendorTenantId": "da72dd62-58c6-4062-abf9-47be4e73c0f6",
+        "companyName": "Commvault",
+        "website": "https://www.commvault.com",
+        "description": "Metallic, Commvault's SaaS backup and recovery service for Microsoft 365, Entra ID, endpoints and cloud workloads.",
+        "category": "Backup & Recovery",
+        "tags": ["SaaS backup", "Microsoft 365 backup", "Entra ID backup", "Endpoint backup"],
+        "vendorType": "Business",
+        "removeOnOffboarding": true
     },
     {
         "vendorName": "Sophos",
-        "vendorTenantId": "358a41ff-46d9-49d3-a297-370d894eae6a"
+        "vendorTenantId": "358a41ff-46d9-49d3-a297-370d894eae6a",
+        "companyName": "Sophos",
+        "website": "https://www.sophos.com",
+        "description": "Cybersecurity vendor for endpoint protection, MDR, firewalls and email security, with Microsoft 365 integrations and an MSP programme.",
+        "category": "Endpoint Security",
+        "tags": ["Endpoint security", "EDR", "MDR", "Firewall", "Email security"],
+        "vendorType": "Business",
+        "removeOnOffboarding": true
     },
     {
         "vendorName": "SaaSAlerts",
-        "vendorTenantId": "5c7b2b48-9e8f-49ba-80d6-3432e39d596b"
+        "vendorTenantId": "5c7b2b48-9e8f-49ba-80d6-3432e39d596b",
+        "companyName": "SaaS Alerts",
+        "website": "https://saasalerts.com",
+        "description": "SaaS security monitoring for MSPs that watches Microsoft 365 and other SaaS logs for account takeover and suspicious activity, with automated response.",
+        "category": "Security Operations",
+        "tags": ["SaaS security monitoring", "Account takeover detection", "Automated response", "Microsoft 365 audit logs"],
+        "vendorType": "MSP",
+        "removeOnOffboarding": true
     },
     {
         "vendorName": "BullPhish (Ciranda)",
-        "vendorTenantId": "5e4ab895-7a4c-4eea-bb39-75edca0421ad"
+        "vendorTenantId": "5e4ab895-7a4c-4eea-bb39-75edca0421ad",
+        "companyName": "ID Agent (Kaseya)",
+        "website": "https://www.idagent.com",
+        "description": "BullPhish ID security awareness training and phishing simulation from ID Agent, part of Kaseya, sold through MSPs.",
+        "category": "Security Awareness Training",
+        "tags": ["Security awareness", "Phishing simulation", "Training"],
+        "vendorType": "MSP",
+        "removeOnOffboarding": true
     },
     {
         "vendorName": "Coreview",
-        "vendorTenantId": "73506dd6-2bc3-49c0-92f3-b2877bab00ba"
+        "vendorTenantId": "73506dd6-2bc3-49c0-92f3-b2877bab00ba",
+        "companyName": "CoreView",
+        "website": "https://www.coreview.com",
+        "description": "Microsoft 365 management platform for delegated administration, governance, license optimisation, automation and reporting.",
+        "category": "Microsoft 365 Management",
+        "tags": ["Delegated administration", "Governance", "License management", "Automation", "Reporting"],
+        "vendorType": "Business",
+        "removeOnOffboarding": true
     },
     {
         "vendorName": "Quickpass (CyberQP365)",
-        "vendorTenantId": "c9006408-eb26-4e50-9bd5-2c078e3dc844"
+        "vendorTenantId": "c9006408-eb26-4e50-9bd5-2c078e3dc844",
+        "companyName": "CyberQP (formerly Quickpass)",
+        "website": "https://www.cyberqp.com",
+        "description": "Privileged access management and helpdesk identity verification for MSPs, including self-service password resets for Microsoft 365 accounts.",
+        "category": "Identity & Access",
+        "tags": ["Privileged access management", "Identity verification", "Password rotation", "Self-service password reset"],
+        "vendorType": "MSP",
+        "removeOnOffboarding": true
     },
     {
         "vendorName": "Infima",
-        "vendorTenantId": "2bd37396-af18-448c-a391-dd7800364e6f"
+        "vendorTenantId": "2bd37396-af18-448c-a391-dd7800364e6f",
+        "companyName": "INFIMA Security",
+        "website": "https://infimasec.com",
+        "description": "Multi-tenant human risk management for MSPs: automated security awareness training, phishing simulation, dark web monitoring and compliance evidence.",
+        "category": "Security Awareness Training",
+        "tags": ["Security awareness", "Phishing simulation", "Dark web monitoring", "Compliance"],
+        "vendorType": "MSP",
+        "removeOnOffboarding": true
     },
     {
         "vendorName": "Immybot",
-        "vendorTenantId": "1dcfdedd-ec87-461d-9d55-6989a519d154"
+        "vendorTenantId": "1dcfdedd-ec87-461d-9d55-6989a519d154",
+        "companyName": "ImmyBot",
+        "website": "https://www.immy.bot",
+        "description": "Automated computer setup and software deployment for MSPs, with desired-state software management and Entra ID user and device lookups.",
+        "category": "Application Management",
+        "tags": ["Software deployment", "Computer onboarding", "Desired state", "Automation"],
+        "vendorType": "MSP",
+        "removeOnOffboarding": true
     },
     {
         "vendorName": "N-Able/Cove backup",
-        "vendorTenantId": "521c973d-080f-4861-a0cb-8939e59d3d39"
+        "vendorTenantId": "521c973d-080f-4861-a0cb-8939e59d3d39",
+        "companyName": "N-able",
+        "website": "https://www.n-able.com/products/cove-data-protection",
+        "description": "Cove Data Protection: N-able's cloud-first backup for servers, workstations and Microsoft 365, sold through MSPs.",
+        "category": "Backup & Recovery",
+        "tags": ["Microsoft 365 backup", "Server backup", "Workstation backup", "Disaster recovery"],
+        "vendorType": "MSP",
+        "removeOnOffboarding": true
     },
     {
         "vendorName": "Dropsuite",
-        "vendorTenantId": "5b8e57d8-5c8e-4b82-98a5-b003bbb26b31"
+        "vendorTenantId": "5b8e57d8-5c8e-4b82-98a5-b003bbb26b31",
+        "companyName": "Dropsuite",
+        "website": "https://dropsuite.com",
+        "description": "Cloud backup, archiving and recovery for Microsoft 365 and Google Workspace, sold through MSPs and distributors.",
+        "category": "Backup & Recovery",
+        "tags": ["Microsoft 365 backup", "Google Workspace backup", "Email archiving"],
+        "vendorType": "MSP",
+        "removeOnOffboarding": true
     },
     {
         "vendorName": "Huntress",
-        "vendorTenantId": "19be9add-482a-4c98-ba76-4c2ef7f3bb13"
+        "vendorTenantId": "19be9add-482a-4c98-ba76-4c2ef7f3bb13",
+        "companyName": "Huntress",
+        "website": "https://www.huntress.com",
+        "description": "Managed security platform for SMBs and MSPs: managed EDR, identity threat detection and response for Microsoft 365, SIEM and security awareness training, backed by a 24/7 SOC.",
+        "category": "Security Operations",
+        "tags": ["Managed EDR", "ITDR", "Microsoft 365 threat detection", "SIEM", "SOC"],
+        "vendorType": "MSP",
+        "removeOnOffboarding": true
     }
 ]

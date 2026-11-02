@@ -10,12 +10,12 @@
     "icon": "Sync"
   },
   {
-    "label": "Configuration Backup",
+    "label": "Backup",
     "path": "/tenant/manage/configuration-backup",
     "icon": "Storage"
   },
   {
-    "label": "Applied Standards Report",
+    "label": "Standards Report",
     "path": "/tenant/manage/applied-standards",
     "icon": "FactCheck"
   },
@@ -23,11 +23,6 @@
     "label": "Policies and Settings Deployed",
     "path": "/tenant/manage/policies-deployed",
     "icon": "Policy"
-  },
-  {
-    "label": "User Defaults",
-    "path": "/tenant/manage/user-defaults",
-    "icon": "Person"
   },
   {
     "label": "History",

@@ -8,6 +8,7 @@ export const CippAlertsStep = (props) => {
     { label: "Webhook", value: "Webhook" },
     { label: "Email", value: "Email" },
     { label: "PSA", value: "PSA" },
+    { label: "Push (notify me)", value: "Push" },
   ];
 
   const recurrenceOptions = [

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { CippIcons } from "../../utils/icon-registry"
 import {
   Dialog,
   DialogContent,
@@ -6,7 +7,6 @@ import {
   Button,
   DialogActions,
 } from "@mui/material";
-import { Sync } from "@mui/icons-material";
 import { useForm, FormProvider } from "react-hook-form";
 import { CippFormTenantSelector } from "./CippFormTenantSelector";
 import { ApiPostCall } from "../../api/ApiCall";
@@ -72,7 +72,7 @@ export const BPASyncDialog = ({ createDialog }) => {
               type="submit"
               variant="contained"
               disabled={isSyncing && bpaSyncResults.isLoading}
-              startIcon={<Sync />}
+              startIcon={<CippIcons.Sync />}
             >
               Sync BPA
             </Button>

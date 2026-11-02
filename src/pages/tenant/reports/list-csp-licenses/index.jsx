@@ -1,7 +1,6 @@
-import { Layout as DashboardLayout } from "../../../../layouts/index.js";
+import { Layout as DashboardLayout } from "../../../../layouts/index";
+import { CippIcons } from "../../../../utils/icon-registry"
 import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
-import { MinusIcon, PlusIcon } from "@heroicons/react/24/outline";
-import { DeleteForever, ShoppingCart } from "@mui/icons-material";
 import { Button } from "@mui/material";
 import Link from "next/link";
 
@@ -13,7 +12,7 @@ const Page = () => {
     {
       label: "Increase licence count by 1",
       type: "POST",
-      icon: <PlusIcon />,
+      icon: <CippIcons.PlusIcon />,
       url: "/api/ExecCSPLicense",
       data: { Action: "!Add", sku: "sku", add: 1 },
       confirmText: "Are you sure you want to buy 1 extra licence?",
@@ -22,7 +21,7 @@ const Page = () => {
     {
       label: "Decrease licence count by 1",
       type: "POST",
-      icon: <MinusIcon />,
+      icon: <CippIcons.MinusIcon />,
       url: "/api/ExecCSPLicense",
       data: { Action: "!Remove", sku: "sku", Remove: 1 },
       confirmText: "Are you sure you want to decrease the licence count by 1?",
@@ -31,7 +30,7 @@ const Page = () => {
     {
       label: "Increase licence count",
       type: "POST",
-      icon: <PlusIcon />,
+      icon: <CippIcons.PlusIcon />,
       url: "/api/ExecCSPLicense",
       data: { Action: "!Add", sku: "sku" },
       fields: [
@@ -48,7 +47,7 @@ const Page = () => {
     {
       label: "Decrease licence count",
       type: "POST",
-      icon: <MinusIcon />,
+      icon: <CippIcons.MinusIcon />,
       url: "/api/ExecCSPLicense",
       fields: [
         {
@@ -63,9 +62,27 @@ const Page = () => {
       multiPost: false,
     },
     {
+      label: "Schedule decrease of 1 at next renewal",
+      type: "POST",
+      icon: <CippIcons.EventRepeat />,
+      url: "/api/ExecCSPLicense",
+      data: { Action: "!ScheduleRemoval", sku: "sku", Remove: 1 },
+      fields: [
+        {
+          type: "number",
+          name: "DaysBeforeRenewal",
+          label: "Days before renewal to execute (default 3)",
+          multiple: false,
+        },
+      ],
+      confirmText:
+        "Schedule a decrease of 1 licence for [productName], executed shortly before the renewal date ([commitmentTerm.renewalConfiguration.renewalDate])? The decrease only happens if at least 1 licence is unassigned at that time; otherwise it is skipped and nothing changes.",
+      multiPost: false,
+    },
+    {
       label: "Cancel Subscription",
       type: "POST",
-      icon: <DeleteForever />,
+      icon: <CippIcons.DeleteForever />,
       url: "/api/ExecCSPLicense",
       data: { Action: "!Cancel", SubscriptionIds: "id" },
       confirmText: "Are you sure you want to cancel this entire subscription?",
@@ -93,7 +110,7 @@ const Page = () => {
       simpleColumns={simpleColumns}
       cardButton={
         <>
-          <Button component={Link} href="/tenant/administration/add-subscription" startIcon={<ShoppingCart />}>
+          <Button component={Link} href="/tenant/administration/add-subscription" startIcon={<CippIcons.ShoppingCart />}>
             Add Subscription
           </Button>
         </>

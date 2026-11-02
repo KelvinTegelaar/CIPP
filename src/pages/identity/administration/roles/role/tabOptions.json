@@ -1,0 +1,17 @@
+[
+  {
+    "label": "Overview",
+    "path": "/identity/administration/roles/role",
+    "icon": "AdminPanelSettings"
+  },
+  {
+    "label": "PIM",
+    "path": "/identity/administration/roles/role/pim",
+    "icon": "Security"
+  },
+  {
+    "label": "Audit",
+    "path": "/identity/administration/roles/role/audit",
+    "icon": "History"
+  }
+]

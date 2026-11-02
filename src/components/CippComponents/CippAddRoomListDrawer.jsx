@@ -1,8 +1,8 @@
 ﻿import React, { useState, useEffect } from "react";
 import { Button, InputAdornment, Divider } from "@mui/material";
+import { CippIcons } from "../../utils/icon-registry";
 import { Grid } from "@mui/system";
 import { useForm, useFormState } from "react-hook-form";
-import { ListAlt } from "@mui/icons-material";
 import { CippOffCanvas } from "./CippOffCanvas";
 import CippFormComponent from "./CippFormComponent";
 import { CippFormDomainSelector } from "./CippFormDomainSelector";
@@ -80,9 +80,9 @@ export const CippAddRoomListDrawer = ({
   return (
     <>
       <PermissionButton
-        requiredPermissions={requiredPermissions}
+        {...(PermissionButton !== Button ? { requiredPermissions } : {})}
         onClick={() => setDrawerVisible(true)}
-        startIcon={<ListAlt />}
+        startIcon={<CippIcons.ListAlt />}
       >
         {buttonText}
       </PermissionButton>
@@ -136,9 +136,7 @@ export const CippAddRoomListDrawer = ({
                     "Username can only contain letters, numbers, hyphens, underscores, and periods",
                 },
               }}
-              InputProps={{
-                endAdornment: <InputAdornment position="end">@</InputAdornment>,
-              }}
+              slotProps={{ input: { endAdornment: <InputAdornment position="end">@</InputAdornment> } }}
             />
           </Grid>
 

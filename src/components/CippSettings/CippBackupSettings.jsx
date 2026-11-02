@@ -1,8 +1,8 @@
 import { Button, SvgIcon, Typography } from "@mui/material";
+import { CippIcons } from "../../utils/icon-registry";
 import CippButtonCard from "../CippCards/CippButtonCard";
 import { ApiPostCall } from "../../api/ApiCall";
 import { useDialog } from "../../hooks/use-dialog";
-import { SettingsBackupRestore } from "@mui/icons-material";
 import Link from "next/link";
 
 const CippBackupSettings = () => {
@@ -22,7 +22,7 @@ const CippBackupSettings = () => {
           href="/cipp/settings/backup"
         >
           <SvgIcon fontSize="small" style={{ marginRight: 4 }}>
-            <SettingsBackupRestore />
+            <CippIcons.SettingsBackupRestore />
           </SvgIcon>
           Manage Backups
         </Button>

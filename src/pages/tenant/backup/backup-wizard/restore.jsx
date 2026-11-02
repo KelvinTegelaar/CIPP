@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Alert, Divider, Typography } from "@mui/material";
 import { Grid } from "@mui/system";
 import { useForm } from "react-hook-form";
-import { Layout as DashboardLayout } from "../../../../layouts/index.js";
+import { Layout as DashboardLayout } from "../../../../layouts/index";
 import CippFormPage from "../../../../components/CippFormPages/CippFormPage";
 import CippFormComponent from "../../../../components/CippComponents/CippFormComponent";
 import { useSettings } from "../../../../hooks/use-settings";
@@ -25,6 +25,7 @@ const RestoreBackupForm = () => {
       intuneprotection: true,
       antispam: true,
       antiphishing: true,
+      teamsvoice: true,
       CippWebhookAlerts: true,
       CippScriptedAlerts: true,
       CippStandards: true,
@@ -85,6 +86,7 @@ const RestoreBackupForm = () => {
               intuneprotection: values.intuneprotection,
               antispam: values.antispam,
               antiphishing: values.antiphishing,
+              teamsvoice: values.teamsvoice,
               CippWebhookAlerts: values.CippWebhookAlerts,
               CippScriptedAlerts: values.CippScriptedAlerts,
               overwrite: values.overwrite,
@@ -199,6 +201,17 @@ const RestoreBackupForm = () => {
             type="switch"
             label="Anti-Phishing Policies"
             name="antiphishing"
+            formControl={formControl}
+          />
+        </Grid>
+
+        {/* Teams */}
+        <Grid size={{ md: 6, xs: 12 }}>
+          <Typography variant="subtitle1">Teams</Typography>
+          <CippFormComponent
+            type="switch"
+            label="Teams Phone Number Assignments"
+            name="teamsvoice"
             formControl={formControl}
           />
         </Grid>

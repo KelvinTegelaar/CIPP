@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { CippIcons } from "../../utils/icon-registry"
 import {
   Stack,
   Box,
@@ -17,8 +18,6 @@ import { WizardSteps } from "./wizard-steps";
 import { getCippTranslation } from "../../utils/get-cipp-translation";
 import { getCippFormatting } from "../../utils/get-cipp-formatting";
 import CippDataTableButton from "../CippTable/CippDataTableButton";
-import { PlayArrow, Replay } from "@mui/icons-material";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { CippPropertyList } from "../CippComponents/CippPropertyList";
 import CippFormComponent from "../CippComponents/CippFormComponent";
 
@@ -175,6 +174,7 @@ export const CippGDAPTenantOnboarding = (props) => {
       );
     }
 
+    data.tenantGroups = formControl.getValues("tenantGroups")?.map((group) => group.value) ?? [];
     startOnboarding.mutate({
       url: "/api/ExecOnboardTenant",
       data: data,
@@ -198,6 +198,7 @@ export const CippGDAPTenantOnboarding = (props) => {
       );
     }
 
+    data.tenantGroups = formControl.getValues("tenantGroups")?.map((group) => group.value) ?? [];
     startOnboarding.mutate({
       url: "/api/ExecOnboardTenant",
       data: data,
@@ -243,7 +244,7 @@ export const CippGDAPTenantOnboarding = (props) => {
 
       {!isLoading && relationshipId && currentRelationship && (
         <Accordion variant="outlined" defaultExpanded={false}>
-          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+          <AccordionSummary expandIcon={<CippIcons.ExpandMore />}>
             <Typography variant="subtitle1">Relationship Details</Typography>
           </AccordionSummary>
           <AccordionDetails>
@@ -286,12 +287,36 @@ export const CippGDAPTenantOnboarding = (props) => {
             />
           </Box>
 
+          <Box>
+            <CippFormComponent
+              formControl={formControl}
+              name="tenantGroups"
+              label="Add onboarded tenant to Tenant Groups"
+              placeholder="Select the static tenant groups this tenant should be added to."
+              type="autoComplete"
+              multiple={true}
+              creatable={false}
+              api={{
+                url: "/api/ListTenantGroups",
+                queryKey: "AllTenantGroups",
+                dataKey: "Results",
+                labelField: "Name",
+                valueField: "Id",
+                addedField: {
+                  GroupType: "GroupType",
+                },
+                dataFilter: (data) =>
+                  data?.filter((group) => group?.addedFields?.GroupType !== "dynamic"),
+              }}
+            />
+          </Box>
+
           {!currentOnboarding && relationshipId && (
             <Box>
               <Button
                 variant="contained"
                 onClick={handleStartOnboarding}
-                startIcon={<PlayArrow />}
+                startIcon={<CippIcons.PlayArrow />}
                 disabled={startOnboarding.isLoading}
               >
                 Start Onboarding
@@ -333,7 +358,7 @@ export const CippGDAPTenantOnboarding = (props) => {
                     <Button
                       variant="outlined"
                       onClick={handleRetryOnboarding}
-                      startIcon={<Replay />}
+                      startIcon={<CippIcons.Replay />}
                       disabled={currentOnboarding?.Status === "running"}
                       sx={{ mr: 2 }}
                     >

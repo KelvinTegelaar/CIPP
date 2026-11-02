@@ -10,6 +10,17 @@
     "icon": "List"
   },
   {
+    "label": "Manual Searches",
+    "path": "/tenant/administration/audit-logs/manual-searches",
+    "icon": "ManageSearch"
+  },
+  {
+    "label": "Search Coverage",
+    "path": "/tenant/administration/audit-logs/coverage",
+    "icon": "Timeline",
+    "advanced": true
+  },
+  {
     "label": "Directory Audits",
     "path": "/tenant/administration/audit-logs/directory-audits",
     "icon": "FactCheck"

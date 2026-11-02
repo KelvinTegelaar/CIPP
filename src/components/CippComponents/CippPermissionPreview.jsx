@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { CippIcons } from "../../utils/icon-registry";
 import {
   Alert,
   Skeleton,
@@ -17,8 +18,6 @@ import {
   AccordionSummary,
   AccordionDetails,
 } from "@mui/material";
-import { ShieldCheckIcon } from "@heroicons/react/24/outline";
-import { ExpandMore } from "@mui/icons-material";
 import { CippCardTabPanel } from "./CippCardTabPanel";
 import { ApiGetCall } from "../../api/ApiCall";
 
@@ -172,11 +171,15 @@ const CippPermissionPreview = ({
                 </Box>
               )}
               <Box>
-                <Typography variant="h6" fontWeight="bold">
+                <Typography variant="h6" sx={{
+                  fontWeight: "bold"
+                }}>
                   {galleryTemplate.addedFields?.displayName || galleryTemplate.label}
                 </Typography>
                 {galleryTemplate.addedFields?.publisher && (
-                  <Typography variant="body2" color="text.secondary">
+                  <Typography variant="body2" sx={{
+                    color: "text.secondary"
+                  }}>
                     by {galleryTemplate.addedFields.publisher}
                   </Typography>
                 )}
@@ -186,7 +189,9 @@ const CippPermissionPreview = ({
             {/* Description */}
             {galleryTemplate.addedFields?.description && (
               <Box sx={{ mb: 2 }}>
-                <Typography variant="body2" color="text.primary">
+                <Typography variant="body2" sx={{
+                  color: "text.primary"
+                }}>
                   {galleryTemplate.addedFields.description}
                 </Typography>
               </Box>
@@ -196,7 +201,12 @@ const CippPermissionPreview = ({
             {galleryTemplate.addedFields?.categories &&
               galleryTemplate.addedFields.categories.length > 0 && (
                 <Box sx={{ mb: 2 }}>
-                  <Typography variant="body2" fontWeight="medium" sx={{ mb: 1 }}>
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      fontWeight: "medium",
+                      mb: 1
+                    }}>
                     Categories:
                   </Typography>
                   <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
@@ -217,7 +227,12 @@ const CippPermissionPreview = ({
             {galleryTemplate.addedFields?.supportedSingleSignOnModes &&
               galleryTemplate.addedFields.supportedSingleSignOnModes.length > 0 && (
                 <Box sx={{ mb: 2 }}>
-                  <Typography variant="body2" fontWeight="medium" sx={{ mb: 1 }}>
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      fontWeight: "medium",
+                      mb: 1
+                    }}>
                     Supported SSO Modes:
                   </Typography>
                   <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
@@ -238,7 +253,12 @@ const CippPermissionPreview = ({
             {galleryTemplate.addedFields?.supportedProvisioningTypes &&
               galleryTemplate.addedFields.supportedProvisioningTypes.length > 0 && (
                 <Box sx={{ mb: 2 }}>
-                  <Typography variant="body2" fontWeight="medium" sx={{ mb: 1 }}>
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      fontWeight: "medium",
+                      mb: 1
+                    }}>
                     Supported Provisioning:
                   </Typography>
                   <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
@@ -252,7 +272,12 @@ const CippPermissionPreview = ({
             {/* Home Page URL */}
             {galleryTemplate.addedFields?.homePageUrl && (
               <Box sx={{ mb: 2 }}>
-                <Typography variant="body2" fontWeight="medium" sx={{ mb: 1 }}>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    fontWeight: "medium",
+                    mb: 1
+                  }}>
                   Home Page:
                 </Typography>
                 <Typography
@@ -270,7 +295,9 @@ const CippPermissionPreview = ({
 
             {/* Template ID */}
             <Box sx={{ mt: 2, pt: 2, borderTop: 1, borderColor: "divider" }}>
-              <Typography variant="caption" color="text.secondary">
+              <Typography variant="caption" sx={{
+                color: "text.secondary"
+              }}>
                 Template ID: {galleryTemplate.value}
               </Typography>
             </Box>
@@ -319,7 +346,7 @@ const CippPermissionPreview = ({
           }`}
           icon={
             <SvgIcon fontSize="small">
-              <ShieldCheckIcon />
+              <CippIcons.ShieldCheckIcon />
             </SvgIcon>
           }
           title="Application/Delegated Permissions"
@@ -363,7 +390,9 @@ const CippPermissionPreview = ({
                           : "secondary.main",
                     }}
                   >
-                    <Typography variant="subtitle2" fontWeight="bold">
+                    <Typography variant="subtitle2" sx={{
+                      fontWeight: "bold"
+                    }}>
                       {resourceName}
                       {showAppIds && (
                         <Typography
@@ -378,7 +407,9 @@ const CippPermissionPreview = ({
 
                     {hasAppPermissions && (
                       <Box sx={{ mt: 1 }}>
-                        <Typography variant="body2" color="primary" fontWeight="medium">
+                        <Typography variant="body2" color="primary" sx={{
+                          fontWeight: "medium"
+                        }}>
                           Application Permissions ({resourcePerms.applicationPermissions.length})
                         </Typography>
                         <List dense disablePadding>
@@ -392,9 +423,10 @@ const CippPermissionPreview = ({
                                 <ListItemText
                                   primary={perm.value || perm.id}
                                   secondary={description}
-                                  primaryTypographyProps={{ variant: "caption" }}
-                                  secondaryTypographyProps={{ variant: "caption" }}
-                                />
+                                  slotProps={{
+                                    primary: { variant: "caption" },
+                                    secondary: { variant: "caption" }
+                                  }} />
                               </ListItem>
                             );
                           })}
@@ -404,7 +436,9 @@ const CippPermissionPreview = ({
 
                     {hasDelegatedPermissions && (
                       <Box sx={{ mt: hasAppPermissions ? 1 : 0 }}>
-                        <Typography variant="body2" color="secondary" fontWeight="medium">
+                        <Typography variant="body2" color="secondary" sx={{
+                          fontWeight: "medium"
+                        }}>
                           Delegated Permissions ({resourcePerms.delegatedPermissions.length})
                         </Typography>
                         <List dense disablePadding>
@@ -418,9 +452,10 @@ const CippPermissionPreview = ({
                                 <ListItemText
                                   primary={perm.value || perm.id}
                                   secondary={description}
-                                  primaryTypographyProps={{ variant: "caption" }}
-                                  secondaryTypographyProps={{ variant: "caption" }}
-                                />
+                                  slotProps={{
+                                    primary: { variant: "caption" },
+                                    secondary: { variant: "caption" }
+                                  }} />
                               </ListItem>
                             );
                           })}
@@ -446,7 +481,9 @@ const CippPermissionPreview = ({
                 return (
                   <Box key={`app-${resourceId}`} sx={{ my: 2 }}>
                     <Paper variant="outlined" sx={{ p: 1 }}>
-                      <Typography variant="subtitle2" fontWeight="bold">
+                      <Typography variant="subtitle2" sx={{
+                        fontWeight: "bold"
+                      }}>
                         {resourceName}
                         {showAppIds && (
                           <Typography
@@ -469,9 +506,10 @@ const CippPermissionPreview = ({
                               <ListItemText
                                 primary={perm.value || perm.id}
                                 secondary={description}
-                                primaryTypographyProps={{ variant: "caption" }}
-                                secondaryTypographyProps={{ variant: "caption" }}
-                              />
+                                slotProps={{
+                                  primary: { variant: "caption" },
+                                  secondary: { variant: "caption" }
+                                }} />
                             </ListItem>
                           );
                         })}
@@ -497,7 +535,9 @@ const CippPermissionPreview = ({
                 return (
                   <Box key={`delegated-${resourceId}`} sx={{ my: 2 }}>
                     <Paper variant="outlined" sx={{ p: 1 }}>
-                      <Typography variant="subtitle2" fontWeight="bold">
+                      <Typography variant="subtitle2" sx={{
+                        fontWeight: "bold"
+                      }}>
                         {resourceName}
                         {showAppIds && (
                           <Typography
@@ -520,9 +560,10 @@ const CippPermissionPreview = ({
                               <ListItemText
                                 primary={perm.value || perm.id}
                                 secondary={description}
-                                primaryTypographyProps={{ variant: "caption" }}
-                                secondaryTypographyProps={{ variant: "caption" }}
-                              />
+                                slotProps={{
+                                  primary: { variant: "caption" },
+                                  secondary: { variant: "caption" }
+                                }} />
                             </ListItem>
                           );
                         })}
@@ -600,18 +641,22 @@ const ServicePrincipalResourceDetails = ({
       variant="outlined"
       sx={{ mb: 1 }}
     >
-      <AccordionSummary expandIcon={<ExpandMore />}>
+      <AccordionSummary expandIcon={<CippIcons.ExpandMore />}>
         <Stack
           direction="row"
           spacing={2}
-          justifyContent="space-between"
-          alignItems="center"
-          sx={{ width: "100%", mr: 1 }}
-        >
+          sx={{
+            justifyContent: "space-between",
+            alignItems: "center",
+            width: "100%",
+            mr: 1
+          }}>
           <Typography variant="subtitle2">
             {spDetailLoading || spDetailFetching ? "Loading..." : resourceName}
           </Typography>
-          <Stack direction="row" spacing={1} alignItems="center">
+          <Stack direction="row" spacing={1} sx={{
+            alignItems: "center"
+          }}>
             <Chip
               color="info"
               variant="outlined"
@@ -619,7 +664,7 @@ const ServicePrincipalResourceDetails = ({
               label={`${appPermissions.length}/${delegatedPermissions.length}`}
               icon={
                 <SvgIcon fontSize="small">
-                  <ShieldCheckIcon />
+                  <CippIcons.ShieldCheckIcon />
                 </SvgIcon>
               }
               title="Application/Delegated Permissions"
@@ -636,7 +681,13 @@ const ServicePrincipalResourceDetails = ({
           <>
             {appPermissions.length > 0 && (
               <Box sx={{ mb: 2 }}>
-                <Typography variant="body2" color="primary" fontWeight="medium" sx={{ mb: 1 }}>
+                <Typography
+                  variant="body2"
+                  color="primary"
+                  sx={{
+                    fontWeight: "medium",
+                    mb: 1
+                  }}>
                   Application Permissions ({appPermissions.length})
                 </Typography>
                 <List dense>
@@ -647,12 +698,14 @@ const ServicePrincipalResourceDetails = ({
                         <ListItemText
                           primary={permDetails.name}
                           secondary={permDetails.description}
-                          primaryTypographyProps={{
-                            variant: "body2",
-                            fontWeight: "medium",
-                          }}
-                          secondaryTypographyProps={{ variant: "caption" }}
-                        />
+                          slotProps={{
+                            primary: {
+                              variant: "body2",
+                              fontWeight: "medium",
+                            },
+
+                            secondary: { variant: "caption" }
+                          }} />
                       </ListItem>
                     );
                   })}
@@ -662,7 +715,13 @@ const ServicePrincipalResourceDetails = ({
 
             {delegatedPermissions.length > 0 && (
               <Box>
-                <Typography variant="body2" color="secondary" fontWeight="medium" sx={{ mb: 1 }}>
+                <Typography
+                  variant="body2"
+                  color="secondary"
+                  sx={{
+                    fontWeight: "medium",
+                    mb: 1
+                  }}>
                   Delegated Permissions ({delegatedPermissions.length})
                 </Typography>
                 <List dense>
@@ -673,12 +732,14 @@ const ServicePrincipalResourceDetails = ({
                         <ListItemText
                           primary={permDetails.name}
                           secondary={permDetails.description}
-                          primaryTypographyProps={{
-                            variant: "body2",
-                            fontWeight: "medium",
-                          }}
-                          secondaryTypographyProps={{ variant: "caption" }}
-                        />
+                          slotProps={{
+                            primary: {
+                              variant: "body2",
+                              fontWeight: "medium",
+                            },
+
+                            secondary: { variant: "caption" }
+                          }} />
                       </ListItem>
                     );
                   })}
@@ -744,7 +805,12 @@ const ApplicationManifestPreview = ({ applicationManifest, title, maxHeight }) =
               {applicationManifest.displayName || "Custom Application"}
             </Typography>
             {applicationManifest.description && (
-              <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+              <Typography
+                variant="body2"
+                sx={{
+                  color: "text.secondary",
+                  mb: 2
+                }}>
                 {applicationManifest.description}
               </Typography>
             )}
@@ -752,7 +818,12 @@ const ApplicationManifestPreview = ({ applicationManifest, title, maxHeight }) =
 
           {/* Application Properties */}
           <Box sx={{ mb: 2 }}>
-            <Typography variant="body2" fontWeight="medium" sx={{ mb: 1 }}>
+            <Typography
+              variant="body2"
+              sx={{
+                fontWeight: "medium",
+                mb: 1
+              }}>
               Application Properties:
             </Typography>
             <List dense>
@@ -780,7 +851,12 @@ const ApplicationManifestPreview = ({ applicationManifest, title, maxHeight }) =
           {applicationManifest.requiredResourceAccess &&
             applicationManifest.requiredResourceAccess.length > 0 && (
               <Box sx={{ mb: 2 }}>
-                <Typography variant="body2" fontWeight="medium" sx={{ mb: 1 }}>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    fontWeight: "medium",
+                    mb: 1
+                  }}>
                   Required Permissions:
                 </Typography>
                 {(spLoading || spFetching) && (
@@ -809,7 +885,9 @@ const ApplicationManifestPreview = ({ applicationManifest, title, maxHeight }) =
           {applicationManifest.signInAudience &&
             applicationManifest.signInAudience !== "AzureADMyOrg" && (
               <Alert severity="error" sx={{ mt: 2, mb: 2 }}>
-                <Typography variant="body2" fontWeight="medium">
+                <Typography variant="body2" sx={{
+                  fontWeight: "medium"
+                }}>
                   Invalid signInAudience: "{applicationManifest.signInAudience}"
                 </Typography>
                 <Typography variant="body2">
