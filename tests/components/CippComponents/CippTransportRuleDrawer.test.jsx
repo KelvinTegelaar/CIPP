@@ -43,6 +43,7 @@ describe('CippTransportRuleDrawer', () => {
     await user.click(screen.getByRole('button', { name: 'New Template' }))
     expect(screen.getByText('New Transport Rule Template')).toBeInTheDocument()
     expect(screen.queryByRole('spinbutton', { name: 'Priority' })).not.toBeInTheDocument()
+    expect(screen.getByRole('combobox', { name: 'Deploy Position' })).toHaveValue('Deploy last')
 
     await user.type(screen.getByRole('textbox', { name: 'Rule Name' }), 'Tag external')
     await pick(user, 'Select condition types', 'The sender is a member of...')
@@ -74,6 +75,22 @@ describe('CippTransportRuleDrawer', () => {
     }
   }, 30000)
 
+  it('template mode stores priority 0 for Deploy first', async () => {
+    const user = userEvent.setup()
+    render(<CippTransportRuleDrawer templateMode buttonText="New Template" />)
+    await user.click(screen.getByRole('button', { name: 'New Template' }))
+
+    await user.type(screen.getByRole('textbox', { name: 'Rule Name' }), 'Quarantine HTM attachments')
+    await pick(user, 'Deploy Position', 'Deploy first')
+    await pick(user, 'Select action types', 'Quarantine the message')
+    await user.click(screen.getByLabelText('Quarantine the message'))
+
+    await user.click(screen.getByRole('button', { name: 'Create Template' }))
+    await waitFor(() => expect(api.post.mutate).toHaveBeenCalledTimes(1))
+    const params = JSON.parse(api.post.mutate.mock.calls[0][0].data.PowerShellCommand)
+    expect(params).toMatchObject({ name: 'Quarantine HTM attachments', Priority: 0, Quarantine: true })
+  }, 30000)
+
   it('template mode pre-fills a stored template and saves it back under its GUID', async () => {
     const user = userEvent.setup()
     const row = {
@@ -82,6 +99,7 @@ describe('CippTransportRuleDrawer', () => {
       comments: 'from the list',
       Enabled: false,
       Mode: 'Audit',
+      Priority: 0,
       FromMemberOf: ['finance@contoso.com'],
       Quarantine: true,
     }
@@ -94,6 +112,7 @@ describe('CippTransportRuleDrawer', () => {
       expect(screen.getByRole('textbox', { name: 'Rule Name' })).toHaveValue('Block %tenantname% autoforward')
     )
     expect(screen.getByRole('textbox', { name: 'Comments' })).toHaveValue('from the list')
+    expect(screen.getByRole('combobox', { name: 'Deploy Position' })).toHaveValue('Deploy first')
     expect(screen.getByRole('combobox', { name: 'The sender is a member of...' })).toBeInTheDocument()
     expect(screen.getByText('finance@contoso.com')).toBeInTheDocument()
 
@@ -107,6 +126,7 @@ describe('CippTransportRuleDrawer', () => {
       comments: 'from the list',
       Enabled: false,
       Mode: 'Audit',
+      Priority: 0,
       FromMemberOf: ['finance@contoso.com'],
       Quarantine: true,
     })
