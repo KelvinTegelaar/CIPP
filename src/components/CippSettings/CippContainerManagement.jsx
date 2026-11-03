@@ -30,6 +30,27 @@ const channelLabels = {
   unknown: { label: 'Unknown', color: 'default' },
 }
 
+// What a channel's provenance can vouch for: main requires pull requests, dev and nightly take
+// direct pushes, branch builds come from anywhere.
+const channelTrust = {
+  latest: { label: 'Stable', provenance: '' },
+  dev: {
+    label: 'Development',
+    provenance: 'Dev',
+    alert:
+      'receives changes as they land on the dev branch, before release review. Use it for testing.',
+  },
+  nightly: {
+    label: 'Development',
+    provenance: 'Dev',
+    alert:
+      'is built once a day from the dev branch, before release review. Use it for testing.',
+  },
+}
+
+const provenanceSuffix = (channel, isBuild) =>
+  isBuild ? 'Preview' : (channelTrust[channel]?.provenance ?? '')
+
 const intervalOptions = [
   { label: 'Disabled', value: '0' },
   { label: 'Every hour', value: '1h' },
@@ -74,10 +95,10 @@ const truncateDigest = (digest) => {
 }
 
 // Same rendering for the channel image and the running image: state, reason underneath.
-const provenanceValue = (state, reason) =>
+const provenanceValue = (state, reason, suffix) =>
   isUnset(state) ? null : (
     <>
-      {state}
+      {state === 'Verified' && suffix ? `Verified · ${suffix}` : state}
       {reason && (
         <Typography variant="caption" component="div">
           {reason}
@@ -151,7 +172,7 @@ export const CippContainerManagement = () => {
   // stragglers. Remove this once none remain.
   const prettyChannelLabel = (option) => {
     const value = option?.value ?? option
-    if (channelLabels[value]) return channelLabels[value].label
+    if (channelTrust[value]) return `${value} · ${channelTrust[value].label}`
     const pinned = /-([0-9a-f]{7})$/.exec(value ?? '')
     if (pinned)
       return `${value.replace(/-[0-9a-f]{7}$/, '')} — pinned ${pinned[1]}`;
@@ -286,7 +307,11 @@ export const CippContainerManagement = () => {
         label: 'Provenance',
         value: provenanceValue(
           updateSettings?.RunningAttestationState,
-          updateSettings?.RunningAttestationReason
+          updateSettings?.RunningAttestationReason,
+          provenanceSuffix(
+            data?.CurrentChannel,
+            isBuildChannel(data?.CurrentChannel)
+          )
         ),
       },
     ])
@@ -302,7 +327,11 @@ export const CippContainerManagement = () => {
         label: 'Provenance',
         value: provenanceValue(
           updateSettings?.AttestationState,
-          updateSettings?.AttestationReason
+          updateSettings?.AttestationReason,
+          provenanceSuffix(
+            data?.ConfiguredChannel,
+            isBuildChannel(data?.ConfiguredChannel)
+          )
         ),
       },
     ])
@@ -528,6 +557,13 @@ export const CippContainerManagement = () => {
                     channel. Use it for testing only.
                   </Alert>
                 )}
+                {!buildChannelSelected &&
+                  channelTrust[selectedChannelValue]?.alert && (
+                    <Alert severity="warning">
+                      <strong>{selectedChannelValue}</strong>{' '}
+                      {channelTrust[selectedChannelValue].alert}
+                    </Alert>
+                  )}
                 <CippApiResults apiObject={channelAction} />
               </Stack>
             </CippButtonCard>

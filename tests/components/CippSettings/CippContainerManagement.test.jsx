@@ -82,7 +82,7 @@ describe('CippContainerManagement branch-build flagging', () => {
     expect(screen.getByText('Dev')).toBeInTheDocument()
     // wait for the seed effect so the alert-absence check runs against the settled form
     await waitFor(() => {
-      expect(screen.getByRole('combobox', { name: 'Release Channel' })).toHaveValue('Dev')
+      expect(screen.getByRole('combobox', { name: 'Release Channel' })).toHaveValue('dev · Development')
     })
     expect(screen.queryByText(ALERT_RE)).not.toBeInTheDocument()
   })
@@ -105,7 +105,7 @@ describe('CippContainerManagement branch-build flagging', () => {
     renderWithProviders(<CippContainerManagement />)
 
     await waitFor(() => {
-      expect(screen.getByRole('combobox', { name: 'Release Channel' })).toHaveValue('Latest (Stable)')
+      expect(screen.getByRole('combobox', { name: 'Release Channel' })).toHaveValue('latest · Stable')
     })
     expect(screen.queryByText(ALERT_RE)).not.toBeInTheDocument()
 
@@ -121,7 +121,7 @@ describe('CippContainerManagement branch-build flagging', () => {
 
     // selection remounts the keyed autocomplete, re-query
     await user.click(screen.getByRole('combobox', { name: 'Release Channel' }))
-    await user.click(await screen.findByRole('option', { name: 'Dev' }))
+    await user.click(await screen.findByRole('option', { name: 'dev · Development' }))
     await waitFor(() => {
       expect(screen.queryByText(ALERT_RE)).not.toBeInTheDocument()
     })
@@ -213,11 +213,11 @@ describe('CippContainerManagement running image provenance', () => {
     expect(screen.getByText('Up to date')).toBeInTheDocument()
     // the channel picker shows the tag, never digest text
     await waitFor(() => {
-      expect(screen.getByRole('combobox', { name: 'Release Channel' })).toHaveValue('Dev')
+      expect(screen.getByRole('combobox', { name: 'Release Channel' })).toHaveValue('dev · Development')
     })
     await openBuildDetails(user)
     expect(await screen.findByText('sha256:b463b2a33198…')).toBeInTheDocument()
-    expect(screen.getByText('Verified')).toBeInTheDocument()
+    expect(screen.getByText('Verified · Dev')).toBeInTheDocument()
   })
 
   it('raises the update tile to an error when the pinned running image fails', () => {
@@ -230,5 +230,64 @@ describe('CippContainerManagement running image provenance', () => {
     renderWithProviders(<CippContainerManagement />)
     expect(screen.getByText('Running image unverified')).toBeInTheDocument()
     expect(screen.queryByText('Up to date')).not.toBeInTheDocument()
+  })
+})
+
+describe('CippContainerManagement channel trust wording', () => {
+  const TRUST_ALERT_RE = /before release review/
+  const withChannel = (channel, attestation = {}) => {
+    const results = statusResults(channel)
+    statusGet.data = {
+      Results: {
+        ...results,
+        UpdateSettings: {
+          ...results.UpdateSettings,
+          LastCheck: 1793600000,
+          AttestationState: 'Verified',
+          AttestationReason: 'Built by the workflow',
+          ...attestation,
+        },
+      },
+    }
+  }
+
+  beforeEach(() => {
+    vi.clearAllMocks()
+    api.paginated.data = { pages: [{ Results: channelListResults }] }
+  })
+
+  it('warns on dev and nightly, stays quiet on latest', async () => {
+    withChannel('latest')
+    const user = userEvent.setup()
+    renderWithProviders(<CippContainerManagement />)
+    await waitFor(() => {
+      expect(screen.getByRole('combobox', { name: 'Release Channel' })).toHaveValue('latest · Stable')
+    })
+    expect(screen.queryByText(TRUST_ALERT_RE)).not.toBeInTheDocument()
+
+    await user.click(screen.getByRole('combobox', { name: 'Release Channel' }))
+    await user.click(await screen.findByRole('option', { name: 'nightly · Development' }))
+    expect(await screen.findByText(TRUST_ALERT_RE)).toBeInTheDocument()
+    expect(screen.getByText('nightly')).toBeInTheDocument()
+    expect(screen.queryByText(ALERT_RE)).not.toBeInTheDocument()
+  })
+
+  it('suffixes Verified with the channel trust level on the channel image', async () => {
+    withChannel('dev')
+    const user = userEvent.setup()
+    renderWithProviders(<CippContainerManagement />)
+    await user.click(screen.getByText('Up to date'))
+    await screen.findAllByText('Latest on this channel')
+    expect(await screen.findByText('Verified · Dev')).toBeInTheDocument()
+  })
+
+  it('keeps plain Verified on the stable channel', async () => {
+    withChannel('latest')
+    const user = userEvent.setup()
+    renderWithProviders(<CippContainerManagement />)
+    await user.click(screen.getByText('Up to date'))
+    await screen.findAllByText('Latest on this channel')
+    expect(await screen.findByText('Verified')).toBeInTheDocument()
+    expect(screen.queryByText(/Verified · /)).not.toBeInTheDocument()
   })
 })
