@@ -168,3 +168,67 @@ describe('CippContainerManagement provenance state', () => {
     expect(screen.queryByText(/will not be applied automatically/)).not.toBeInTheDocument()
   })
 })
+
+describe('CippContainerManagement running image provenance', () => {
+  const PINNED = 'sha256:b463b2a33198ba15d07246002cf59860da3a5ecddb2c73c47fb24a881b25b1e2'
+  const withRunning = (running) => {
+    const results = statusResults('dev')
+    statusGet.data = {
+      Results: {
+        ...results,
+        UpdateSettings: { ...results.UpdateSettings, LastCheck: 1793600000, ...running },
+      },
+    }
+  }
+  const openBuildDetails = async (user) => {
+    await user.click(screen.getByText('8.0.0 @abc1234'))
+    return screen.findAllByText('Build Details')
+  }
+
+  beforeEach(() => {
+    vi.clearAllMocks()
+    api.paginated.data = { pages: [{ Results: [] }] }
+  })
+
+  it('shows Unpinned with its reason and leaves the update tile alone', async () => {
+    withRunning({
+      PinnedDigest: '',
+      RunningAttestationState: 'Unpinned',
+      RunningAttestationReason: 'The site configuration names a tag, not a digest',
+    })
+    const user = userEvent.setup()
+    renderWithProviders(<CippContainerManagement />)
+    expect(screen.getByText('Up to date')).toBeInTheDocument()
+    await openBuildDetails(user)
+    expect(await screen.findByText('Unpinned')).toBeInTheDocument()
+    expect(screen.getByText(/names a tag, not a digest/)).toBeInTheDocument()
+    expect(screen.queryByText('Pinned Digest')).not.toBeInTheDocument()
+  })
+
+  it('shows the truncated pinned digest and Verified for a verified pin', async () => {
+    withRunning({ PinnedDigest: PINNED, RunningAttestationState: 'Verified', RunningDigest: PINNED })
+    statusGet.data.Results.CurrentImage = `ghcr.io/cyberdrain/cipp:dev@${PINNED}`
+    const user = userEvent.setup()
+    renderWithProviders(<CippContainerManagement />)
+    expect(screen.getByText('Up to date')).toBeInTheDocument()
+    // the channel picker shows the tag, never digest text
+    await waitFor(() => {
+      expect(screen.getByRole('combobox', { name: 'Release Channel' })).toHaveValue('Dev')
+    })
+    await openBuildDetails(user)
+    expect(await screen.findByText('sha256:b463b2a33198…')).toBeInTheDocument()
+    expect(screen.getByText('Verified')).toBeInTheDocument()
+  })
+
+  it('raises the update tile to an error when the pinned running image fails', () => {
+    withRunning({
+      PinnedDigest: PINNED,
+      RunningAttestationState: 'Failed',
+      RunningAttestationReason: 'attested commit does not match the running build',
+      RunningDigest: PINNED,
+    })
+    renderWithProviders(<CippContainerManagement />)
+    expect(screen.getByText('Running image unverified')).toBeInTheDocument()
+    expect(screen.queryByText('Up to date')).not.toBeInTheDocument()
+  })
+})
