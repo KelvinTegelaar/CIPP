@@ -60,6 +60,7 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
       allowedTenants: [],
       blockedTenants: [],
       BlockedEndpoints: [],
+      BlockAllTenants: false,
       IPRange: [],
       Permissions: {},
       AllowedRolesTemplate: null,
@@ -366,6 +367,7 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
         allowedTenants: newAllowedTenants,
         blockedTenants: newBlockedTenants,
         BlockedEndpoints: processedBlockedEndpoints,
+        BlockAllTenants: Boolean(currentPermissions?.BlockAllTenants),
         IPRange: processedIPRanges,
         EntraGroup: currentPermissions?.EntraGroup,
         AllowedRolesTemplate: currentPermissions?.AllowedRolesTemplate || null,
@@ -500,6 +502,7 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
         AllowedTenants: processedAllowedTenants,
         BlockedTenants: processedBlockedTenants,
         BlockedEndpoints: processedBlockedEndpoints,
+        BlockAllTenants: Boolean(values?.["BlockAllTenants"]),
         IPRange: processedIPRanges,
         AllowedRolesTemplate: selectedRolesTemplate || null,
       },
@@ -735,6 +738,15 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
                   />
                 </Box>
               )}
+              <Box sx={{ mb: 3 }}>
+                <CippFormComponent
+                  type="switch"
+                  name="BlockAllTenants"
+                  label="Block the All Tenants view"
+                  formControl={formControl}
+                  helperText="Members of this role cannot select All Tenants or run cross-tenant views. Another role without this setting still grants it."
+                />
+              </Box>
 
               <Box sx={{ mb: 3 }}>
                 <CippFormComponent
