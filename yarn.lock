@@ -2707,46 +2707,46 @@
   resolved "https://registry.yarnpkg.com/@standard-schema/utils/-/utils-0.3.0.tgz#3d5e608f16c2390c10528e98e59aef6bf73cae7b"
   integrity sha512-e7Mew686owMaPJVNNLs55PUvgz371nKgwsc4vxE49zsODpJEnxgxRo2y/OKrqueavXgZNMDVj3DdHFlaSAeU8g==
 
-"@storybook/addon-a11y@10.6.2":
-  version "10.6.2"
-  resolved "https://registry.npmjs.org/@storybook/addon-a11y/-/addon-a11y-10.6.2.tgz#6ea906869e0dc9f47f4ff79084a9bb4d1086904d"
-  integrity sha512-zleS+btwrTRcUf3opbZntKsEt6PTqAtxsek08tx5jh5fRvd6wWmtnwW3uaBcypfIKnheTB3KGljJwFX+Mc+Umg==
+"@storybook/addon-a11y@10.6.5":
+  version "10.6.5"
+  resolved "https://registry.npmjs.org/@storybook/addon-a11y/-/addon-a11y-10.6.5.tgz#9a72afc2f8607435681bcc3c2892744d50100f14"
+  integrity sha512-7dEH3OHKdE+0zakqEy50KtfhPORIm1xnhWeehyROO1Ct7Rx9s7cYcx6edUZvh0tCuX5VhDnDmkvQV+dbrPDmCA==
   dependencies:
     "@storybook/global" "^5.0.0"
     axe-core "^4.2.0"
 
-"@storybook/addon-docs@10.6.2":
-  version "10.6.2"
-  resolved "https://registry.npmjs.org/@storybook/addon-docs/-/addon-docs-10.6.2.tgz#393910044c4743f7fb1b48a9bd19012c205975cd"
-  integrity sha512-f7Rv/rzX1sk4lUDTeoIRkXWcWvNwLv7vBnfpFGb3f88MliB+M4ZekGKNiKtrmi44uLFt52gzwwPzj2eGDu0DQQ==
+"@storybook/addon-docs@10.6.5":
+  version "10.6.5"
+  resolved "https://registry.npmjs.org/@storybook/addon-docs/-/addon-docs-10.6.5.tgz#456c8727652e2d280f823e881539baddc5b36f0f"
+  integrity sha512-Kt0pGLA+nwdu2g80p8jbdoiiKXxwQbhrY6uzMzq/0G1lytxpJUzrOQAM+GDcEbqyvpKr0u5d1q05/LPem/uooQ==
   dependencies:
     "@mdx-js/react" "^3.0.0"
     "@storybook/icons" "^2.0.2"
-    "@storybook/react-dom-shim" "10.6.2"
+    "@storybook/react-dom-shim" "10.6.5"
     react "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0"
     react-dom "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0"
     ts-dedent "^2.0.0"
     unplugin "^2.3.5"
 
-"@storybook/addon-themes@10.6.2":
-  version "10.6.2"
-  resolved "https://registry.npmjs.org/@storybook/addon-themes/-/addon-themes-10.6.2.tgz#72eb1cc4c9708e09ba38d1281491ed529508e95f"
-  integrity sha512-NGvoAPnWH+WnCNVUAzbDzDQHz2dJNEM5CR0KLGjjDUhHjIvCoAzhD4+SMwnZQqznwm5sgYUdyyKqzrHMeSInog==
+"@storybook/addon-themes@10.6.5":
+  version "10.6.5"
+  resolved "https://registry.npmjs.org/@storybook/addon-themes/-/addon-themes-10.6.5.tgz#9713c52ef9934df3731a32010caa3a54b0e137eb"
+  integrity sha512-2x6M1vWafp/cDUJzGRkGpVpB6sF4VIuVgpPTyCfEOLtF3S7HaIBalnWqDJ0JvQ/t2e7qtUXKCHZ1C7gREdYOsw==
   dependencies:
     ts-dedent "^2.0.0"
 
-"@storybook/addon-vitest@10.6.2":
-  version "10.6.2"
-  resolved "https://registry.npmjs.org/@storybook/addon-vitest/-/addon-vitest-10.6.2.tgz#0539b5a763e826497d77b5a7a4893afbe5298849"
-  integrity sha512-gyyBzncvUyEgWQR3LinnGuI4UsWIUYLyw1u8i244aTxmY4uxCYjsDmUNkaSr8xQzNz8nh2Ckh3G4bO4SvJ6nJQ==
+"@storybook/addon-vitest@10.6.5":
+  version "10.6.5"
+  resolved "https://registry.npmjs.org/@storybook/addon-vitest/-/addon-vitest-10.6.5.tgz#a891e8ed47afad4e3a1ee8118cf1742604544b5e"
+  integrity sha512-0N0E7TQgmdrPNCPqNiVdTWOEQ1Nes+YsUphYX/abzlp6ReOyYBoQJw6mZ0b7BN5ACgdXQsr9Tth161t72k+51Q==
   dependencies:
     "@storybook/global" "^5.0.0"
     "@storybook/icons" "^2.0.2"
 
-"@storybook/builder-vite@10.6.2":
-  version "10.6.2"
-  resolved "https://registry.npmjs.org/@storybook/builder-vite/-/builder-vite-10.6.2.tgz#390a8d9e4936317c72a9a0193db7eec1c2489e3a"
-  integrity sha512-SzeQEGjvybdhP2coF4aIX6JX/7rZTrQCpRU3vAEO/R98Vr3xM8jdg7a3nvt91TeF/P8iWqljLIpaDjTdk2r/sQ==
+"@storybook/builder-vite@10.6.5":
+  version "10.6.5"
+  resolved "https://registry.npmjs.org/@storybook/builder-vite/-/builder-vite-10.6.5.tgz#a225b4292bba4430138f3191c72e67f14d86db15"
+  integrity sha512-udrGjg3yt38pz4FxplypXxw1creIGS7N6QS8xfvTFM8MQNtPyojT/gZdd4fhX0dFrQx5MMuJEYJA5gUBiPsLtg==
   dependencies:
     ts-dedent "^2.0.0"
 
@@ -2760,33 +2760,33 @@
   resolved "https://registry.npmjs.org/@storybook/icons/-/icons-2.1.0.tgz#edfc2450a39c5e780f28c6cbc49acd7bff59b41a"
   integrity sha512-Fxh9vYpX9bQqFeHRiY8h2ApeRGDzRSMLwJwNZ/AIRqnyOKHxRKL+yFe+ctEkVJmuptRE9u1Hrn8ZZNHyfDKKNg==
 
-"@storybook/react-dom-shim@10.6.2":
-  version "10.6.2"
-  resolved "https://registry.npmjs.org/@storybook/react-dom-shim/-/react-dom-shim-10.6.2.tgz#863ffe89bad54ef16e4bf01af536137577e8365b"
-  integrity sha512-k0262Vqxjk3wHeg3g/QO/ENDrkC7kkbuwsFSXOdYr7Sl888tsF1DAS7uQ/gr+s/BRz1FLYRX7wBY3smEUV4MJg==
+"@storybook/react-dom-shim@10.6.5":
+  version "10.6.5"
+  resolved "https://registry.npmjs.org/@storybook/react-dom-shim/-/react-dom-shim-10.6.5.tgz#501efa6a06da077e5a9acad13ffce630a1db7437"
+  integrity sha512-Qbbkp+5Otg32w8Ddav6rH6MGPiYVfEzrgn0HqbqlqS8kY+DRXo+NYXJwZTVSDSwrYPrfH+Ok2tV4uE8Zo0c3cg==
 
-"@storybook/react-vite@10.6.2":
-  version "10.6.2"
-  resolved "https://registry.npmjs.org/@storybook/react-vite/-/react-vite-10.6.2.tgz#6967f857a0f097940c6a33a87be74d9928d7d6fa"
-  integrity sha512-RfYSW9eefxRXk7IXKBTBkBYAspHKaxNVBR7mlXQAt+Z2bJZzj+S21mv6kBcpFIfAIT9wSIq8xMg0RbeR7CneVQ==
+"@storybook/react-vite@10.6.5":
+  version "10.6.5"
+  resolved "https://registry.npmjs.org/@storybook/react-vite/-/react-vite-10.6.5.tgz#1546775ba944e71df6fc71c3f4d5bb5e4ab6c2f8"
+  integrity sha512-RsRF1drYtCku7+PMdRnuFt3EdG8Rn8I5G8ne0cBjn24xSn5Pbo9W+y9IoyD2llAeaeCpzEEdASY12wpKd3aCQA==
   dependencies:
     "@joshwooding/vite-plugin-react-docgen-typescript" "^0.7.0"
     "@rollup/pluginutils" "^5.0.2"
-    "@storybook/builder-vite" "10.6.2"
-    "@storybook/react" "10.6.2"
+    "@storybook/builder-vite" "10.6.5"
+    "@storybook/react" "10.6.5"
     empathic "^2.0.0"
     magic-string "^1.1.0"
     react-docgen "^8.0.2"
     resolve "^1.22.8"
     tsconfig-paths "^4.2.0"
 
-"@storybook/react@10.6.2":
-  version "10.6.2"
-  resolved "https://registry.npmjs.org/@storybook/react/-/react-10.6.2.tgz#7349c908be4ecf49cc7a5d461460fdb3ee6fadf9"
-  integrity sha512-kNWUU6Q8TrLmEqAzYmNYhC9A3i3kbjFxqIcLL3eu+o4gDu0afp1Of6Sy6jIF2qPGH05A3r6FWMzD03y4Mm5xRw==
+"@storybook/react@10.6.5":
+  version "10.6.5"
+  resolved "https://registry.npmjs.org/@storybook/react/-/react-10.6.5.tgz#051163108152ea12a9a3a70b5dea76d5db3fc1ce"
+  integrity sha512-vvRjRe/O8NRiQbGyA7Ne6h2jbD6GjwNZFkMdHl+0kZH8Z/S9ZWWmKmjCySvH/OmgighdCOQ98tcfND7m65WQBg==
   dependencies:
     "@storybook/global" "^5.0.0"
-    "@storybook/react-dom-shim" "10.6.2"
+    "@storybook/react-dom-shim" "10.6.5"
     react-docgen "^8.0.2"
     react-docgen-typescript "^2.2.2"
 
@@ -8690,16 +8690,7 @@ resolve-pkg-maps@^1.0.0:
   resolved "https://registry.yarnpkg.com/resolve-pkg-maps/-/resolve-pkg-maps-1.0.0.tgz#616b3dc2c57056b5588c31cdf4b3d64db133720f"
   integrity sha512-seS2Tj26TBVOC2NIc2rOe2y2ZO7efxITtLZcGSOnHHNOQ7CkiUBfw0Iw2ck6xkIhPwLhKNLS8BO+hEpngQlqzw==
 
-resolve@^1.19.0, resolve@^1.22.11, resolve@^1.22.4:
-  version "1.22.11"
-  resolved "https://registry.yarnpkg.com/resolve/-/resolve-1.22.11.tgz#aad857ce1ffb8bfa9b0b1ac29f1156383f68c262"
-  integrity sha512-RfqAvLnMl313r7c9oclB1HhUEAezcpLjz95wFH4LVuhk9JF/r22qmVP9AMmOU4vMX7Q8pN8jwNg/CSpdFnMjTQ==
-  dependencies:
-    is-core-module "^2.16.1"
-    path-parse "^1.0.7"
-    supports-preserve-symlinks-flag "^1.0.0"
-
-resolve@^1.22.1, resolve@^1.22.8:
+resolve@^1.19.0, resolve@^1.22.1, resolve@^1.22.11, resolve@^1.22.4, resolve@^1.22.8:
   version "1.22.12"
   resolved "https://registry.npmjs.org/resolve/-/resolve-1.22.12.tgz#f5b2a680897c69c238a13cd16b15671f8b73549f"
   integrity sha512-TyeJ1zif53BPfHootBGwPRYT1RUt6oGWsaQr8UyZW/eAm9bKoijtvruSDEmZHm92CwS9nj7/fWttqPCgzep8CA==
@@ -9095,10 +9086,10 @@ stop-iteration-iterator@^1.1.0:
     es-errors "^1.3.0"
     internal-slot "^1.1.0"
 
-storybook@10.6.2:
-  version "10.6.2"
-  resolved "https://registry.npmjs.org/storybook/-/storybook-10.6.2.tgz#317b3e942896dc9f10a114ae7a88d75c81e48d70"
-  integrity sha512-qHDINMiapxFUxYb+xC3j8u7Y+85X3u+/PlytE/wmnyg+bU0agCW3jUmWP4vIh2MioO2jTK/2B3Lcw6IpRFzQBA==
+storybook@10.6.5:
+  version "10.6.5"
+  resolved "https://registry.npmjs.org/storybook/-/storybook-10.6.5.tgz#9fc7e7de1275156f84d9055f6be98ade10c55b92"
+  integrity sha512-qurC38Nx4PDF9YIq6GO95dpUx8a3B9AZwlcHBo4cOI9At09ifjQRsqcwcdOf2YX0cpVhFKmHkI20SWCrxqYQrg==
   dependencies:
     "@storybook/global" "^5.0.0"
     "@storybook/icons" "^2.0.2"
