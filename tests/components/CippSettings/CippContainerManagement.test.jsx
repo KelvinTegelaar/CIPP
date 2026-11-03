@@ -127,3 +127,44 @@ describe('CippContainerManagement branch-build flagging', () => {
     })
   })
 })
+
+describe('CippContainerManagement provenance state', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+    api.paginated.data = { pages: [{ Results: [] }] }
+    const results = statusResults('dev')
+    statusGet.data = {
+      Results: {
+        ...results,
+        UpdateSettings: {
+          ...results.UpdateSettings,
+          LastCheck: 1793600000,
+          UpdateAvailable: true,
+          RemoteVersion: '8.0.1',
+          AttestationState: 'Failed',
+          AttestationReason: 'No Sigstore attestation is published for this image',
+        },
+      },
+    }
+  })
+
+  it('labels a failed-provenance update as unverified on the status tile', () => {
+    renderWithProviders(<CippContainerManagement />)
+    expect(screen.getByText('Update unverified')).toBeInTheDocument()
+    expect(screen.queryByText('Update available')).not.toBeInTheDocument()
+  })
+
+  it('raises the provenance warning instead of the plain update notice', () => {
+    renderWithProviders(<CippContainerManagement />)
+    expect(screen.getByText(/did not pass provenance verification/)).toBeInTheDocument()
+    expect(screen.queryByText(/Restart the container to pull the latest image/)).not.toBeInTheDocument()
+  })
+
+  it('flags an up-to-date instance whose channel image failed provenance', () => {
+    statusGet.data.Results.UpdateSettings.UpdateAvailable = false
+    renderWithProviders(<CippContainerManagement />)
+    expect(screen.getByText('Up to date, unverified')).toBeInTheDocument()
+    expect(screen.getByText(/did not pass provenance verification/)).toBeInTheDocument()
+    expect(screen.queryByText(/will not be applied automatically/)).not.toBeInTheDocument()
+  })
+})
