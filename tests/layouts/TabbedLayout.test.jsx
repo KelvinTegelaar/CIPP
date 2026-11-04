@@ -3,7 +3,7 @@ import { describe, it, expect, beforeEach, vi } from "vitest";
 import { screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Button } from "@mui/material";
-import { renderWithProviders } from "../test-utils";
+import { renderWithProviders, settingsWith } from "../test-utils";
 
 // jsdom has no width-based matchMedia, so the mobile branch is driven by mocking the hook
 const layoutState = vi.hoisted(() => ({ isMobile: false, viewMode: "table" }));
@@ -176,6 +176,27 @@ describe("TabbedLayout", () => {
     const sheet = await openPicker(user);
     expect(sheet.getByText("Overview")).toBeInTheDocument();
     expect(sheet.queryByText("Diagnostics")).not.toBeInTheDocument();
+  });
+
+  // Cross-tenant tabs (secure score Controls) have nothing to show for a single tenant.
+  it("lists allTenantsOnly tabs only while AllTenants is selected", () => {
+    const options = [...tabOptions, { label: "Controls", path: "/x", allTenantsOnly: true }];
+
+    const { unmount } = renderWithProviders(
+      <TabbedLayout tabOptions={options}>
+        <div>page content</div>
+      </TabbedLayout>
+    );
+    expect(screen.queryByRole("tab", { name: /Controls/ })).not.toBeInTheDocument();
+    unmount();
+
+    renderWithProviders(
+      <TabbedLayout tabOptions={options}>
+        <div>page content</div>
+      </TabbedLayout>,
+      { settings: settingsWith({ currentTenant: "AllTenants" }) }
+    );
+    expect(screen.getByRole("tab", { name: /Controls/ })).toBeInTheDocument();
   });
 
   // One control, one place, on every tabbed page — never annexing a heading that happens to

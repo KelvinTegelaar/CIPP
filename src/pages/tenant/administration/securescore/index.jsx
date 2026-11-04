@@ -23,7 +23,10 @@ import { useDialog } from '../../../../hooks/use-dialog'
 import { useState } from 'react'
 import { CippTableDialog } from '../../../../components/CippComponents/CippTableDialog'
 import { Menu, MenuItem, ListItemIcon, ListItemText } from '@mui/material'
-import { AllTenantsSecureScoreSummary } from '../../../../components/CippAllTenants/AllTenantsSecureScore'
+import {
+  AllTenantsSecureScoreSummary,
+  AllTenantsSecureScoreTable,
+} from '../../../../components/CippAllTenants/AllTenantsSecureScore'
 import { useSettings } from '../../../../hooks/use-settings'
 import { useRouter } from 'next/navigation'
 
@@ -116,6 +119,11 @@ const Page = () => {
         {currentTenant === 'AllTenants' && (
           <Grid size={{ xs: 12 }}>
             <AllTenantsSecureScoreSummary />
+          </Grid>
+        )}
+        {currentTenant === 'AllTenants' && (
+          <Grid size={{ xs: 12 }}>
+            <AllTenantsSecureScoreTable />
           </Grid>
         )}
         {currentTenant !== 'AllTenants' && (

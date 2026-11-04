@@ -7,7 +7,7 @@ import { useSecureScore } from '../../../../hooks/use-securescore'
 import { CippInfoBar } from '../../../../components/CippCards/CippInfoBar'
 import { Container } from '@mui/material'
 import { useSettings } from '../../../../hooks/use-settings'
-import { AllTenantsSecureScoreTable } from '../../../../components/CippAllTenants/AllTenantsSecureScore'
+import { AllTenantsSecureScoreControlsTable } from '../../../../components/CippAllTenants/AllTenantsSecureScore'
 const Page = () => {
   const secureScore = useSecureScore()
   const currentTenant = useSettings().currentTenant
@@ -21,7 +21,7 @@ const Page = () => {
         }}
         maxWidth={false}
       >
-        <AllTenantsSecureScoreTable />
+        <AllTenantsSecureScoreControlsTable />
       </Container>
     )
   }

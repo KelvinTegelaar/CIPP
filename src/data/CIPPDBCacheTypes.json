@@ -100,6 +100,12 @@
     "description": "Microsoft Secure Score and control profiles"
   },
   {
+    "type": "SecureScoreSummary",
+    "collectedBy": "SecureScore",
+    "friendlyName": "Secure Score Summary",
+    "description": "Compact per-tenant secure score, history and per-control results used by the All Tenants secure score views"
+  },
+  {
     "type": "PIMSettings",
     "friendlyName": "PIM Settings",
     "description": "Privileged Identity Management settings and assignments"
