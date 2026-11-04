@@ -81,6 +81,45 @@ const Page = () => {
       color: "info",
     },
     {
+      label: "Duplicate Policy",
+      type: "POST",
+      url: "/api/AddCAPolicyClone",
+      data: {
+        ID: "id",
+      },
+      multiPost: false,
+      hideBulk: true,
+      icon: <CippIcons.DocumentDuplicateIcon />,
+      color: "info",
+      fields: [
+        {
+          type: "textField",
+          name: "newDisplayName",
+          label: "New Display Name",
+          validators: { required: "Please enter a name for the duplicated policy" },
+        },
+        {
+          type: "autoComplete",
+          name: "state",
+          label: "State",
+          multiple: false,
+          creatable: false,
+          options: [
+            { label: "Disabled", value: "disabled" },
+            { label: "Report-only", value: "enabledForReportingButNotEnforced" },
+            { label: "Enabled", value: "enabled" },
+            { label: "Same as source", value: "sameAsSource" },
+          ],
+        },
+      ],
+      defaultvalues: (row) => ({
+        newDisplayName: row?.displayName ? `${row.displayName} - Copy` : "",
+        state: { label: "Disabled", value: "disabled" },
+      }),
+      confirmText:
+        "Enter a name for the duplicated policy. The name must not match any existing policy in the tenant.",
+    },
+    {
       label: "Change Display Name",
       type: "POST",
       url: "/api/EditCAPolicy",
