@@ -118,14 +118,25 @@ export const CippBulkInviteGuestDrawer = ({
     });
   };
 
-  const handleCloseDrawer = () => {
-    setDrawerVisible(false);
+  // Reset on open as well as close: the page stays mounted across tenant switches, so the
+  // mount-time defaults would otherwise send the request to the previously selected tenant.
+  const resetForm = () => {
     formControl.reset({
       tenantFilter: initialState.currentTenant,
       sendInvite: true,
       message: "",
       bulkGuests: [],
     });
+  };
+
+  const handleOpenDrawer = () => {
+    resetForm();
+    setDrawerVisible(true);
+  };
+
+  const handleCloseDrawer = () => {
+    setDrawerVisible(false);
+    resetForm();
   };
 
   const actions = [
@@ -142,7 +153,7 @@ export const CippBulkInviteGuestDrawer = ({
     <>
       <PermissionButton
         {...(PermissionButton !== Button ? { requiredPermissions } : {})}
-        onClick={() => setDrawerVisible(true)}
+        onClick={handleOpenDrawer}
         startIcon={<CippIcons.GroupAdd />}
       >
         {buttonText}
