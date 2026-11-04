@@ -622,7 +622,7 @@ const EditGroup = () => {
                 </Grid>
               )}
 
-              {groupType === 'Security' && !groupInfo.data?.groupInfo?.onPremisesSyncEnabled && (
+              {groupInfo.data?.groupInfo?.securityEnabled && (
                 <>
                   <Grid size={{ xs: 12 }}>
                     <Typography variant="h6">Licenses</Typography>
