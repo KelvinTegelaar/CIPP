@@ -41,6 +41,7 @@ const Page = () => {
     allowToggle: true,
     defaultCached: false,
     allowAllTenantSync: true,
+    serverPagination: true,
     // Reporting-DB rows carry no per-row cache timestamp.
     cacheColumns: [],
   })
