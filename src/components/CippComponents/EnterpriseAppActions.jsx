@@ -375,7 +375,7 @@ export const getEnterpriseAppPostActions = (canWriteApplication, onChanged) => [
       Action: 'Delete',
     },
     confirmText:
-      'Are you sure you want to delete this service principal? This will remove the application from this tenant but will not affect the app registration.',
+      'Are you sure you want to delete this service principal? This will remove the application from this tenant but will not affect the app registration. It can be restored from Applications > Deleted Apps for 30 days.',
     condition: () => canWriteApplication,
   },
 ]

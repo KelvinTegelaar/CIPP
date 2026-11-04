@@ -10,6 +10,11 @@
     "icon": "Apps"
   },
   {
+    "label": "Deleted Apps",
+    "path": "/tenant/administration/applications/deleted-apps",
+    "icon": "RestoreFromTrash"
+  },
+  {
     "label": "Permission Sets",
     "path": "/tenant/administration/applications/permission-sets",
     "icon": "Key"

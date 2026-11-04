@@ -319,7 +319,7 @@ export const getAppRegistrationPostAndDestructiveActions = (canWriteApplication,
       Action: 'Delete',
     },
     confirmText:
-      'Are you sure you want to delete this application registration? This action cannot be undone.',
+      'Are you sure you want to delete this application registration? It can be restored from Applications > Deleted Apps for 30 days. Its enterprise app in this tenant is deleted with it and restored separately.',
     condition: () => canWriteApplication,
   },
 ]
