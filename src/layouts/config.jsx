@@ -881,6 +881,11 @@ export const nativeMenuItems = [
             path: '/email/administration/exchange-retention/policies',
             permissions: ['Exchange.RetentionPolicies.*'],
           },
+          {
+            title: 'App Mailbox Access',
+            path: '/email/administration/app-mailbox-access/roles',
+            permissions: ['Tenant.Application.*'],
+          },
         ],
       },
       {

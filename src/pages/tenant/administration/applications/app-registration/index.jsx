@@ -172,8 +172,11 @@ const Page = () => {
         ]
       : []
 
+  const refreshRef = useRef(refreshFunction)
+  refreshRef.current = refreshFunction
+
   const appActions = useMemo(
-    () => getAppRegistrationDetailHeaderActions(canWriteApplication),
+    () => getAppRegistrationDetailHeaderActions(canWriteApplication, () => refreshRef.current()),
     [canWriteApplication]
   )
 

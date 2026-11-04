@@ -13,5 +13,10 @@
     "label": "Roles",
     "path": "/tenant/administration/applications/enterprise-app/roles",
     "icon": "AdminPanelSettings"
+  },
+  {
+    "label": "Exchange",
+    "path": "/tenant/administration/applications/enterprise-app/exchange",
+    "icon": "Email"
   }
 ]

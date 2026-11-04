@@ -79,7 +79,79 @@ export const ADD_CLIENT_SECRET_FIELDS = [
   },
 ]
 
-export const getAppRegistrationPostAndDestructiveActions = (canWriteApplication) => [
+export const getAppOwnerAction = (canWriteApplication, type, onOwnersChanged) => ({
+  icon: <CippIcons.ManageAccounts />,
+  label: 'Manage Owners',
+  type: 'POST',
+  color: 'info',
+  multiPost: false,
+  url: '/api/ExecApplication',
+  data: {
+    Id: 'id',
+    Type: `!${type}`,
+    Action: '!UpdateOwners',
+    DisplayName: 'displayName',
+  },
+  children: ({ formHook, row }) => (
+    <>
+      <CippFormComponent
+        name="AddOwnerIds"
+        formControl={formHook}
+        type="autoComplete"
+        label="Add owners"
+        multiple
+        creatable={false}
+        validators={{
+          validate: (value, formValues) =>
+            value?.length > 0 ||
+            formValues?.RemoveOwnerIds?.length > 0 ||
+            'Select at least one owner to add or remove',
+          deps: ['RemoveOwnerIds'],
+        }}
+        api={{
+          url: '/api/ListGraphRequest',
+          tenantFilter: row?.Tenant,
+          dataKey: 'Results',
+          labelField: (user) => `${user.displayName} (${user.userPrincipalName})`,
+          valueField: 'id',
+          queryKey: 'AppOwnerCandidateUsers',
+          data: {
+            Endpoint: 'users',
+            manualPagination: true,
+            $select: 'id,userPrincipalName,displayName',
+            $count: true,
+            $orderby: 'displayName',
+            $top: 999,
+          },
+        }}
+      />
+      <CippFormComponent
+        name="RemoveOwnerIds"
+        formControl={formHook}
+        type="autoComplete"
+        label="Remove owners"
+        multiple
+        creatable={false}
+        api={{
+          url: '/api/ListGraphRequest',
+          tenantFilter: row?.Tenant,
+          dataKey: 'Results',
+          labelField: (owner) =>
+            `${owner.displayName} (${owner.userPrincipalName ?? owner.appId ?? owner.id})`,
+          valueField: 'id',
+          queryKey: `AppOwners-${type}-${row?.id}`,
+          data: { Endpoint: `${type}/${row?.id}/owners` },
+        }}
+      />
+    </>
+  ),
+  relatedQueryKeys: ['AppOwners-*'],
+  onSuccess: onOwnersChanged,
+  confirmText: "Add or remove owners of '[displayName]'.",
+  condition: () => canWriteApplication,
+})
+
+export const getAppRegistrationPostAndDestructiveActions = (canWriteApplication, onOwnersChanged) => [
   {
     icon: <CippIcons.ContentCopy />,
     label: 'Create Enterprise App Template (Multi-Tenant)',
@@ -233,6 +305,7 @@ export const getAppRegistrationPostAndDestructiveActions = (canWriteApplication)
     confirmText: 'Are you sure you want to remove the selected certificate credentials?',
     condition: (row) => canWriteApplication && row?.keyCredentials?.length > 0,
   },
+  getAppOwnerAction(canWriteApplication, 'applications', onOwnersChanged),
   {
     icon: <CippIcons.Delete />,
     label: 'Delete App Registration',
@@ -378,9 +451,9 @@ export const getAppRegistrationListActions = (canWriteApplication) => [
   ...getAppRegistrationPostAndDestructiveActions(canWriteApplication),
 ]
 
-export const getAppRegistrationDetailHeaderActions = (canWriteApplication) => [
+export const getAppRegistrationDetailHeaderActions = (canWriteApplication, onOwnersChanged) => [
   ...entraLinkActions(true),
   editInEntraAction,
   ...getAppRegistrationEditActions(canWriteApplication),
-  ...getAppRegistrationPostAndDestructiveActions(canWriteApplication),
+  ...getAppRegistrationPostAndDestructiveActions(canWriteApplication, onOwnersChanged),
 ]

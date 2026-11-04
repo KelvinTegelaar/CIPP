@@ -3111,5 +3111,126 @@
     "categories": ["DataAccess", "Integrity"],
     "coveredBy": ["Exchange Online|full_access_as_app"],
     "reason": "Abuse: EWS full access to the mailboxes the role covers: read, change, delete and send as any user, granted in Exchange and not visible in Entra. Critical: same as full_access_as_app."
+  },
+  {
+    "api": "Exchange Online",
+    "id": "Application MailboxFolder.Read",
+    "name": "Application MailboxFolder.Read",
+    "type": "ExchangeRole",
+    "suspicion": "Low",
+    "impact": "Low",
+    "categories": ["DataAccess"],
+    "coveredBy": ["Microsoft Graph|MailboxFolder.Read.All", "Microsoft Graph|MailboxFolder.ReadWrite.All", "Exchange Online|full_access_as_app"],
+    "reason": "Abuse: list the folders of the mailboxes the role covers, granted in Exchange. Low: folder names only, no items."
+  },
+  {
+    "api": "Exchange Online",
+    "id": "Application MailboxFolder.ReadWrite",
+    "name": "Application MailboxFolder.ReadWrite",
+    "type": "ExchangeRole",
+    "suspicion": "Medium",
+    "impact": "High",
+    "categories": ["Integrity"],
+    "coveredBy": ["Microsoft Graph|MailboxFolder.ReadWrite.All", "Exchange Online|full_access_as_app"],
+    "reason": "Abuse: create, move and delete folders in the mailboxes the role covers, granted in Exchange. High: deleting or hiding a folder takes its mail with it."
+  },
+  {
+    "api": "Exchange Online",
+    "id": "Application MailboxItem.Read",
+    "name": "Application MailboxItem.Read",
+    "type": "ExchangeRole",
+    "suspicion": "Low",
+    "impact": "Critical",
+    "categories": ["DataAccess"],
+    "coveredBy": ["Microsoft Graph|MailboxItem.Read.All", "Microsoft Graph|MailboxItem.ReadWrite.All", "Exchange Online|full_access_as_app"],
+    "reason": "Abuse: read every item in the mailboxes the role covers, granted in Exchange and not visible in Entra. Low: common on backup and archiving products."
+  },
+  {
+    "api": "Exchange Online",
+    "id": "Application MailboxItem.ReadWrite",
+    "name": "Application MailboxItem.ReadWrite",
+    "type": "ExchangeRole",
+    "suspicion": "Medium",
+    "impact": "Critical",
+    "categories": ["DataAccess", "Integrity"],
+    "coveredBy": ["Microsoft Graph|MailboxItem.ReadWrite.All", "Exchange Online|full_access_as_app"],
+    "reason": "Abuse: read, write and delete every item in the mailboxes the role covers, granted in Exchange and not visible in Entra. Critical: all mail."
+  },
+  {
+    "api": "Exchange Online",
+    "id": "Application MailboxItem.Export",
+    "name": "Application MailboxItem.Export",
+    "type": "ExchangeRole",
+    "suspicion": "Medium",
+    "impact": "Critical",
+    "categories": ["DataAccess"],
+    "coveredBy": ["Microsoft Graph|MailboxItem.Export.All", "Microsoft Graph|MailboxItem.ImportExport.All", "Exchange Online|full_access_as_app"],
+    "reason": "Abuse: export the items of the mailboxes the role covers, granted in Exchange and not visible in Entra. Critical: all mail in bulk."
+  },
+  {
+    "api": "Exchange Online",
+    "id": "Application MailboxItem.ImportExport",
+    "name": "Application MailboxItem.ImportExport",
+    "type": "ExchangeRole",
+    "suspicion": "Medium",
+    "impact": "Critical",
+    "categories": ["DataAccess", "Integrity"],
+    "coveredBy": ["Microsoft Graph|MailboxItem.ImportExport.All", "Exchange Online|full_access_as_app"],
+    "reason": "Abuse: export and import items in the mailboxes the role covers, granted in Exchange and not visible in Entra. Critical: all mail in bulk, and planted messages."
+  },
+  {
+    "api": "Exchange Online",
+    "id": "Application SMTP.SendAsApp",
+    "name": "Application SMTP.SendAsApp",
+    "type": "ExchangeRole",
+    "suspicion": "High",
+    "impact": "Critical",
+    "categories": ["Integrity"],
+    "coveredBy": ["Microsoft Graph|Mail.Send", "Exchange Online|Mail.Send", "Exchange Online|full_access_as_app"],
+    "reason": "Abuse: send mail over SMTP AUTH as any mailbox the role covers, granted in Exchange and not visible in Entra. Critical: same BEC impact as Mail.Send; High: also used by scanners and line-of-business apps."
+  },
+  {
+    "api": "Exchange Online",
+    "id": "Application MailboxConfigItem.Read",
+    "name": "Application MailboxConfigItem.Read",
+    "type": "ExchangeRole",
+    "suspicion": "Low",
+    "impact": "Low",
+    "categories": ["DataAccess"],
+    "coveredBy": ["Microsoft Graph|MailboxConfigItem.Read", "Microsoft Graph|MailboxConfigItem.ReadWrite", "Exchange Online|full_access_as_app"],
+    "reason": "Abuse: read the configuration objects (such as categories and client settings) of the mailboxes the role covers. Low: no mail content."
+  },
+  {
+    "api": "Exchange Online",
+    "id": "Application MailboxConfigItem.ReadWrite",
+    "name": "Application MailboxConfigItem.ReadWrite",
+    "type": "ExchangeRole",
+    "suspicion": "Medium",
+    "impact": "Medium",
+    "categories": ["Integrity"],
+    "coveredBy": ["Microsoft Graph|MailboxConfigItem.ReadWrite", "Exchange Online|full_access_as_app"],
+    "reason": "Abuse: change or delete the configuration objects of the mailboxes the role covers, granted in Exchange. Medium: alters how the mailbox behaves for its user without touching mail."
+  },
+  {
+    "api": "Exchange Online",
+    "id": "Application MailTips.ReadBasic.All",
+    "name": "Application MailTips.ReadBasic.All",
+    "type": "ExchangeRole",
+    "suspicion": "Low",
+    "impact": "Low",
+    "categories": ["DataAccess"],
+    "coveredBy": ["Microsoft Graph|MailTips.ReadBasic.All", "Exchange Online|full_access_as_app"],
+    "reason": "Abuse: read MailTips metadata of the mailboxes the role covers. Low: no mail content."
+  },
+  {
+    "api": "Exchange Online",
+    "id": "Application Mail-Advanced.ReadWrite.All",
+    "name": "Application Mail-Advanced.ReadWrite.All",
+    "type": "ExchangeRole",
+    "suspicion": "Medium",
+    "impact": "Critical",
+    "categories": ["DataAccess", "Integrity"],
+    "coveredBy": ["Microsoft Graph|Mail-Advanced.ReadWrite.All", "Exchange Online|full_access_as_app"],
+    "reason": "Abuse: read every message in the mailboxes the role covers and change the content of mail already sent or received, granted in Exchange and not visible in Entra. Critical: all mail, and evidence can be rewritten."
   }
 ]
