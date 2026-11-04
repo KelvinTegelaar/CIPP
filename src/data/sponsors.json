@@ -24,11 +24,11 @@
     "priority": 1
   },
   {
-    "link": "https://www.augmentt.com/?utm_source=cipp&utm_medium=referral&utm_campaign=cipp-sponsorship&utm_content=sidebar-logo",
-    "imagesrcLight": "/sponsors/augmentt-light.png",
-    "imagesrcDark": "/sponsors/augmentt-dark.png",
-    "altText": "Augmentt",
-    "tooltip": "SaaS security and management platform for MSPs.",
+    "link": "https://maester.cloud",
+    "imagesrcLight": "/sponsors/maester-light.png",
+    "imagesrcDark": "/sponsors/maester-dark.png",
+    "altText": "Maester Cloud",
+    "tooltip": "The evidence layer for Microsoft 365 security: history, drift and alerts for your Maester results.",
     "priority": 1
   },
   {
