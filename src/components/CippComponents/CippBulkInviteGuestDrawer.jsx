@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { CippIcons } from "../../utils/icon-registry"
-import { Button, Link, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
+import { Button, Link, Dialog, DialogActions, DialogContent, DialogTitle, Stack } from "@mui/material";
 import { Grid } from "@mui/system";
 import { useForm, useWatch } from "react-hook-form";
 import { CippOffCanvas } from "./CippOffCanvas";
@@ -164,25 +164,28 @@ export const CippBulkInviteGuestDrawer = ({
         onClose={handleCloseDrawer}
         size="lg"
         footer={
-          <div style={{ display: "flex", gap: "8px", justifyContent: "flex-start" }}>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleSubmit}
-              disabled={
-                inviteGuestsBulk.isLoading || !bulkGuestsData || bulkGuestsData.length === 0
-              }
-            >
-              {inviteGuestsBulk.isLoading
-                ? "Sending Invites..."
-                : inviteGuestsBulk.isSuccess
-                  ? "Send More Invites"
-                  : "Send Invites"}
-            </Button>
-            <Button variant="outlined" onClick={handleCloseDrawer}>
-              Close
-            </Button>
-          </div>
+          <Stack spacing={2}>
+            <CippApiResults apiObject={inviteGuestsBulk} />
+            <div style={{ display: "flex", gap: "8px", justifyContent: "flex-start" }}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleSubmit}
+                disabled={
+                  inviteGuestsBulk.isLoading || !bulkGuestsData || bulkGuestsData.length === 0
+                }
+              >
+                {inviteGuestsBulk.isLoading
+                  ? "Sending Invites..."
+                  : inviteGuestsBulk.isSuccess
+                    ? "Send More Invites"
+                    : "Send Invites"}
+              </Button>
+              <Button variant="outlined" onClick={handleCloseDrawer}>
+                Close
+              </Button>
+            </div>
+          </Stack>
         }
       >
         <Grid container spacing={2}>
@@ -240,8 +243,6 @@ export const CippBulkInviteGuestDrawer = ({
               noCard={true}
             />
           </Grid>
-
-          <CippApiResults apiObject={inviteGuestsBulk} />
         </Grid>
 
         <Dialog

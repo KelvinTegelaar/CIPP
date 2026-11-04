@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { CippIcons } from "../../utils/icon-registry"
-import { Alert, Button, Link, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
+import { Alert, Button, Link, Dialog, DialogActions, DialogContent, DialogTitle, Stack } from "@mui/material";
 import { Grid } from "@mui/system";
 import { useForm, useWatch } from "react-hook-form";
 import { CippOffCanvas } from "./CippOffCanvas";
@@ -176,28 +176,31 @@ export const CippBulkUserDrawer = ({
         onClose={handleCloseDrawer}
         size="lg"
         footer={
-          <div style={{ display: "flex", gap: "8px", justifyContent: "flex-start" }}>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleSubmit}
-              disabled={
-                isAllTenants ||
-                createBulkUsers.isLoading ||
-                !bulkUserData ||
-                bulkUserData.length === 0
-              }
-            >
-              {createBulkUsers.isLoading
-                ? "Creating Users..."
-                : createBulkUsers.isSuccess
-                  ? "Create More Users"
-                  : "Create Users"}
-            </Button>
-            <Button variant="outlined" onClick={handleCloseDrawer}>
-              Close
-            </Button>
-          </div>
+          <Stack spacing={2}>
+            <CippApiResults apiObject={createBulkUsers} />
+            <div style={{ display: "flex", gap: "8px", justifyContent: "flex-start" }}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleSubmit}
+                disabled={
+                  isAllTenants ||
+                  createBulkUsers.isLoading ||
+                  !bulkUserData ||
+                  bulkUserData.length === 0
+                }
+              >
+                {createBulkUsers.isLoading
+                  ? "Creating Users..."
+                  : createBulkUsers.isSuccess
+                    ? "Create More Users"
+                    : "Create Users"}
+              </Button>
+              <Button variant="outlined" onClick={handleCloseDrawer}>
+                Close
+              </Button>
+            </div>
+          </Stack>
         }
       >
         <Grid container spacing={2}>
@@ -266,8 +269,6 @@ export const CippBulkUserDrawer = ({
               noCard={true}
             />
           </Grid>
-
-          <CippApiResults apiObject={createBulkUsers} />
         </Grid>
 
         <Dialog

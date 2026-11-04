@@ -1,5 +1,5 @@
 ﻿import { useState, useEffect } from "react";
-import { Button, Divider } from "@mui/material";
+import { Button, Divider, Stack } from "@mui/material";
 import { CippIcons } from "../../utils/icon-registry";
 import { Grid } from "@mui/system";
 import { useForm, useFormState, useWatch } from "react-hook-form";
@@ -90,23 +90,26 @@ export const CippAddConnectorDrawer = ({
         onClose={handleCloseDrawer}
         size="lg"
         footer={
-          <div style={{ display: "flex", gap: "8px", justifyContent: "flex-start" }}>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleSubmit}
-              disabled={addConnector.isLoading || !isValid}
-            >
-              {addConnector.isLoading
-                ? "Deploying..."
-                : addConnector.isSuccess
-                ? "Deploy Another"
-                : "Deploy Connector"}
-            </Button>
-            <Button variant="outlined" onClick={handleCloseDrawer}>
-              Close
-            </Button>
-          </div>
+          <Stack spacing={2}>
+            <CippApiResults apiObject={addConnector} />
+            <div style={{ display: "flex", gap: "8px", justifyContent: "flex-start" }}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleSubmit}
+                disabled={addConnector.isLoading || !isValid}
+              >
+                {addConnector.isLoading
+                  ? "Deploying..."
+                  : addConnector.isSuccess
+                  ? "Deploy Another"
+                  : "Deploy Connector"}
+              </Button>
+              <Button variant="outlined" onClick={handleCloseDrawer}>
+                Close
+              </Button>
+            </div>
+          </Stack>
         }
       >
         <Grid container spacing={2}>
@@ -157,8 +160,6 @@ export const CippAddConnectorDrawer = ({
               validators={{ required: "Please enter the PowerShell parameters as JSON." }}
             />
           </Grid>
-
-          <CippApiResults apiObject={addConnector} />
         </Grid>
       </CippOffCanvas>
     </>

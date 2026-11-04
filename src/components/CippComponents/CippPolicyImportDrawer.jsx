@@ -249,12 +249,16 @@ export const CippPolicyImportDrawer = ({
         onClose={handleCloseDrawer}
         size="xl"
         footer={
-          <Stack direction="row" spacing={2} sx={{
-            justifyContent: "flex-start"
-          }}>
-            <Button variant="outlined" onClick={handleCloseDrawer}>
-              Close
-            </Button>
+          <Stack spacing={2}>
+            <CippApiResults apiObject={tenantPolicies} errorsOnly />
+            <CippApiResults apiObject={importPolicy} />
+            <Stack direction="row" spacing={2} sx={{
+              justifyContent: "flex-start"
+            }}>
+              <Button variant="outlined" onClick={handleCloseDrawer}>
+                Close
+              </Button>
+            </Stack>
           </Stack>
         }
       >
@@ -395,11 +399,6 @@ export const CippPolicyImportDrawer = ({
                     Select a tenant to browse its policies.
                   </Typography>
                 )}
-              </Box>
-
-              <Box sx={{ flexShrink: 0 }}>
-                <CippApiResults apiObject={tenantPolicies} errorsOnly />
-                <CippApiResults apiObject={importPolicy} />
               </Box>
             </Box>
           )}

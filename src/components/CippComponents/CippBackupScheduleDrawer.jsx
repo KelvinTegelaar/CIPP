@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { CippIcons } from "../../utils/icon-registry";
-import { Button, Box, Typography, Alert, AlertTitle } from "@mui/material";
+import { Button, Box, Typography, Alert, AlertTitle, Stack } from "@mui/material";
 import { Grid } from "@mui/system";
 import { useForm, useFormState } from "react-hook-form";
 import { CippOffCanvas } from "./CippOffCanvas";
@@ -133,23 +133,26 @@ export const CippBackupScheduleDrawer = ({
         onClose={handleCloseDrawer}
         size="lg"
         footer={
-          <div style={{ display: "flex", gap: "8px", justifyContent: "flex-start" }}>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={formControl.handleSubmit(handleSubmit)}
-              disabled={createBackup.isPending || !isValid}
-            >
-              {createBackup.isPending
-                ? "Creating Schedule..."
-                : createBackup.isSuccess
-                ? "Create Another Schedule"
-                : "Create Schedule"}
-            </Button>
-            <Button variant="outlined" onClick={handleCloseDrawer}>
-              Close
-            </Button>
-          </div>
+          <Stack spacing={2}>
+            <CippApiResults apiObject={createBackup} />
+            <div style={{ display: "flex", gap: "8px", justifyContent: "flex-start" }}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={formControl.handleSubmit(handleSubmit)}
+                disabled={createBackup.isPending || !isValid}
+              >
+                {createBackup.isPending
+                  ? "Creating Schedule..."
+                  : createBackup.isSuccess
+                  ? "Create Another Schedule"
+                  : "Create Schedule"}
+              </Button>
+              <Button variant="outlined" onClick={handleCloseDrawer}>
+                Close
+              </Button>
+            </div>
+          </Stack>
         }
       >
         <Box sx={{ my: 2 }}>
@@ -296,7 +299,6 @@ export const CippBackupScheduleDrawer = ({
             </Grid>
           </Grid>
         </Box>
-        <CippApiResults apiObject={createBackup} />
       </CippOffCanvas>
     </>
   );

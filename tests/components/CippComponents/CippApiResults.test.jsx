@@ -30,12 +30,12 @@ const emptyApiObject = {
 }
 
 describe('CippApiResults', () => {
-  it('renders nothing meaningful when apiObject has no data', () => {
+  it('renders nothing when apiObject has no data, so a wrapping Stack adds no spacing', () => {
     const { container } = renderWithProviders(
       <CippApiResults apiObject={emptyApiObject} />
     )
     expect(screen.queryByRole('alert')).not.toBeInTheDocument()
-    expect(container.firstChild).toBeInTheDocument()
+    expect(container.firstChild).toBeNull()
   })
 
   it('shows loading indicator when isFetching is true', () => {

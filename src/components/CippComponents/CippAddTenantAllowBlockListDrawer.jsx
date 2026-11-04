@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { CippIcons } from "../../utils/icon-registry";
-import { Button, Divider } from "@mui/material";
+import { Button, Divider, Stack } from "@mui/material";
 import { Grid } from "@mui/system";
 import { useForm, useFormState, useWatch } from "react-hook-form";
 import { CippOffCanvas } from "./CippOffCanvas";
@@ -223,19 +223,22 @@ export const CippAddTenantAllowBlockListDrawer = ({
         onClose={handleCloseDrawer}
         size="lg"
         footer={
-          <div style={{ display: "flex", gap: "8px", justifyContent: "flex-start" }}>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleSubmit}
-              disabled={addEntry.isLoading || !isValid}
-            >
-              {addEntry.isLoading ? "Adding..." : addEntry.isSuccess ? "Add Another" : "Add Entry"}
-            </Button>
-            <Button variant="outlined" onClick={handleCloseDrawer}>
-              Close
-            </Button>
-          </div>
+          <Stack spacing={2}>
+            <CippApiResults apiObject={addEntry} />
+            <div style={{ display: "flex", gap: "8px", justifyContent: "flex-start" }}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleSubmit}
+                disabled={addEntry.isLoading || !isValid}
+              >
+                {addEntry.isLoading ? "Adding..." : addEntry.isSuccess ? "Add Another" : "Add Entry"}
+              </Button>
+              <Button variant="outlined" onClick={handleCloseDrawer}>
+                Close
+              </Button>
+            </div>
+          </Stack>
         }
       >
         <Grid container spacing={2}>
@@ -361,8 +364,6 @@ export const CippAddTenantAllowBlockListDrawer = ({
               }
             />
           </Grid>
-
-          <CippApiResults apiObject={addEntry} />
         </Grid>
       </CippOffCanvas>
     </>

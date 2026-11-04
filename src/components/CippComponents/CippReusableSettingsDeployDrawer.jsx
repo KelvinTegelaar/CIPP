@@ -100,18 +100,21 @@ export const CippReusableSettingsDeployDrawer = ({
         onClose={handleCloseDrawer}
         size="lg"
         footer={
-          <Stack direction="row" spacing={2}>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleSubmit}
-              disabled={deploy.isLoading || !isValid}
-            >
-              {deploy.isLoading ? "Deploying..." : "Deploy"}
-            </Button>
-            <Button variant="outlined" onClick={handleCloseDrawer}>
-              Close
-            </Button>
+          <Stack spacing={2}>
+            <CippApiResults apiObject={deploy} />
+            <Stack direction="row" spacing={2}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleSubmit}
+                disabled={deploy.isLoading || !isValid}
+              >
+                {deploy.isLoading ? "Deploying..." : "Deploy"}
+              </Button>
+              <Button variant="outlined" onClick={handleCloseDrawer}>
+                Close
+              </Button>
+            </Stack>
           </Stack>
         }
       >
@@ -160,7 +163,6 @@ export const CippReusableSettingsDeployDrawer = ({
             />
           </Grid>
           <CippJsonView object={safeJson()} type="intune" />
-          <CippApiResults apiObject={deploy} />
         </Stack>
       </CippOffCanvas>
     </>

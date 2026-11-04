@@ -1,5 +1,5 @@
 ﻿import { useState, useEffect } from "react";
-import { Button, Divider } from "@mui/material";
+import { Button, Divider, Stack } from "@mui/material";
 import { CippIcons } from "../../utils/icon-registry";
 import { Grid } from "@mui/system";
 import { useForm, useFormState, useWatch } from "react-hook-form";
@@ -90,23 +90,26 @@ export const CippAddTransportRuleDrawer = ({
         onClose={handleCloseDrawer}
         size="lg"
         footer={
-          <div style={{ display: "flex", gap: "8px", justifyContent: "flex-start" }}>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleSubmit}
-              disabled={addTransportRule.isLoading || !isValid}
-            >
-              {addTransportRule.isLoading
-                ? "Deploying..."
-                : addTransportRule.isSuccess
-                ? "Deploy Another"
-                : "Deploy Transport Rule"}
-            </Button>
-            <Button variant="outlined" onClick={handleCloseDrawer}>
-              Close
-            </Button>
-          </div>
+          <Stack spacing={2}>
+            <CippApiResults apiObject={addTransportRule} />
+            <div style={{ display: "flex", gap: "8px", justifyContent: "flex-start" }}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleSubmit}
+                disabled={addTransportRule.isLoading || !isValid}
+              >
+                {addTransportRule.isLoading
+                  ? "Deploying..."
+                  : addTransportRule.isSuccess
+                  ? "Deploy Another"
+                  : "Deploy Transport Rule"}
+              </Button>
+              <Button variant="outlined" onClick={handleCloseDrawer}>
+                Close
+              </Button>
+            </div>
+          </Stack>
         }
       >
         <Grid container spacing={2}>
@@ -157,8 +160,6 @@ export const CippAddTransportRuleDrawer = ({
               validators={{ required: "Please enter the PowerShell parameters as JSON." }}
             />
           </Grid>
-
-          <CippApiResults apiObject={addTransportRule} />
         </Grid>
       </CippOffCanvas>
     </>

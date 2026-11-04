@@ -230,24 +230,27 @@ export const CippDeployCompliancePolicyDrawer = ({
         onClose={handleCloseDrawer}
         size="lg"
         footer={
-          <Stack direction="row" spacing={2} sx={{
-            justifyContent: "flex-start"
-          }}>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleSubmit}
-              disabled={deployPolicy.isLoading || !isValid}
-            >
-              {deployPolicy.isLoading
-                ? "Deploying..."
-                : deployPolicy.isSuccess
-                ? "Deploy Another"
-                : "Deploy"}
-            </Button>
-            <Button variant="outlined" onClick={handleCloseDrawer}>
-              Close
-            </Button>
+          <Stack spacing={2}>
+            <CippApiResults apiObject={deployPolicy} />
+            <Stack direction="row" spacing={2} sx={{
+              justifyContent: "flex-start"
+            }}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleSubmit}
+                disabled={deployPolicy.isLoading || !isValid}
+              >
+                {deployPolicy.isLoading
+                  ? "Deploying..."
+                  : deployPolicy.isSuccess
+                  ? "Deploy Another"
+                  : "Deploy"}
+              </Button>
+              <Button variant="outlined" onClick={handleCloseDrawer}>
+                Close
+              </Button>
+            </Stack>
           </Stack>
         }
       >
@@ -309,8 +312,6 @@ export const CippDeployCompliancePolicyDrawer = ({
               placeholder={config.placeholder}
             />
           </Grid>
-
-          <CippApiResults apiObject={deployPolicy} />
         </Grid>
       </CippOffCanvas>
     </>

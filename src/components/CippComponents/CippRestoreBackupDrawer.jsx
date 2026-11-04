@@ -174,23 +174,26 @@ export const CippRestoreBackupDrawer = ({
         onClose={handleCloseDrawer}
         size="lg"
         footer={
-          <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-start' }}>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={formControl.handleSubmit(handleSubmit)}
-              disabled={restoreBackup.isPending || !isValid}
-            >
-              {restoreBackup.isPending
-                ? 'Creating Restore Task...'
-                : restoreBackup.isSuccess
-                  ? 'Create Another Restore Task'
-                  : 'Restore Backup'}
-            </Button>
-            <Button variant="outlined" onClick={handleCloseDrawer}>
-              Close
-            </Button>
-          </div>
+          <Stack spacing={2}>
+            <CippApiResults apiObject={restoreBackup} />
+            <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-start' }}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={formControl.handleSubmit(handleSubmit)}
+                disabled={restoreBackup.isPending || !isValid}
+              >
+                {restoreBackup.isPending
+                  ? 'Creating Restore Task...'
+                  : restoreBackup.isSuccess
+                    ? 'Create Another Restore Task'
+                    : 'Restore Backup'}
+              </Button>
+              <Button variant="outlined" onClick={handleCloseDrawer}>
+                Close
+              </Button>
+            </div>
+          </Stack>
         }
       >
         <Box sx={{ my: 2 }}>
@@ -392,7 +395,6 @@ export const CippRestoreBackupDrawer = ({
             </Grid>
           </Grid>
         </Box>
-        <CippApiResults apiObject={restoreBackup} />
       </CippOffCanvas>
     </>
   );

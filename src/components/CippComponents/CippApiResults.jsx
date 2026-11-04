@@ -336,6 +336,10 @@ export const CippApiResults = (props) => {
     finalResults.some((r) => (r.groupIndex ?? r.id) === group && r.severity === 'error')
   ).length
   const successActionCount = actionCount - failedActionCount
+  // Render nothing when idle so a wrapping Stack adds no phantom spacing
+  if (!hasVisibleResults && !(fetchingVisible && !errorsOnly)) {
+    return null
+  }
   return (
     <Stack spacing={2} sx={{ minWidth: 0 }}>
       {/* Loading alert */}

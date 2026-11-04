@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { CippIcons } from "../../utils/icon-registry"
-import { Button, Alert, Box } from "@mui/material";
+import { Button, Alert, Box, Stack } from "@mui/material";
 import { Grid } from "@mui/system";
 import { useForm } from "react-hook-form";
 import { CippOffCanvas } from "./CippOffCanvas";
@@ -72,23 +72,26 @@ export const CippHVEUserDrawer = ({
         onClose={handleCloseDrawer}
         size="md"
         footer={
-          <div style={{ display: "flex", gap: "8px", justifyContent: "flex-start" }}>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleSubmit}
-              disabled={createHVEUser.isLoading}
-            >
-              {createHVEUser.isLoading
-                ? "Creating User..."
-                : createHVEUser.isSuccess
-                ? "Create Another User"
-                : "Create HVE User"}
-            </Button>
-            <Button variant="outlined" onClick={handleCloseDrawer}>
-              Close
-            </Button>
-          </div>
+          <Stack spacing={2}>
+            <CippApiResults apiObject={createHVEUser} />
+            <div style={{ display: "flex", gap: "8px", justifyContent: "flex-start" }}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleSubmit}
+                disabled={createHVEUser.isLoading}
+              >
+                {createHVEUser.isLoading
+                  ? "Creating User..."
+                  : createHVEUser.isSuccess
+                  ? "Create Another User"
+                  : "Create HVE User"}
+              </Button>
+              <Button variant="outlined" onClick={handleCloseDrawer}>
+                Close
+              </Button>
+            </div>
+          </Stack>
         }
       >
         <Grid container spacing={2}>
@@ -166,8 +169,6 @@ export const CippHVEUserDrawer = ({
               }}
             />
           </Grid>
-
-          <CippApiResults apiObject={createHVEUser} />
         </Grid>
       </CippOffCanvas>
     </>

@@ -1,6 +1,6 @@
 import React, { useEffect, useCallback, useState } from 'react'
 import { CippIcons } from '../../utils/icon-registry'
-import { Divider, Button, Alert, CircularProgress, InputAdornment } from '@mui/material'
+import { Divider, Button, Alert, CircularProgress, InputAdornment, Stack } from '@mui/material'
 import { Grid } from '@mui/system'
 import { useForm, useWatch } from 'react-hook-form'
 import { CippOffCanvas } from './CippOffCanvas'
@@ -181,23 +181,26 @@ export const CippApplicationDeployDrawer = ({
         onClose={handleCloseDrawer}
         size="xl"
         footer={
-          <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-start' }}>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleSubmit}
-              disabled={deployApplication.isLoading}
-            >
-              {deployApplication.isLoading
-                ? 'Deploying...'
-                : deployApplication.isSuccess
-                  ? 'Deploy Another'
-                  : 'Deploy Application'}
-            </Button>
-            <Button variant="outlined" onClick={handleCloseDrawer}>
-              Close
-            </Button>
-          </div>
+          <Stack spacing={2}>
+            <CippApiResults apiObject={deployApplication} />
+            <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-start' }}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleSubmit}
+                disabled={deployApplication.isLoading}
+              >
+                {deployApplication.isLoading
+                  ? 'Deploying...'
+                  : deployApplication.isSuccess
+                    ? 'Deploy Another'
+                    : 'Deploy Application'}
+              </Button>
+              <Button variant="outlined" onClick={handleCloseDrawer}>
+                Close
+              </Button>
+            </div>
+          </Stack>
         }
       >
         <Grid container spacing={2}>
@@ -994,8 +997,6 @@ export const CippApplicationDeployDrawer = ({
               </Grid>
             </CippFormCondition>
           </CippFormCondition>
-
-          <CippApiResults apiObject={deployApplication} />
         </Grid>
       </CippOffCanvas>
     </>

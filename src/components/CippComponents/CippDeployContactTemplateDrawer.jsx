@@ -1,5 +1,5 @@
 ﻿import React, { useState, useEffect } from "react";
-import { Button, Divider } from "@mui/material";
+import { Button, Divider, Stack } from "@mui/material";
 import { CippIcons } from "../../utils/icon-registry";
 import { Grid } from "@mui/system";
 import { useForm, useFormState } from "react-hook-form";
@@ -80,23 +80,26 @@ export const CippDeployContactTemplateDrawer = ({
         onClose={handleCloseDrawer}
         size="md"
         footer={
-          <div style={{ display: "flex", gap: "8px", justifyContent: "flex-start" }}>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleSubmit}
-              disabled={deployTemplate.isLoading || !isValid}
-            >
-              {deployTemplate.isLoading
-                ? "Deploying..."
-                : deployTemplate.isSuccess
-                ? "Deploy Another"
-                : "Deploy Templates"}
-            </Button>
-            <Button variant="outlined" onClick={handleCloseDrawer}>
-              Close
-            </Button>
-          </div>
+          <Stack spacing={2}>
+            <CippApiResults apiObject={deployTemplate} />
+            <div style={{ display: "flex", gap: "8px", justifyContent: "flex-start" }}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleSubmit}
+                disabled={deployTemplate.isLoading || !isValid}
+              >
+                {deployTemplate.isLoading
+                  ? "Deploying..."
+                  : deployTemplate.isSuccess
+                  ? "Deploy Another"
+                  : "Deploy Templates"}
+              </Button>
+              <Button variant="outlined" onClick={handleCloseDrawer}>
+                Close
+              </Button>
+            </div>
+          </Stack>
         }
       >
         <Grid container spacing={2} sx={{ mb: 2 }}>
@@ -132,8 +135,6 @@ export const CippDeployContactTemplateDrawer = ({
               placeholder="Select a template or enter PowerShell JSON manually"
             />
           </Grid>
-
-          <CippApiResults apiObject={deployTemplate} />
         </Grid>
       </CippOffCanvas>
     </>

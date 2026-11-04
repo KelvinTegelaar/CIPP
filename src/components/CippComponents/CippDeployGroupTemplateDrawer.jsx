@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Button, Divider } from "@mui/material";
+import { Button, Divider, Stack } from "@mui/material";
 import { CippIcons } from "../../utils/icon-registry";
 import { Grid } from "@mui/system";
 import { useForm, useFormState, useWatch } from "react-hook-form";
@@ -100,23 +100,26 @@ export const CippDeployGroupTemplateDrawer = ({
         onClose={handleCloseDrawer}
         size="md"
         footer={
-          <div style={{ display: "flex", gap: "8px", justifyContent: "flex-start" }}>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleSubmit}
-              disabled={deployTemplate.isPending || !isValid}
-            >
-              {deployTemplate.isPending
-                ? "Deploying..."
-                : deployTemplate.isSuccess
-                ? "Deploy Another"
-                : "Deploy Template"}
-            </Button>
-            <Button variant="outlined" onClick={handleCloseDrawer}>
-              Close
-            </Button>
-          </div>
+          <Stack spacing={2}>
+            <CippApiResults apiObject={deployTemplate} />
+            <div style={{ display: "flex", gap: "8px", justifyContent: "flex-start" }}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleSubmit}
+                disabled={deployTemplate.isPending || !isValid}
+              >
+                {deployTemplate.isPending
+                  ? "Deploying..."
+                  : deployTemplate.isSuccess
+                  ? "Deploy Another"
+                  : "Deploy Template"}
+              </Button>
+              <Button variant="outlined" onClick={handleCloseDrawer}>
+                Close
+              </Button>
+            </div>
+          </Stack>
         }
       >
         <Grid container spacing={2} sx={{ mb: 2 }}>
@@ -255,8 +258,6 @@ export const CippDeployGroupTemplateDrawer = ({
               />
             </Grid>
           </CippFormCondition>
-
-          <CippApiResults apiObject={deployTemplate} />
         </Grid>
       </CippOffCanvas>
     </>

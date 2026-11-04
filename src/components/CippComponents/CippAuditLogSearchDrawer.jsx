@@ -427,17 +427,20 @@ export const CippAuditLogSearchDrawer = ({
         onClose={handleCloseDrawer}
         size="lg"
         footer={
-          <Stack direction="row" spacing={2} sx={{ width: "100%" }}>
-            <Button
-              variant="contained"
-              onClick={formControl.handleSubmit(handleCreateSearch)}
-              disabled={createSearchApi.isLoading}
-            >
-              {createSearchApi.isLoading ? "Creating..." : "Create Search"}
-            </Button>
-            <Button variant="outlined" onClick={handleCloseDrawer}>
-              Cancel
-            </Button>
+          <Stack spacing={2}>
+            <CippApiResults apiObject={createSearchApi} />
+            <Stack direction="row" spacing={2} sx={{ width: "100%" }}>
+              <Button
+                variant="contained"
+                onClick={formControl.handleSubmit(handleCreateSearch)}
+                disabled={createSearchApi.isLoading}
+              >
+                {createSearchApi.isLoading ? "Creating..." : "Create Search"}
+              </Button>
+              <Button variant="outlined" onClick={handleCloseDrawer}>
+                Cancel
+              </Button>
+            </Stack>
           </Stack>
         }
       >
@@ -449,7 +452,6 @@ export const CippAuditLogSearchDrawer = ({
               </Box>
             ))}
           </Box>
-          <CippApiResults apiObject={createSearchApi} />
         </Box>
       </CippOffCanvas>
     </>

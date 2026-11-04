@@ -1,5 +1,5 @@
 ﻿import React, { useState, useEffect } from "react";
-import { Button, Divider } from "@mui/material";
+import { Button, Divider, Stack } from "@mui/material";
 import { CippIcons } from "../../utils/icon-registry"
 import { Grid } from "@mui/system";
 import { useForm, useFormState } from "react-hook-form";
@@ -142,23 +142,26 @@ export const CippAddContactDrawer = ({
         onClose={handleCloseDrawer}
         size="lg"
         footer={
-          <div style={{ display: "flex", gap: "8px", justifyContent: "flex-start" }}>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleSubmit}
-              disabled={addContact.isLoading || !isValid}
-            >
-              {addContact.isLoading
-                ? "Creating..."
-                : addContact.isSuccess
-                ? "Create Another"
-                : "Create Contact"}
-            </Button>
-            <Button variant="outlined" onClick={handleCloseDrawer}>
-              Close
-            </Button>
-          </div>
+          <Stack spacing={2}>
+            <CippApiResults apiObject={addContact} />
+            <div style={{ display: "flex", gap: "8px", justifyContent: "flex-start" }}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleSubmit}
+                disabled={addContact.isLoading || !isValid}
+              >
+                {addContact.isLoading
+                  ? "Creating..."
+                  : addContact.isSuccess
+                  ? "Create Another"
+                  : "Create Contact"}
+              </Button>
+              <Button variant="outlined" onClick={handleCloseDrawer}>
+                Close
+              </Button>
+            </div>
+          </Stack>
         }
       >
         <Grid container spacing={2}>
@@ -312,8 +315,6 @@ export const CippAddContactDrawer = ({
               formControl={formControl}
             />
           </Grid>
-
-          <CippApiResults apiObject={addContact} />
         </Grid>
       </CippOffCanvas>
     </>
