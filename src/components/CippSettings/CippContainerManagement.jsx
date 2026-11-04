@@ -38,13 +38,13 @@ const channelTrust = {
     label: 'Development',
     provenance: 'Dev',
     alert:
-      'receives changes as they land on the dev branch, before release review. Use it for testing.',
+      'receives changes as they land on the dev branch, before release review. Use it for testing or at the direction of the helpdesk.',
   },
   nightly: {
     label: 'Development',
     provenance: 'Dev',
     alert:
-      'is built once a day from the dev branch, before release review. Use it for testing.',
+      'is built once a day from the dev branch, before release review. Use it for testing or at the direction of the helpdesk.',
   },
 }
 
@@ -554,7 +554,7 @@ export const CippContainerManagement = () => {
                     build from an unmerged branch. It does not receive updates,
                     and it is deleted when its branch is — after which this
                     instance cannot start until you switch back to a standard
-                    channel. Use it for testing only.
+                    channel. Use it for testing or at the direction of the helpdesk.
                   </Alert>
                 )}
                 {!buildChannelSelected &&
