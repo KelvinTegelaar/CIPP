@@ -3,6 +3,7 @@ import { CippIcons } from "../../../../utils/icon-registry"
 import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
 import { Layout as DashboardLayout } from "../../../../layouts/index";
 import Link from "next/link";
+import { CippDeployGroupTemplateDrawer } from "../../../../components/CippComponents/CippDeployGroupTemplateDrawer";
 import { ApiGetCall } from "../../../../api/ApiCall";
 import { CippPropertyListCard } from "../../../../components/CippCards/CippPropertyListCard";
 import { getCippTranslation } from "../../../../utils/get-cipp-translation";
@@ -118,9 +119,7 @@ const Page = () => {
           <Button component={Link} href="group-templates/add" startIcon={<CippIcons.AddBox />}>
             Add Group Template
           </Button>
-          <Button component={Link} href="group-templates/deploy" startIcon={<CippIcons.RocketLaunch />}>
-            Deploy Group Template
-          </Button>
+          <CippDeployGroupTemplateDrawer requiredPermissions={["Identity.Group.ReadWrite"]} />
         </>
       }
       offCanvas={offCanvas}
