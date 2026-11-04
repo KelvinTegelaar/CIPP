@@ -62,6 +62,7 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
       BlockedEndpoints: [],
       BlockAllTenants: false,
       IPRange: [],
+      AppRoleTenants: [],
       Permissions: {},
       AllowedRolesTemplate: null,
       PermissionRulesInclude: [],
@@ -369,6 +370,11 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
         BlockedEndpoints: processedBlockedEndpoints,
         BlockAllTenants: Boolean(currentPermissions?.BlockAllTenants),
         IPRange: processedIPRanges,
+        AppRoleTenants:
+          currentPermissions?.AppRoleTenants?.map((tenantId) => ({
+            label: tenantId,
+            value: tenantId,
+          })) || [],
         EntraGroup: currentPermissions?.EntraGroup,
         AllowedRolesTemplate: currentPermissions?.AllowedRolesTemplate || null,
         PermissionRulesInclude: toRuleOptions(storedRules?.Include),
@@ -504,6 +510,7 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
         BlockedEndpoints: processedBlockedEndpoints,
         BlockAllTenants: Boolean(values?.["BlockAllTenants"]),
         IPRange: processedIPRanges,
+        AppRoleTenants: values?.["AppRoleTenants"]?.map((tenant) => tenant?.value || tenant) || [],
         AllowedRolesTemplate: selectedRolesTemplate || null,
       },
     });
@@ -827,6 +834,21 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
               }
               fullWidth={true}
               disabled={selectedRole === "superadmin"}
+            />
+          </Box>
+          <Box sx={{ mb: 3 }}>
+            <CippFormComponent
+              type="autoComplete"
+              name="AppRoleTenants"
+              label="App Role Tenants (Entra tenant IDs)"
+              formControl={formControl}
+              multiple={true}
+              freeSolo={true}
+              creatable={true}
+              options={[]}
+              placeholder="Type a tenant ID and hit enter"
+              helperText="Users from these tenants who are assigned this role as an app role on the CIPP SSO enterprise app receive it at sign-in. Include your own tenant ID to use app roles there. Other tenants need the SSO app in multi-tenant mode and admin consent."
+              fullWidth={true}
             />
           </Box>
           {apiPermissionFetching && (

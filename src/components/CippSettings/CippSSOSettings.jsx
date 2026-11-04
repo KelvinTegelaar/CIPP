@@ -19,7 +19,7 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { Grid } from "@mui/system";
 import CippFormComponent from "../CippComponents/CippFormComponent";
 import CippButtonCard from "../CippCards/CippButtonCard";
@@ -124,8 +124,9 @@ const repairableStatuses = new Set(["error", "app_created", "appid_stored"]);
 export const CippSSOSettings = () => {
   const formControl = useForm({
     mode: "onChange",
-    defaultValues: { multiTenant: false },
+    defaultValues: { multiTenant: false, allowedTenants: [] },
   });
+  const multiTenant = useWatch({ control: formControl.control, name: "multiTenant" });
 
   // Separate form for the manual-configuration section so its fields don't
   // interfere with the automated flow's multiTenant switch.
@@ -147,7 +148,13 @@ export const CippSSOSettings = () => {
   useEffect(() => {
     if (ssoStatus.isSuccess && ssoStatus.data?.Results) {
       const data = ssoStatus.data.Results;
-      formControl.reset({ multiTenant: data.multiTenant ?? false });
+      formControl.reset({
+        multiTenant: data.multiTenant ?? false,
+        allowedTenants: (data.allowedTenants ?? []).map((tenantId) => ({
+          label: tenantId,
+          value: tenantId,
+        })),
+      });
       // Seed the manual section's multi-tenant switch and App ID with the current
       // values; leave the secret blank so it's only written when the admin types one.
       manualFormControl.reset({
@@ -264,6 +271,9 @@ export const CippSSOSettings = () => {
       data: {
         Action: "Update",
         multiTenant: formControl.getValues("multiTenant"),
+        allowedTenants: (formControl.getValues("allowedTenants") ?? []).map(
+          (tenant) => tenant?.value ?? tenant
+        ),
       },
     });
   };
@@ -707,6 +717,21 @@ export const CippSSOSettings = () => {
               formControl={formControl}
               disabled={!isProvisioned && !showCreate}
             />
+
+            {multiTenant && isProvisioned && (
+              <CippFormComponent
+                type="autoComplete"
+                name="allowedTenants"
+                label="Restrict sign-in to these tenants (Entra tenant IDs)"
+                formControl={formControl}
+                multiple={true}
+                freeSolo={true}
+                creatable={true}
+                options={[]}
+                placeholder="Type a tenant ID and hit enter"
+                helperText="Leave empty to let users from any Entra tenant sign in. When set, only your own tenant and the tenants listed here can sign in. Applied when you save changes."
+              />
+            )}
 
             <CippApiResults apiObject={ssoAction} />
 
