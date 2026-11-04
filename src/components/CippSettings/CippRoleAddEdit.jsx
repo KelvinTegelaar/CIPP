@@ -100,6 +100,7 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
     name: "AllowedRolesTemplate",
   });
   const ipRanges = useWatch({ control: formControl.control, name: "IPRange" });
+  const appRoleTenants = useWatch({ control: formControl.control, name: "AppRoleTenants" });
   const includeRules = useWatch({ control: formControl.control, name: "PermissionRulesInclude" });
   const excludeRules = useWatch({ control: formControl.control, name: "PermissionRulesExclude" });
   const baseRoleTemplate = useWatch({ control: formControl.control, name: "BaseRoleTemplate" });
@@ -1361,6 +1362,16 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
               <ul>
                 {ipRanges.map((ip, idx) => (
                   <li key={`ip-range-${idx}`}>{ip?.value || ip?.label || ip}</li>
+                ))}
+              </ul>
+            </>
+          )}
+          {appRoleTenants?.length > 0 && (
+            <>
+              <h5>App Role Tenants</h5>
+              <ul>
+                {appRoleTenants.map((tenant, idx) => (
+                  <li key={`app-role-tenant-${idx}`}>{tenant?.value || tenant?.label || tenant}</li>
                 ))}
               </ul>
             </>
