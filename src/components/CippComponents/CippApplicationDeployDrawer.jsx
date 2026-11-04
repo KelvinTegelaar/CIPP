@@ -1,6 +1,6 @@
 import React, { useEffect, useCallback, useState } from 'react'
 import { CippIcons } from '../../utils/icon-registry'
-import { Divider, Button, Alert, CircularProgress } from '@mui/material'
+import { Divider, Button, Alert, CircularProgress, InputAdornment } from '@mui/material'
 import { Grid } from '@mui/system'
 import { useForm, useWatch } from 'react-hook-form'
 import { CippOffCanvas } from './CippOffCanvas'
@@ -111,6 +111,39 @@ export const CippApplicationDeployDrawer = ({
       })
     }
   }
+
+  // Search box with the button inside it; Enter triggers the same search.
+  const renderSearchField = (type, results) => (
+    <CippFormComponent
+      type="textField"
+      label="Search Packages"
+      name="searchQuery"
+      formControl={formControl}
+      disableVariables
+      onKeyDown={(e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault()
+          searchApp(formControl.getValues('searchQuery'), type)
+        }
+      }}
+      slotProps={{
+        input: {
+          endAdornment: (
+            <InputAdornment position="end">
+              <Button
+                variant="contained"
+                size="small"
+                onClick={() => searchApp(formControl.getValues('searchQuery'), type)}
+                disabled={results.isPending}
+              >
+                Search
+              </Button>
+            </InputAdornment>
+          ),
+        },
+      }}
+    />
+  )
 
   const handleSubmit = () => {
     const formData = formControl.getValues()
@@ -423,24 +456,7 @@ export const CippApplicationDeployDrawer = ({
             compareType="is"
             compareValue="StoreApp"
           >
-            <Grid size={{ md: 6, xs: 12 }}>
-              <CippFormComponent
-                type="textField"
-                label="Search Packages"
-                name="searchQuery"
-                formControl={formControl}
-              />
-            </Grid>
-            <Grid size={{ xs: 12 }}>
-              <Button
-                onClick={() => {
-                  searchApp(formControl.getValues('searchQuery'), 'StoreApp')
-                }}
-                disabled={winGetSearchResults.isPending}
-              >
-                Search
-              </Button>
-            </Grid>
+            <Grid size={{ xs: 12 }}>{renderSearchField('StoreApp', winGetSearchResults)}</Grid>
 
             <Grid size={{ xs: 12 }}>
               <CippFormComponent
@@ -513,24 +529,7 @@ export const CippApplicationDeployDrawer = ({
             compareType="is"
             compareValue="chocolateyApp"
           >
-            <Grid size={{ md: 6, xs: 12 }}>
-              <CippFormComponent
-                type="textField"
-                label="Search Packages"
-                name="searchQuery"
-                formControl={formControl}
-              />
-            </Grid>
-            <Grid size={{ xs: 12 }}>
-              <Button
-                onClick={() => {
-                  searchApp(formControl.getValues('searchQuery'), 'choco')
-                }}
-                disabled={ChocosearchResults.isPending}
-              >
-                Search
-              </Button>
-            </Grid>
+            <Grid size={{ xs: 12 }}>{renderSearchField('choco', ChocosearchResults)}</Grid>
 
             <Grid size={{ xs: 12 }}>
               <CippFormComponent
