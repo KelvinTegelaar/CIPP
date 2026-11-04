@@ -11,6 +11,11 @@ import Link from 'next/link'
 import { getEnterpriseAppListActions } from '../../../../components/CippComponents/EnterpriseAppActions.jsx'
 import { ApiGetCall } from '../../../../api/ApiCall'
 import { getRowTenant } from '../../../../utils/resolve-row-templates'
+import {
+  useAppSignInActivity,
+  appSignInActivityColumns,
+  appSignInActivityFilters,
+} from '../../../../hooks/use-app-sign-in-activity'
 
 const Page = () => {
   const pageTitle = 'Enterprise Applications'
@@ -40,6 +45,7 @@ const Page = () => {
   }
 
   const actions = getEnterpriseAppListActions(canWriteApplication, isHomeTenantApp)
+  const signInActivity = useAppSignInActivity(tenant)
 
   const offCanvas = {
     extendedInfoFields: [
@@ -66,6 +72,8 @@ const Page = () => {
     'homepage',
     'passwordCredentials',
     'keyCredentials',
+    // Sign-in activity is read per tenant from the CIPP DB, so it is not shown for All Tenants.
+    ...(signInActivity.enabled ? appSignInActivityColumns : []),
   ]
 
   const apiParams = {
@@ -88,6 +96,7 @@ const Page = () => {
       value: [{ id: 'tags', value: 'HideApp' }],
       type: 'column',
     },
+    ...(signInActivity.enabled ? appSignInActivityFilters : []),
   ]
 
   return (
@@ -128,6 +137,7 @@ const Page = () => {
       }
       actions={actions}
       offCanvas={offCanvas}
+      dataTransform={signInActivity.dataTransform}
       rowOpen={{
         link: '/tenant/administration/applications/enterprise-app?spId=[id]&tenantFilter=[Tenant]',
         condition: (row) => Boolean(row?.id),

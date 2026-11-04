@@ -90,6 +90,11 @@ const Page = () => {
         url: `/servicePrincipals?$filter=appId eq '${applicationClientId}'`,
         method: 'GET',
       },
+      {
+        id: 'federated',
+        url: `/applications/${appData.id}/federatedIdentityCredentials`,
+        method: 'GET',
+      },
     ]
 
     bulkFetchedForId.current = applicationClientId
@@ -125,6 +130,11 @@ const Page = () => {
 
   const owners = ownersData?.body?.value ?? []
   const servicePrincipals = servicePrincipalsData?.body?.value ?? []
+  const federatedData = bulkData.find((item) => item.id === 'federated')
+  const federatedCredentials = (federatedData?.body?.value ?? []).map((fic) => ({
+    ...fic,
+    subject: fic.subject ?? (fic.claimsMatchingExpression?.value ? `Matches ${fic.claimsMatchingExpression.value}` : null),
+  }))
 
   // Without an appId nothing is ever fetched, so falling back to the loading label here
   // would leave it stuck forever.
@@ -309,6 +319,63 @@ const Page = () => {
         />
       ),
     },
+    federatedData != null && typeof federatedData.status === 'number' && federatedData.status !== 200
+      ? {
+          id: 3,
+          cardLabelBox: '!',
+          text: 'Error loading federated credentials',
+          subtext: federatedData?.body?.error?.message || 'Unknown error',
+          statusColor: 'error.main',
+          statusText: 'Error',
+          propertyItems: [],
+        }
+      : {
+          id: 3,
+          cardLabelBox:
+            federatedCredentials.length > 0 ? { cardLabelBoxHeader: <CippIcons.Link /> } : '-',
+          text: 'Federated Credentials',
+          subtext:
+            federatedCredentials.length > 0
+              ? 'Tokens from these issuers sign in as the app without a secret'
+              : 'No other identity provider can sign in as this app',
+          statusColor: federatedCredentials.length > 0 ? 'info.main' : 'success.main',
+          statusText: `${federatedCredentials.length} credential(s)`,
+          ...(federatedCredentials.length > 0
+            ? {
+                table: {
+                  title: 'Federated Credentials',
+                  hideTitle: true,
+                  data: federatedCredentials,
+                  refreshFunction: refreshFunction,
+                  simpleColumns: ['name', 'issuer', 'subject', 'audiences', 'description'],
+                  actions: canWriteApplication
+                    ? [
+                        {
+                          icon: <CippIcons.LinkOff />,
+                          label: 'Remove',
+                          type: 'POST',
+                          color: 'danger',
+                          url: '/api/ExecManageAppCredentials',
+                          multiPost: false,
+                          customDataformatter: (row) => ({
+                            tenantFilter: tenantForApi,
+                            Id: data?.id,
+                            AppType: 'applications',
+                            Action: 'Remove',
+                            CredentialType: 'federated',
+                            KeyId: row.id,
+                            DisplayName: row.name,
+                          }),
+                          confirmText:
+                            "Remove the federated credential '[name]'? Tokens from [issuer] for this subject can no longer sign in as the app.",
+                          onSuccess: () => refreshFunction(),
+                        },
+                      ]
+                    : [],
+                },
+              }
+            : { propertyItems: [] }),
+        },
   ]
 
   const enterpriseAppItems =

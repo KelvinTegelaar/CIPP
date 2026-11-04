@@ -150,6 +150,16 @@
     "description": "Last sign-in of every app, delegated or app-only (Entra ID P1)"
   },
   {
+    "type": "AppCredentialSignInActivities",
+    "friendlyName": "App Credential Sign-In Activity",
+    "description": "Last sign-in of every app secret and certificate that signed in (Entra ID P1)"
+  },
+  {
+    "type": "AppFederatedCredentials",
+    "friendlyName": "App Federated Credentials",
+    "description": "Federated identity credentials on app registrations: the issuer and subject whose tokens sign in as the app"
+  },
+  {
     "type": "AppCredentialChanges",
     "friendlyName": "App Credential Changes",
     "description": "Secrets and certificates added to apps in the last 30 days and who added them (Entra ID P1)"

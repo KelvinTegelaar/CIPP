@@ -104,6 +104,7 @@ export const appPermissionExposureCaches = [
   'ServicePrincipalSignInActivities',
   'Apps',
   'AppCredentialChanges',
+  'AppFederatedCredentials',
   'RoleAssignments',
   'RoleDefinitions',
   'ServicePrincipalRoleChanges',
@@ -266,6 +267,7 @@ export const CippAppPermissionExposureDetail = ({ row, embedded = false }) => {
     { label: 'Last sign-in as a resource', value: formatSignInDate(row.LastSignInAsResourceDateTime) },
     { label: 'Credentials on the service principal', value: row.ServicePrincipalCredentialCount },
     { label: 'Credentials on the app registration', value: row.AppRegistrationCredentialCount },
+    { label: 'Federated credentials', value: row.FederatedCredentialCount },
     { label: 'Application permissions', value: row.ApplicationPermissionCount },
     { label: 'Delegated permissions', value: row.DelegatedPermissionCount },
     { label: 'Directory roles', value: row.DirectoryRoleCount },
@@ -369,7 +371,21 @@ export const CippAppPermissionExposureDetail = ({ row, embedded = false }) => {
             noCard={true}
             title="Credentials"
             data={row.CredentialDetails}
-            simpleColumns={['Location', 'Type', 'Purpose', 'Expired', 'DisplayName', 'StartDateTime', 'AddedDateTime', 'AddedBy', 'EndDateTime']}
+            simpleColumns={[
+              'Location',
+              'Type',
+              'Purpose',
+              'Expired',
+              'DisplayName',
+              // Federated credentials have no dates; they say whose tokens they trust instead.
+              ...(row.CredentialDetails.some((c) => c.Type === 'Federated')
+                ? ['Issuer', 'Subject', 'Trust']
+                : []),
+              'StartDateTime',
+              'AddedDateTime',
+              'AddedBy',
+              'EndDateTime',
+            ]}
           />
         </Box>
       )}

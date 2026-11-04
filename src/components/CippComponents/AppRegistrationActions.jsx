@@ -79,7 +79,212 @@ export const ADD_CLIENT_SECRET_FIELDS = [
   },
 ]
 
-export const getAppOwnerAction = (canWriteApplication, type, onOwnersChanged) => ({
+const scenarioIs = (value) => ({ field: 'Scenario', compareType: 'is', compareValue: value })
+
+// Federated credentials let tokens from another identity provider sign in as the app without a
+// secret. The backend builds the issuer and subject from the scenario's fields.
+export const ADD_FEDERATED_CREDENTIAL_FIELDS = [
+  {
+    type: 'radio',
+    name: 'Scenario',
+    label: 'Whose tokens sign in as this app',
+    options: [
+      { label: 'GitHub Actions', value: 'GitHub' },
+      { label: 'Kubernetes service account', value: 'Kubernetes' },
+      { label: 'Managed identity in this tenant', value: 'ManagedIdentity' },
+      { label: 'Other OpenID Connect issuer', value: 'Other' },
+    ],
+    validators: { required: 'Select a scenario' },
+  },
+  {
+    type: 'textField',
+    name: 'Name',
+    label: 'Name',
+    helperText: 'Unique on this app and cannot be changed later.',
+    validators: {
+      required: 'A name is required',
+      maxLength: { value: 120, message: 'At most 120 characters' },
+    },
+  },
+  {
+    type: 'textField',
+    name: 'GitHubOrganization',
+    label: 'GitHub organization or user',
+    condition: scenarioIs('GitHub'),
+    validators: { required: 'The organization is required' },
+  },
+  {
+    type: 'textField',
+    name: 'GitHubRepository',
+    label: 'Repository',
+    condition: scenarioIs('GitHub'),
+    validators: { required: 'The repository is required' },
+  },
+  {
+    type: 'radio',
+    name: 'GitHubEntityType',
+    label: 'Workflows that may sign in',
+    condition: scenarioIs('GitHub'),
+    options: [
+      { label: 'Deployment environment', value: 'Environment' },
+      { label: 'Branch', value: 'Branch' },
+      { label: 'Tag', value: 'Tag' },
+      { label: 'Pull requests', value: 'PullRequest' },
+    ],
+    validators: { required: 'Select which workflows may sign in' },
+  },
+  {
+    type: 'textField',
+    name: 'GitHubEntityValue',
+    label: 'Environment, branch or tag name',
+    helperText: 'Not used for pull requests.',
+    condition: scenarioIs('GitHub'),
+  },
+  {
+    type: 'textField',
+    name: 'KubernetesIssuer',
+    label: 'Cluster issuer URL',
+    helperText: 'The OIDC issuer URL of the cluster, such as the AKS OIDC issuer.',
+    condition: scenarioIs('Kubernetes'),
+    validators: { required: 'The issuer URL is required' },
+  },
+  {
+    type: 'textField',
+    name: 'KubernetesNamespace',
+    label: 'Namespace',
+    condition: scenarioIs('Kubernetes'),
+    validators: { required: 'The namespace is required' },
+  },
+  {
+    type: 'textField',
+    name: 'KubernetesServiceAccount',
+    label: 'Service account',
+    condition: scenarioIs('Kubernetes'),
+    validators: { required: 'The service account is required' },
+  },
+  {
+    type: 'autoComplete',
+    name: 'ManagedIdentity',
+    label: 'Managed identity',
+    multiple: false,
+    creatable: false,
+    condition: scenarioIs('ManagedIdentity'),
+    validators: { required: 'Select a managed identity' },
+    api: {
+      url: '/api/ListGraphRequest',
+      dataKey: 'Results',
+      labelField: (sp) => `${sp.displayName} (${sp.id})`,
+      valueField: 'id',
+      queryKey: 'ManagedIdentities-picker',
+      data: {
+        Endpoint: 'servicePrincipals',
+        $filter: "servicePrincipalType eq 'ManagedIdentity'",
+        $select: 'id,displayName',
+        $count: true,
+        $top: 999,
+      },
+    },
+  },
+  {
+    type: 'textField',
+    name: 'Issuer',
+    label: 'Issuer URL',
+    condition: scenarioIs('Other'),
+    validators: { required: 'The issuer URL is required' },
+  },
+  {
+    type: 'textField',
+    name: 'Subject',
+    label: 'Subject',
+    helperText: 'The exact sub claim of the tokens that may sign in.',
+    condition: scenarioIs('Other'),
+    validators: { required: 'The subject is required' },
+  },
+  {
+    type: 'textField',
+    name: 'Audience',
+    label: 'Audience',
+    helperText: 'Leave empty for api://AzureADTokenExchange, which almost every issuer uses.',
+    condition: scenarioIs('Other'),
+  },
+  {
+    type: 'textField',
+    name: 'Description',
+    label: 'Description (optional)',
+  },
+]
+
+export const getFederatedCredentialActions = (canWriteApplication, onChanged) => [
+  {
+    icon: <CippIcons.Link />,
+    label: 'Add Federated Credential',
+    type: 'POST',
+    color: 'success',
+    multiPost: false,
+    url: '/api/ExecManageAppCredentials',
+    data: {
+      Id: 'id',
+      AppType: '!applications',
+      Action: '!Add',
+      CredentialType: '!federated',
+    },
+    fields: ADD_FEDERATED_CREDENTIAL_FIELDS,
+    defaultvalues: { Scenario: 'GitHub', GitHubEntityType: 'Environment' },
+    relatedQueryKeys: ['AppFederatedCredentials-*'],
+    onSuccess: onChanged,
+    confirmText:
+      "Let tokens from another identity provider sign in as '[displayName]', with no secret or certificate. Only add issuers and subjects you control.",
+    condition: () => canWriteApplication,
+  },
+  {
+    icon: <CippIcons.LinkOff />,
+    label: 'Remove Federated Credentials',
+    type: 'POST',
+    color: 'warning',
+    multiPost: false,
+    url: '/api/ExecManageAppCredentials',
+    children: ({ formHook, row }) => (
+      <CippFormComponent
+        name="FederatedCredentials"
+        formControl={formHook}
+        type="autoComplete"
+        label="Federated credentials to remove"
+        multiple
+        creatable={false}
+        validators={{
+          validate: (value) => value?.length > 0 || 'Select at least one federated credential',
+        }}
+        api={{
+          url: '/api/ListGraphRequest',
+          tenantFilter: row?.Tenant,
+          dataKey: 'Results',
+          labelField: (fic) => `${fic.name} (${fic.issuer} | ${fic.subject ?? 'claims expression'})`,
+          valueField: 'id',
+          queryKey: `AppFederatedCredentials-${row?.id}`,
+          data: { Endpoint: `applications/${row?.id}/federatedIdentityCredentials` },
+        }}
+      />
+    ),
+    // One request per credential, so each gets its own result.
+    customDataformatter: (row, action, formData) =>
+      (formData.FederatedCredentials ?? []).map((fic) => ({
+        tenantFilter: row?.Tenant,
+        Id: row?.id,
+        AppType: 'applications',
+        Action: 'Remove',
+        CredentialType: 'federated',
+        KeyId: fic.value,
+        DisplayName: fic.rawData?.name ?? fic.label,
+      })),
+    relatedQueryKeys: ['AppFederatedCredentials-*'],
+    onSuccess: onChanged,
+    confirmText:
+      "Remove the selected federated credentials from '[displayName]'? Workloads using them can no longer sign in as the app.",
+    condition: () => canWriteApplication,
+  },
+]
+
+export const getAppOwnerAction =(canWriteApplication, type, onOwnersChanged) => ({
   icon: <CippIcons.ManageAccounts />,
   label: 'Manage Owners',
   type: 'POST',
@@ -305,6 +510,7 @@ export const getAppRegistrationPostAndDestructiveActions = (canWriteApplication,
     confirmText: 'Are you sure you want to remove the selected certificate credentials?',
     condition: (row) => canWriteApplication && row?.keyCredentials?.length > 0,
   },
+  ...getFederatedCredentialActions(canWriteApplication, onOwnersChanged),
   getAppOwnerAction(canWriteApplication, 'applications', onOwnersChanged),
   {
     icon: <CippIcons.Delete />,

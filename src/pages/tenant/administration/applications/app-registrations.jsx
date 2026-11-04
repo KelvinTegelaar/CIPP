@@ -5,6 +5,12 @@ import CippPermissionPreview from '../../../../components/CippComponents/CippPer
 import { usePermissions } from '../../../../hooks/use-permissions.js'
 import tabOptions from './tabOptions'
 import { getAppRegistrationListActions } from '../../../../components/CippComponents/AppRegistrationActions.jsx'
+import { useSettings } from '../../../../hooks/use-settings'
+import {
+  useAppSignInActivity,
+  appSignInActivityColumns,
+  appSignInActivityFilters,
+} from '../../../../hooks/use-app-sign-in-activity'
 
 const Page = () => {
   const pageTitle = 'App Registrations'
@@ -14,6 +20,8 @@ const Page = () => {
   const canWriteApplication = checkPermissions(['Tenant.Application.ReadWrite'])
 
   const actions = getAppRegistrationListActions(canWriteApplication)
+  // The app's sign-ins in this tenant, through its enterprise app here.
+  const signInActivity = useAppSignInActivity(useSettings().currentTenant)
 
   const offCanvas = {
     extendedInfoFields: [
@@ -49,6 +57,8 @@ const Page = () => {
     'publisherDomain',
     'passwordCredentials',
     'keyCredentials',
+    // Sign-in activity is read per tenant from the CIPP DB, so it is not shown for All Tenants.
+    ...(signInActivity.enabled ? appSignInActivityColumns : []),
   ]
 
   const apiParams = {
@@ -70,6 +80,8 @@ const Page = () => {
         condition: (row) => Boolean(row?.appId),
       }}
       simpleColumns={simpleColumns}
+      dataTransform={signInActivity.dataTransform}
+      filters={signInActivity.enabled ? appSignInActivityFilters : undefined}
     />
   )
 }
