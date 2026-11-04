@@ -101,6 +101,7 @@ export const CippTranslations = {
   managedDevices: 'Devices',
   status: 'Status',
   displayName: 'Display Name',
+  hidefromGAL: 'Hide from GAL',
   mail: 'Mail',
   mobilePhone: 'Mobile Phone',
   officePhone: 'Office Phone',

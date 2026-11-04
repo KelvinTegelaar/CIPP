@@ -43,7 +43,7 @@ export const CippAddContactDrawer = ({
 
   const addContact = ApiPostCall({
     urlFromData: true,
-    relatedQueryKeys: [`Contacts-${tenantDomain}`],
+    relatedQueryKeys: [`Contacts - ${tenantDomain}`],
   });
 
   // Reset form fields on successful creation
@@ -101,7 +101,7 @@ export const CippAddContactDrawer = ({
     addContact.mutate({
       url: "/api/AddContact",
       data: shippedValues,
-      relatedQueryKeys: [`Contacts-${tenantDomain}`],
+      relatedQueryKeys: [`Contacts - ${tenantDomain}`],
     });
   };
 
@@ -149,9 +149,9 @@ export const CippAddContactDrawer = ({
                 variant="contained"
                 color="primary"
                 onClick={handleSubmit}
-                disabled={addContact.isLoading || !isValid}
+                disabled={addContact.isPending || !isValid}
               >
-                {addContact.isLoading
+                {addContact.isPending
                   ? "Creating..."
                   : addContact.isSuccess
                   ? "Create Another"

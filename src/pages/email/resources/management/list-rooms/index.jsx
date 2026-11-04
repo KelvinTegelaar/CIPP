@@ -2,6 +2,7 @@ import { Layout as DashboardLayout } from "../../../../../layouts/index";
 import { CippIcons } from "../../../../../utils/icon-registry"
 import { CippTablePage } from "../../../../../components/CippComponents/CippTablePage.jsx";
 import { CippAddRoomDrawer } from "../../../../../components/CippComponents/CippAddRoomDrawer";
+import { CippBulkRoomDrawer } from "../../../../../components/CippComponents/CippBulkRoomDrawer";
 
 const Page = () => {
   const pageTitle = "Rooms";
@@ -70,7 +71,12 @@ const Page = () => {
         "countryOrRegion",
         "hiddenFromAddressListsEnabled",
       ]}
-      cardButton={<CippAddRoomDrawer requiredPermissions={cardButtonPermissions} />}
+      cardButton={
+        <>
+          <CippAddRoomDrawer requiredPermissions={cardButtonPermissions} />
+          <CippBulkRoomDrawer requiredPermissions={cardButtonPermissions} />
+        </>
+      }
     />
   );
 };

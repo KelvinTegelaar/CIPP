@@ -2,6 +2,7 @@ import { Layout as DashboardLayout } from '../../../../layouts/index'
 import { CippTablePage } from '../../../../components/CippComponents/CippTablePage.jsx'
 import CippExchangeActions from '../../../../components/CippComponents/CippExchangeActions'
 import { CippSharedMailboxDrawer } from '../../../../components/CippComponents/CippSharedMailboxDrawer.jsx'
+import { CippBulkSharedMailboxDrawer } from '../../../../components/CippComponents/CippBulkSharedMailboxDrawer.jsx'
 import { useCippReportDB } from '../../../../components/CippComponents/CippReportDBControls'
 import {
   CippAnonymizedReportAlert,
@@ -108,6 +109,7 @@ const Page = () => {
             alignItems: "center"
           }}>
             <CippSharedMailboxDrawer />
+            <CippBulkSharedMailboxDrawer />
           </Stack>
         }
         dataSourceControls={reportDB.controls}

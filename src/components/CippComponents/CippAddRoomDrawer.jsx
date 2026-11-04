@@ -32,7 +32,7 @@ export const CippAddRoomDrawer = ({
 
   const addRoom = ApiPostCall({
     urlFromData: true,
-    relatedQueryKeys: [`RoomMailbox-${tenantDomain}`],
+    relatedQueryKeys: [`Rooms - ${tenantDomain}`],
   });
 
   // Reset form fields on successful creation
@@ -70,7 +70,7 @@ export const CippAddRoomDrawer = ({
     addRoom.mutate({
       url: "/api/AddRoomMailbox",
       data: shippedValues,
-      relatedQueryKeys: [`RoomMailbox-${tenantDomain}`],
+      relatedQueryKeys: [`Rooms - ${tenantDomain}`],
     });
   };
 
@@ -106,9 +106,9 @@ export const CippAddRoomDrawer = ({
                 variant="contained"
                 color="primary"
                 onClick={handleSubmit}
-                disabled={addRoom.isLoading || !isValid}
+                disabled={addRoom.isPending || !isValid}
               >
-                {addRoom.isLoading
+                {addRoom.isPending
                   ? "Creating..."
                   : addRoom.isSuccess
                   ? "Create Another"

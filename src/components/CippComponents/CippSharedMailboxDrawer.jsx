@@ -29,7 +29,7 @@ export const CippSharedMailboxDrawer = ({
 
   const createSharedMailbox = ApiPostCall({
     urlFromData: true,
-    relatedQueryKeys: ["Mailboxes"],
+    relatedQueryKeys: [`ListMailboxes-${tenantDomain}-true`, `ListMailboxes-${tenantDomain}-false`],
   });
 
   const handleSubmit = () => {
@@ -43,7 +43,7 @@ export const CippSharedMailboxDrawer = ({
     createSharedMailbox.mutate({
       url: "/api/AddSharedMailbox",
       data: postData,
-      relatedQueryKeys: ["Mailboxes"],
+      relatedQueryKeys: [`ListMailboxes-${tenantDomain}-true`, `ListMailboxes-${tenantDomain}-false`],
     });
   };
 
@@ -90,9 +90,9 @@ export const CippSharedMailboxDrawer = ({
                 variant="contained"
                 color="primary"
                 onClick={handleSubmit}
-                disabled={createSharedMailbox.isLoading}
+                disabled={createSharedMailbox.isPending}
               >
-                {createSharedMailbox.isLoading
+                {createSharedMailbox.isPending
                   ? "Creating Mailbox..."
                   : createSharedMailbox.isSuccess
                   ? "Create Another Mailbox"

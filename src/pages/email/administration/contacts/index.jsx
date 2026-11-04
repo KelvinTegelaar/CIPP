@@ -3,6 +3,7 @@ import { CippIcons } from "../../../../utils/icon-registry"
 import { Layout as DashboardLayout } from "../../../../layouts/index";
 import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
 import { CippAddContactDrawer } from "../../../../components/CippComponents/CippAddContactDrawer";
+import { CippBulkContactDrawer } from "../../../../components/CippComponents/CippBulkContactDrawer";
 import { CippDeployContactTemplateDrawer } from "../../../../components/CippComponents/CippDeployContactTemplateDrawer";
 
 const Page = () => {
@@ -99,6 +100,7 @@ const Page = () => {
       cardButton={
         <>
           <CippAddContactDrawer requiredPermissions={cardButtonPermissions} />
+          <CippBulkContactDrawer requiredPermissions={cardButtonPermissions} />
           <CippDeployContactTemplateDrawer requiredPermissions={cardButtonPermissions} />
         </>
       }

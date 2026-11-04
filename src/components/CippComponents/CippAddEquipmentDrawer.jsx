@@ -31,7 +31,7 @@ export const CippAddEquipmentDrawer = ({
 
   const addEquipment = ApiPostCall({
     urlFromData: true,
-    relatedQueryKeys: [`EquipmentMailbox-${tenantDomain}`],
+    relatedQueryKeys: [`Equipment - ${tenantDomain}`],
   });
 
   // Reset form fields on successful creation
@@ -60,7 +60,7 @@ export const CippAddEquipmentDrawer = ({
     addEquipment.mutate({
       url: "/api/AddEquipmentMailbox",
       data: shippedValues,
-      relatedQueryKeys: [`EquipmentMailbox-${tenantDomain}`],
+      relatedQueryKeys: [`Equipment - ${tenantDomain}`],
     });
   };
 
@@ -98,9 +98,9 @@ export const CippAddEquipmentDrawer = ({
                 variant="contained"
                 color="primary"
                 onClick={handleSubmit}
-                disabled={addEquipment.isLoading || !isValid}
+                disabled={addEquipment.isPending || !isValid}
               >
-                {addEquipment.isLoading
+                {addEquipment.isPending
                   ? "Creating..."
                   : addEquipment.isSuccess
                   ? "Create Another"
