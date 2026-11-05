@@ -16,6 +16,8 @@ const NO_DOCS_YET = new Set([
   '/identity/reports/group-usage',
   '/email/reports/mail-flow-statistics',
   '/email/administration/app-mailbox-access/roles',
+  '/endpoint/MEM/non-compliant-devices',
+  '/endpoint/MEM/policy-failures',
 ])
 
 // Same resolution getHelpLinks uses: a nav item's docsPath overrides the pathname-derived
