@@ -76,6 +76,18 @@ describe('getIntuneDeviceActions wipe/reset consolidation', () => {
     expect(freshStart.hideCondition(windowsRow)).toBe(false)
   })
 
+  it('offers Remove Primary User right after Change Primary User, only on rows that have one', () => {
+    const actions = getActions()
+    const changeIndex = actions.findIndex((action) => action.label === 'Change Primary User')
+    const removeAction = actions[changeIndex + 1]
+    expect(removeAction.label).toBe('Remove Primary User')
+    expect(removeAction.url).toBe('/api/ExecDeviceAction')
+    expect(removeAction.data).toEqual({ GUID: 'id', Action: '!removePrimaryUser' })
+    expect(removeAction.hideCondition(windowsRow)).toBe(true)
+    expect(removeAction.hideCondition({ ...windowsRow, userPrincipalName: '' })).toBe(true)
+    expect(removeAction.hideCondition({ ...windowsRow, userPrincipalName: 'user@contoso.com' })).toBe(false)
+  })
+
   it('no action in the file uses a pure-OS condition any more', () => {
     const actions = getActions()
     const pureOsConditionActions = actions.filter((action) => typeof action.condition === 'function')
