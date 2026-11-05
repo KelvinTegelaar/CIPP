@@ -1,5 +1,6 @@
 
 import { CippIcons } from '../../utils/icon-registry'
+import { CippIntuneSyncDrawer } from './CippIntuneSyncDrawer'
 
 // Shared between the MEM devices list page and the View Device detail page.
 // Link-type actions (View Device / View in Intune) render on the list page but are
@@ -149,14 +150,15 @@ export const getIntuneDeviceActions = ({ tenantFilter } = {}) => [
   },
   {
     label: 'Sync Device',
-    type: 'POST',
     icon: <CippIcons.Sync />,
-    url: '/api/ExecDeviceAction',
-    data: {
-      GUID: 'id',
-      Action: 'syncDevice',
-    },
-    confirmText: 'Are you sure you want to sync [deviceName]?',
+    multiPost: false,
+    customComponent: (row, { drawerVisible, setDrawerVisible }) => (
+      <CippIntuneSyncDrawer
+        row={row}
+        visible={drawerVisible}
+        onClose={() => setDrawerVisible(false)}
+      />
+    ),
   },
   {
     label: 'Reboot Device',
