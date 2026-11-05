@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { CippIcons } from "../../utils/icon-registry";
 import {
   Avatar,
@@ -49,6 +49,20 @@ export const CippMobileTenantPicker = () => {
     () => (tenantList.isSuccess && Array.isArray(tenantList.data) ? tenantList.data : []),
     [tenantList.isSuccess, tenantList.data]
   );
+
+  // The desktop selector applies the URL's tenant to settings and is not mounted on mobile, so
+  // without this a deep link leaves the layout waiting for a tenant that never arrives.
+  useEffect(() => {
+    const urlTenant = router.query.tenantFilter;
+    if (!router.isReady || !urlTenant || !tenantList.isSuccess) return;
+    const match =
+      tenants.find((t) => t.defaultDomainName === urlTenant) ||
+      tenants.find((t) => t.customerId === urlTenant) ||
+      tenants.find((t) => t.initialDomainName === urlTenant);
+    if (match && settings.currentTenant !== match.defaultDomainName) {
+      settings.handleUpdate({ currentTenant: match.defaultDomainName });
+    }
+  }, [router.isReady, router.query.tenantFilter, tenantList.isSuccess, tenants, settings]);
 
   const currentDisplayName = useMemo(() => {
     if (currentTenant === "AllTenants") return "All Tenants";
