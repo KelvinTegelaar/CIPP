@@ -420,6 +420,9 @@ const Page = () => {
                 {
                   type: 'autoComplete',
                   name: 'resolutionType',
+                  multiple: false,
+                  creatable: false,
+                  validators: { required: 'Please select a resolution type' },
                   options: [
                     {
                       value: 'ThirdParty',
@@ -440,6 +443,7 @@ const Page = () => {
                   type: 'textField',
                   name: 'reason',
                   label: 'Reason for change (Mandatory)',
+                  validators: { required: 'Please enter a reason for the change' },
                 },
               ]}
               api={{
