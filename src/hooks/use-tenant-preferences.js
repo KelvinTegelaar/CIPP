@@ -9,11 +9,13 @@ import {
   TENANT_RECENT_STORAGE_KEY,
   toggleFavoriteTenant,
 } from "../utils/tenant-preferences";
+import { useSettings } from "./use-settings";
 
 /**
  * Browser-local recent + favorite tenants (localStorage).
  */
 export function useTenantPreferences() {
+  const { showRecentTenants } = useSettings();
   const [recent, setRecent] = useState([]);
   const [favorites, setFavorites] = useState([]);
 
@@ -60,7 +62,7 @@ export function useTenantPreferences() {
   const isFavorite = useCallback((value) => isFavoriteTenant(value) || favorites.some((item) => item.value === value), [favorites]);
 
   return {
-    recent,
+    recent: showRecentTenants === false ? [] : recent,
     favorites,
     trackRecent,
     toggleFavorite,

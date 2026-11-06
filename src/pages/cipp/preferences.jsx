@@ -494,6 +494,16 @@ const Page = () => {
                             />
                           ),
                         },
+                        {
+                          label: "Show Recent Tenants in Tenant Selector",
+                          value: (
+                            <CippFormComponent
+                              type="switch"
+                              name="showRecentTenants"
+                              formControl={formcontrol}
+                            />
+                          ),
+                        },
                       ]}
                     />
                     <CippOffboardingDefaultSettings

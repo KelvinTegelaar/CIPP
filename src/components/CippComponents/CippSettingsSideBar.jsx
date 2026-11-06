@@ -72,6 +72,7 @@ export const CippSettingsSideBar = (props) => {
       bookmarkPopover: formValues.bookmarkPopover,
       bookmarkReorderMode: formValues.bookmarkReorderMode,
       compactNav: formValues.compactNav,
+      showRecentTenants: formValues.showRecentTenants,
 
       // Portal Links Configuration
       portalLinks: {
