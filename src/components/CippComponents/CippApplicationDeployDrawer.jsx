@@ -14,6 +14,7 @@ import {
 import { CippFormCondition } from './CippFormCondition'
 import { CippApiResults } from './CippApiResults'
 import languageList from '../../data/languageList.json'
+import edgeLanguageList from '../../data/edgeLanguageList.json'
 import { ApiPostCall } from '../../api/ApiCall'
 
 export const CippApplicationDeployDrawer = ({
@@ -778,7 +779,7 @@ export const CippApplicationDeployDrawer = ({
                 type="autoComplete"
                 label="Display Language (optional)"
                 name="displayLanguageLocale"
-                options={languageList.map(({ language, tag }) => ({
+                options={edgeLanguageList.map(({ language, tag }) => ({
                   value: tag,
                   label: `${language} (${tag})`,
                 }))}

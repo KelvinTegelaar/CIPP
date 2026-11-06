@@ -1,0 +1,186 @@
+[
+  {
+    "language": "Arabic",
+    "tag": "ar"
+  },
+  {
+    "language": "Bulgarian",
+    "tag": "bg"
+  },
+  {
+    "language": "Chinese (Simplified)",
+    "tag": "zh-CN"
+  },
+  {
+    "language": "Chinese (Traditional)",
+    "tag": "zh-TW"
+  },
+  {
+    "language": "Croatian",
+    "tag": "hr"
+  },
+  {
+    "language": "Czech",
+    "tag": "cs"
+  },
+  {
+    "language": "Danish",
+    "tag": "da"
+  },
+  {
+    "language": "Dutch",
+    "tag": "nl"
+  },
+  {
+    "language": "English",
+    "tag": "en"
+  },
+  {
+    "language": "English (United Kingdom)",
+    "tag": "en-GB"
+  },
+  {
+    "language": "Estonian",
+    "tag": "et"
+  },
+  {
+    "language": "Finnish",
+    "tag": "fi"
+  },
+  {
+    "language": "French",
+    "tag": "fr"
+  },
+  {
+    "language": "French (Canada)",
+    "tag": "fr-CA"
+  },
+  {
+    "language": "German",
+    "tag": "de"
+  },
+  {
+    "language": "Greek",
+    "tag": "el"
+  },
+  {
+    "language": "Hebrew",
+    "tag": "he"
+  },
+  {
+    "language": "Hindi",
+    "tag": "hi"
+  },
+  {
+    "language": "Hungarian",
+    "tag": "hu"
+  },
+  {
+    "language": "Indonesian",
+    "tag": "id"
+  },
+  {
+    "language": "Italian",
+    "tag": "it"
+  },
+  {
+    "language": "Japanese",
+    "tag": "ja"
+  },
+  {
+    "language": "Kazakh",
+    "tag": "kk"
+  },
+  {
+    "language": "Korean",
+    "tag": "ko"
+  },
+  {
+    "language": "Latvian",
+    "tag": "lv"
+  },
+  {
+    "language": "Lithuanian",
+    "tag": "lt"
+  },
+  {
+    "language": "Malay",
+    "tag": "ms"
+  },
+  {
+    "language": "Norwegian Bokmål",
+    "tag": "nb"
+  },
+  {
+    "language": "Persian",
+    "tag": "fa"
+  },
+  {
+    "language": "Polish",
+    "tag": "pl"
+  },
+  {
+    "language": "Portuguese (Brazil)",
+    "tag": "pt-BR"
+  },
+  {
+    "language": "Portuguese (Portugal)",
+    "tag": "pt-PT"
+  },
+  {
+    "language": "Romanian",
+    "tag": "ro"
+  },
+  {
+    "language": "Russian",
+    "tag": "ru"
+  },
+  {
+    "language": "Serbian (Latin)",
+    "tag": "sr-Latn-RS"
+  },
+  {
+    "language": "Slovak",
+    "tag": "sk"
+  },
+  {
+    "language": "Slovenian",
+    "tag": "sl"
+  },
+  {
+    "language": "Spanish",
+    "tag": "es"
+  },
+  {
+    "language": "Spanish (Mexico)",
+    "tag": "es-MX"
+  },
+  {
+    "language": "Swedish",
+    "tag": "sv"
+  },
+  {
+    "language": "Thai",
+    "tag": "th"
+  },
+  {
+    "language": "Turkish",
+    "tag": "tr"
+  },
+  {
+    "language": "Ukrainian",
+    "tag": "uk"
+  },
+  {
+    "language": "Urdu",
+    "tag": "ur"
+  },
+  {
+    "language": "Vietnamese",
+    "tag": "vi"
+  },
+  {
+    "language": "Welsh",
+    "tag": "cy"
+  }
+]

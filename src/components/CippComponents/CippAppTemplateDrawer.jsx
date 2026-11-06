@@ -21,6 +21,7 @@ import { CippFormCondition } from './CippFormCondition'
 import { CippApiResults } from './CippApiResults'
 import { ApiGetCall, ApiPostCall } from '../../api/ApiCall'
 import languageList from '../../data/languageList.json'
+import edgeLanguageList from '../../data/edgeLanguageList.json'
 
 const appTypeLabels = {
   mspApp: 'MSP Vendor App',
@@ -908,7 +909,7 @@ export const CippAppTemplateDrawer = ({
                 type="autoComplete"
                 label="Display Language (optional)"
                 name="displayLanguageLocale"
-                options={languageList.map(({ language, tag }) => ({
+                options={edgeLanguageList.map(({ language, tag }) => ({
                   value: tag,
                   label: `${language} (${tag})`,
                 }))}
