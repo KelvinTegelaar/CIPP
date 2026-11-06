@@ -3,7 +3,7 @@ import { Button } from '@mui/material'
 import { CippIcons } from '../../../../../utils/icon-registry'
 import { Layout as DashboardLayout } from '../../../../../layouts/index'
 import { CippTablePage } from '../../../../../components/CippComponents/CippTablePage'
-import { HeaderedTabbedLayout } from '../../../../../layouts/HeaderedTabbedLayout'
+import { TabbedLayout } from '../../../../../layouts/TabbedLayout'
 import { CippApiDialog } from '../../../../../components/CippComponents/CippApiDialog'
 import { useSettings } from '../../../../../hooks/use-settings'
 import { useDialog } from '../../../../../hooks/use-dialog'
@@ -11,7 +11,6 @@ import { usePermissions } from '../../../../../hooks/use-permissions.js'
 import tabOptions from '../tabOptions'
 
 const Page = () => {
-  const pageTitle = 'App Mailbox Access'
   const tenant = useSettings().currentTenant
   const { checkPermissions } = usePermissions()
   const canWrite = checkPermissions(['Tenant.Application.ReadWrite'])
@@ -64,7 +63,7 @@ const Page = () => {
   ) : null
 
   return (
-    <HeaderedTabbedLayout tabOptions={tabOptions} title={pageTitle}>
+    <>
       <CippTablePage
         title="Management Scopes"
         apiUrl="/api/ListExoAppMailboxAccess"
@@ -74,7 +73,6 @@ const Page = () => {
         actions={actions}
         simpleColumns={simpleColumns}
         cardButton={cardButton}
-        hideTitle={true}
       />
       {canWrite && (
         <CippApiDialog
@@ -111,10 +109,14 @@ const Page = () => {
           }}
         />
       )}
-    </HeaderedTabbedLayout>
+    </>
   )
 }
 
-Page.getLayout = (page) => <DashboardLayout allTenantsSupport={false}>{page}</DashboardLayout>
+Page.getLayout = (page) => (
+  <DashboardLayout allTenantsSupport={false}>
+    <TabbedLayout tabOptions={tabOptions}>{page}</TabbedLayout>
+  </DashboardLayout>
+)
 
 export default Page

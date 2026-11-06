@@ -3,14 +3,13 @@ import { Alert } from '@mui/material'
 import { CippIcons } from '../../../../../utils/icon-registry'
 import { Layout as DashboardLayout } from '../../../../../layouts/index'
 import { CippTablePage } from '../../../../../components/CippComponents/CippTablePage'
-import { HeaderedTabbedLayout } from '../../../../../layouts/HeaderedTabbedLayout'
+import { TabbedLayout } from '../../../../../layouts/TabbedLayout'
 import { useSettings } from '../../../../../hooks/use-settings'
 import { usePermissions } from '../../../../../hooks/use-permissions.js'
 import { exchangeAccessQueryKeys } from '../../../../../components/CippComponents/CippEnterpriseAppExchangeRbac'
 import tabOptions from '../tabOptions'
 
 const Page = () => {
-  const pageTitle = 'App Mailbox Access'
   const tenant = useSettings().currentTenant
   const { checkPermissions } = usePermissions()
   const canWrite = checkPermissions(['Tenant.Application.ReadWrite'])
@@ -55,28 +54,31 @@ const Page = () => {
   )
 
   return (
-    <HeaderedTabbedLayout tabOptions={tabOptions} title={pageTitle}>
-      <Alert severity="info" sx={{ mb: 2 }}>
-        Application access policies limit which mailboxes the mailbox permissions an app holds in
-        Entra reach. RestrictAccess allows only the group's members; DenyAccess every mailbox but
-        theirs. They do not limit Exchange application roles. Microsoft is replacing them with
-        application roles scoped to a management scope or administrative unit, so new ones are not
-        created here.
-      </Alert>
-      <CippTablePage
-        title="Application Access Policies"
-        apiUrl="/api/ListExoAppMailboxAccess"
-        apiData={{ Type: 'Policies' }}
-        apiDataKey="Results"
-        queryKey={queryKey}
-        actions={actions}
-        simpleColumns={simpleColumns}
-        hideTitle={true}
-      />
-    </HeaderedTabbedLayout>
+    <CippTablePage
+      title="Application Access Policies"
+      apiUrl="/api/ListExoAppMailboxAccess"
+      apiData={{ Type: 'Policies' }}
+      apiDataKey="Results"
+      queryKey={queryKey}
+      actions={actions}
+      simpleColumns={simpleColumns}
+      tableFilter={
+        <Alert severity="info">
+          Application access policies limit which mailboxes the mailbox permissions an app holds in
+          Entra reach. RestrictAccess allows only the group's members; DenyAccess every mailbox but
+          theirs. They do not limit Exchange application roles. Microsoft is replacing them with
+          application roles scoped to a management scope or administrative unit, so new ones are not
+          created here.
+        </Alert>
+      }
+    />
   )
 }
 
-Page.getLayout = (page) => <DashboardLayout allTenantsSupport={false}>{page}</DashboardLayout>
+Page.getLayout = (page) => (
+  <DashboardLayout allTenantsSupport={false}>
+    <TabbedLayout tabOptions={tabOptions}>{page}</TabbedLayout>
+  </DashboardLayout>
+)
 
 export default Page
