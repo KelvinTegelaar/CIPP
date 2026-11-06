@@ -84,6 +84,15 @@ const CippSchedulerForm = (props) => {
   const handleSubmit = () => {
     const values = formControl.getValues()
 
+    // In advanced mode the JSON is the parameters; the hidden standard fields hold stale nulls
+    if (values.advancedParameters && values.RawJsonParameters) {
+      try {
+        values.parameters = JSON.parse(values.RawJsonParameters)
+      } catch {
+        return
+      }
+    }
+
     // Extract values from string array parameters
     if (values.parameters && selectedCommand?.addedFields?.Parameters) {
       selectedCommand.addedFields.Parameters.forEach((param) => {

@@ -6251,8 +6251,7 @@
   {
     "name": "standards.TeamsExternalChatWithAnyone",
     "cat": "Teams Standards",
-    "tag": ["CIS M365 7.0.0 (8.2.3)"],
-    "appliesToTest": ["CIS_8_2_3"],
+    "tag": [],
     "helpText": "Controls whether users can start Teams chats with any email address, inviting external recipients as guests via email.",
     "docsDescription": "Manages the Teams messaging policy setting UseB2BInvitesToAddExternalUsers. When enabled, users can start chats with any email address and recipients receive an invitation to join the chat as guests. Disabling the setting prevents these external email chats from being created, keeping conversations limited to internal users and approved guests.",
     "executiveText": "Allows organizations to decide if employees can launch Microsoft Teams chats with anyone on the internet using just an email address. Disabling the feature keeps conversations inside trusted boundaries and helps prevent accidental data exposure through unexpected external invitations.",
@@ -6426,8 +6425,8 @@
   {
     "name": "standards.TeamsExternalAccessPolicy",
     "cat": "Teams Standards",
-    "tag": ["CIS M365 7.0.0 (8.2.1)", "CIS M365 7.0.0 (8.2.2)"],
-    "appliesToTest": ["CIS_8_2_1", "CIS_8_2_2"],
+    "tag": ["CIS M365 7.0.0 (8.2.1)", "CIS M365 7.0.0 (8.2.2)", "CIS M365 7.0.0 (8.2.3)"],
+    "appliesToTest": ["CIS_8_2_1", "CIS_8_2_2", "CIS_8_2_3"],
     "helpText": "Sets the properties of the Global external access policy.",
     "docsDescription": "Sets the properties of the Global external access policy. External access policies determine whether or not your users can: 1) communicate with users who have Session Initiation Protocol (SIP) accounts with a federated organization; 2) communicate with users who are using custom applications built with Azure Communication Services; 3) access Skype for Business Server over the Internet, without having to log on to your internal network; 4) communicate with users who have SIP accounts with a public instant messaging (IM) provider such as Skype; and, 5) communicate with people who are using Teams with an account that's not managed by an organization.",
     "executiveText": "Defines the organization's policy for communicating with external users through Teams, including other organizations, Skype users, and unmanaged accounts. This fundamental setting determines the scope of external collaboration while maintaining security boundaries for business communications.",
