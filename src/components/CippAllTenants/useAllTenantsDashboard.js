@@ -106,23 +106,6 @@ const SCALE_TYPES = [
   { type: 'ManagedDevices', label: 'Managed devices' },
 ]
 
-// Collections the nightly orchestrator deliberately never runs. Start-CIPPDBCacheOrchestrator only
-// executes the license groups in Invoke-CIPPDBCacheCollection plus the standalone Mailboxes and
-// MFAState tasks; these enumerate every site, library and drive in the estate, so they are populated
-// on demand instead (their own report pages, or Settings > Tenants > Refresh CIPPDB Cache).
-//
-// Their count rows therefore age forever by design. Freshness is the OLDEST collection a tenant has,
-// so leaving them in meant one ad-hoc run months ago pinned an otherwise healthy tenant to "stale"
-// permanently — on estates that had ever run them, it was all this card reported.
-const ADHOC_CACHE_TYPES = new Set([
-  'SharePointSharingLinks',
-  'SharePointPermissions',
-  'OneDriveRootPermissions',
-])
-
-// Collections that are no longer cached. Their old rows stay in the table and never refresh.
-const RETIRED_CACHE_TYPES = new Set(['CredentialUserRegistrationDetails', 'DeviceSettings'])
-
 // The nightly orchestrator runs at 03:00, so a tenant that collected yesterday is still healthy;
 // past 48 hours it has missed two runs, and past 72 it has missed three.
 const STALE_HOURS = 48
@@ -140,21 +123,14 @@ export const deriveCacheSummary = (rows, tenants) => {
   const tenantCount = tenants.length
   const totals = new Map()
   const collectionsByTenant = new Map()
-  // Domains whose only rows are ad-hoc collections. They have nothing scheduled to judge, so they
-  // read as never cached — but saying that flatly would be wrong when a manual sync plainly ran.
-  const adhocOnly = new Set()
 
   rows.forEach((row) => {
     const type = row?.Type
-    if (RETIRED_CACHE_TYPES.has(type)) return
     const count = Number(row?.Count ?? 0)
     // Scale totals still count every collection — only the age judgement is scoped.
     if (type) totals.set(type, (totals.get(type) ?? 0) + count)
-    if (!row?.Tenant) return
-    if (ADHOC_CACHE_TYPES.has(type)) {
-      adhocOnly.add(row.Tenant)
-      return
-    }
+    // On-demand, baseline-only and retired types never refresh nightly, so their age means nothing.
+    if (!row?.Tenant || row.Scheduled === false) return
 
     const ageHours = hoursSince(row?.LastRefresh)
     if (ageHours === null) return
@@ -163,9 +139,8 @@ export const deriveCacheSummary = (rows, tenants) => {
     collectionsByTenant.set(row.Tenant, collections)
   })
 
-  collectionsByTenant.forEach((collections, domain) => {
+  collectionsByTenant.forEach((collections) => {
     collections.sort((a, b) => b.ageHours - a.ageHours)
-    adhocOnly.delete(domain)
   })
 
   const scale = SCALE_TYPES.map(({ type, label }) => ({
@@ -192,9 +167,7 @@ export const deriveCacheSummary = (rows, tenants) => {
       staleTenants.push({
         name,
         domain,
-        detail: adhocOnly.has(domain)
-          ? 'Only on-demand collections cached'
-          : 'No cached collections found',
+        detail: 'No cached collections found',
         severity: 'critical',
         ageHours: null,
         collections: [],
