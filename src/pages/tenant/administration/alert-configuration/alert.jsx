@@ -1547,6 +1547,6 @@ const AlertWizard = () => {
   )
 }
 
-AlertWizard.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>
+AlertWizard.getLayout = (page) => <DashboardLayout usesTenant={false}>{page}</DashboardLayout>
 
 export default AlertWizard

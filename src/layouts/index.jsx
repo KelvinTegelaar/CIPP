@@ -4,6 +4,7 @@ import { Divider, Stack } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import { useIsMobileLayout } from '../hooks/use-breakpoint'
 import { useSettings } from '../hooks/use-settings'
+import { SettingsContext } from '../contexts/settings-context'
 import { Footer } from './footer'
 import { MobileNav } from './mobile-nav'
 import { SideNav } from './side-nav'
@@ -100,6 +101,8 @@ export const Layout = (props) => {
     children,
     allTenantsSupport = true,
     tenantGroupSupport = false,
+    // false on pages that never use the selected tenant (settings, templates)
+    usesTenant = true,
     showBreadcrumb = true,
   } = props
   // one gate for the swap: drawer, the hamburger that opens it (top-nav), the gutter below
@@ -110,6 +113,14 @@ export const Layout = (props) => {
   const [menuItems, setMenuItems] = useState(nativeMenuItems)
   const lastUserSettingsUpdate = useRef(null)
   const currentTenant = settings?.currentTenant
+  // A page that doesn't use the tenant runs as it does with All Tenants while a group is selected
+  const pageSettings = useMemo(
+    () =>
+      !usesTenant && isTenantGroup(currentTenant)
+        ? { ...settings, currentTenant: 'AllTenants' }
+        : null,
+    [usesTenant, currentTenant, settings]
+  )
   const urlTenant = useSearchParams()?.get('tenantFilter')
   // Same query as the tenant selector, so this reads its cache rather than fetching again.
   const tenantList = ApiGetCall({
@@ -374,7 +385,8 @@ export const Layout = (props) => {
                 imageUrl="/cippy-404.png"
               />
             </Stack>
-          ) : (!!urlGroup || (!urlTenant && isTenantGroup(currentTenant))) &&
+          ) : usesTenant &&
+            (!!urlGroup || (!urlTenant && isTenantGroup(currentTenant))) &&
             !tenantGroupSupport ? (
             <Stack>
               {showBreadcrumb && <CippBreadcrumbNav withRail />}
@@ -411,7 +423,11 @@ export const Layout = (props) => {
               {/* The nav carries its own rail chrome (gutter + divider) so that when it
                   renders nothing — a single crumb on a phone — no hairline is left behind. */}
               {showBreadcrumb && <CippBreadcrumbNav withRail />}
-              {children}
+              {pageSettings ? (
+                <SettingsContext.Provider value={pageSettings}>{children}</SettingsContext.Provider>
+              ) : (
+                children
+              )}
             </Stack>
           )}
           <Footer />

@@ -244,7 +244,7 @@ const Page = () => {
 };
 
 Page.getLayout = (page) => (
-  <DashboardLayout>
+  <DashboardLayout usesTenant={false}>
     <TabbedLayout tabOptions={tabOptions} activePath="/tenant/gdap-management/role-templates">
       {page}
     </TabbedLayout>

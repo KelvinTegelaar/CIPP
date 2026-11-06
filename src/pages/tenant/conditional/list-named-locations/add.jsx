@@ -133,6 +133,6 @@ const DeployNamedLocationForm = () => {
   );
 };
 
-DeployNamedLocationForm.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+DeployNamedLocationForm.getLayout = (page) => <DashboardLayout usesTenant={false}>{page}</DashboardLayout>;
 
 export default DeployNamedLocationForm;

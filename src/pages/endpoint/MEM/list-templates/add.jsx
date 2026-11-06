@@ -257,7 +257,7 @@ const AddIntuneTemplate = () => {
 }
 
 AddIntuneTemplate.getLayout = (page) => (
-  <DashboardLayout>{page}</DashboardLayout>
+  <DashboardLayout usesTenant={false}>{page}</DashboardLayout>
 )
 
 export default AddIntuneTemplate

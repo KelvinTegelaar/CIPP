@@ -690,6 +690,6 @@ const EditGroup = () => {
   );
 }
 
-EditGroup.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>
+EditGroup.getLayout = (page) => <DashboardLayout usesTenant={false}>{page}</DashboardLayout>
 
 export default EditGroup

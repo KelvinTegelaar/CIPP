@@ -178,6 +178,6 @@ const EditCATemplate = () => {
   );
 };
 
-EditCATemplate.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+EditCATemplate.getLayout = (page) => <DashboardLayout usesTenant={false}>{page}</DashboardLayout>;
 
 export default EditCATemplate;

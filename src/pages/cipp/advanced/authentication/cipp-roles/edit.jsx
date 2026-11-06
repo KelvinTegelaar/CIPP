@@ -32,6 +32,6 @@ const EditRolePage = () => {
   );
 };
 
-EditRolePage.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+EditRolePage.getLayout = (page) => <DashboardLayout usesTenant={false}>{page}</DashboardLayout>;
 
 export default EditRolePage;

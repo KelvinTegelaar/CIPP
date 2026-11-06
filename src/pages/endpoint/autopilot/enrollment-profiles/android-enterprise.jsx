@@ -6,7 +6,7 @@ import tabOptions from './tabOptions.json'
 const Page = () => <AndroidEnterpriseEnrollmentProfiles />
 
 Page.getLayout = (page) => (
-  <DashboardLayout>
+  <DashboardLayout usesTenant={false}>
     <TabbedLayout tabOptions={tabOptions}>{page}</TabbedLayout>
   </DashboardLayout>
 )

@@ -150,6 +150,6 @@ const EditContactTemplate = () => {
   );
 };
 
-EditContactTemplate.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+EditContactTemplate.getLayout = (page) => <DashboardLayout usesTenant={false}>{page}</DashboardLayout>;
 
 export default EditContactTemplate;

@@ -346,6 +346,6 @@ const TemplateLibrary = () => {
   );
 };
 
-TemplateLibrary.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+TemplateLibrary.getLayout = (page) => <DashboardLayout usesTenant={false}>{page}</DashboardLayout>;
 
 export default TemplateLibrary;

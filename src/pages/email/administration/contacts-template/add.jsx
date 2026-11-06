@@ -63,6 +63,6 @@ const AddContactTemplates = () => {
   );
 };
 
-AddContactTemplates.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+AddContactTemplates.getLayout = (page) => <DashboardLayout usesTenant={false}>{page}</DashboardLayout>;
 
 export default AddContactTemplates;

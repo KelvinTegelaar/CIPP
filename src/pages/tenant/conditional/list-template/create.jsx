@@ -34,6 +34,6 @@ const CreateCATemplate = () => {
   );
 };
 
-CreateCATemplate.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+CreateCATemplate.getLayout = (page) => <DashboardLayout usesTenant={false}>{page}</DashboardLayout>;
 
 export default CreateCATemplate;

@@ -137,6 +137,6 @@ const EditReusableSetting = () => {
   );
 };
 
-EditReusableSetting.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+EditReusableSetting.getLayout = (page) => <DashboardLayout usesTenant={false}>{page}</DashboardLayout>;
 
 export default EditReusableSetting;
