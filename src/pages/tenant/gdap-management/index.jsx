@@ -47,7 +47,7 @@ const Page = () => {
 
   const createCippDefaults = ApiPostCall({
     urlFromData: true,
-    relatedQueryKeys: ['ListGDAPRoleTemplates', 'ListGDAPRoles'],
+    relatedQueryKeys: ['ListGDAPRoleTemplates*', 'ListGDAPRoles'],
   })
 
   useEffect(() => {

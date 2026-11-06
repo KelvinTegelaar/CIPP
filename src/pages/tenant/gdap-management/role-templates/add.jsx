@@ -16,7 +16,7 @@ const Page = () => {
   return (
     <>
       <CippFormPage
-        queryKey={["ListGDAPRoleTemplates", "ListGDAPRoles"]}
+        queryKey={["ListGDAPRoleTemplates*", "ListGDAPRoles"]}
         formControl={formControl}
         title="GDAP Role Template"
         backButtonTitle="Role Templates"

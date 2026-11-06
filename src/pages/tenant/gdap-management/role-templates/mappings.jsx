@@ -15,7 +15,7 @@ import { buildGdapRepairPlan } from "../../../../utils/gdap-role-options";
 
 const pageTitle = "GDAP Group Mappings";
 
-const repairQueryKeys = ["ListGDAPRoles", "ListGDAPRolesValidated", "ListGDAPRoleTemplates"];
+const repairQueryKeys = ["ListGDAPRoles", "ListGDAPRolesValidated", "ListGDAPRoleTemplates*"];
 
 const actions = [
   {

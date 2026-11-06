@@ -56,7 +56,7 @@ export const CippGdapActions = () => [
         type: "select",
         api: {
           url: "/api/ExecGDAPRoleTemplate",
-          queryKey: "GDAPRoleTemplate",
+          queryKey: "ListGDAPRoleTemplates-reset",
           dataKey: "Results",
           valueField: "TemplateId",
           labelField: "TemplateId",

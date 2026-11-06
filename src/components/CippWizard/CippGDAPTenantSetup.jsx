@@ -39,7 +39,7 @@ export const CippGDAPTenantSetup = (props) => {
 
   const createCippDefaults = ApiPostCall({
     urlFromData: true,
-    relatedQueryKeys: ["ListGDAPRoleTemplatesAutocomplete-wizard", "ListGDAPRoleTemplates-wizard"],
+    relatedQueryKeys: ["ListGDAPRoleTemplates*"],
   });
 
   const selectedTemplate = useWatch({

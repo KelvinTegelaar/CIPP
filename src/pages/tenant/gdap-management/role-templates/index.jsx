@@ -39,7 +39,7 @@ const actions = [
         },
       },
     ],
-    relatedQueryKeys: ["ListGDAPRoleTemplates"],
+    relatedQueryKeys: ["ListGDAPRoleTemplates*"],
   },
   {
     label: "Create Invite",
@@ -53,6 +53,7 @@ const actions = [
     icon: <CippIcons.Delete />,
     data: { TemplateId: "TemplateId" },
     confirmText: "Are you sure you want to delete this Role Template?",
+    relatedQueryKeys: ["ListGDAPRoleTemplates*"],
   },
 ];
 
@@ -69,7 +70,7 @@ const Page = () => {
 
   const createCippDefaults = ApiPostCall({
     urlFromData: true,
-    relatedQueryKeys: ["ListGDAPRoleTemplates", "ListGDAPRoles"],
+    relatedQueryKeys: ["ListGDAPRoleTemplates*", "ListGDAPRoles"],
   });
 
   useEffect(() => {
