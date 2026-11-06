@@ -1,4 +1,4 @@
-import { screen } from '@testing-library/react'
+import { fireEvent, screen } from '@testing-library/react'
 import { renderWithProviders } from '../../test-utils'
 import { CippBreadcrumbNav } from '../../../src/components/CippComponents/CippBreadcrumbNav'
 
@@ -65,6 +65,18 @@ describe('CippBreadcrumbNav', () => {
     layoutState.isMobile = true
     renderWithProviders(<CippBreadcrumbNav />)
     expect(screen.getByText('Groups')).toBeInTheDocument()
+  })
+
+  // The browser copies each list item and separator onto its own line.
+  it('copies the trail as a single line', () => {
+    vi.spyOn(window, 'getSelection').mockReturnValue({
+      toString: () => '\n  Tenant Administration\n  >\n  Tenants\n  >\n  Groups\n',
+    })
+    renderWithProviders(<CippBreadcrumbNav />)
+    const setData = vi.fn()
+    fireEvent.copy(screen.getByLabelText('page hierarchy'), { clipboardData: { setData } })
+
+    expect(setData).toHaveBeenCalledWith('text/plain', 'Tenant Administration > Tenants > Groups')
   })
 
   it('labels the tab crumb from the tabOptions require.context', () => {
