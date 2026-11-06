@@ -386,7 +386,7 @@ const CippGraphExplorerFilter = ({
       },
       parameters: {
         Endpoint: formParameters.endpoint,
-        skipCache: true,
+        SkipCache: true,
         NoPagination: formParameters.NoPagination,
         AsApp: formParameters.AsApp,
         ReverseTenantLookup: formParameters.ReverseTenantLookup,
