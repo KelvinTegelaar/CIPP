@@ -273,6 +273,23 @@ export const CippAppPermissionExposureDetail = ({ row, embedded = false }) => {
     { label: 'Directory roles', value: row.DirectoryRoleCount },
     { label: 'Exchange application roles', value: row.ExchangeRoleCount },
     { label: 'Admin consent for all users', value: row.HasAllPrincipalsGrant },
+    { label: 'Disabled by Microsoft', value: row.DisabledByMicrosoftStatus },
+    {
+      label: 'Identity Protection',
+      value: row.IdentityProtectionRiskState
+        ? `${row.IdentityProtectionRiskState} (${row.IdentityProtectionRiskLevel})`
+        : null,
+    },
+    {
+      label: 'Owners (can add credentials)',
+      value:
+        Array.isArray(row.Owners) && row.Owners.length > 0
+          ? row.Owners.map(
+              (owner) =>
+                `${owner.UserPrincipalName || owner.DisplayName}${owner.UserType === 'Guest' ? ' (guest)' : ''}`
+            ).join(', ')
+          : null,
+    },
   ]
     .map((prop) => ({ ...prop, value: formatValue(prop.value) }))
     .filter((prop) => prop.value !== null && !(embedded && identityLabels.has(prop.label)))
@@ -320,6 +337,9 @@ export const CippAppPermissionExposureDetail = ({ row, embedded = false }) => {
           />
         )}
         {row.IsCippApp && <Chip size="small" variant="outlined" color="info" label="CIPP" />}
+        {row.DisabledByMicrosoftStatus && (
+          <Chip size="small" color="error" label="Disabled by Microsoft" />
+        )}
       </Stack>
 
       {row.IsCippApp && (
@@ -385,6 +405,8 @@ export const CippAppPermissionExposureDetail = ({ row, embedded = false }) => {
               'AddedDateTime',
               'AddedBy',
               'EndDateTime',
+              'LastSignInDateTime',
+              'Flags',
             ]}
           />
         </Box>

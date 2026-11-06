@@ -91,6 +91,15 @@ const Page = () => {
       external: false,
     },
     {
+      icon: <CippIcons.TravelExplore />,
+      label: 'Investigate compromise',
+      link: `/tenant/administration/nhi/case?servicePrincipalId=[ServicePrincipalId]&tenantFilter=${currentTenant}&start=true`,
+      color: 'warning',
+      multiPost: false,
+      external: false,
+      condition: () => currentTenant !== 'AllTenants',
+    },
+    {
       icon: <CippIcons.Block />,
       label: 'Disable Service Principal',
       type: 'POST',

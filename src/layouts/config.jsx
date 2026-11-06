@@ -185,6 +185,11 @@ export const nativeMenuItems = [
             permissions: ['Tenant.Application.*'],
           },
           {
+            title: 'NHI Compromise',
+            path: '/tenant/administration/nhi',
+            permissions: ['Tenant.Application.*'],
+          },
+          {
             title: 'Authentication Methods',
             path: '/tenant/administration/authentication-methods',
             permissions: ['Tenant.Administration.*'],

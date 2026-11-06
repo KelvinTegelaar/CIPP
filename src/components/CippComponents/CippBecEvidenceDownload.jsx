@@ -1,16 +1,5 @@
 import { useState } from 'react'
 import { ApiPostCall } from '../../api/ApiCall'
-import { useBrandingSettings } from '../CippPdf/useBrandingSettings'
-import { useReportVariables } from '../CippPdf/useReportVariables'
-import { BECRemediationReportDocument } from '../BECRemediationReportButton'
-
-const blobToBase64 = (blob) =>
-  new Promise((resolve, reject) => {
-    const reader = new FileReader()
-    reader.onloadend = () => resolve(String(reader.result).split(',')[1] || '')
-    reader.onerror = reject
-    reader.readAsDataURL(blob)
-  })
 
 const base64ToBlob = (base64, type) => {
   const binary = atob(base64)
@@ -27,76 +16,35 @@ const safe = (value) =>
 
 const caseOf = (row) => row?.CaseId ?? row?.caseId
 const tenantOf = (row) => row?.Tenant ?? row?.tenantFilter
-const upnOf = (row) => row?.UserPrincipalName ?? row?.userPrincipalName
+const nameOf = (row) =>
+  row?.UserPrincipalName ?? row?.userPrincipalName ?? row?.DisplayName
 
 /**
- * Downloads a case's evidence package WITH the report PDFs: fetches the case results when the caller
- * has none, renders the full report and the C-suite summary in-memory (no browser tab), posts them to
- * the export endpoint (which collates the ZIP), and saves the ZIP under a name carrying the user and
- * case. One hook serves the runs hub (per row) and the case page's export button.
+ * Downloads a case's evidence package. The export endpoint (ExecBECEvidenceExport) renders the report
+ * PDFs (the full report and the C-suite summary) server-side and collates the ZIP; the browser just
+ * requests it by case id and saves it. One hook serves the runs hub (per row) and the case page's
+ * export button. An NHI (app) case passes its own endpoint and file prefix.
  */
-export const useBecEvidenceDownload = () => {
-  const brandingSettings = useBrandingSettings()
-  const variables = useReportVariables()
+export const useBecEvidenceDownload = ({
+  url = '/api/ExecBECEvidenceExport',
+  prefix = 'BEC',
+} = {}) => {
   const [pendingCaseId, setPendingCaseId] = useState(null)
   const [lastError, setLastError] = useState(null)
   const exportCall = ApiPostCall({})
 
-  const download = async (row, providedBecData) => {
+  const download = async (row) => {
     const caseId = caseOf(row)
     const tenantFilter = tenantOf(row)
     if (!caseId || !tenantFilter || pendingCaseId) return
     setPendingCaseId(caseId)
     setLastError(null)
     try {
-      let becData = providedBecData
-      if (!becData) {
-        const response = await fetch(
-          `/api/execBECCheck?GUID=${encodeURIComponent(caseId)}&tenantFilter=${encodeURIComponent(tenantFilter)}`
-        )
-        if (!response.ok) throw new Error('Could not load the case results')
-        becData = await response.json()
-      }
-      if (becData?.Waiting || becData?.Error) {
-        throw new Error('The case is not a completed run')
-      }
-      const userData = {
-        id: row?.UserId ?? row?.userId,
-        userPrincipalName: upnOf(row),
-        displayName: row?.DisplayName ?? row?.displayName ?? upnOf(row),
-      }
-
-      let pdfBase64 = ''
-      let pdfSummaryBase64 = ''
-      try {
-        const { pdf } = await import('@react-pdf/renderer')
-        const render = async (reportVariant) => {
-          const blob = await pdf(
-            <BECRemediationReportDocument
-              userData={userData}
-              becData={becData}
-              brandingSettings={brandingSettings}
-              tenantName={tenantFilter}
-              variables={variables}
-              variant={reportVariant}
-            />
-          ).toBlob()
-          return blobToBase64(blob)
-        }
-        pdfBase64 = await render('full')
-        pdfSummaryBase64 = await render('summary')
-      } catch (renderError) {
-        console.error(
-          'BEC evidence: PDF render failed, exporting without it',
-          renderError
-        )
-      }
-
       await new Promise((resolve) => {
         exportCall.mutate(
           {
-            url: '/api/ExecBECEvidenceExport',
-            data: { tenantFilter, caseId, pdfBase64, pdfSummaryBase64 },
+            url,
+            data: { tenantFilter, caseId },
           },
           {
             onSuccess: (result) => {
@@ -107,7 +55,7 @@ export const useBecEvidenceDownload = () => {
                 )
                 const link = document.createElement('a')
                 link.href = url
-                link.download = `BEC_Evidence_${safe(upnOf(row) || userData.id)}_${safe(caseId)}.zip`
+                link.download = `${prefix}_Evidence_${safe(nameOf(row) || row?.UserId || caseId)}_${safe(caseId)}.zip`
                 document.body.appendChild(link)
                 link.click()
                 document.body.removeChild(link)

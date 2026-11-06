@@ -9,6 +9,16 @@ import { getCippError } from '../../utils/get-cipp-error'
 
 const headerLinkProps = { showInActionsMenu: true }
 
+// Opens the app's NHI compromise case and starts an investigation.
+const investigateCompromiseAction = {
+  icon: <CippIcons.TravelExplore />,
+  label: 'Investigate compromise',
+  link: '/tenant/administration/nhi/case?servicePrincipalId=[id]&tenantFilter=[Tenant]&start=true',
+  color: 'warning',
+  multiPost: false,
+  external: false,
+}
+
 const DEFAULT_ACCESS_ROLE_ID = '00000000-0000-0000-0000-000000000000'
 
 export const getAppRoleName = (appRoles, appRoleId) => {
@@ -497,11 +507,13 @@ export const getEnterpriseAppListActions = (canWriteApplication, isHomeTenantApp
     external: false,
   },
   { ...viewInEntraAction, condition: isHomeTenantApp },
+  investigateCompromiseAction,
   ...getEnterpriseAppPostActions(canWriteApplication),
 ]
 
 export const getEnterpriseAppDetailHeaderActions = (canWriteApplication, onChanged) => [
   { ...viewInEntraAction, ...headerLinkProps },
+  { ...investigateCompromiseAction, ...headerLinkProps },
   ...getEnterpriseAppPostActions(canWriteApplication, onChanged),
   ...getEnterpriseAppSigningActions(canWriteApplication),
 ]
