@@ -5,11 +5,10 @@ import { Button } from "@mui/material";
 import Link from "next/link";
 import countryList from "../../../../data/countryList.json";
 import { useSettings } from "../../../../hooks/use-settings";
-import { isMultiTenant } from "../../../../utils/tenant-selection";
 
 const Page = () => {
   const pageTitle = "Named Locations";
-  const multiTenant = isMultiTenant(useSettings().currentTenant);
+  const multiTenant = useSettings().currentTenant === "AllTenants";
 
   const actions = [
     {
