@@ -6,6 +6,7 @@ import { CippCopyToClipBoard } from './CippCopyToClipboard'
 import { LinearProgressWithLabel } from '../linearProgressWithLabel'
 import { ApiGetCall, ApiPostCall } from '../../api/ApiCall'
 import { usePermissions } from '../../hooks/use-permissions'
+import { isMultiTenant } from '../../utils/tenant-selection'
 
 const isSiteLike = (item) =>
   item && (item.type === 'site' || (item.canOpen && item.type !== 'recycleFolder'))
@@ -179,7 +180,7 @@ export const CippSharePointBrowserProperties = ({
   const canReadQuota = checkPermissions(['Sharepoint.Admin.Read', 'Sharepoint.Admin.ReadWrite'])
   const showSummary = !item && Array.isArray(summaryItems)
   const quotaEnabled =
-    showSummary && Boolean(tenantFilter) && tenantFilter !== 'AllTenants' && canReadQuota
+    showSummary && Boolean(tenantFilter) && !isMultiTenant(tenantFilter) && canReadQuota
 
   const siteUrl = isSiteLike(item) ? item.webUrl : null
   const siteId = isSiteLike(item) ? item.id : null

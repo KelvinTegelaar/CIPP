@@ -21,6 +21,7 @@ import {
   getRowTenant,
   withRowTenant,
 } from '../../utils/resolve-row-templates'
+import { tenantScope } from '../../utils/tenant-selection'
 import {
   extractCsvColumnValues,
   mergeCsvFormFields,
@@ -178,7 +179,7 @@ export const CippApiDialog = (props) => {
         if (Array.isArray(row)) {
           const arrayData = row.map((singleRow) => {
             const commonData = {
-              tenantFilter: getRowTenant(singleRow, tenantFilter),
+              ...tenantScope(getRowTenant(singleRow, tenantFilter)),
               ...resolvedFormData,
               ...addedFieldData,
             }
@@ -214,7 +215,7 @@ export const CippApiDialog = (props) => {
 
       // SINGLE ROW CASE
       const commonData = {
-        tenantFilter: getRowTenant(row, tenantFilter),
+        ...tenantScope(getRowTenant(row, tenantFilter)),
         ...resolvedFormData,
         ...addedFieldData,
       }

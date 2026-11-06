@@ -4,6 +4,7 @@ import { Stack } from '@mui/system'
 import CippFormComponent from './CippFormComponent'
 import { CippFormCondition } from './CippFormCondition'
 import { ApiGetCall } from '../../api/ApiCall'
+import { tenantScope } from '../../utils/tenant-selection'
 
 // Option lists for the Edit Site dialog; values match Invoke-ExecSetSiteProperties' whitelist.
 const SHARING_CAPABILITY_OPTIONS = [
@@ -44,7 +45,7 @@ export const CippEditSitePropertiesForm = ({ formHook, row, tenantFilter }) => {
   const propsApi = ApiGetCall({
     url: '/api/ListSiteProperties',
     data: {
-      tenantFilter: siteRow?.Tenant ?? tenantFilter,
+      ...tenantScope(siteRow?.Tenant ?? tenantFilter),
       SiteUrl: siteRow?.webUrl,
     },
     queryKey: `SiteProperties-${siteRow?.webUrl}`,

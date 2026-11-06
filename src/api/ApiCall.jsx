@@ -5,6 +5,7 @@ import { showToast } from "../store/toasts";
 import { getCippError } from "../utils/get-cipp-error";
 import { buildVersionedHeaders } from "../utils/cippVersion";
 import { impersonationCacheParams } from "../utils/impersonation";
+import { isMultiTenantScope } from "../utils/tenant-selection";
 
 const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 const wildcardToRegExp = (pattern) =>
@@ -377,7 +378,7 @@ export function ApiGetCallWithPagination({
       if (
         data?.noPagination ||
         data?.manualPagination === false ||
-        (data?.tenantFilter === "AllTenants" && data?.manualPagination !== true)
+        (isMultiTenantScope(data) && data?.manualPagination !== true)
       ) {
         return undefined;
       }

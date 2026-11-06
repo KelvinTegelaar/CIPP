@@ -10,6 +10,7 @@ import { CippSharedMailboxLicenseAlert } from './CippSharedMailboxLicenseAlert'
 import { CippFormCondition } from './CippFormCondition'
 import { useWatch } from 'react-hook-form'
 import { ApiGetCall } from '../../api/ApiCall'
+import { isMultiTenant, tenantScope } from '../../utils/tenant-selection'
 
 // Separate component for Manage Licenses form to avoid hook issues
 const ManageLicensesForm = ({ formControl, tenant }) => {
@@ -170,14 +171,14 @@ const ManageLicensesForm = ({ formControl, tenant }) => {
 export const TemporaryAccessPassForm = ({ formControl, row }) => {
   const tenantFilter = useSettings().currentTenant
   const rowData = Array.isArray(row) ? row[0] : row
-  const tenant = tenantFilter === 'AllTenants' && rowData?.Tenant ? rowData.Tenant : tenantFilter
+  const tenant = isMultiTenant(tenantFilter) && rowData?.Tenant ? rowData.Tenant : tenantFilter
 
   const tapPolicy = ApiGetCall({
     url: '/api/ListGraphRequest',
     data: {
       Endpoint:
         'policies/authenticationMethodsPolicy/authenticationMethodConfigurations/TemporaryAccessPass',
-      tenantFilter: tenant,
+      ...tenantScope(tenant),
     },
     queryKey: `TAPPolicy-${tenant}`,
   })
@@ -299,7 +300,7 @@ export const TemporaryAccessPassForm = ({ formControl, row }) => {
 export const OutOfOfficeForm = ({ formControl, row }) => {
   const tenantFilter = useSettings().currentTenant
   const rowData = Array.isArray(row) ? row[0] : row
-  const tenant = tenantFilter === 'AllTenants' && rowData?.Tenant ? rowData.Tenant : tenantFilter
+  const tenant = isMultiTenant(tenantFilter) && rowData?.Tenant ? rowData.Tenant : tenantFilter
   // Only prefill for a single selected user; with multiple users there is no single current value
   const singleUserUpn =
     (!Array.isArray(row) || row.length === 1) && rowData?.userPrincipalName
@@ -308,7 +309,7 @@ export const OutOfOfficeForm = ({ formControl, row }) => {
 
   const currentOoO = ApiGetCall({
     url: '/api/ListOoO',
-    data: { UserId: singleUserUpn, tenantFilter: tenant },
+    data: { UserId: singleUserUpn, ...tenantScope(tenant) },
     queryKey: `ListOoO-${singleUserUpn}-${tenant}`,
     waiting: !!singleUserUpn,
   })
@@ -601,7 +602,7 @@ export const useCippUserActions = () => {
           })) || []
         const primDomain = user.userPrincipalName?.split('@')[1] || ''
         return {
-          tenantFilter: tenant,
+          ...tenantScope(tenant),
           templateName: formData.templateName,
           defaultForTenant: formData.defaultForTenant || false,
           sourceUserId: user.id,
@@ -794,7 +795,7 @@ export const useCippUserActions = () => {
 
         return selectedGroups.map((group) => ({
           addMember: addMember,
-          tenantFilter: tenant,
+          ...tenantScope(tenant),
           groupId: group,
         }))
       },

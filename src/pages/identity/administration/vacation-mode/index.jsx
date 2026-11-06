@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useSettings } from "../../../../hooks/use-settings.js";
 import ScheduledTaskDetails from "../../../../components/CippComponents/ScheduledTaskDetails";
 import { ApiGetCallWithPagination } from "../../../../api/ApiCall";
+import { tenantScope } from "../../../../utils/tenant-selection";
 
 const Page = () => {
   const initialState = useSettings();
@@ -15,7 +16,7 @@ const Page = () => {
   // stale against the table's refresh and the action's invalidation
   const vacationTasks = ApiGetCallWithPagination({
     url: "/api/ListScheduledItems?SearchTitle=*Vacation*",
-    data: { tenantFilter: currentTenant },
+    data: { ...tenantScope(currentTenant) },
     queryKey: `VacationMode-${currentTenant}`,
   });
   const allVacationTasks = (vacationTasks.data?.pages ?? []).flatMap((page) =>
@@ -158,6 +159,6 @@ const Page = () => {
   );
 };
 
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+Page.getLayout = (page) => <DashboardLayout tenantGroupSupport={true}>{page}</DashboardLayout>;
 
 export default Page;

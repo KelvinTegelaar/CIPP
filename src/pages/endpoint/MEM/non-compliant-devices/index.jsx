@@ -9,6 +9,7 @@ import { getIntuneDeviceActions } from '../../../../components/CippComponents/Ci
 import { ApiGetCall } from '../../../../api/ApiCall'
 import { useSettings } from '../../../../hooks/use-settings'
 import { getCippError } from '../../../../utils/get-cipp-error'
+import { tenantScope } from '../../../../utils/tenant-selection'
 
 // Intune's built-in policy that fails devices for "Has a compliance policy assigned", "Is active"
 // and "Enrolled user exists"; the export carries no policy id, so the name is the only marker
@@ -62,7 +63,7 @@ const Page = () => {
 
   const report = ApiGetCall({
     url: reportDB.resolvedApiUrl,
-    data: { tenantFilter: currentTenant },
+    data: { ...tenantScope(currentTenant) },
     queryKey: reportDB.resolvedQueryKey,
     waiting: !!currentTenant,
   })
@@ -195,7 +196,7 @@ const Page = () => {
 }
 
 Page.getLayout = (page) => (
-  <DashboardLayout allTenantsSupport={true}>{page}</DashboardLayout>
+  <DashboardLayout tenantGroupSupport={true} allTenantsSupport={true}>{page}</DashboardLayout>
 )
 
 export default Page

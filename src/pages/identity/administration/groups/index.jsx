@@ -7,6 +7,7 @@ import { useSettings } from '../../../../hooks/use-settings'
 import { useCippReportDB } from '../../../../components/CippComponents/CippReportDBControls'
 import { getRowTenant } from '../../../../utils/resolve-row-templates'
 import { CippAddGroupDrawer } from '../../../../components/CippComponents/CippAddGroupDrawer'
+import { isMultiTenant, tenantScope } from '../../../../utils/tenant-selection'
 
 const Page = () => {
   const pageTitle = 'Groups'
@@ -20,9 +21,9 @@ const Page = () => {
   ]
   const { currentTenant } = useSettings()
   const tenantQuery =
-    currentTenant === 'AllTenants' ? '[Tenant]' : currentTenant
+    isMultiTenant(currentTenant) ? '[Tenant]' : currentTenant
   const nestedTenantQuery =
-    currentTenant === 'AllTenants' ? '[parent.Tenant]' : currentTenant
+    isMultiTenant(currentTenant) ? '[parent.Tenant]' : currentTenant
 
   const reportDB = useCippReportDB({
     apiUrl: '/api/ListGroups',
@@ -84,7 +85,7 @@ const Page = () => {
         const selectedGroups = Array.isArray(row) ? row : [row]
         return selectedGroups.map((group) => ({
           AddMember: addMember,
-          tenantFilter: getRowTenant(group, currentTenant),
+          ...tenantScope(getRowTenant(group, currentTenant)),
           groupId: group.id,
           groupName: group.displayName,
           groupType: group.groupType,
@@ -141,7 +142,7 @@ const Page = () => {
       icon: <CippIcons.PersonRemove />,
       customDataformatter: (row, action, formData) => ({
         action: 'removeMember',
-        tenantFilter: getRowTenant(row, currentTenant),
+        ...tenantScope(getRowTenant(row, currentTenant)),
         groupId: row.id,
         users: (formData.RemoveMember ?? []).map((member) => member.value),
       }),
@@ -702,6 +703,6 @@ const Page = () => {
   );
 }
 
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>
+Page.getLayout = (page) => <DashboardLayout tenantGroupSupport={true}>{page}</DashboardLayout>
 
 export default Page

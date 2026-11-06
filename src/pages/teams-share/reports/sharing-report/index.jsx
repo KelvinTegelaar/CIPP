@@ -31,6 +31,7 @@ import {
   Typography,
 } from '@mui/material'
 import { Grid } from '@mui/system'
+import { isMultiTenant } from '../../../../utils/tenant-selection'
 
 const classificationChipColor = (classification) => {
   switch (String(classification).toLowerCase()) {
@@ -176,7 +177,7 @@ const Page = () => {
         : {}),
     },
     queryKey: queryKey,
-    waiting: !!currentTenant && currentTenant !== 'AllTenants',
+    waiting: !!currentTenant && !isMultiTenant(currentTenant),
   })
 
   const data = sharing.data ?? {}
@@ -383,7 +384,7 @@ const Page = () => {
   return (
     <Container maxWidth={false} sx={{ flexGrow: 1, py: 2 }}>
       <Grid container spacing={2}>
-        {currentTenant === 'AllTenants' ? (
+        {isMultiTenant(currentTenant) ? (
           <Grid size={{ md: 4, xs: 12 }}>
             <CippImageCard
               title="Not supported"

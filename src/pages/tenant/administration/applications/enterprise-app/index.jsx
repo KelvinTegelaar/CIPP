@@ -25,6 +25,7 @@ import { getListGraphBulkRequestRows } from '../../../../../utils/getListGraphBu
 import { CippCredentialExpandList } from '../../../../../components/CippComponents/CippCredentialExpandList.jsx'
 import { CippAppPermissionExposureDetail } from '../../../../../components/CippComponents/CippAppPermissionExposureDetail.jsx'
 import { getCippError } from '../../../../../utils/get-cipp-error'
+import { isMultiTenant } from '../../../../../utils/tenant-selection'
 
 const spSelect =
   'id,appId,displayName,createdDateTime,accountEnabled,homepage,publisherName,signInAudience,replyUrls,verifiedPublisher,info,api,appOwnerOrganizationId,tags,passwordCredentials,keyCredentials,preferredSingleSignOnMode,preferredTokenSigningKeyThumbprint,loginUrl,logoutUrl,notificationEmailAddresses,samlSingleSignOnSettings,servicePrincipalNames,appRoles,appRoleAssignmentRequired'
@@ -322,7 +323,7 @@ const Page = () => {
         ]
 
   // Exposure context from the report: cached first, live when the tenant was never cached.
-  const canLoadExposure = !!spObjectId && !!spData?.id && tenantForApi !== 'AllTenants'
+  const canLoadExposure = !!spObjectId && !!spData?.id && !isMultiTenant(tenantForApi)
   const exposureCached = ApiGetCall({
     url: '/api/ListAppPermissionExposure',
     data: { tenantFilter: tenantForApi, ServicePrincipalId: spObjectId, UseReportDB: true },

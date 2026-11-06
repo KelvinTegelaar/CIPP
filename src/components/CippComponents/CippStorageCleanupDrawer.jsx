@@ -30,6 +30,7 @@ import { ApiGetCall, ApiPostCall } from '../../api/ApiCall'
 import { useDialog } from '../../hooks/use-dialog'
 import { usePermissions } from '../../hooks/use-permissions'
 import { formatCleanupBytes } from '../../utils/storage-cleanup-opportunities'
+import { tenantScope } from '../../utils/tenant-selection'
 
 const optionValue = (value) =>
   value && typeof value === 'object' && 'value' in value ? value.value : value
@@ -97,21 +98,21 @@ export const CippStorageCleanupDrawer = ({
 
   const librariesApi = ApiGetCall({
     url: '/api/ListSiteBrowser',
-    data: { tenantFilter, SiteUrl: siteUrl },
+    data: { ...tenantScope(tenantFilter), SiteUrl: siteUrl },
     queryKey: `CleanupLibs-${tenantFilter}-${siteUrl}`,
     waiting: open && !!tenantFilter && !!siteUrl,
   })
 
   const compositionApi = ApiGetCall({
     url: '/api/ListSiteStorageComposition',
-    data: { tenantFilter, SiteUrl: siteUrl },
+    data: { ...tenantScope(tenantFilter), SiteUrl: siteUrl },
     queryKey: `CleanupComposition-${tenantFilter}-${siteUrl}`,
     waiting: open && !!tenantFilter && !!siteUrl,
   })
 
   const recycleApi = ApiGetCall({
     url: '/api/ListSiteRecycleBinSummary',
-    data: { tenantFilter, SiteUrl: siteUrl },
+    data: { ...tenantScope(tenantFilter), SiteUrl: siteUrl },
     queryKey: `CleanupRecycle-${tenantFilter}-${siteUrl}`,
     waiting: open && canReadRecycle && !!tenantFilter && !!siteUrl,
   })
@@ -135,7 +136,7 @@ export const CippStorageCleanupDrawer = ({
     if (!open || tab !== 0 || !siteUrl || !tenantFilter) return
     jobStatusApi.mutate({
       url: '/api/ListSPOVersionCleanup',
-      data: { tenantFilter, SiteUrl: siteUrl },
+      data: { ...tenantScope(tenantFilter), SiteUrl: siteUrl },
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, tab, siteUrl, tenantFilter])
@@ -147,7 +148,7 @@ export const CippStorageCleanupDrawer = ({
     if (siteUrl) {
       jobStatusApi.mutate({
         url: '/api/ListSPOVersionCleanup',
-        data: { tenantFilter, SiteUrl: siteUrl },
+        data: { ...tenantScope(tenantFilter), SiteUrl: siteUrl },
       })
     }
   }
@@ -354,7 +355,7 @@ export const CippStorageCleanupDrawer = ({
           customDataformatter: (_row, _action, formData) => {
             const mode = parseInt(optionValue(formData.BatchDeleteMode) ?? '2', 10)
             return {
-              tenantFilter,
+              ...tenantScope(tenantFilter),
               SiteUrl: siteUrl,
               BatchDeleteMode: mode,
               DeleteOlderThanDays: mode === 0 ? parseInt(formData.DeleteOlderThanDays, 10) : -1,
@@ -367,7 +368,7 @@ export const CippStorageCleanupDrawer = ({
           onSuccess: () => {
             jobStatusApi.mutate({
               url: '/api/ListSPOVersionCleanup',
-              data: { tenantFilter, SiteUrl: siteUrl },
+              data: { ...tenantScope(tenantFilter), SiteUrl: siteUrl },
             })
           },
         }}
@@ -393,7 +394,7 @@ export const CippStorageCleanupDrawer = ({
           url: '/api/ExecEmptySiteRecycleBin',
           confirmText: `Permanently empty the recycle bin for ${siteName}? This cannot be undone.`,
           customDataformatter: (_row, _action, formData) => ({
-            tenantFilter,
+            ...tenantScope(tenantFilter),
             SiteUrl: siteUrl,
             Stage: optionValue(formData.Stage) || 'Both',
           }),

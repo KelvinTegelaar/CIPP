@@ -1,17 +1,20 @@
 import React from 'react'
 import { renderWithProviders } from '../../test-utils'
-import { waitFor } from '@testing-library/react'
+import { screen, waitFor } from '@testing-library/react'
 import { CippMobileTenantPicker } from '../../../src/components/CippComponents/CippMobileTenantPicker'
 import { tenantsContosoFabrikam } from '../../mocks/fixtures'
 
 const routerState = vi.hoisted(() => ({ router: null }))
 
 vi.mock('../../../src/api/ApiCall', () => ({
-  ApiGetCall: () => ({
+  ApiGetCall: ({ url }) => ({
     isSuccess: true,
     isFetching: false,
     isError: false,
-    data: tenantsContosoFabrikam,
+    data:
+      url === '/api/ListTenantGroups'
+        ? { Results: [{ Id: 'g1', Name: 'Managed' }] }
+        : tenantsContosoFabrikam,
   }),
 }))
 
@@ -59,6 +62,19 @@ describe('CippMobileTenantPicker', () => {
       })
     }
   )
+
+  it('applies a deep-linked tenant group to settings and shows its name', async () => {
+    routerState.router.query = { tenantGroup: 'g1' }
+    const settings = makeSettings()
+    renderWithProviders(<CippMobileTenantPicker />, { settings })
+
+    await waitFor(() => {
+      expect(settings.handleUpdate).toHaveBeenCalledWith({
+        currentTenant: 'group:g1',
+      })
+    })
+    expect(screen.getByRole('button', { name: 'Select tenant' })).toHaveTextContent('Managed')
+  })
 
   it('leaves settings alone for an unknown or already-current tenant', () => {
     for (const urlTenant of ['nope.example.com', 'fabrikam.com']) {

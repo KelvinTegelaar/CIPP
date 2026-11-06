@@ -8,10 +8,12 @@ import CippFormComponent from "../../../../components/CippComponents/CippFormCom
 import { useSettings } from "../../../../hooks/use-settings";
 import { CippFormCondition } from "../../../../components/CippComponents/CippFormCondition";
 import { Chip, Stack } from "@mui/material";
+import { useTenantLabel } from "../../../../hooks/use-tenant-label";
 
 const RestoreBackupForm = () => {
   const userSettingsDefaults = useSettings();
   const tenantFilter = userSettingsDefaults.currentTenant || "";
+  const tenantLabel = useTenantLabel(tenantFilter);
 
   const formControl = useForm({
     mode: "onChange",
@@ -113,7 +115,7 @@ const RestoreBackupForm = () => {
         <Grid size={{ xs: 12 }}>
           <CippFormComponent
             type="autoComplete"
-            label={`Backups for ${tenantFilter}`}
+            label={`Backups for ${tenantLabel}`}
             name="backup"
             multiple={false}
             api={{

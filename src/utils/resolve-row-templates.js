@@ -1,3 +1,5 @@
+import { isMultiTenant } from './tenant-selection'
+
 const TEMPLATE = /\[([^\]]+)\]/g
 
 /**
@@ -68,7 +70,7 @@ const singleTenant = (tenant) =>
  * AllTenants convention used across CIPP: prefer the row (or nested parent) tenant.
  */
 export const getRowTenant = (row, currentTenant) => {
-  if (currentTenant !== 'AllTenants') {
+  if (!isMultiTenant(currentTenant)) {
     return currentTenant
   }
   const source = Array.isArray(row) ? row[0] : row
@@ -88,11 +90,11 @@ export const getRowTenant = (row, currentTenant) => {
  * selects that tenant instead of inheriting AllTenants.
  */
 export const withRowTenant = (link, row, currentTenant) => {
-  if (currentTenant !== 'AllTenants' || !link?.startsWith('/') || /[?&]tenantFilter=/.test(link)) {
+  if (!isMultiTenant(currentTenant) || !link?.startsWith('/') || /[?&]tenantFilter=/.test(link)) {
     return link
   }
   const tenant = getRowTenant(row, currentTenant)
-  if (!tenant || tenant === 'AllTenants') {
+  if (!tenant || isMultiTenant(tenant)) {
     return link
   }
   return `${link}${link.includes('?') ? '&' : '?'}tenantFilter=${encodeURIComponent(tenant)}`

@@ -5,7 +5,9 @@ import { beforeEach, describe, it, expect, vi } from 'vitest'
 
 // Drive the REAL ApiPostCall mutation against a mocked axios: follow-up requests ride the same
 // mutation so a form page shows one results section for the whole chain.
-vi.mock('axios', () => ({ default: { post: vi.fn() } }))
+vi.mock('axios', () => ({
+  default: { post: vi.fn(), interceptors: { request: { use: vi.fn() } } },
+}))
 
 import axios from 'axios'
 import { ApiPostCall } from '../../src/api/ApiCall'

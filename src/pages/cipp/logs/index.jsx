@@ -19,6 +19,8 @@ import { Grid } from '@mui/system'
 import { useForm } from 'react-hook-form'
 import CippFormComponent from '../../../components/CippComponents/CippFormComponent'
 import { useSettings } from '../../../hooks/use-settings.js'
+import { isTenantGroup, tenantGroupId } from '../../../utils/tenant-selection'
+import { useTenantLabel } from '../../../hooks/use-tenant-label'
 
 const simpleColumns = [
   'DateTime',
@@ -147,7 +149,9 @@ const Page = () => {
   const [filters, setFilters] = useState(emptyFilters)
   const settings = useSettings() // Hook to access settings
   const currentTenant = settings?.currentTenant
+  // A tenant group limits the logbook like a single tenant does
   const canLimitToTenant = !!currentTenant && currentTenant !== 'AllTenants'
+  const tenantLabel = useTenantLabel(currentTenant)
   const limitedTenant = filters.tenantOnly && canLimitToTenant ? currentTenant : null
   const filterEnabled = filterKeys.some((key) => filters[key] !== null && filters[key] !== false)
 
@@ -426,7 +430,7 @@ const Page = () => {
                     name="tenantOnly"
                     label={
                       canLimitToTenant
-                        ? `Only show logs for ${currentTenant}`
+                        ? `Only show logs for ${tenantLabel}`
                         : 'Only show logs for the selected tenant (select a tenant first)'
                     }
                     disabled={!canLimitToTenant}
@@ -488,11 +492,14 @@ const Page = () => {
         IP: filters.ip,
         AppId: filters.appId,
         Filter: filterEnabled,
-        Tenant: limitedTenant, // Only when the tenant switch is on
-        // CippTablePage injects tenantFilter from the tenant selector, but ListLogs reads
-        // Tenant instead, and a literal 'AllTenants' tenantFilter would stop
-        // ApiGetCallWithPagination from ever fetching page two. Null drops the param.
+        // Only when the tenant switch is on; a group goes as tenantGroup
+        Tenant: isTenantGroup(limitedTenant) ? null : limitedTenant,
+        // CippTablePage sends the selector's tenant scope, but ListLogs reads Tenant instead,
+        // and a literal 'AllTenants' tenantFilter would stop the pager after page one. Null drops the param.
         tenantFilter: null,
+        tenantGroup: tenantGroupId(limitedTenant),
+        // ListLogs always pages; without this the multi-tenant rule in the pager stops after page one
+        manualPagination: isTenantGroup(limitedTenant) ? true : undefined,
       }}
       actions={actions}
       offCanvas={offcanvas}
@@ -504,6 +511,6 @@ const Page = () => {
   );
 }
 
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>
+Page.getLayout = (page) => <DashboardLayout tenantGroupSupport={true}>{page}</DashboardLayout>
 
 export default Page

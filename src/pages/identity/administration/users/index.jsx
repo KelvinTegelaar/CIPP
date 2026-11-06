@@ -12,6 +12,7 @@ import { CippBulkUserDrawer } from '../../../../components/CippComponents/CippBu
 import { CippAddUserDrawer } from '../../../../components/CippComponents/CippAddUserDrawer.jsx'
 import { CippApiLogsDrawer } from '../../../../components/CippComponents/CippApiLogsDrawer.jsx'
 import { Box } from '@mui/material'
+import { isMultiTenant } from '../../../../utils/tenant-selection'
 
 // Live mode pages straight through Graph so large tenants stream in page by page.
 const liveApiData = {
@@ -28,7 +29,7 @@ const Page = () => {
   const userActions = useCippUserActions()
   const pageTitle = 'Users'
   const tenant = useSettings().currentTenant
-  const tenantQuery = tenant === 'AllTenants' ? '[Tenant]' : tenant
+  const tenantQuery = isMultiTenant(tenant) ? '[Tenant]' : tenant
   const cardButtonPermissions = ['Identity.User.ReadWrite']
 
   // Cached mode reads the Users collection straight from the reporting database;
@@ -157,7 +158,7 @@ const Page = () => {
 }
 
 Page.getLayout = (page) => (
-  <DashboardLayout>
+  <DashboardLayout tenantGroupSupport={true}>
     <TabbedLayout tabOptions={tabOptions}>{page}</TabbedLayout>
   </DashboardLayout>
 )

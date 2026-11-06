@@ -41,6 +41,7 @@ import { ServiceHealthCard } from '../../components/CippComponents/ServiceHealth
 import { CippReportToolbar } from '../../components/CippComponents/CippReportToolbar'
 import { CippHead } from '../../components/CippComponents/CippHead.jsx'
 import { AllTenantsDashboard } from '../../components/CippAllTenants/AllTenantsDashboard'
+import { isMultiTenant, tenantScope } from '../../utils/tenant-selection'
 
 const Page = () => {
   const settings = useSettings()
@@ -50,7 +51,7 @@ const Page = () => {
   // The per-tenant cards below are all scoped to a single tenant's Graph data. Under AllTenants —
   // which is also the state on first login, before a tenant has been picked — swap in the
   // cross-tenant view rather than letting the layout render "Not supported".
-  const isAllTenants = !currentTenant || currentTenant === 'AllTenants'
+  const isAllTenants = !currentTenant || isMultiTenant(currentTenant)
   const [portalMenuItems, setPortalMenuItems] = useState([])
   const isWide = useMediaQuery('(min-width:1513px)')
   // Below md the Portals/Reports button row gives way to a bottom-right FAB sheet, and
@@ -79,7 +80,7 @@ const Page = () => {
   const organization = ApiGetCall({
     url: '/api/ListGraphRequest',
     queryKey: `${currentTenant}-ListGraphRequest-organization`,
-    data: { tenantFilter: currentTenant, Endpoint: 'organization' },
+    data: { ...tenantScope(currentTenant), Endpoint: 'organization' },
     waiting: !isAllTenants,
   })
 
@@ -87,7 +88,7 @@ const Page = () => {
 
   const testsApi = ApiGetCall({
     url: '/api/ListTests',
-    data: { tenantFilter: currentTenant, reportId: selectedReport },
+    data: { ...tenantScope(currentTenant), reportId: selectedReport },
     queryKey: `${currentTenant}-ListTests-${selectedReport}`,
     waiting: !isAllTenants && !!currentTenant && !!selectedReport,
   })
@@ -517,7 +518,7 @@ const Page = () => {
 // and the Identity / Devices / Custom tabs each render a cross-tenant view in that mode too.
 // Leaving the opt-out in place would make the layout render "Not supported" and never mount this page.
 Page.getLayout = (page) => (
-  <DashboardLayout>
+  <DashboardLayout tenantGroupSupport={true}>
     <TabbedLayout tabOptions={tabOptions}>{page}</TabbedLayout>
   </DashboardLayout>
 )

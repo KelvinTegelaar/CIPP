@@ -5,6 +5,7 @@ import { useForm, FormProvider } from "react-hook-form";
 import { ApiPostCall } from "../../api/ApiCall";
 import { CippApiResults } from "./CippApiResults";
 import { useSettings } from "../../hooks/use-settings";
+import { tenantScope } from "../../utils/tenant-selection";
 
 export const BreachSearchDialog = ({ createDialog }) => {
   const tenantFilter = useSettings()?.currentTenant;
@@ -25,7 +26,7 @@ export const BreachSearchDialog = ({ createDialog }) => {
     breachSearchResults.mutate({
       url: "/api/ExecBreachSearch",
       queryKey: `breach-search-${tenantFilter}`,
-      data: { tenantFilter: tenantFilter },
+      data: { ...tenantScope(tenantFilter) },
     });
   };
 

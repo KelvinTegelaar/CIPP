@@ -23,6 +23,7 @@ import {
 } from '@mui/material'
 import { SvgIcon } from '@mui/material'
 import { getStandards } from '../../utils/standards-data'
+import { useTenantLabel } from '../../hooks/use-tenant-label'
 
 const getCategoryIcon = (category) => {
   switch (category) {
@@ -71,6 +72,7 @@ const getImpactColor = (impact) => {
 }
 
 export const CippStandardsDialog = ({ open, onClose, standardsData, currentTenant }) => {
+  const tenantLabel = useTenantLabel(currentTenant)
   const [expanded, setExpanded] = useState(false)
   if (!standardsData) return null
 
@@ -183,7 +185,7 @@ export const CippStandardsDialog = ({ open, onClose, standardsData, currentTenan
             <Typography variant="body2" gutterBottom sx={{
               color: "text.secondary"
             }}>
-              Showing standards configuration for tenant: <strong>{currentTenant}</strong>
+              Showing standards configuration for tenant: <strong>{tenantLabel}</strong>
             </Typography>
             <Typography variant="body2" sx={{
               color: "text.secondary"

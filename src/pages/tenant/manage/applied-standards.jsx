@@ -37,6 +37,7 @@ import { createDriftManagementActions } from '../../../components/CippComponents
 import { CippApiLogsDrawer } from '../../../components/CippComponents/CippApiLogsDrawer'
 import { CippHead } from '../../../components/CippComponents/CippHead'
 import { CippPolicyCompareDialog } from '../../../components/CippComponents/CippPolicyCompareDialog'
+import { useTenantLabel } from '../../../hooks/use-tenant-label'
 
 // Only Intune template standards can be compared live against their baseline. The standard records
 // compliance as a boolean and discards the diff, so it has to be recomputed on demand.
@@ -52,6 +53,7 @@ const Page = () => {
   const settings = useSettings()
   // Prioritize URL query parameter, then fall back to settings
   const currentTenant = router.query.tenantFilter || settings?.currentTenant
+  const tenantLabel = useTenantLabel(currentTenant)
   const formControl = useForm({
     mode: 'onBlur',
     defaultValues: {
@@ -2299,7 +2301,7 @@ const Page = () => {
                                   <CippIcons.Microsoft sx={{ color: 'white' }} />
                                 </Box>
                                 <Stack>
-                                  <Typography variant="h6">{currentTenant}</Typography>
+                                  <Typography variant="h6">{tenantLabel}</Typography>
                                   <Box>
                                     <Chip
                                       label="Current Tenant"

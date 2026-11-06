@@ -1,5 +1,6 @@
 import { useWatch } from "react-hook-form";
 import CippFormComponent from "./CippFormComponent";
+import { isMultiTenant } from "../../utils/tenant-selection";
 
 /**
  * A form component for selecting specific resources from a Graph API endpoint
@@ -51,7 +52,7 @@ const CippGraphResourceSelector = ({
 
     if (
       !tenantFilterValue ||
-      tenantFilterValue === "AllTenants" ||
+      isMultiTenant(tenantFilterValue) ||
       (tenantFilter && typeof tenantFilter === "object" && tenantFilter.type === "Group")
     ) {
       return "Resource filtering is not available for All Tenants or tenant groups";
@@ -76,7 +77,7 @@ const CippGraphResourceSelector = ({
     if (tenantFilterValue === null || tenantFilterValue === undefined) return false;
 
     // Cannot be AllTenants
-    if (tenantFilterValue === "AllTenants") return false;
+    if (isMultiTenant(tenantFilterValue)) return false;
 
     // Cannot be a tenant group (check if tenantFilter object has type: "Group")
     if (tenantFilter && typeof tenantFilter === "object" && tenantFilter.type === "Group")

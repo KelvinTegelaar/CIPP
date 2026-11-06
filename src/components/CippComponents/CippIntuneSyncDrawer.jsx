@@ -13,6 +13,7 @@ import { useSettings } from '../../hooks/use-settings'
 import { getCippTranslation } from '../../utils/get-cipp-translation'
 import { CippOffCanvas } from './CippOffCanvas'
 import { CippApiResults } from './CippApiResults'
+import { tenantScope } from '../../utils/tenant-selection'
 
 const SYNC_STATUS_COLORS = {
   success: 'success',
@@ -41,7 +42,7 @@ export const CippIntuneSyncDrawer = ({ row, visible, onClose }) => {
     url: '/api/ListGraphRequest',
     data: {
       Endpoint: `deviceManagement/managedDevices('${row?.id}')/getSyncStatus()`,
-      tenantFilter,
+      ...tenantScope(tenantFilter),
       NoPagination: true,
     },
     queryKey: `DeviceSyncStatus-${row?.id}`,
@@ -87,7 +88,7 @@ export const CippIntuneSyncDrawer = ({ row, visible, onClose }) => {
           onClick={() =>
             sync.mutate({
               url: '/api/ExecDeviceAction',
-              data: { GUID: row?.id, Action: 'syncDevice', tenantFilter },
+              data: { GUID: row?.id, Action: 'syncDevice', ...tenantScope(tenantFilter) },
             })
           }
         >

@@ -12,6 +12,7 @@ import {
 import { ApiGetCall } from "../../api/ApiCall";
 import { useSettings } from "../../hooks/use-settings.js";
 import { getCippError } from "../../utils/get-cipp-error";
+import { isMultiTenant } from "../../utils/tenant-selection";
 
 /**
  * Autocomplete component specifically for custom variables
@@ -69,7 +70,7 @@ export const CippVariableAutocomplete = React.memo(
     useEffect(() => {
       if (open && !hasCustomVariables) {
         // Normalize tenant filter
-        const normalizedTenantFilter = currentTenant === "AllTenants" ? null : currentTenant;
+        const normalizedTenantFilter = isMultiTenant(currentTenant) ? null : currentTenant;
 
         // Build API URL
         let apiUrl = "/api/ListCustomVariables";

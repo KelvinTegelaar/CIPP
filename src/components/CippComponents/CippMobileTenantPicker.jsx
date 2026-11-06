@@ -20,6 +20,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import { ApiGetCall } from "../../api/ApiCall";
 import { useSettings } from "../../hooks/use-settings";
 import { useTenantPreferences } from "../../hooks/use-tenant-preferences";
+import { useTenantLabel } from "../../hooks/use-tenant-label";
+import { isMultiTenant, isTenantGroup, tenantGroupId, toTenantGroup } from "../../utils/tenant-selection";
 
 // Mobile replacement for the 400px CippTenantSelector Autocomplete: a top-bar chip opening
 // a fullscreen picker (the CippApiDialog fullscreen-on-mobile precedent). Shares the
@@ -43,7 +45,18 @@ export const CippMobileTenantPicker = () => {
     keepPreviousData: true,
   });
 
-  const currentTenant = router.query.tenantFilter ?? settings.currentTenant;
+  const groupList = ApiGetCall({
+    url: "/api/ListTenantGroups",
+    data: { TenantSelector: true },
+    queryKey: "TenantSelectorGroups",
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+  });
+  const tenantGroups = useMemo(() => (Array.isArray(groupList.data?.Results) ? groupList.data.Results : []), [groupList.data]);
+  const urlGroup = router.query.tenantGroup;
+  const currentTenant =
+    router.query.tenantFilter ?? (urlGroup ? toTenantGroup(urlGroup) : settings.currentTenant);
+  const currentLabel = useTenantLabel(currentTenant);
 
   const tenants = useMemo(
     () => (tenantList.isSuccess && Array.isArray(tenantList.data) ? tenantList.data : []),
@@ -53,8 +66,16 @@ export const CippMobileTenantPicker = () => {
   // The desktop selector applies the URL's tenant to settings and is not mounted on mobile, so
   // without this a deep link leaves the layout waiting for a tenant that never arrives.
   useEffect(() => {
+    if (!router.isReady) return;
+    if (urlGroup) {
+      const selection = toTenantGroup(urlGroup);
+      if (tenantGroups.some((group) => group.Id === urlGroup) && settings.currentTenant !== selection) {
+        settings.handleUpdate({ currentTenant: selection });
+      }
+      return;
+    }
     const urlTenant = router.query.tenantFilter;
-    if (!router.isReady || !urlTenant || !tenantList.isSuccess) return;
+    if (!urlTenant || !tenantList.isSuccess) return;
     const match =
       tenants.find((t) => t.defaultDomainName === urlTenant) ||
       tenants.find((t) => t.customerId === urlTenant) ||
@@ -62,13 +83,13 @@ export const CippMobileTenantPicker = () => {
     if (match && settings.currentTenant !== match.defaultDomainName) {
       settings.handleUpdate({ currentTenant: match.defaultDomainName });
     }
-  }, [router.isReady, router.query.tenantFilter, tenantList.isSuccess, tenants, settings]);
+  }, [router.isReady, router.query.tenantFilter, urlGroup, tenantList.isSuccess, tenants, tenantGroups, settings]);
 
   const currentDisplayName = useMemo(() => {
-    if (currentTenant === "AllTenants") return "All Tenants";
+    if (isMultiTenant(currentTenant)) return currentLabel;
     const match = tenants.find((t) => t.defaultDomainName === currentTenant);
     return match?.displayName ?? currentTenant ?? "Select tenant";
-  }, [tenants, currentTenant]);
+  }, [tenants, currentTenant, currentLabel]);
 
   const groups = useMemo(() => {
     const selectable = tenants.filter((t) => t.defaultDomainName !== "AllTenants");
@@ -113,14 +134,16 @@ export const CippMobileTenantPicker = () => {
       });
     }
     settings.handleUpdate({ currentTenant: value });
-    router.replace(
-      {
-        pathname: router.pathname,
-        query: { ...router.query, tenantFilter: value },
-      },
-      undefined,
-      { shallow: true }
-    );
+    // A selection is a tenant (?tenantFilter) or a group (?tenantGroup), never both
+    const query = { ...router.query };
+    if (isTenantGroup(value)) {
+      delete query.tenantFilter;
+      query.tenantGroup = tenantGroupId(value);
+    } else {
+      delete query.tenantGroup;
+      query.tenantFilter = value;
+    }
+    router.replace({ pathname: router.pathname, query }, undefined, { shallow: true });
     setOpen(false);
     setSearch("");
   };
@@ -305,6 +328,26 @@ export const CippMobileTenantPicker = () => {
                   No tenants match “{search}”.
                 </Typography>
               )}
+            {!search && tenantGroups.length > 0 && (
+              <>
+                <ListSubheader disableSticky>Tenant groups</ListSubheader>
+                {tenantGroups.map((group) => (
+                  <ListItemButton
+                    key={`group-${group.Id}`}
+                    onClick={() => selectTenant(toTenantGroup(group.Id))}
+                    sx={{ minHeight: 52, gap: 1.5 }}
+                  >
+                    <Avatar sx={{ width: 34, height: 34, bgcolor: "primary.alpha12", color: "primary.main" }}>
+                      <CippIcons.Groups fontSize="small" />
+                    </Avatar>
+                    <ListItemText primary={group.Name} sx={{ minWidth: 0, my: 0 }} slotProps={{ primary: { noWrap: true } }} />
+                    {currentTenant === toTenantGroup(group.Id) && (
+                      <Chip label="Current" size="small" variant="outlined" sx={{ flexShrink: 0, height: 22 }} />
+                    )}
+                  </ListItemButton>
+                ))}
+              </>
+            )}
           </List>
         </Box>
       </Dialog>

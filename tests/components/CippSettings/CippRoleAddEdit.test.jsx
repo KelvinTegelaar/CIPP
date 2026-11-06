@@ -28,8 +28,10 @@ const idleMutation = vi.hoisted(() => ({
   reset: () => {},
 }));
 
+const featureFlags = vi.hoisted(() => ({ data: [], isFetching: false, isSuccess: true }));
+
 vi.mock("../../../src/api/ApiCall", () => ({
-  ApiGetCall: () => pendingPermissions,
+  ApiGetCall: ({ url }) => (url === "/api/ListFeatureFlags" ? featureFlags : pendingPermissions),
   ApiGetCallWithPagination: () => idlePagination,
   ApiPostCall: () => idleMutation,
 }));
@@ -104,5 +106,23 @@ describe("CippRoleAddEdit custom role advanced view", () => {
     act(() => bump());
 
     expect(await findByText("CIPP.Alert.Read")).toBeTruthy();
+  });
+});
+
+describe("CippRoleAddEdit tenant group selector setting", () => {
+  const groupSwitch = (getByRole) =>
+    getByRole("switch", { name: "Block tenant groups in the tenant selector" });
+
+  it("cannot be toggled while the TenantGroupSelector feature flag is off", () => {
+    featureFlags.data = [{ Id: "TenantGroupSelector", Enabled: false }];
+    const { getByRole, getByText } = renderWithProviders(<CippRoleAddEdit />);
+    expect(groupSwitch(getByRole).disabled).toBe(true);
+    expect(getByText(/Turn on Tenant Groups in Tenant Selector/)).toBeTruthy();
+  });
+
+  it("can be toggled once the flag is on", () => {
+    featureFlags.data = [{ Id: "TenantGroupSelector", Enabled: true }];
+    const { getByRole } = renderWithProviders(<CippRoleAddEdit />);
+    expect(groupSwitch(getByRole).disabled).toBe(false);
   });
 });

@@ -41,6 +41,7 @@ import { useDialog } from '../../../hooks/use-dialog'
 import { CippIcons } from '../../../utils/icon-registry'
 import { useCraftJobEvents } from '../../../hooks/use-craft-events'
 import { fromCraftRun } from '../../../utils/craft-run'
+import { isMultiTenant } from '../../../utils/tenant-selection'
 
 // Scenarios are tests in the Security Simulations suite. The list comes from ListAvailableTests, the
 // results from ListTests, and a run is the test engine's own per-test refresh.
@@ -946,7 +947,7 @@ const Page = () => {
   const router = useRouter()
   const tenant = useSettings().currentTenant
   const scenarioId = router.query.scenario
-  const tenantSelected = Boolean(tenant) && tenant !== 'AllTenants'
+  const tenantSelected = Boolean(tenant) && !isMultiTenant(tenant)
 
   const tests = ApiGetCall({
     url: '/api/ListTests',

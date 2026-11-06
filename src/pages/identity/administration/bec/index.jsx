@@ -19,6 +19,7 @@ import { useBecEvidenceDownload } from '../../../../components/CippComponents/Ci
 import { CippIcons } from '../../../../utils/icon-registry'
 import { ApiGetCall, ApiPostCall } from '../../../../api/ApiCall'
 import { useSettings } from '../../../../hooks/use-settings'
+import { isMultiTenant, tenantScope } from '../../../../utils/tenant-selection'
 
 // Columns shown for a single run — used both by the flat "All runs" table and inside a
 // user's run-history drawer, so the two never drift.
@@ -61,7 +62,7 @@ const UserRunsDrawer = ({ row, actions, drawerVisible, setDrawerVisible }) => {
 const StartInvestigationDrawer = ({ tenant }) => {
   const router = useRouter()
   const [visible, setVisible] = useState(false)
-  const isAllTenants = tenant === 'AllTenants'
+  const isAllTenants = isMultiTenant(tenant)
   const formControl = useForm({
     mode: 'onChange',
     defaultValues: { users: [] },
@@ -100,7 +101,7 @@ const StartInvestigationDrawer = ({ tenant }) => {
     queue.mutate(
       {
         url: '/api/ExecBECBulkCheck',
-        data: { tenantFilter: tenant, UserIds: ids },
+        data: { ...tenantScope(tenant), UserIds: ids },
       },
       { onSuccess: () => handleClose() }
     )
@@ -197,7 +198,7 @@ const Page = () => {
   // and reading it here as a plain array yielded nothing, so the grouped view came up empty.
   const groupedCall = ApiGetCall({
     url: '/api/ListBECReports',
-    data: { tenantFilter: currentTenant },
+    data: { ...tenantScope(currentTenant) },
     queryKey: `ListBECReports-grouped-${currentTenant}`,
     waiting: isByUser,
   })
@@ -410,7 +411,7 @@ const Page = () => {
 }
 
 Page.getLayout = (page) => (
-  <DashboardLayout allTenantsSupport={true}>{page}</DashboardLayout>
+  <DashboardLayout tenantGroupSupport={true} allTenantsSupport={true}>{page}</DashboardLayout>
 )
 
 export default Page

@@ -71,7 +71,8 @@ const CippFormPage = (props) => {
 
   useEffect(() => {
     if (router.query) {
-      const { tenantFilter: _tenantFilter, ...queryWithoutTenant } = router.query
+      // tenantFilter and tenantGroup are the shell's tenant selection, not form fields
+      const { tenantFilter: _tenantFilter, tenantGroup: _tenantGroup, ...queryWithoutTenant } = router.query
       const resetValues = {
         ...formControl.getValues(),
         ...queryWithoutTenant,

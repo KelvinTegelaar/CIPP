@@ -18,6 +18,7 @@ import { useForm } from 'react-hook-form'
 import CippFormComponent from './CippFormComponent'
 import { CippDataTable } from '../CippTable/CippDataTable'
 import { ApiGetCall } from '../../api/ApiCall'
+import { tenantScope } from '../../utils/tenant-selection'
 
 const SITE_ROOT = '__siteRoot__'
 const SITE_ROOT_OPTION = { label: 'Site root (whole site)', value: SITE_ROOT }
@@ -51,7 +52,7 @@ export const CippCheckUserAccessDialog = ({
 
   const libraries = ApiGetCall({
     url: '/api/ListSiteLibraries',
-    data: { SiteId: siteId, SiteUrl: siteUrl, tenantFilter: tenant },
+    data: { SiteId: siteId, SiteUrl: siteUrl, ...tenantScope(tenant) },
     queryKey: `SiteLibraries-${siteId ?? siteUrl}`,
     waiting: isOpen && !!siteUrl,
   })
@@ -76,7 +77,7 @@ export const CippCheckUserAccessDialog = ({
     if (!upn) return
     const scopeId = optionValue(selectedScope)
     setQuery({
-      tenantFilter: tenant,
+      ...tenantScope(tenant),
       SiteUrl: siteUrl,
       ListId: !scopeId || scopeId === SITE_ROOT ? '' : scopeId,
       UserPrincipalName: upn,

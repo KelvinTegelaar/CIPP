@@ -8,6 +8,7 @@ import CippFormComponent from "./CippFormComponent";
 import { CippApiResults } from "./CippApiResults";
 import { useSettings } from "../../hooks/use-settings";
 import { ApiPostCall } from "../../api/ApiCall";
+import { tenantScope } from "../../utils/tenant-selection";
 
 export const CippHVEUserDrawer = ({
   buttonText = "Add HVE User",
@@ -35,7 +36,7 @@ export const CippHVEUserDrawer = ({
   const handleSubmit = () => {
     const formData = formControl.getValues();
     const postData = {
-      tenantFilter: formData.tenantFilter,
+      ...tenantScope(formData.tenantFilter),
       displayName: formData.displayName,
       password: formData.password,
       primarySMTPAddress: formData.primarySMTPAddress,

@@ -20,6 +20,7 @@ import CippFormSkeleton from '../../../components/CippFormPages/CippFormSkeleton
 import { CippCAPersonaMatrix } from '../../../components/CippSecuritySimulations/CippCAPersonaMatrix'
 import { ApiGetCall } from '../../../api/ApiCall'
 import { useSettings } from '../../../hooks/use-settings'
+import { isMultiTenant } from '../../../utils/tenant-selection'
 
 const asArray = (value) =>
   (Array.isArray(value) ? value : value ? [value] : []).filter(
@@ -38,7 +39,7 @@ const severityRank = { Critical: 0, High: 1, Medium: 2, Low: 3, Info: 4 }
 const Page = () => {
   const pageTitle = 'Conditional Access Gap Analysis'
   const tenant = useSettings().currentTenant
-  const tenantSelected = Boolean(tenant) && tenant !== 'AllTenants'
+  const tenantSelected = Boolean(tenant) && !isMultiTenant(tenant)
 
   const analysis = ApiGetCall({
     url: '/api/ListCAGapAnalysis',

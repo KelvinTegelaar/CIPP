@@ -24,11 +24,14 @@ import { CippAddTestReportDrawer } from './CippAddTestReportDrawer'
 import { CippApiDialog } from './CippApiDialog'
 import { CippBottomSheet } from './CippBottomSheet'
 import { useSheetHandoff } from '../../hooks/use-sheet-handoff'
+import { useTenantLabel } from '../../hooks/use-tenant-label'
+import { tenantScope } from '../../utils/tenant-selection'
 
 export const CippReportToolbar = () => {
   const settings = useSettings()
   const router = useRouter()
   const { currentTenant } = settings
+  const tenantLabel = useTenantLabel(currentTenant)
   const queryClient = useQueryClient()
   const isMobile = useIsMobileLayout()
   const [deleteDialog, setDeleteDialog] = useState({ open: false })
@@ -401,8 +404,8 @@ export const CippReportToolbar = () => {
         api={{
           url: '/api/ExecTestRun',
           type: 'POST',
-          data: { tenantFilter: currentTenant },
-          confirmText: `Choose what to refresh for ${currentTenant}. A full refresh can take up to 2 hours; tests-only is much faster when the cache is already populated.`,
+          data: { ...tenantScope(currentTenant) },
+          confirmText: `Choose what to refresh for ${tenantLabel}. A full refresh can take up to 2 hours; tests-only is much faster when the cache is already populated.`,
           relatedQueryKeys: [`${currentTenant}-ListTests-${selectedReport}`],
         }}
       />

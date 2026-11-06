@@ -50,7 +50,10 @@ const result = (overrides = {}) => ({
 const controlRef = { current: null }
 
 const Harness = (props) => {
-  const formControl = useForm({ mode: 'onChange', defaultValues: { tenantFilter: [] } })
+  const formControl = useForm({
+    mode: 'onChange',
+    defaultValues: { tenantFilter: [] },
+  })
   useEffect(() => {
     controlRef.current = formControl
   }, [formControl])
@@ -88,7 +91,9 @@ describe('CippFormTenantSelector', () => {
       label: 'Contoso (contoso.com)',
       type: 'Tenant',
     })
-    expect(value[0].addedFields.customerId).toBe('11111111-aaaa-bbbb-cccc-000000000001')
+    expect(value[0].addedFields.customerId).toBe(
+      '11111111-aaaa-bbbb-cccc-000000000001'
+    )
   })
 
   it('merges tenant groups into the options when includeGroups is set', async () => {
@@ -101,6 +106,109 @@ describe('CippFormTenantSelector', () => {
     await user.click(screen.getByRole('combobox'))
     expect(await screen.findByText('VIP Clients')).toBeInTheDocument()
     expect(screen.getByText('Contoso (contoso.com)')).toBeInTheDocument()
+  })
+
+  it('replaces a picked group with its member tenants the user can access', async () => {
+    const user = userEvent.setup()
+    apiState.groups = result({
+      data: {
+        Results: [
+          {
+            Id: 'group-1',
+            Name: 'VIP Clients',
+            Members: [
+              { customerId: '11111111-aaaa-bbbb-cccc-000000000001' },
+              { customerId: '99999999-0000-0000-0000-000000000000' },
+            ],
+          },
+        ],
+      },
+    })
+    renderWithProviders(<Harness />)
+
+    await user.click(screen.getByRole('combobox'))
+    await user.click(await screen.findByText('VIP Clients (adds 1 tenant)'))
+
+    await waitFor(() => {
+      const value = controlRef.current.getValues('tenantFilter')
+      expect(value.map((item) => item.value)).toEqual(['contoso.com'])
+    })
+    expect(controlRef.current.getValues('tenantFilter')[0].type).toBe('Tenant')
+  })
+
+  it('adds each tenant once when picked groups overlap each other and a tenant picked directly', async () => {
+    const user = userEvent.setup()
+    const contoso = { customerId: '11111111-aaaa-bbbb-cccc-000000000001' }
+    const fabrikam = { customerId: '22222222-aaaa-bbbb-cccc-000000000002' }
+    apiState.groups = result({
+      data: {
+        Results: [
+          { Id: 'group-1', Name: 'Both', Members: [contoso, fabrikam] },
+          { Id: 'group-2', Name: 'Contoso only', Members: [contoso] },
+        ],
+      },
+    })
+    renderWithProviders(<Harness />)
+
+    await user.click(screen.getByRole('combobox'))
+    await user.click(await screen.findByText('Contoso (contoso.com)'))
+    await user.click(await screen.findByText('Contoso only (adds 1 tenant)'))
+    await user.click(await screen.findByText('Both (adds 2 tenants)'))
+
+    await waitFor(() => {
+      const value = controlRef.current.getValues('tenantFilter')
+      expect(value.map((item) => item.value)).toEqual(['contoso.com', 'fabrikam.com'])
+    })
+  })
+
+  it("leaves out a group with none of the user's tenants", async () => {
+    const user = userEvent.setup()
+    apiState.groups = result({
+      data: {
+        Results: [
+          { Id: 'empty', Name: 'Empty Group', Members: [] },
+          {
+            Id: 'other',
+            Name: 'Other Partner',
+            Members: [{ customerId: 'not-mine' }],
+          },
+        ],
+      },
+    })
+    renderWithProviders(<Harness />)
+
+    await user.click(screen.getByRole('combobox'))
+    expect(await screen.findByText('Contoso (contoso.com)')).toBeInTheDocument()
+    expect(
+      screen.queryByText(/Empty Group|Other Partner/)
+    ).not.toBeInTheDocument()
+  })
+
+  it('keeps a picked group as a group selector when includeGroups is set', async () => {
+    const user = userEvent.setup()
+    apiState.groups = result({
+      data: { Results: [{ Id: 'group-1', Name: 'VIP Clients', Members: [] }] },
+    })
+    renderWithProviders(<Harness includeGroups />)
+
+    await user.click(screen.getByRole('combobox'))
+    await user.click(await screen.findByText('VIP Clients'))
+
+    expect(controlRef.current.getValues('tenantFilter')).toMatchObject([
+      { value: 'group-1', type: 'Group' },
+    ])
+  })
+
+  it('does not offer groups in a single-tenant picker', async () => {
+    const user = userEvent.setup()
+    apiState.groups = result({
+      data: { Results: [{ Id: 'group-1', Name: 'VIP Clients', Members: [] }] },
+    })
+    renderWithProviders(<Harness type="single" />)
+
+    await user.click(screen.getByRole('combobox'))
+    expect(await screen.findByText('Contoso (contoso.com)')).toBeInTheDocument()
+    expect(screen.queryByText(/VIP Clients/)).not.toBeInTheDocument()
   })
 
   it('builds the api url from allTenants and tenant defaults flags', () => {

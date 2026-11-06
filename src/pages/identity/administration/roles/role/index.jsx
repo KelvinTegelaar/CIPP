@@ -28,6 +28,7 @@ import { CippHead } from '../../../../../components/CippComponents/CippHead'
 import { CippDataTable } from '../../../../../components/CippTable/CippDataTable'
 import { useCippRoleAssignmentActions } from '../../../../../components/CippComponents/CippRoleAssignmentActions'
 import CippInfoTooltip from '../../../../../components/CippComponents/CippInfoTooltip'
+import { isMultiTenant } from '../../../../../utils/tenant-selection'
 import {
   POLICY_BELOW_FLOOR_TOOLTIP,
   PRIVILEGED_ROLE_TOOLTIP,
@@ -40,7 +41,7 @@ const Page = () => {
   const { roleTemplateId } = router.query
   const tenantFilter =
     router.query.tenantFilter ?? userSettingsDefaults.currentTenant
-  const needsTenant = !tenantFilter || tenantFilter === 'AllTenants'
+  const needsTenant = !tenantFilter || isMultiTenant(tenantFilter)
 
   const roleRequest = ApiGetCall({
     url: '/api/ListPIMRoles',

@@ -4,6 +4,7 @@ import tabOptions from './tabOptions'
 import { Card, CardContent, Container, Typography } from '@mui/material'
 import { useSettings } from '../../../../hooks/use-settings'
 import { AllTenantsSecureScoreControlRollup } from '../../../../components/CippAllTenants/AllTenantsSecureScore'
+import { isMultiTenant } from '../../../../utils/tenant-selection'
 
 // Per-control rollup across every tenant. The tab is only listed under AllTenants; a single
 // tenant reaching this URL directly gets pointed back to the selector.
@@ -12,7 +13,7 @@ const Page = () => {
 
   return (
     <Container sx={{ flexGrow: 1, py: 2 }} maxWidth={false}>
-      {currentTenant === 'AllTenants' ? (
+      {isMultiTenant(currentTenant) ? (
         <AllTenantsSecureScoreControlRollup />
       ) : (
         <Card>
@@ -28,7 +29,7 @@ const Page = () => {
 }
 
 Page.getLayout = (page) => (
-  <DashboardLayout>
+  <DashboardLayout tenantGroupSupport={true}>
     <TabbedLayout tabOptions={tabOptions}>{page}</TabbedLayout>
   </DashboardLayout>
 )

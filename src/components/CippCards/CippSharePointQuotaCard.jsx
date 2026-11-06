@@ -6,6 +6,7 @@ import { useSettings } from '../../hooks/use-settings'
 import { usePermissions } from '../../hooks/use-permissions'
 import { LinearProgressWithLabel } from '../linearProgressWithLabel'
 import { CippDataTable } from '../CippTable/CippDataTable'
+import { isMultiTenant, tenantScope } from '../../utils/tenant-selection'
 
 // SharePoint reports the tenant quota in MB, and a tenant pool is routinely multiple TB.
 // Roll the unit up so the figures stay readable instead of printing seven-digit megabytes.
@@ -35,12 +36,12 @@ export const CippSharePointQuotaCard = () => {
   const currentTenant = useSettings().currentTenant
   const { checkPermissions } = usePermissions()
   const canReadQuota = checkPermissions(['Sharepoint.Admin.Read', 'Sharepoint.Admin.ReadWrite'])
-  const isAllTenants = currentTenant === 'AllTenants'
+  const isAllTenants = isMultiTenant(currentTenant)
   const enabled = !!currentTenant && canReadQuota
 
   const quota = ApiGetCall({
     url: '/api/ListSharepointQuota',
-    data: { tenantFilter: currentTenant },
+    data: { ...tenantScope(currentTenant) },
     // Same key the v1 dashboard uses, so the two share a single fetch.
     queryKey: `${currentTenant}-ListSharepointQuota`,
     waiting: enabled,

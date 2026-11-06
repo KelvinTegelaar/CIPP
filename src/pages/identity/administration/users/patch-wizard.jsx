@@ -26,6 +26,7 @@ import { CippDataTable } from '../../../../components/CippTable/CippDataTable'
 import { CippFormDomainSelector } from '../../../../components/CippComponents/CippFormDomainSelector'
 import { CippFormUserSelector } from '../../../../components/CippComponents/CippFormUserSelector'
 import { useSettings } from '../../../../hooks/use-settings'
+import { isMultiTenant } from '../../../../utils/tenant-selection'
 
 // User properties that can be patched
 const PATCHABLE_PROPERTIES = [
@@ -148,7 +149,7 @@ const UsersDisplayStep = (props) => {
       ...new Set((users || []).map((user) => user.Tenant || user.tenantFilter).filter(Boolean)),
     ]
     if (fromUsers.length === 1) return fromUsers[0]
-    if (settings.currentTenant && settings.currentTenant !== 'AllTenants') {
+    if (settings.currentTenant && !isMultiTenant(settings.currentTenant)) {
       return settings.currentTenant
     }
     return null

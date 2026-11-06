@@ -21,6 +21,7 @@ import {
   getAlertItemFields,
   humanizeCmdlet,
 } from '../../utils/format-alert-item'
+import { tenantScope } from '../../utils/tenant-selection'
 
 export const UNTIL_RESOLVED = 'until-resolved'
 
@@ -60,7 +61,7 @@ export const CippAlertSnoozeDialog = ({
       url: '/api/ExecSnoozeAlert',
       data: {
         CmdletName: cmdletName,
-        TenantFilter: tenantFilter,
+        ...tenantScope(tenantFilter),
         AlertItem: alertItem,
         Duration: untilResolved ? null : parseInt(duration, 10),
         UntilResolved: untilResolved,

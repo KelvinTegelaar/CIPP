@@ -1,5 +1,6 @@
 import { useCallback, useMemo } from 'react'
 import { ApiGetCall } from '../api/ApiCall'
+import { isMultiTenant } from '../utils/tenant-selection'
 
 const DAY_MS = 24 * 60 * 60 * 1000
 
@@ -81,7 +82,7 @@ export const addAppSignInActivity = (rows, lookup, now = Date.now()) => {
 // Reads the CIPP DB caches of the Entra sign-in activity reports (Entra ID P1) for a single tenant
 // and returns a dataTransform for an app list. With All Tenants it is disabled and rows pass as is.
 export const useAppSignInActivity = (tenant) => {
-  const enabled = Boolean(tenant) && tenant !== 'AllTenants'
+  const enabled = Boolean(tenant) && !isMultiTenant(tenant)
   const request = ApiGetCall({
     url: '/api/ListAppSignInActivity',
     data: { tenantFilter: tenant },

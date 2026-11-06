@@ -33,11 +33,14 @@ import ReactTimeAgo from "react-time-ago";
 import tabOptions from "./tabOptions.json";
 import { useRouter } from "next/router";
 import { CippHead } from "../../../components/CippComponents/CippHead";
+import { isMultiTenant } from "../../../utils/tenant-selection";
+import { useTenantLabel } from "../../../hooks/use-tenant-label";
 
 const Page = () => {
   const router = useRouter();
   const { templateId } = router.query;
   const settings = useSettings();
+  const tenantLabel = useTenantLabel(settings.currentTenant);
   const removeDialog = useDialog();
   const tenantFilterForm = useForm({ defaultValues: { tenantFilter: null } });
   const backupTenantFilter = useWatch({ control: tenantFilterForm.control, name: "tenantFilter" });
@@ -161,7 +164,7 @@ const Page = () => {
   // Filter backup data by selected tenant if in AllTenants view
   const selectedTenantValue = backupTenantFilter?.value ?? backupTenantFilter;
   const tenantFilteredBackupData =
-    settings.currentTenant === "AllTenants" &&
+    isMultiTenant(settings.currentTenant) &&
     selectedTenantValue &&
     selectedTenantValue !== "AllTenants"
       ? filteredBackupData.filter((backup) => backup.TenantFilter === selectedTenantValue)
@@ -259,7 +262,7 @@ const Page = () => {
     {
       icon: <CippIcons.EventRepeat />,
       name: "Tenant Scope",
-      data: settings.currentTenant === "AllTenants" ? "All Tenants" : settings.currentTenant,
+      data: tenantLabel,
     },
     {
       icon: <CippIcons.Schedule />,
@@ -371,7 +374,7 @@ const Page = () => {
                 <Alert severity="info">
                   <AlertTitle>No Backup Configuration</AlertTitle>
                   No backup schedule is currently configured for{" "}
-                  {settings.currentTenant === "AllTenants" ? "AllTenants" : settings.currentTenant}.
+                  {tenantLabel}.
                   Click "Add Backup Schedule" to create an automated backup configuration that will apply to all tenants.
                   A tenant specific backup can exist alongside a global backup, and will run according to its own schedule.
                 </Alert>
@@ -407,7 +410,7 @@ const Page = () => {
                         alignItems: "center",
                         width: { xs: "100%", md: "auto" }
                       }}>
-                      {settings.currentTenant === "AllTenants" && (
+                      {isMultiTenant(settings.currentTenant) && (
                         <Box sx={{ minWidth: { md: 250 }, flexGrow: 1 }}>
                           <CippFormTenantSelector
                             formControl={tenantFilterForm}
@@ -433,16 +436,16 @@ const Page = () => {
                   <Typography variant="body2" sx={{
                     color: "text.secondary"
                   }}>
-                    {settings.currentTenant === "AllTenants"
-                      ? "Viewing backups for all tenants."
+                    {isMultiTenant(settings.currentTenant)
+                      ? `Viewing backups for ${tenantLabel}.`
                       : `Viewing backups for ${settings.currentTenant} and global backups.`}
                   </Typography>
 
                   {filteredBackupData.length === 0 && !backupList.isFetching ? (
                     <Alert severity="info">
                       <AlertTitle>No Backup History</AlertTitle>
-                      {settings.currentTenant === "AllTenants"
-                        ? "No backups exist for any tenant."
+                      {isMultiTenant(settings.currentTenant)
+                        ? `No backups found for ${tenantLabel}.`
                         : `No backups found for ${settings.currentTenant}.`}
                     </Alert>
                   ) : backupList.isFetching ? (
@@ -482,7 +485,7 @@ const Page = () => {
                                     }}>
                                       <ReactTimeAgo date={backup.timestamp} />
                                     </Typography>
-                                    {settings.currentTenant === "AllTenants" && (
+                                    {isMultiTenant(settings.currentTenant) && (
                                       <Chip
                                         label={`Tenant: ${backup.tenantSource}`}
                                         size="small"

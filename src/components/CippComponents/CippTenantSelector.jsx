@@ -11,6 +11,7 @@ import { getCippError } from "../../utils/get-cipp-error";
 import { useQueryClient } from "@tanstack/react-query";
 import { CippIcons, getIconByName } from "../../utils/icon-registry"
 import { useLoginHint } from "../../hooks/use-login-hint";
+import { isMultiTenant, isTenantGroup, tenantGroupId, toTenantGroup } from "../../utils/tenant-selection";
 
 export const CippTenantSelector = React.forwardRef((props, ref) => {
   const { width, allTenants = false, multiple = false, refreshButton, tenantButton } = props;
@@ -19,7 +20,9 @@ export const CippTenantSelector = React.forwardRef((props, ref) => {
   const settings = useSettings();
   const queryClient = useQueryClient();
   const { recent, favorites, trackRecent, toggleFavorite, isFavorite } = useTenantPreferences();
-  const tenant = router.query.tenantFilter ? router.query.tenantFilter : settings.currentTenant;
+  const urlGroup = router.query.tenantGroup;
+  const tenant =
+    router.query.tenantFilter ?? (urlGroup ? toTenantGroup(urlGroup) : settings.currentTenant);
   const routerUpdateTimeoutRef = useRef(null);
 
   // Fetch tenant list
@@ -31,6 +34,26 @@ export const CippTenantSelector = React.forwardRef((props, ref) => {
     refetchOnReconnect: false,
     keepPreviousData: true,
   });
+
+  // A tenant group is its own selection ('group:<id>'); the URL carries ?tenantGroup instead of ?tenantFilter
+  const groupList = ApiGetCall({
+    url: "/api/ListTenantGroups",
+    data: { TenantSelector: true },
+    queryKey: "TenantSelectorGroups",
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+  });
+  const groupOptions = useMemo(
+    () =>
+      (Array.isArray(groupList.data?.Results) ? groupList.data.Results : [])
+        .map((group) => ({
+          value: toTenantGroup(group.Id),
+          label: group.Name,
+          group: "Tenant groups",
+        }))
+        .sort((a, b) => a.label.localeCompare(b.label)),
+    [groupList.data]
+  );
 
   const [currentTenant, setSelectedTenant] = useState(null);
   const [offcanvasVisible, setOffcanvasVisible] = useState(false);
@@ -97,8 +120,9 @@ export const CippTenantSelector = React.forwardRef((props, ref) => {
       ...favoriteOptions,
       ...recentOptions,
       ...allOptions,
+      ...groupOptions,
     ];
-  }, [baseTenantOptions, favorites, recent]);
+  }, [baseTenantOptions, groupOptions, favorites, recent]);
 
   const handleToggleFavorite = useCallback(
     (event, option) => {
@@ -113,7 +137,7 @@ export const CippTenantSelector = React.forwardRef((props, ref) => {
     (newValue) => {
       if (!newValue) return;
       setSelectedTenant(newValue);
-      trackRecent(newValue);
+      if (!isTenantGroup(newValue.value)) trackRecent(newValue);
     },
     [trackRecent]
   );
@@ -239,9 +263,19 @@ export const CippTenantSelector = React.forwardRef((props, ref) => {
   // This effect handles updates when the tenant is changed via dropdown selection
   useEffect(() => {
     if (!router.isReady) return;
+    const selectedGroup = tenantGroupId(currentTenant?.value);
+    if (selectedGroup) {
+      if (router.query.tenantGroup !== selectedGroup || router.query.tenantFilter) {
+        const query = { ...router.query, tenantGroup: selectedGroup };
+        delete query.tenantFilter;
+        router.replace({ pathname: router.pathname, query }, undefined, { shallow: true });
+      }
+      return;
+    }
     if (currentTenant?.value) {
       const query = { ...router.query };
-      if (query.tenantFilter !== currentTenant.value) {
+      if (query.tenantFilter !== currentTenant.value || query.tenantGroup) {
+        delete query.tenantGroup;
         // Clear any pending timeout
         if (routerUpdateTimeoutRef.current) {
           clearTimeout(routerUpdateTimeoutRef.current);
@@ -273,7 +307,27 @@ export const CippTenantSelector = React.forwardRef((props, ref) => {
   useEffect(() => {
     if (!router.isReady || !tenantList.isSuccess) return;
 
+    if (urlGroup) {
+      if (!groupList.isSuccess) return;
+      const matchingGroup = groupOptions.find((option) => option.value === toTenantGroup(urlGroup));
+      if (matchingGroup) {
+        if (currentTenant?.value !== matchingGroup.value) setSelectedTenant(matchingGroup);
+        if (settings.currentTenant !== matchingGroup.value) {
+          settings.handleUpdate({ currentTenant: matchingGroup.value });
+        }
+      }
+      return;
+    }
+
     const urlTenant = router.query.tenantFilter;
+
+    // A link built from a group selection names it as tenantFilter; the URL form is ?tenantGroup
+    if (isTenantGroup(urlTenant)) {
+      const query = { ...router.query, tenantGroup: tenantGroupId(urlTenant) };
+      delete query.tenantFilter;
+      router.replace({ pathname: router.pathname, query }, undefined, { shallow: true });
+      return;
+    }
 
     // Only process if we have a URL tenant
     if (urlTenant) {
@@ -316,15 +370,17 @@ export const CippTenantSelector = React.forwardRef((props, ref) => {
         }
       }
     }
-  }, [router.isReady, router.query.tenantFilter, tenantList.isSuccess]);
+  }, [router.isReady, router.query.tenantFilter, urlGroup, tenantList.isSuccess, groupList.isSuccess]);
 
   // This effect ensures the tenant filter parameter is included in the URL when missing
   useEffect(() => {
     if (!router.isReady || !settings.currentTenant) return;
 
     // If the tenant parameter is missing from the URL but we have it in settings
-    if (!router.query.tenantFilter && settings.currentTenant) {
-      const query = { ...router.query, tenantFilter: settings.currentTenant };
+    if (!router.query.tenantFilter && !router.query.tenantGroup && settings.currentTenant) {
+      const query = isTenantGroup(settings.currentTenant)
+        ? { ...router.query, tenantGroup: tenantGroupId(settings.currentTenant) }
+        : { ...router.query, tenantFilter: settings.currentTenant };
       router.replace(
         {
           pathname: router.pathname,
@@ -334,17 +390,17 @@ export const CippTenantSelector = React.forwardRef((props, ref) => {
         { shallow: true }
       );
     }
-  }, [router.isReady, router.query.tenantFilter, settings.currentTenant]);
+  }, [router.isReady, router.query.tenantFilter, router.query.tenantGroup, settings.currentTenant]);
 
   useEffect(() => {
-    if (tenant && currentTenant?.value && currentTenant?.value !== "AllTenants") {
+    if (tenant && currentTenant?.value && !isMultiTenant(currentTenant.value)) {
       tenantDetails.refetch();
     }
   }, [tenant, offcanvasVisible]);
 
   // We can simplify this effect since we now have the new effect above to handle URL changes
   useEffect(() => {
-    if (tenant && tenantList.isSuccess && !currentTenant) {
+    if (tenant && tenantList.isSuccess && !currentTenant && !isTenantGroup(tenant)) {
       const matchingTenant =
         tenantList.data.find(({ defaultDomainName }) => defaultDomainName === tenant) ||
         tenantList.data.find(({ customerId }) => customerId === tenant) ||
@@ -399,7 +455,7 @@ export const CippTenantSelector = React.forwardRef((props, ref) => {
             onClick={() => {
               setOffcanvasVisible(true);
             }}
-            disabled={!currentTenant || currentTenant.value === "AllTenants"}
+            disabled={!currentTenant || isMultiTenant(currentTenant.value)}
           >
             <Tooltip title="Show Tenant Information">{getIconByName("Business")}</Tooltip>
           </IconButton>
@@ -451,7 +507,8 @@ export const CippTenantSelector = React.forwardRef((props, ref) => {
           renderOption={(props, option, { selected }) => {
             const { key, ...optionProps } = props;
             const isAllTenants = option.value === "AllTenants";
-            const favourited = !isAllTenants && isFavorite(option.value);
+            const isGroup = isTenantGroup(option.value);
+            const favourited = !isAllTenants && !isGroup && isFavorite(option.value);
             return (
               // Group-scoped key: a tenant now appears in both Favorites/Recent and
               // "All tenants", so MUI's option key alone would collide.
@@ -484,7 +541,7 @@ export const CippTenantSelector = React.forwardRef((props, ref) => {
                       }}
                     />
                   )}
-                  {!isAllTenants && (
+                  {!isAllTenants && !isGroup && (
                     <Tooltip title={favourited ? "Remove favorite" : "Add favorite"}>
                       <IconButton
                         size="small"
@@ -510,14 +567,15 @@ export const CippTenantSelector = React.forwardRef((props, ref) => {
         {refreshButton && (
           <IconButton
             aria-label="refresh"
-            disabled={tenantList.isFetching}
+            disabled={tenantList.isFetching || groupList.isFetching}
             color="inherit"
             size="small"
             onClick={() => {
               tenantList.refetch();
+              groupList.refetch();
             }}
           >
-            <Tooltip title="Refresh tenant list">
+            <Tooltip title="Refresh tenants and tenant groups">
               <CippIcons.Refresh />
             </Tooltip>
           </IconButton>

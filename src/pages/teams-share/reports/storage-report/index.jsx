@@ -49,6 +49,7 @@ import {
   ExclamationTriangleIcon,
 } from '@heroicons/react/24/outline'
 import { CippHead } from '../../../../components/CippComponents/CippHead'
+import { isMultiTenant, tenantScope } from '../../../../utils/tenant-selection'
 import {
   buildCleanupOpportunities,
   formatCleanupBytes,
@@ -100,7 +101,7 @@ const quotaDefaultsFromRow = (row) => {
 const formatSetQuotaPayload = (row, formData, tenantFilter) => {
   const formatRow = (siteRow) => {
     const payload = {
-      tenantFilter: siteRow.Tenant ?? tenantFilter,
+      ...tenantScope(siteRow.Tenant ?? tenantFilter),
       SiteUrl: siteRow.webUrl,
     }
     const storageMax = parseInt(formData.StorageMaximumLevel, 10)
@@ -300,35 +301,35 @@ const Page = () => {
   const [inventoryTab, setInventoryTab] = useState(0)
   const [topSitesMetric, setTopSitesMetric] = useState('percent')
 
-  const waiting = !!currentTenant && currentTenant !== 'AllTenants'
+  const waiting = !!currentTenant && !isMultiTenant(currentTenant)
   const spQueryKey = `ListSites-SharePointSiteUsage-${currentTenant}-true`
   const odQueryKey = `ListSites-OneDriveUsageAccount-${currentTenant}-true`
   const cleanupQueryKey = `ListStorageCleanupScan-${currentTenant}`
 
   const spUsage = ApiGetCall({
     url: '/api/ListSites?type=SharePointSiteUsage&UseReportDB=true',
-    data: { tenantFilter: currentTenant },
+    data: { ...tenantScope(currentTenant) },
     queryKey: spQueryKey,
     waiting,
   })
 
   const odUsage = ApiGetCall({
     url: '/api/ListSites?type=OneDriveUsageAccount&UseReportDB=true',
-    data: { tenantFilter: currentTenant },
+    data: { ...tenantScope(currentTenant) },
     queryKey: odQueryKey,
     waiting,
   })
 
   const quota = ApiGetCall({
     url: '/api/ListSharepointQuota',
-    data: { tenantFilter: currentTenant },
+    data: { ...tenantScope(currentTenant) },
     queryKey: `${currentTenant}-ListSharepointQuota`,
     waiting: waiting && canReadQuota,
   })
 
   const cleanupScan = ApiGetCall({
     url: '/api/ListStorageCleanupScan',
-    data: { tenantFilter: currentTenant },
+    data: { ...tenantScope(currentTenant) },
     queryKey: cleanupQueryKey,
     waiting,
   })
@@ -661,7 +662,7 @@ const Page = () => {
         api: {
           url: '/api/ListSiteBrowser',
           data: {
-            tenantFilter: currentTenant,
+            ...tenantScope(currentTenant),
             SiteUrl: '[webUrl]',
           },
           dataKey: 'Results',
@@ -697,7 +698,7 @@ const Page = () => {
       <CippHead title="Storage Report" />
       <Container maxWidth={false} sx={{ flexGrow: 1, py: 2 }}>
         <Grid container spacing={2}>
-          {currentTenant === 'AllTenants' ? (
+          {isMultiTenant(currentTenant) ? (
             <Grid size={{ md: 4, xs: 12 }}>
               <CippImageCard
                 title="Not supported"
@@ -1129,6 +1130,6 @@ const Page = () => {
   )
 }
 
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>
+Page.getLayout = (page) => <DashboardLayout tenantGroupSupport={true}>{page}</DashboardLayout>
 
 export default Page

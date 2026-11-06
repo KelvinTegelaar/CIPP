@@ -4,6 +4,7 @@
  */
 
 import { getMissingFromCache, addLicensesToCache } from "./cipp-license-cache";
+import { tenantScope } from "./tenant-selection";
 
 const getCurrentTenant = () => {
   try {
@@ -107,7 +108,7 @@ class LicenseBackfillManager {
 
       const response = await axios.post(
         "/api/ExecLicenseSearch",
-        { skuIds: skuIdsToFetch, tenantFilter },
+        { skuIds: skuIdsToFetch, ...tenantScope(tenantFilter) },
         { headers: await buildVersionedHeaders() }
       );
 

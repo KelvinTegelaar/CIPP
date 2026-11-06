@@ -9,6 +9,8 @@ import { CippFormCondition } from './CippFormCondition'
 import { CippApiResults } from './CippApiResults'
 import { useSettings } from '../../hooks/use-settings'
 import { ApiPostCall } from '../../api/ApiCall'
+import { isMultiTenant } from '../../utils/tenant-selection'
+import { useTenantLabel } from '../../hooks/use-tenant-label'
 
 export const CippRestoreBackupDrawer = ({
   buttonText = 'Restore Backup',
@@ -20,6 +22,7 @@ export const CippRestoreBackupDrawer = ({
 }) => {
   const [drawerVisible, setDrawerVisible] = useState(false)
   const userSettingsDefaults = useSettings()
+  const tenantLabel = useTenantLabel(tenantFilter)
   const tenantFilter = userSettingsDefaults.currentTenant || ''
 
   const formControl = useForm({
@@ -91,7 +94,7 @@ export const CippRestoreBackupDrawer = ({
 
     // If in AllTenants context, use the tenant from the backup data
     let tenantFilterValue = tenantFilter
-    if (tenantFilter === 'AllTenants' && backupData?.tenantSource) {
+    if (isMultiTenant(tenantFilter) && backupData?.tenantSource) {
       tenantFilterValue = backupData.tenantSource
     }
 
@@ -207,7 +210,7 @@ export const CippRestoreBackupDrawer = ({
             <Grid size={{ xs: 12 }}>
               <CippFormComponent
                 type="autoComplete"
-                label={`Backups for ${tenantFilter}`}
+                label={`Backups for ${tenantLabel}`}
                 name="backup"
                 multiple={false}
                 api={{
@@ -219,7 +222,7 @@ export const CippRestoreBackupDrawer = ({
                       ? `${match[1]} @ ${match[2]}:${match[3]}`
                       : option.BackupName
                     const tenantDisplay =
-                      tenantFilter === 'AllTenants' ? ` (${option.TenantFilter})` : ''
+                      isMultiTenant(tenantFilter) ? ` (${option.TenantFilter})` : ''
                     return `${dateTime}${tenantDisplay}`
                   },
                   valueField: 'BackupName',

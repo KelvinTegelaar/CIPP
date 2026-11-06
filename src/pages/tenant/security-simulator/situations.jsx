@@ -24,6 +24,7 @@ import { CippFormUserSelector } from '../../../components/CippComponents/CippFor
 import { ApiGetCall } from '../../../api/ApiCall'
 import { useSettings } from '../../../hooks/use-settings'
 import countryList from '../../../data/countryList.json'
+import { isMultiTenant } from '../../../utils/tenant-selection'
 
 const asArray = (value) =>
   (Array.isArray(value) ? value : value ? [value] : []).filter(
@@ -61,7 +62,7 @@ const Page = () => {
   const pageTitle = 'Sign-in Situations'
   const router = useRouter()
   const tenant = useSettings().currentTenant
-  const tenantSelected = Boolean(tenant) && tenant !== 'AllTenants'
+  const tenantSelected = Boolean(tenant) && !isMultiTenant(tenant)
 
   const formControl = useForm({
     mode: 'onChange',

@@ -43,6 +43,15 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
     relatedQueryKeys: ["customRoleList", "customRoleTable"],
   });
 
+  const featureFlags = ApiGetCall({
+    url: "/api/ListFeatureFlags",
+    queryKey: "featureFlags",
+    staleTime: 600000,
+  });
+  const tenantGroupSelectorEnabled =
+    Array.isArray(featureFlags.data) &&
+    featureFlags.data.some((flag) => flag.Id === "TenantGroupSelector" && flag.Enabled);
+
   const [allTenantSelected, setAllTenantSelected] = useState(false);
   const [cippApiRoleSelected, setCippApiRoleSelected] = useState(false);
   const [selectedRoleState, setSelectedRoleState] = useState(null);
@@ -61,6 +70,7 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
       blockedTenants: [],
       BlockedEndpoints: [],
       BlockAllTenants: false,
+      BlockTenantGroups: false,
       IPRange: [],
       AppRoleTenants: [],
       Permissions: {},
@@ -370,6 +380,7 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
         blockedTenants: newBlockedTenants,
         BlockedEndpoints: processedBlockedEndpoints,
         BlockAllTenants: Boolean(currentPermissions?.BlockAllTenants),
+        BlockTenantGroups: Boolean(currentPermissions?.BlockTenantGroups),
         IPRange: processedIPRanges,
         AppRoleTenants:
           currentPermissions?.AppRoleTenants?.map((tenantId) => ({
@@ -510,6 +521,7 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
         BlockedTenants: processedBlockedTenants,
         BlockedEndpoints: processedBlockedEndpoints,
         BlockAllTenants: Boolean(values?.["BlockAllTenants"]),
+        BlockTenantGroups: Boolean(values?.["BlockTenantGroups"]),
         IPRange: processedIPRanges,
         AppRoleTenants: values?.["AppRoleTenants"]?.map((tenant) => tenant?.value || tenant) || [],
         AllowedRolesTemplate: selectedRolesTemplate || null,
@@ -753,6 +765,21 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
                   label="Block the All Tenants view"
                   formControl={formControl}
                   helperText="Members of this role cannot select All Tenants or run cross-tenant views. Another role without this setting still grants it."
+                />
+              </Box>
+
+              <Box sx={{ mb: 3 }}>
+                <CippFormComponent
+                  type="switch"
+                  name="BlockTenantGroups"
+                  label="Block tenant groups in the tenant selector"
+                  formControl={formControl}
+                  disabled={!tenantGroupSelectorEnabled}
+                  helperText={
+                    tenantGroupSelectorEnabled
+                      ? "Members of this role cannot pick a tenant group to view pages. They can still assign standards, alerts and other settings to groups. Another role without this setting still grants it."
+                      : "Tenant groups are not offered in the tenant selector. Turn on Tenant Groups in Tenant Selector under Application Settings > Features to use this setting."
+                  }
                 />
               </Box>
 

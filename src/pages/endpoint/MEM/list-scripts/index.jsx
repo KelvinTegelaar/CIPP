@@ -22,6 +22,7 @@ import { useSettings } from '../../../../hooks/use-settings'
 import { Stack } from '@mui/system'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { useCippReportDB } from '../../../../components/CippComponents/CippReportDBControls'
+import { isMultiTenant, tenantScope } from '../../../../utils/tenant-selection'
 
 const assignmentModeOptions = [
   { label: 'Replace existing assignments', value: 'replace' },
@@ -98,7 +99,7 @@ const Page = () => {
     queryKey: ['script', { scriptId, scriptTenant }],
     queryFn: async () => {
       const response = await fetch(
-        `/api/EditIntuneScript?TenantFilter=${scriptTenant || tenantFilter}&ScriptId=${scriptId}`
+        `/api/EditIntuneScript?${new URLSearchParams(tenantScope(scriptTenant || tenantFilter))}&ScriptId=${scriptId}`
       )
       return response.json()
     },
@@ -201,7 +202,7 @@ const Page = () => {
             }
 
       const patchData = {
-        TenantFilter: scriptTenant || tenantFilter,
+        ...tenantScope(scriptTenant || tenantFilter),
         ScriptId: id,
         ScriptType: scriptType,
         IntuneScript: JSON.stringify(intuneScript),
@@ -305,7 +306,7 @@ const Page = () => {
       ],
       confirmText: 'Are you sure you want to assign "[displayName]" to all users?',
       customDataformatter: (row, action, formData) => ({
-        tenantFilter: tenantFilter === 'AllTenants' && row?.Tenant ? row.Tenant : tenantFilter,
+        tenantFilter: isMultiTenant(tenantFilter) && row?.Tenant ? row.Tenant : tenantFilter,
         ID: row?.id,
         Type: getScriptEndpoint(row?.scriptType),
         AssignTo: 'allLicensedUsers',
@@ -332,7 +333,7 @@ const Page = () => {
       ],
       confirmText: 'Are you sure you want to assign "[displayName]" to all devices?',
       customDataformatter: (row, action, formData) => ({
-        tenantFilter: tenantFilter === 'AllTenants' && row?.Tenant ? row.Tenant : tenantFilter,
+        tenantFilter: isMultiTenant(tenantFilter) && row?.Tenant ? row.Tenant : tenantFilter,
         ID: row?.id,
         Type: getScriptEndpoint(row?.scriptType),
         AssignTo: 'AllDevices',
@@ -359,7 +360,7 @@ const Page = () => {
       ],
       confirmText: 'Are you sure you want to assign "[displayName]" to all users and devices?',
       customDataformatter: (row, action, formData) => ({
-        tenantFilter: tenantFilter === 'AllTenants' && row?.Tenant ? row.Tenant : tenantFilter,
+        tenantFilter: isMultiTenant(tenantFilter) && row?.Tenant ? row.Tenant : tenantFilter,
         ID: row?.id,
         Type: getScriptEndpoint(row?.scriptType),
         AssignTo: 'AllDevicesAndUsers',
@@ -425,7 +426,7 @@ const Page = () => {
         const ids = selectedGroups.map((group) => group.value).filter(Boolean)
         const names = selectedGroups.map((group) => group.label).filter(Boolean)
         return {
-          tenantFilter: tenantFilter === 'AllTenants' && row?.Tenant ? row.Tenant : tenantFilter,
+          tenantFilter: isMultiTenant(tenantFilter) && row?.Tenant ? row.Tenant : tenantFilter,
           ID: row?.id,
           Type: getScriptEndpoint(row?.scriptType),
           GroupIds: isExclude ? [] : ids,
@@ -593,5 +594,5 @@ const Page = () => {
   )
 }
 
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>
+Page.getLayout = (page) => <DashboardLayout tenantGroupSupport={true}>{page}</DashboardLayout>
 export default Page

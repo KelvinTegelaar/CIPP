@@ -8,6 +8,7 @@ import { CippCodeBlock } from "../../../../components/CippComponents/CippCodeBlo
 import { ApiGetCallWithPagination } from "../../../../api/ApiCall";
 import { Alert, CircularProgress, Divider, Typography, Card } from "@mui/material";
 import { CippHead } from "../../../../components/CippComponents/CippHead";
+import { isMultiTenant } from "../../../../utils/tenant-selection";
 
 const Page = () => {
   const [apiFilter, setApiFilter] = useState([]);
@@ -20,7 +21,7 @@ const Page = () => {
   const requestData = {
     tenantFilter,
     ...apiFilter,
-    ...(tenantFilter === "AllTenants" && { manualPagination: true }),
+    ...(isMultiTenant(tenantFilter) && { manualPagination: true }),
   };
 
   const apiData = ApiGetCallWithPagination({

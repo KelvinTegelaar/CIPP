@@ -20,11 +20,13 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import DOMPurify from 'dompurify'
 import { ApiGetCall } from '../../api/ApiCall.jsx'
+import { useMultiTenantScope } from '../../hooks/use-multi-tenant-scope'
 import { getCippError } from '../../utils/get-cipp-error'
 import { CippInfoBar } from '../CippCards/CippInfoBar'
 import { CippDataTable } from '../CippTable/CippDataTable'
 import { AllTenantsTrendChart, severityColor } from './AllTenantsPrimitives'
 import { asArray, deriveSecureScoreSummary } from './useAllTenantsDashboard'
+import { tenantScope } from '../../utils/tenant-selection'
 
 /**
  * Estate-wide secure score, rendered by the secure score tabs when the tenant selector is on
@@ -33,10 +35,11 @@ import { asArray, deriveSecureScoreSummary } from './useAllTenantsDashboard'
  * than live Graph calls. The summary shares its query key with the All Tenants dashboard card.
  */
 const useSecureScoreReport = () => {
+  const scope = useMultiTenantScope()
   const reportApi = ApiGetCall({
     url: '/api/ListSecureScoreReport',
-    data: { tenantFilter: 'AllTenants', includeHistory: 'true' },
-    queryKey: 'AllTenantsDashboard-SecureScore',
+    data: { ...tenantScope(scope), includeHistory: 'true' },
+    queryKey: `AllTenantsDashboard-SecureScore-${scope}`,
   })
 
   const rows = useMemo(() => asArray(reportApi.data), [reportApi.data])
@@ -211,10 +214,11 @@ export const rollupControls = (rows, tenantCount) => {
 // Tenant x control data for the Table Overview and Controls tabs. One request shared by both
 // (react-query key), separate from the dashboard's lighter call that never carries controls.
 const useSecureScoreControls = () => {
+  const scope = useMultiTenantScope()
   const reportApi = ApiGetCall({
     url: '/api/ListSecureScoreReport',
-    data: { tenantFilter: 'AllTenants', includeControls: 'true' },
-    queryKey: 'AllTenantsSecureScore-Controls',
+    data: { ...tenantScope(scope), includeControls: 'true' },
+    queryKey: `AllTenantsSecureScore-Controls-${scope}`,
   })
   const { groups, members, groupSelect } = useTenantGroupFilter()
 

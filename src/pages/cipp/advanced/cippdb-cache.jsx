@@ -37,6 +37,7 @@ import { CippApiResults } from '../../../components/CippComponents/CippApiResult
 import { CippHead } from '../../../components/CippComponents/CippHead'
 import { CippQueueTracker } from '../../../components/CippTable/CippQueueTracker'
 import cacheTypes from '../../../data/CIPPDBCacheTypes.json'
+import { isMultiTenant, tenantScope } from '../../../utils/tenant-selection'
 import {
   CACHE_CATEGORY_LABELS,
   CACHE_CATEGORY_OPTIONS,
@@ -113,7 +114,7 @@ const Page = () => {
         url: apiUrl,
         data: {
           Action: 'List',
-          TenantFilter: tenantValue,
+          ...tenantScope(tenantValue),
           Type: selectedType,
         },
       },
@@ -141,7 +142,7 @@ const Page = () => {
         url: apiUrl,
         data: {
           Action: 'List',
-          TenantFilter: tenantValue,
+          ...tenantScope(tenantValue),
           Type: type,
         },
       },
@@ -266,43 +267,41 @@ const Page = () => {
   const isSyncable =
     Boolean(selectedType) && !NON_SYNCABLE_TYPES.includes(selectedType)
 
-  const syncConfirmText =
-    tenantValue === 'AllTenants' ? (
-      <Typography variant="body1">
-        Re-collect <strong>{selectedType}</strong> from Microsoft for{' '}
-        <strong>every tenant</strong> and write it back to the cache? This
-        queues one job per tenant and runs in the background.
-      </Typography>
-    ) : (
-      <Typography variant="body1">
-        Re-collect <strong>{selectedType}</strong> from Microsoft for{' '}
-        <strong>{tenantValue}</strong> and write it back to the cache? This runs
-        in the background; the grid refreshes when the queue finishes.
-      </Typography>
-    )
+  const syncConfirmText = isMultiTenant(tenantValue) ? (
+    <Typography variant="body1">
+      Re-collect <strong>{selectedType}</strong> from Microsoft for{' '}
+      <strong>every tenant</strong> and write it back to the cache? This queues
+      one job per tenant and runs in the background.
+    </Typography>
+  ) : (
+    <Typography variant="body1">
+      Re-collect <strong>{selectedType}</strong> from Microsoft for{' '}
+      <strong>{tenantValue}</strong> and write it back to the cache? This runs
+      in the background; the grid refreshes when the queue finishes.
+    </Typography>
+  )
 
-  const emptyConfirmText =
-    tenantValue === 'AllTenants' ? (
-      <Stack direction="row" spacing={1} sx={{ alignItems: 'flex-start' }}>
-        <WarningAmber color="warning" />
-        <Typography variant="body1">
-          Empty <strong>{selectedType}</strong> for <strong>AllTenants</strong>?
-          This deletes every row of that cache type across every tenant
-          partition, including count metadata. Data returns only after the next
-          cache sync. This cannot be undone.
-        </Typography>
-      </Stack>
-    ) : (
-      <Stack direction="row" spacing={1} sx={{ alignItems: 'flex-start' }}>
-        <WarningAmber color="warning" />
-        <Typography variant="body1">
-          Empty <strong>{selectedType}</strong> for{' '}
-          <strong>{tenantValue}</strong>? This deletes all rows for that cache
-          type on the tenant, including count metadata. Data returns only after
-          the next cache sync. This cannot be undone.
-        </Typography>
-      </Stack>
-    )
+  const emptyConfirmText = isMultiTenant(tenantValue) ? (
+    <Stack direction="row" spacing={1} sx={{ alignItems: 'flex-start' }}>
+      <WarningAmber color="warning" />
+      <Typography variant="body1">
+        Empty <strong>{selectedType}</strong> for <strong>AllTenants</strong>?
+        This deletes every row of that cache type across every tenant partition,
+        including count metadata. Data returns only after the next cache sync.
+        This cannot be undone.
+      </Typography>
+    </Stack>
+  ) : (
+    <Stack direction="row" spacing={1} sx={{ alignItems: 'flex-start' }}>
+      <WarningAmber color="warning" />
+      <Typography variant="body1">
+        Empty <strong>{selectedType}</strong> for <strong>{tenantValue}</strong>
+        ? This deletes all rows for that cache type on the tenant, including
+        count metadata. Data returns only after the next cache sync. This cannot
+        be undone.
+      </Typography>
+    </Stack>
+  )
 
   return (
     <Container maxWidth={false} sx={{ width: '100%' }}>
@@ -421,7 +420,7 @@ const Page = () => {
                           data: {
                             Action: 'Remove',
                             Type: selectedType,
-                            TenantFilter: tenantValue,
+                            ...tenantScope(tenantValue),
                             Rows: rows.map((r) => ({
                               CIPPPartitionKey: r.CIPPPartitionKey,
                               CIPPRowKey: r.CIPPRowKey,
@@ -484,7 +483,7 @@ const Page = () => {
           dataFunction: () => ({
             Action: 'Empty',
             Type: selectedType,
-            TenantFilter: tenantValue,
+            ...tenantScope(tenantValue),
           }),
           onSuccess: () => {
             // Invalidate any in-flight List so it cannot repopulate the grid after Empty.
@@ -498,6 +497,8 @@ const Page = () => {
   )
 }
 
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>
+Page.getLayout = (page) => (
+  <DashboardLayout tenantGroupSupport={true}>{page}</DashboardLayout>
+)
 
 export default Page

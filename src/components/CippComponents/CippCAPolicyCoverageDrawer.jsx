@@ -19,6 +19,7 @@ import {
   getCaCoverageReasonParts,
   getCaCoverageReasonTypeMeta,
 } from '../../utils/format-ca-coverage-reason'
+import { tenantScope } from '../../utils/tenant-selection'
 
 const COVERAGE_FILTERS = [
   {
@@ -332,7 +333,7 @@ const CoverageWhyOffCanvas = ({ row, tenantFilter }) => {
     nestBulk.mutate({
       url: '/api/ListGraphBulkRequest',
       data: {
-        tenantFilter,
+        ...tenantScope(tenantFilter),
         Requests: [
           {
             id: 'memberOf',
@@ -518,7 +519,7 @@ export const CippCAPolicyCoverageDrawer = ({
 
   const coverage = ApiGetCall({
     url: '/api/ListCAPolicyCoverage',
-    data: { tenantFilter, GUID: policyId },
+    data: { ...tenantScope(tenantFilter), GUID: policyId },
     queryKey: `CAPolicyCoverage-${tenantFilter}-${policyId}`,
     waiting: Boolean(drawerVisible && policyId && tenantFilter),
   })

@@ -1,6 +1,7 @@
 import { Alert, CircularProgress, Stack, Typography } from '@mui/material'
 import { ApiGetCall } from '../../api/ApiCall'
 import { CippCodeBlock } from './CippCodeBlock'
+import { isMultiTenant } from '../../utils/tenant-selection'
 
 // More-info panel for a live custom Sensitive Information Type: looks up its rule pack by RulePackId and
 // shows what it actually detects (parsed configuration + the raw ClassificationRuleCollection XML).
@@ -9,7 +10,7 @@ export const CippSitRulePackDetails = ({ row, tenant }) => {
   // Only classic regex/keyword (Entity) SITs have an inspectable rule configuration.
   const isEntity = row?.Type === 'Entity'
   const shouldShow = isCustom && isEntity
-  const tenantFilter = tenant === 'AllTenants' && row?.Tenant ? row.Tenant : tenant
+  const tenantFilter = isMultiTenant(tenant) && row?.Tenant ? row.Tenant : tenant
 
   const rulePack = ApiGetCall({
     url: '/api/ListSensitiveInfoTypeRulePackage',

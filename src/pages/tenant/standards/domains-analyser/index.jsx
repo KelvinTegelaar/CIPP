@@ -11,6 +11,7 @@ import { CippIcons } from '../../../../utils/icon-registry'
 import { DomainAnalyserDialog } from '../../../../components/CippComponents/DomainAnalyserDialog'
 import { DomainReportDialog } from '../../../../components/CippPdf/DomainReportDialog'
 import { useDialog } from '../../../../hooks/use-dialog'
+import { isMultiTenant } from '../../../../utils/tenant-selection'
 
 const Page = () => {
   const currentTenant = useSettings().currentTenant
@@ -92,7 +93,7 @@ const Page = () => {
             </Button>
             <Tooltip
               title={
-                currentTenant === 'AllTenants'
+                isMultiTenant(currentTenant)
                   ? 'Select a single tenant to report on all of its domains'
                   : 'Generate a client-ready PDF covering every domain in this tenant'
               }
@@ -101,7 +102,7 @@ const Page = () => {
                 <Button
                   onClick={() => setReportOpen(true)}
                   startIcon={<CippIcons.PictureAsPdf />}
-                  disabled={!currentTenant || currentTenant === 'AllTenants'}
+                  disabled={!currentTenant || isMultiTenant(currentTenant)}
                 >
                   Generate Report
                 </Button>
@@ -140,6 +141,6 @@ const Page = () => {
   )
 }
 
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>
+Page.getLayout = (page) => <DashboardLayout tenantGroupSupport={true}>{page}</DashboardLayout>
 
 export default Page

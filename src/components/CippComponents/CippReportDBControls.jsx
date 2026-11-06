@@ -6,6 +6,8 @@ import { useSettings } from "../../hooks/use-settings";
 import { useDialog } from "../../hooks/use-dialog";
 import { CippApiDialog } from "./CippApiDialog";
 import { CippQueueTracker } from "../CippTable/CippQueueTracker";
+import { isMultiTenant, isTenantGroup, tenantScope } from "../../utils/tenant-selection";
+import { useTenantLabel } from "../../hooks/use-tenant-label";
 
 /**
  * Hook + UI component that encapsulates all CIPP Reporting DB cache/live mode logic.
@@ -57,7 +59,8 @@ export function useCippReportDB(config) {
   } = config
 
   const currentTenant = useSettings().currentTenant;
-  const isAllTenants = currentTenant === "AllTenants";
+  const tenantLabel = useTenantLabel(currentTenant);
+  const isAllTenants = isMultiTenant(currentTenant);
   const dialog = useDialog();
   const [syncQueueId, setSyncQueueId] = useState(null);
   const [cacheOverride, setCacheOverride] = useState({ tenant: null, value: null });
@@ -130,7 +133,9 @@ export function useCippReportDB(config) {
   const tooltipText = !allowToggle
     ? 'This page always uses cached data from the CIPP reporting database.'
     : isAllTenants
-      ? 'AllTenants always uses cached data'
+      ? isTenantGroup(currentTenant)
+        ? 'Tenant groups always use cached data'
+        : 'All Tenants always uses cached data'
       : useReportDB
         ? 'Showing cached data — click to switch to live'
         : 'Showing live data — click to switch to cache'
@@ -138,7 +143,7 @@ export function useCippReportDB(config) {
   const cacheNames = Array.isArray(cacheName) ? cacheName : [cacheName]
   const confirmText =
     syncConfirmText ||
-    `Run ${cacheNames.join(', ')} cache sync for ${currentTenant}? This will update data immediately.`
+    `Run ${cacheNames.join(', ')} cache sync for ${tenantLabel}? This will update data immediately.`
 
   // The controls JSX
   const controls = (
@@ -203,7 +208,7 @@ export function useCippReportDB(config) {
               multiPost: false,
               customDataformatter: () =>
                 cacheNames.map((name) => ({
-                  tenantFilter: currentTenant,
+                  ...tenantScope(currentTenant),
                   Name: name,
                   ...(syncData || {}),
                 })),

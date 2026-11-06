@@ -12,6 +12,7 @@ import { useSettings } from "../../hooks/use-settings";
 import { ApiPostCall } from "../../api/ApiCall";
 import { getCippTranslation } from "../../utils/get-cipp-translation";
 import countryList from "../../data/countryList.json";
+import { isMultiTenant } from "../../utils/tenant-selection";
 
 export const CippBulkUserDrawer = ({
   buttonText = "Bulk Add Users",
@@ -26,7 +27,7 @@ export const CippBulkUserDrawer = ({
   // and the Graph write helpers silently no-op while the endpoint still reports success, so guard
   // the submit rather than letting it appear to succeed while creating nothing.
   const isAllTenants =
-    !initialState?.currentTenant || initialState.currentTenant === "AllTenants";
+    !initialState?.currentTenant || isMultiTenant(initialState.currentTenant);
 
   const addedFields = initialState?.defaultAttributes
     ? initialState.userAttributes.map((item) => item.label)

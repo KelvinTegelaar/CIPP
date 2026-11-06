@@ -7,6 +7,7 @@ import CippMailboxCustomAttributeRows, {
   canEditMailboxCustomAttributes,
 } from "./CippMailboxCustomAttributeRows";
 import timezoneList from "../../data/timezoneList.json";
+import { tenantScope } from "../../utils/tenant-selection";
 
 const timezoneOptions = timezoneList.map((tz) => ({
   label: `${tz.standardTime} - ${tz.timezone}`,
@@ -26,7 +27,7 @@ export const CippExchangeActions = () => {
       queryKey: `users-${tenant}`,
       data: {
         Endpoint: "users",
-        tenantFilter: tenant,
+        ...tenantScope(tenant),
         $select: "id,displayName,userPrincipalName,mail",
         $top: 999,
       },
@@ -131,7 +132,7 @@ export const CippExchangeActions = () => {
 
         return {
           mailboxRequests: bulkRequestData,
-          tenantFilter: tenant,
+          ...tenantScope(tenant),
         };
       },
       color: "primary",
@@ -215,7 +216,7 @@ export const CippExchangeActions = () => {
             valueField: "Name",
             queryKey: `RetentionPolicies-${tenant}`,
             data: {
-              tenantFilter: tenant,
+              ...tenantScope(tenant),
             },
           },
         },
@@ -233,7 +234,7 @@ export const CippExchangeActions = () => {
         return {
           PolicyName: policyName,
           Mailboxes: mailboxes,
-          tenantFilter: tenant,
+          ...tenantScope(tenant),
         };
       },
       color: "primary",
@@ -425,7 +426,7 @@ export const CippExchangeActions = () => {
         });
 
         return mailboxArray.map((mailbox) => ({
-          tenantFilter: mailbox.Tenant || mailbox.tenantFilter || tenant,
+          ...tenantScope(mailbox.Tenant || mailbox.tenantFilter || tenant),
           userid: mailbox.UPN || mailbox.UserPrincipalName,
           Identity: mailbox.ExchangeGuid,
           ...attrs,

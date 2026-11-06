@@ -68,7 +68,7 @@ const Page = () => {
   );
 };
 
-Page.getLayout = (page) => <DashboardLayout allTenantsSupport={true}>{page}</DashboardLayout>;
+Page.getLayout = (page) => <DashboardLayout tenantGroupSupport={true} allTenantsSupport={true}>{page}</DashboardLayout>;
 
 export default Page;
 

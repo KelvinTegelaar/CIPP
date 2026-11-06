@@ -14,6 +14,7 @@ import {
   Chip,
   CircularProgress,
 } from "@mui/material";
+import { tenantScope } from "../../utils/tenant-selection";
 
 const DnsRecordField = ({ label, value, copyable = true }) => {
   const [copied, setCopied] = useState(false);
@@ -87,7 +88,7 @@ export const CippDomainServiceConfigurationRecords = ({ row }) => {
     waiting: true,
     data: {
       Endpoint: `domains/${row.id}/serviceConfigurationRecords`,
-      tenantFilter: tenantFilter,
+      ...tenantScope(tenantFilter),
     },
   });
 

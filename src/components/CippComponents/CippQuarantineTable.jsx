@@ -15,6 +15,7 @@ import { CippQuarantineDetails } from './CippQuarantineDetails.jsx'
 import { CippDataTable } from '../CippTable/CippDataTable'
 import { ApiGetCall, ApiPostCall } from '../../api/ApiCall'
 import { useSettings } from '../../hooks/use-settings'
+import { isMultiTenant } from '../../utils/tenant-selection'
 
 const traceDetailColumns = [
   'Received',
@@ -73,7 +74,7 @@ export const CippQuarantineTable = ({ entityType = 'Email' }) => {
   // actions must target that tenant rather than the page-level "AllTenants" selection. Falls back
   // to the page tenant for the normal single-tenant view.
   const resolveTenant = (row) =>
-    tenantFilter === 'AllTenants' ? (row?.Tenant ?? tenantFilter) : tenantFilter
+    isMultiTenant(tenantFilter) ? (row?.Tenant ?? tenantFilter) : tenantFilter
 
   // Preview message dialog
   const [messageRow, setMessageRow] = useState(null)

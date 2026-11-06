@@ -16,6 +16,7 @@ import { usePermissions } from '../../../../hooks/use-permissions'
 import { Alert, Button, Container, Stack, SvgIcon, Typography } from '@mui/material'
 import { Grid } from '@mui/system'
 import { CippExpandableAlert } from '../../../../components/CippComponents/CippExpandableAlert'
+import { isMultiTenant } from '../../../../utils/tenant-selection'
 
 // This report is compiled from one cache, so Sync starts a single queue.
 const syncRows = [{ Name: 'SharePointPermissions' }]
@@ -37,7 +38,7 @@ const Page = () => {
     url: '/api/ListSharePointPermissions',
     data: { tenantFilter: currentTenant },
     queryKey: queryKey,
-    waiting: !!currentTenant && currentTenant !== 'AllTenants',
+    waiting: !!currentTenant && !isMultiTenant(currentTenant),
   })
 
   const data = permissions.data ?? {}
@@ -85,7 +86,7 @@ const Page = () => {
   return (
     <Container maxWidth={false} sx={{ flexGrow: 1, py: 2 }}>
       <Grid container spacing={2}>
-        {currentTenant === 'AllTenants' ? (
+        {isMultiTenant(currentTenant) ? (
           <Grid size={{ md: 4, xs: 12 }}>
             <CippImageCard
               title="Not supported"

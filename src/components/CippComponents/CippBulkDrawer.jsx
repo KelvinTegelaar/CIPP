@@ -19,6 +19,7 @@ import { CippApiResults } from "./CippApiResults";
 import { useSettings } from "../../hooks/use-settings";
 import { ApiPostCall } from "../../api/ApiCall";
 import { getCippTranslation } from "../../utils/get-cipp-translation";
+import { isMultiTenant } from "../../utils/tenant-selection";
 
 // A CSV cell is a string, the manual dialog's selectors (domain) give { label, value }.
 export const cellValue = (value) =>
@@ -77,7 +78,7 @@ export const CippBulkDrawer = ({
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [addRowDialogOpen, setAddRowDialogOpen] = useState(false);
   const tenantDomain = useSettings().currentTenant;
-  const isAllTenants = singleTenantOnly && (!tenantDomain || tenantDomain === "AllTenants");
+  const isAllTenants = singleTenantOnly && (!tenantDomain || isMultiTenant(tenantDomain));
 
   const exampleCsv = [fields, ...exampleRows].map((row) => row.join(",")).join("\n") + "\n";
 

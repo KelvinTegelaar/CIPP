@@ -5,16 +5,17 @@ import { CippDataTable } from "./CippDataTable";
 import { getCippTranslation } from "../../utils/get-cipp-translation";
 import { resolveRowTemplates, getRowTenant } from "../../utils/resolve-row-templates";
 import { useSettings } from "../../hooks/use-settings";
+import { tenantScope } from "../../utils/tenant-selection";
 
 const applyTenantFilterDefault = (api, row, currentTenant) => {
   if (!api) {
     return api;
   }
   const data = { ...(api.data || {}) };
-  if (data.tenantFilter === undefined && data.TenantFilter === undefined) {
+  if (data.tenantFilter === undefined && data.TenantFilter === undefined && data.tenantGroup === undefined) {
     const tenant = getRowTenant(row, currentTenant);
     if (tenant) {
-      data.tenantFilter = tenant;
+      return { ...api, data: { ...data, ...tenantScope(tenant) } };
     }
   }
   return { ...api, data };

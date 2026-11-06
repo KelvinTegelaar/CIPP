@@ -17,6 +17,7 @@ import Link from 'next/link'
 import { ApiGetCall } from '../../api/ApiCall'
 import { getCippError } from '../../utils/get-cipp-error'
 import { describeAge } from '../../utils/alert-lifecycle'
+import { tenantScope } from '../../utils/tenant-selection'
 
 // Same filter shape the Service Issues page builds for its own info bar links.
 export const OPEN_ISSUES_HREF = `/tenant/administration/service-health/issues?filters=${encodeURIComponent(
@@ -97,7 +98,7 @@ export const ServiceHealthCard = ({ tenantFilter, sx }) => {
   const issuesApi = ApiGetCall({
     url: '/api/ListServiceHealthIssues',
     queryKey: `ServiceHealthIssues-open-${tenantFilter}`,
-    data: { tenantFilter, Open: true },
+    data: { ...tenantScope(tenantFilter), Open: true },
     waiting: !!tenantFilter,
   })
 

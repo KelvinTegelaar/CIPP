@@ -32,6 +32,7 @@ import {
   sortAlertItems,
   summarizeAlertItems,
 } from '../../utils/alert-lifecycle'
+import { tenantScope } from '../../utils/tenant-selection'
 
 const RESOLVED_WINDOW_DAYS = 2
 
@@ -125,7 +126,11 @@ export const AlertsOverviewCard = ({ tenantFilter, sx }) => {
   const resultsApi = ApiGetCall({
     url: '/api/ListAlertResults',
     queryKey: resultsQueryKey,
-    data: { tenantFilter, IncludeResolved: true, Days: RESOLVED_WINDOW_DAYS },
+    data: {
+      ...tenantScope(tenantFilter),
+      IncludeResolved: true,
+      Days: RESOLVED_WINDOW_DAYS,
+    },
     waiting: !!tenantFilter,
   })
 

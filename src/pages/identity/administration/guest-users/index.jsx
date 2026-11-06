@@ -15,6 +15,7 @@ import {
   Typography,
 } from '@mui/material'
 import { Box, Grid } from '@mui/system'
+import { isMultiTenant, tenantScope } from '../../../../utils/tenant-selection'
 
 const GUEST_STATUSES = [
   { status: 'Active', color: 'success', icon: CippIcons.CheckCircle },
@@ -87,14 +88,14 @@ const Page = () => {
   })
 
   const tenantQuery =
-    currentTenant === 'AllTenants' ? '[Tenant]' : currentTenant
+    isMultiTenant(currentTenant) ? '[Tenant]' : currentTenant
   const userHubLink = `/identity/administration/users/user?userId=[id]&tenantFilter=${tenantQuery}`
 
   // Same url/data/queryKey as the table below, so react-query shares one request
   // between the summary cards and the table; data must match what CippTablePage builds.
   const guestData = ApiGetCallWithPagination({
     url: reportDB.resolvedApiUrl,
-    data: { tenantFilter: currentTenant, ...reportDB.resolvedApiData },
+    data: { ...tenantScope(currentTenant), ...reportDB.resolvedApiData },
     queryKey: reportDB.resolvedQueryKey,
     waiting: true,
   })
@@ -282,7 +283,7 @@ const Page = () => {
 }
 
 Page.getLayout = (page) => (
-  <DashboardLayout allTenantsSupport={true}>{page}</DashboardLayout>
+  <DashboardLayout tenantGroupSupport={true} allTenantsSupport={true}>{page}</DashboardLayout>
 )
 
 export default Page

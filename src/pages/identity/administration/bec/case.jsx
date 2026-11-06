@@ -17,6 +17,7 @@ import { CippBecRemediationHistory } from '../../../../components/CippComponents
 import { CippApiResults } from '../../../../components/CippComponents/CippApiResults'
 import CippButtonCard from '../../../../components/CippCards/CippButtonCard'
 import { becGroupFlagged, BEC_GROUPS } from '../../../../utils/bec-objectives'
+import { isMultiTenant } from '../../../../utils/tenant-selection'
 
 // The purpose-built case/remediation workspace. Data contract is unchanged: it polls execBECCheck
 // by GUID, shows the async run progress while it runs, and renders the completed results grouped by
@@ -50,7 +51,7 @@ const Page = () => {
       tenantFilter: tenant,
     },
     queryKey: `BECCaseUser-${tenant}-${userId}`,
-    waiting: ready && tenant !== 'AllTenants',
+    waiting: ready && !isMultiTenant(tenant),
   })
 
   const runsCall = ApiGetCall({

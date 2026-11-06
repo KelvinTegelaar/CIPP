@@ -13,6 +13,7 @@ import {
 import CippFormComponent from './CippFormComponent'
 import { CippFormCondition } from './CippFormCondition'
 import { ApiGetCall } from '../../api/ApiCall'
+import { tenantScope } from '../../utils/tenant-selection'
 
 /** Human-readable site version policy for Sync-policy cleanup. */
 export const formatVersionPolicy = (props) => {
@@ -200,7 +201,7 @@ export const CippSharePointVersionCleanupFields = ({
 
   const siteProps = ApiGetCall({
     url: '/api/ListSiteProperties',
-    data: { tenantFilter, SiteUrl: siteUrl },
+    data: { ...tenantScope(tenantFilter), SiteUrl: siteUrl },
     queryKey: `VersionCleanupPolicy-${tenantFilter}-${siteUrl}`,
     waiting: canLoadPolicy,
   })

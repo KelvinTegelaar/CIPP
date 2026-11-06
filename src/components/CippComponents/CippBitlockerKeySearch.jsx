@@ -14,6 +14,7 @@ import {
 } from "@mui/material";
 import { ApiGetCall, ApiPostCall } from "../../api/ApiCall";
 import { CippCopyToClipBoard } from "./CippCopyToClipboard";
+import { tenantScope } from "../../utils/tenant-selection";
 
 const getVolumeTypeLabel = (volumeType) => {
   const types = {
@@ -69,7 +70,7 @@ export const CippBitlockerKeySearch = ({
     url: "/api/ExecBitlockerSearch",
     data: {
       [searchType]: searchTerm,
-      ...(tenantFilter ? { tenantFilter } : {}),
+      ...(tenantFilter ? tenantScope(tenantFilter) : {}),
     },
     queryKey: `bitlocker-${searchType}-${searchTerm}-${tenantFilter || "all"}`,
     waiting: false,

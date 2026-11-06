@@ -19,6 +19,7 @@ import { Stack } from '@mui/system'
 import React from 'react'
 import { CippOffCanvas } from './CippOffCanvas'
 import CippJsonView from '../CippFormPages/CippJSONView'
+import { tenantScope } from '../../utils/tenant-selection'
 
 // MUI v9 TextField no longer accepts top-level inputProps/InputProps — they end up on a DOM
 // node and React warns. Flatten any legacy nested keys into the correct slot objects.
@@ -239,7 +240,7 @@ export const CippAutoComplete = React.forwardRef((props, ref) => {
       setGetRequestInfo({
         url: currentApi.url,
         data: {
-          ...(tenantScoped ? { tenantFilter: currentTenant } : null),
+          ...(tenantScoped ? tenantScope(currentTenant) : null),
           ...currentApi.data,
           // api.searchFormatter shapes the typed text into what the endpoint expects (e.g. a Graph
           // $search clause); the raw term still keys the cache.

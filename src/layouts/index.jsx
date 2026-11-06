@@ -12,6 +12,11 @@ import { ApiGetCall } from '../api/ApiCall'
 import { useDispatch } from 'react-redux'
 import { showToast } from '../store/toasts'
 import { CippErrorState } from '../components/CippComponents/CippErrorState'
+import {
+  isMultiTenant,
+  isTenantGroup,
+  toTenantGroup,
+} from '../utils/tenant-selection'
 import { nativeMenuItems } from './config'
 import { CippBreadcrumbNav } from '../components/CippComponents/CippBreadcrumbNav'
 import { SsoMigrationDialog } from '../components/CippComponents/SsoMigrationDialog'
@@ -90,7 +95,13 @@ const LayoutContainer = styled('div')({
 export const Layout = (props) => {
   // showBreadcrumb: the error routes opt out — there is no trail to a page that
   // doesn't exist or just crashed, and the bookmark button lives in there too.
-  const { children, allTenantsSupport = true, showBreadcrumb = true } = props
+  // tenantGroupSupport: only pages whose API calls declare TenantGroup support can show a tenant group
+  const {
+    children,
+    allTenantsSupport = true,
+    tenantGroupSupport = false,
+    showBreadcrumb = true,
+  } = props
   // one gate for the swap: drawer, the hamburger that opens it (top-nav), the gutter below
   const navCollapsed = useIsMobileLayout()
   const settings = useSettings()
@@ -118,11 +129,26 @@ export const Layout = (props) => {
   // page waits for the URL's tenant to be applied so its first call is not sent without one.
   const urlTenantUnavailable =
     !!urlTenant && tenantList.isSuccess && !urlTenantMatch
+  const urlGroup = useSearchParams()?.get('tenantGroup')
+  const groupList = ApiGetCall({
+    url: '/api/ListTenantGroups',
+    data: { TenantSelector: true },
+    queryKey: 'TenantSelectorGroups',
+    refetchOnMount: false,
+  })
+  const urlGroupUnavailable =
+    !!urlGroup &&
+    groupList.isSuccess &&
+    !(groupList.data?.Results ?? []).some((group) => group.Id === urlGroup)
   const urlTenantPending =
-    !!urlTenant &&
-    !urlTenantUnavailable &&
-    !tenantList.isError &&
-    (urlTenantMatch?.defaultDomainName ?? urlTenant) !== currentTenant
+    (!!urlTenant &&
+      !urlTenantUnavailable &&
+      !tenantList.isError &&
+      (urlTenantMatch?.defaultDomainName ?? urlTenant) !== currentTenant) ||
+    (!!urlGroup &&
+      !urlGroupUnavailable &&
+      !groupList.isError &&
+      currentTenant !== toTenantGroup(urlGroup))
   const [hideSidebar, setHideSidebar] = useState(false)
 
   const swaStatus = ApiGetCall({
@@ -335,8 +361,9 @@ export const Layout = (props) => {
           <LegacyInfrastructureDialog alert={blockingAlert} />
           <SsoMigrationDialog meData={currentRole.data} />
           <ForcedSsoMigrationDialog />
-          {(currentTenant === 'AllTenants' ||
+          {(isMultiTenant(currentTenant) ||
             urlTenant === 'AllTenants' ||
+            !!urlGroup ||
             !currentTenant) &&
           !allTenantsSupport ? (
             <Stack>
@@ -347,12 +374,33 @@ export const Layout = (props) => {
                 imageUrl="/cippy-404.png"
               />
             </Stack>
+          ) : (!!urlGroup || (!urlTenant && isTenantGroup(currentTenant))) &&
+            !tenantGroupSupport ? (
+            <Stack>
+              {showBreadcrumb && <CippBreadcrumbNav withRail />}
+              <CippErrorState
+                title="Pick a tenant or All Tenants"
+                description="This page can't show a tenant group. Choose a tenant or All Tenants from the tenant selector to continue."
+                imageUrl="/cippy-404.png"
+              />
+            </Stack>
           ) : urlTenantUnavailable ? (
             <Stack>
               {showBreadcrumb && <CippBreadcrumbNav withRail />}
               <CippErrorState
                 title="Tenant not available"
                 description={`You don't have access to ${urlTenant}, or CIPP doesn't manage it. Pick another tenant from the tenant selector.`}
+                imageUrl="/cippy-401.png"
+                actionText="Return to Home"
+                actionHref="/"
+              />
+            </Stack>
+          ) : urlGroupUnavailable ? (
+            <Stack>
+              {showBreadcrumb && <CippBreadcrumbNav withRail />}
+              <CippErrorState
+                title="Tenant group not available"
+                description="You don't have access to this tenant group, or it no longer exists. Pick a tenant or another group from the tenant selector."
                 imageUrl="/cippy-401.png"
                 actionText="Return to Home"
                 actionHref="/"

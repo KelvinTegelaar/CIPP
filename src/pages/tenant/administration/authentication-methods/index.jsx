@@ -6,6 +6,7 @@ import { CippTablePage } from "../../../../components/CippComponents/CippTablePa
 import CippFormComponent from "../../../../components/CippComponents/CippFormComponent.jsx";
 import { Box } from "@mui/material";
 import { useSettings } from "../../../../hooks/use-settings.js";
+import { isMultiTenant } from "../../../../utils/tenant-selection";
 
 const Page = () => {
   const pageTitle = "Policies";
@@ -200,7 +201,7 @@ const Page = () => {
   // Field names match the backend parameter names, so methodFieldDefs is the single source of truth.
   const buildConfigBody = (row, formData) => {
     const body = {
-      tenantFilter: tenant === "AllTenants" && row?.Tenant ? row.Tenant : tenant,
+      tenantFilter: isMultiTenant(tenant) && row?.Tenant ? row.Tenant : tenant,
       id: row?.id,
       state: row?.state,
     };
@@ -261,7 +262,7 @@ const Page = () => {
       customDataformatter: (row, action, formData) => {
         const selectedGroups = Array.isArray(formData?.groupTargets) ? formData.groupTargets : [];
         return {
-          tenantFilter: tenant === "AllTenants" && row?.Tenant ? row.Tenant : tenant,
+          tenantFilter: isMultiTenant(tenant) && row?.Tenant ? row.Tenant : tenant,
           state: row?.state,
           id: row?.id,
           GroupIds: selectedGroups.map((group) => group.value).filter(Boolean),
@@ -277,7 +278,7 @@ const Page = () => {
       hideBulk: true,
       confirmText: 'Are you sure you want to scope "[id]" to all users?',
       customDataformatter: (row) => ({
-        tenantFilter: tenant === "AllTenants" && row?.Tenant ? row.Tenant : tenant,
+        tenantFilter: isMultiTenant(tenant) && row?.Tenant ? row.Tenant : tenant,
         state: row?.state,
         id: row?.id,
         GroupIds: ["all_users"],
