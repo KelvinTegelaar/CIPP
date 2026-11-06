@@ -24,6 +24,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
+import { useMultiPartner } from "../../../../hooks/use-multi-partner";
 import { CippPropertyList } from "../../../../components/CippComponents/CippPropertyList";
 import NextLink from "next/link";
 import { useRouter } from "next/router";
@@ -74,6 +75,17 @@ const Page = () => {
     }
   }, [templateId, templateList.isSuccess, templateList.data]);
 
+  const { hasMultiplePartners, partnerOptions, partners } = useMultiPartner();
+  const selectedPartner = useWatch({ control: formControl.control, name: "partnerTenant" });
+  const primaryPartnerId = partners.find((partner) => partner.IsPrimary)?.partnerTenantId;
+  const effectivePartnerId = selectedPartner?.value || primaryPartnerId;
+  const templateMatchesPartner = (template) => {
+    if (!effectivePartnerId) return true;
+    const templatePartners = String(template.partnerTenantId || primaryPartnerId || "")
+      .split(",")
+      .filter(Boolean);
+    return templatePartners.includes(effectivePartnerId);
+  };
   const addInvites = ApiPostCall({
     urlFromData: true,
     relatedQueryKeys: ["GDAPInvite"],
@@ -85,6 +97,7 @@ const Page = () => {
     const eachInvite = Array.from({ length: values.inviteCount }, (_, i) => ({
       roleMappings: values.roleMappings.value,
       Reference: values.Reference,
+      ...(values.partnerTenant?.value ? { partnerTenantId: values.partnerTenant.value } : {}),
     }));
 
     addInvites.mutate({
@@ -172,6 +185,19 @@ const Page = () => {
                 </Grid>
               </>
             )}
+            {hasMultiplePartners && (
+              <Grid size={{ xs: 12 }}>
+                <CippFormComponent
+                  formControl={formControl}
+                  name="partnerTenant"
+                  label="Create invite under Partner Tenant (defaults to the primary)"
+                  type="autoComplete"
+                  options={partnerOptions}
+                  multiple={false}
+                  creatable={false}
+                />
+              </Grid>
+            )}
             <Grid size={{ xs: 12, md: 6 }}>
               <CippFormComponent
                 formControl={formControl}
@@ -180,10 +206,12 @@ const Page = () => {
                 type="autoComplete"
                 api={{
                   url: "/api/ExecGDAPRoleTemplate",
-                  queryKey: "ListGDAPRoleTemplatesAutocomplete",
+                  queryKey: `ListGDAPRoleTemplatesAutocomplete-${effectivePartnerId ?? ""}`,
                   dataKey: "Results",
                   labelField: (option) => option.TemplateId,
                   valueField: (option) => option.RoleMappings,
+                  dataFilter: (options) =>
+                    options.filter((option) => templateMatchesPartner(option.rawData ?? {})),
                 }}
                 multiple={false}
                 creatable={false}

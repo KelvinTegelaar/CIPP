@@ -18,6 +18,8 @@ export const CIPPM365OAuthButton = ({
   validateServiceAccount = true,
   promptBeforeAuth = false,
   disabled = false,
+  // Extra fields merged into the automatic ExecUpdateRefreshToken call after sign-in.
+  tokenUpdateBody = {},
 }) => {
   const [authInProgress, setAuthInProgress] = useState(false)
   const [authError, setAuthError] = useState(null)
@@ -571,6 +573,7 @@ export const CIPPM365OAuthButton = ({
                   refreshtoken: tokenData.refresh_token,
                   tenantMode: tokenData.tenantMode,
                   allowPartnerTenantManagement: tokenData.allowPartnerTenantManagement,
+                  ...tokenUpdateBody,
                 }),
               })
 

@@ -25,6 +25,7 @@ import { WizardSteps } from "../../../../components/CippWizard/wizard-steps";
 import CippPageCard from "../../../../components/CippCards/CippPageCard";
 import { getCippTranslation } from "../../../../utils/get-cipp-translation";
 import CippDataTableButton from "../../../../components/CippTable/CippDataTableButton";
+import { useMultiPartner } from "../../../../hooks/use-multi-partner";
 
 const Page = () => {
   const [currentRelationship, setCurrentRelationship] = useState(null);
@@ -88,6 +89,17 @@ const Page = () => {
     name: "gdapRoles",
   });
 
+  // Optional partner filter for the relationship list; empty means every partner.
+  const { hasMultiplePartners, partnerOptions } = useMultiPartner();
+  const selectedPartner = useWatch({ control: formControl.control, name: "partnerTenant" });
+  const partnerFilterId = selectedPartner?.value;
+  useEffect(() => {
+    const relationshipPartner = currentRelationship?.addedFields?.partnerTenantId;
+    if (partnerFilterId && relationshipPartner && relationshipPartner !== partnerFilterId) {
+      formControl.setValue("id", null);
+    }
+  }, [partnerFilterId]);
+
   useEffect(() => {
     if (
       relationshipList.isSuccess &&
@@ -121,6 +133,8 @@ const Page = () => {
               status: relationship?.status,
               autoExtendDuration: relationship?.autoExtendDuration,
               lastModifiedDateTime: relationship?.lastModifiedDateTime,
+              partnerTenantId: relationship?.partnerTenantId,
+              partnerIsPrimary: relationship?.partnerIsPrimary,
             },
           };
           formControl.setValue("id", formValue);
@@ -239,6 +253,7 @@ const Page = () => {
     }
     var data = {
       id: currentRelationship?.value,
+      partnerTenantId: currentRelationship?.addedFields?.partnerTenantId,
     };
     if (!currentInvite) {
       data.autoMapRoles = true;
@@ -269,6 +284,7 @@ const Page = () => {
     var data = {
       id: currentRelationship?.value,
       retry: true,
+      partnerTenantId: currentRelationship?.addedFields?.partnerTenantId,
     };
     if (!currentInvite) {
       data.autoMapRoles = true;
@@ -309,6 +325,17 @@ const Page = () => {
                     select a different relationship.
                   </Alert>
                 )}
+                {hasMultiplePartners && (
+                  <CippFormComponent
+                    formControl={formControl}
+                    name="partnerTenant"
+                    label="Filter relationships by Partner Tenant"
+                    type="autoComplete"
+                    options={partnerOptions}
+                    multiple={false}
+                    creatable={false}
+                  />
+                )}
                 <CippFormComponent
                   formControl={formControl}
                   name="id"
@@ -317,7 +344,8 @@ const Page = () => {
                   api={{
                     url: "/api/ListGDAPRelationships",
                     excludeTenantFilter: true,
-                    queryKey: "GDAPRelationships",
+                    // The filter is applied when the data lands, so the partner is part of the key
+                    queryKey: `GDAPRelationships-${partnerFilterId ?? "all"}`,
                     dataKey: "Results",
                     labelField: (option) =>
                       (option?.customer?.displayName ?? "Pending Invite") +
@@ -334,13 +362,17 @@ const Page = () => {
                       status: "status",
                       autoExtendDuration: "autoExtendDuration",
                       lastModifiedDateTime: "lastModifiedDateTime",
+                      partnerTenantId: "partnerTenantId",
+                      partnerIsPrimary: "partnerIsPrimary",
                     },
                     dataFilter: (data) => {
                       return data?.filter(
                         (relationship) =>
                           (relationship?.addedFields?.status === "active" ||
                             relationship?.addedFields?.status === "approvalPending") &&
-                          !relationship?.addedFields?.displayName?.startsWith("MLT_")
+                          !relationship?.addedFields?.displayName?.startsWith("MLT_") &&
+                          (!partnerFilterId ||
+                            relationship?.addedFields?.partnerTenantId === partnerFilterId)
                       );
                     },
                     showRefresh: true,
@@ -372,10 +404,26 @@ const Page = () => {
                       type="autoComplete"
                       api={{
                         url: "/api/ExecGDAPRoleTemplate",
-                        queryKey: "GDAPTemplates",
+                        queryKey: `GDAPTemplates-${currentRelationship?.addedFields?.partnerTenantId ?? ""}`,
                         dataKey: "Results",
                         labelField: (option) => option?.TemplateId,
                         valueField: "RoleMappings",
+                        // Only templates whose groups live in the relationship's partner
+                        dataFilter: (options) =>
+                          options.filter((option) => {
+                            const template = option.rawData ?? {};
+                            const relationshipPartner =
+                              currentRelationship?.addedFields?.partnerTenantId;
+                            if (!relationshipPartner) return true;
+                            const templatePartners = String(template.partnerTenantId || "")
+                              .split(",")
+                              .filter(Boolean);
+                            if (templatePartners.length === 0) {
+                              // Legacy templates belong to the primary
+                              return currentRelationship?.addedFields?.partnerIsPrimary !== false;
+                            }
+                            return templatePartners.includes(relationshipPartner);
+                          }),
                       }}
                       required={true}
                       validators={{

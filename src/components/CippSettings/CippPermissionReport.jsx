@@ -1,4 +1,5 @@
 import {
+  Box,
   Button,
   List,
   ListItemButton,
@@ -17,7 +18,7 @@ import { CippPageActionsFab } from "../CippComponents/CippPageActionsFab";
 import { useState } from "react";
 
 export const CippPermissionReport = (props) => {
-  const { importReport, setImportReport } = props;
+  const { importReport, setImportReport, actions } = props;
   const isMobile = useIsMobileLayout();
   const [importError, setImportError] = useState(false);
   const [currentFile, setCurrentFile] = useState(null);
@@ -276,6 +277,7 @@ export const CippPermissionReport = (props) => {
           stacked full-width at 390px read as a banner wall — on mobile they ride in the
           page-actions FAB sheet as plain list rows, uniform with every other sheet action.
           TabbedLayout no longer puts anything in that corner, so the FAB is this page's own. */}
+      {isMobile && actions ? <Box sx={{ mb: 2 }}>{actions}</Box> : null}
       {isMobile ? (
         <CippPageActionsFab title="Report" restackButtons={false}>
           <List sx={{ py: 0 }}>
@@ -322,8 +324,11 @@ export const CippPermissionReport = (props) => {
           </List>
         </CippPageActionsFab>
       ) : (
-        <Stack direction="row" spacing={2}>
-          {reportButtons}
+        <Stack direction="row" spacing={2} alignItems="center" justifyContent="space-between">
+          <Stack direction="row" spacing={2} alignItems="center">
+            {reportButtons}
+          </Stack>
+          {actions ? <Box sx={{ minWidth: 320 }}>{actions}</Box> : null}
         </Stack>
       )}
       <CippApiDialog

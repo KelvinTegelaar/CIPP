@@ -6,6 +6,7 @@ import {
   buildGdapTemplateSelection,
   classifyGdapGroupName,
   gdapPreviewStatus,
+  gdapTemplatePartnerOption,
   resolveGdapSelections,
   selectGdapDefaultOptions,
 } from "../../src/utils/gdap-role-options";
@@ -221,6 +222,42 @@ describe("buildGdapTemplatePayload", () => {
     expect(payload.NewRoles).toEqual([{ label: "Intune Administrator", value: "role-intune" }]);
     expect(payload).not.toHaveProperty("OriginalTemplateId");
   });
+
+  it("scopes reuse to the selected partner and sends its id", () => {
+    const otherPartnerMapping = { ...plainMapping, partnerTenantId: "partner-b" };
+    const legacyMapping = customMapping; // no partnerTenantId: belongs to the primary
+    const mappings = [otherPartnerMapping, legacyMapping];
+    const options = buildGdapRoleOptions(catalog, mappings);
+    const payload = buildGdapTemplatePayload(
+      {
+        templateId: "Helpdesk",
+        partnerTenant: { label: "Partner A", value: "partner-a" },
+        roleMappings: [
+          roleOption(options, "User Administrator"),
+          options.find((option) => option.kind === "group"),
+        ],
+      },
+      mappings
+    );
+
+    // partner-b's group must not be reused for partner-a, so the role is created fresh there
+    expect(payload.partnerTenantId).toBe("partner-a");
+    expect(payload.NewRoles).toEqual([{ label: "User Administrator", value: "role-user-admin" }]);
+    expect(payload.RoleMappings).toEqual([legacyMapping]);
+  });
+
+  it("omits partnerTenantId and reuses every mapping when no partner is chosen", () => {
+    const mappings = [{ ...plainMapping, partnerTenantId: "partner-b" }];
+    const options = buildGdapRoleOptions(catalog, mappings);
+    const payload = buildGdapTemplatePayload(
+      { templateId: "Helpdesk", roleMappings: [roleOption(options, "User Administrator")] },
+      mappings
+    );
+
+    expect(payload).not.toHaveProperty("partnerTenantId");
+    expect(payload.RoleMappings.map((mapping) => mapping.GroupId)).toEqual(["group-user-admin"]);
+    expect(payload.NewRoles).toEqual([]);
+  });
 });
 
 describe("buildGdapTemplateSelection", () => {
@@ -395,5 +432,31 @@ describe("buildGdapRepairPlan", () => {
   it("returns an empty plan for no rows", () => {
     expect(buildGdapRepairPlan()).toEqual({ changes: [], validCount: 0, unknown: false });
     expect(buildGdapRepairPlan([])).toEqual({ changes: [], validCount: 0, unknown: false });
+  });
+});
+
+describe("gdapTemplatePartnerOption", () => {
+  it("preselects the partner of a single-partner template", () => {
+    expect(
+      gdapTemplatePartnerOption({ partnerTenantId: "partner-a", partnerDisplayName: "Partner A" })
+    ).toEqual({ label: "Partner A", value: "partner-a" });
+  });
+
+  it("falls back to the id when the name is missing", () => {
+    expect(gdapTemplatePartnerOption({ partnerTenantId: "partner-a" })).toEqual({
+      label: "partner-a",
+      value: "partner-a",
+    });
+  });
+
+  it("leaves the picker empty for mixed-partner or legacy templates", () => {
+    expect(
+      gdapTemplatePartnerOption({
+        partnerTenantId: "partner-a,partner-b",
+        partnerDisplayName: "Partner A, Partner B",
+      })
+    ).toBeNull();
+    expect(gdapTemplatePartnerOption({})).toBeNull();
+    expect(gdapTemplatePartnerOption(undefined)).toBeNull();
   });
 });

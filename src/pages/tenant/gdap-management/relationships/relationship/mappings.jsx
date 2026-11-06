@@ -56,11 +56,11 @@ const Page = () => {
           title="Role Mappings"
           api={{
             url: `/api/ListGDAPAccessAssignments`,
-            data: { id },
+            data: { id, partnerTenantId: data?.partnerTenantId },
             dataKey: "Results",
           }}
           simpleColumns={["group.displayName", "status", "createdDateTime", "roles", "members"]}
-          queryKey={`AccessAssignments-${id}`}
+          queryKey={`AccessAssignments-${id}-${data?.partnerTenantId ?? ""}`}
           maxHeightOffset="550px"
         />
       )}

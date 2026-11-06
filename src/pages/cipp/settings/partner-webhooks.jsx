@@ -21,6 +21,8 @@ import {
 import { Grid } from "@mui/system";
 import CippFormComponent from "../../../components/CippComponents/CippFormComponent";
 import { ApiGetCall, ApiPostCall } from "../../../api/ApiCall";
+import { useMultiPartner } from "../../../hooks/use-multi-partner";
+import { CippAutoComplete } from "../../../components/CippComponents/CippAutocomplete";
 import { useEffect } from "react";
 import { CippPropertyList } from "../../../components/CippComponents/CippPropertyList";
 import { CippCodeBlock } from "../../../components/CippComponents/CippCodeBlock";
@@ -37,10 +39,19 @@ const Page = () => {
     mode: "onChange",
   });
 
+  const { hasMultiplePartners, partners } = useMultiPartner();
+  const [selectedPartner, setSelectedPartner] = useState("");
+  const partnerOptions = partners.map((partner) => ({
+    label: partner.displayName,
+    value: partner.IsPrimary ? "" : partner.partnerTenantId,
+  }));
+  const partnerData = selectedPartner ? { partnerTenantId: selectedPartner } : {};
+  const partnerQuery = selectedPartner ? `&partnerTenantId=${selectedPartner}` : "";
+
   const listSubscription = ApiGetCall({
     url: "/api/ExecPartnerWebhook",
-    data: { Action: "ListSubscription" },
-    queryKey: "listSubscription",
+    data: { Action: "ListSubscription", ...partnerData },
+    queryKey: `listSubscription-${selectedPartner}`,
   });
 
   const subscription = listSubscription?.data?.Results;
@@ -58,8 +69,8 @@ const Page = () => {
 
   const listEventTypes = ApiGetCall({
     url: "/api/ExecPartnerWebhook",
-    data: { Action: "ListEventTypes" },
-    queryKey: "listEventTypes",
+    data: { Action: "ListEventTypes", ...partnerData },
+    queryKey: `listEventTypes-${selectedPartner}`,
   });
 
   const sendTest = ApiPostCall({
@@ -68,7 +79,7 @@ const Page = () => {
 
   const validateTest = ApiGetCall({
     url: `/api/ExecPartnerWebhook`,
-    data: { Action: "ValidateTest", CorrelationId: correlationId },
+    data: { Action: "ValidateTest", CorrelationId: correlationId, ...partnerData },
     waiting: validateRunning,
   });
 
@@ -76,7 +87,7 @@ const Page = () => {
     setTestRunning(true);
     sendTest.mutate(
       {
-        url: "/api/ExecPartnerWebhook?Action=SendTest",
+        url: `/api/ExecPartnerWebhook?Action=SendTest${partnerQuery}`,
         data: {},
       },
       {
@@ -139,8 +150,8 @@ const Page = () => {
       allowResubmit={true}
       formControl={formControl}
       resetForm={false}
-      postUrl="/api/ExecPartnerWebhook?Action=CreateSubscription"
-      queryKey={["listSubscription", "listEventTypes"]}
+      postUrl={`/api/ExecPartnerWebhook?Action=CreateSubscription${partnerQuery}`}
+      queryKey={[`listSubscription-${selectedPartner}`, `listEventTypes-${selectedPartner}`]}
       addedButtons={
         <Button variant="outlined" onClick={handleStartTest}>
           Test Webhook
@@ -148,6 +159,19 @@ const Page = () => {
       }
     >
       <Grid container spacing={2} sx={{ mb: 3 }}>
+        {hasMultiplePartners && (
+          <Grid size={{ md: 6, xs: 12 }}>
+            <CippAutoComplete
+              options={partnerOptions}
+              label="Partner Tenant"
+              multiple={false}
+              creatable={false}
+              disableClearable={true}
+              value={partnerOptions.find((option) => option.value === selectedPartner) ?? null}
+              onChange={(selected) => setSelectedPartner(selected?.value ?? "")}
+            />
+          </Grid>
+        )}
         <Grid size={{ md: 12, xs: 12 }}>
           <Typography variant="body2" color="textSecondary" sx={{ mb: 3 }}>
             Subscribe to Microsoft Partner center webhooks to enable automatic tenant onboarding and

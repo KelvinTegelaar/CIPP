@@ -32,7 +32,7 @@ const actions = [
   },
 ];
 
-const simpleColumns = ["RoleName", "GroupName", "GroupStatus", "UsedInTemplates"];
+const simpleColumns = ["RoleName", "GroupName", "partnerDisplayName", "GroupStatus", "UsedInTemplates"];
 
 const offCanvas = {
   extendedInfoFields: ["RoleName", "GroupName", "GroupStatus", "GroupStatusMessage"],

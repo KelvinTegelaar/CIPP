@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import CippFormPage from "../../../components/CippFormPages/CippFormPage";
 import { CippIcons } from "../../../utils/icon-registry"
 import { TabbedLayout } from "../../../layouts/TabbedLayout";
@@ -10,6 +11,7 @@ import { Box, Grid, Stack } from "@mui/system";
 import { Alert, Divider, Typography } from "@mui/material";
 import { ApiGetCall, ApiGetCallWithPagination } from "../../../api/ApiCall";
 import { CippInfoBar } from "../../../components/CippCards/CippInfoBar";
+import { usePermissions } from "../../../hooks/use-permissions";
 
 const Page = () => {
   const formControl = useForm({
@@ -26,6 +28,38 @@ const Page = () => {
     control: formControl.control,
     name: "tenantFilter",
   });
+
+  const { checkRoles } = usePermissions();
+  const featureFlags = ApiGetCall({
+    url: "/api/ListFeatureFlags",
+    queryKey: "featureFlags",
+    staleTime: 600000,
+  });
+  const multiPartnerEnabled =
+    Array.isArray(featureFlags.data) &&
+    featureFlags.data.some((flag) => flag.Id === "MultiPartner" && flag.Enabled === true) &&
+    checkRoles(["superadmin"]);
+
+  const partnerTenants = ApiGetCall({
+    url: "/api/ListPartnerTenants",
+    queryKey: "partnerTenants",
+    waiting: multiPartnerEnabled,
+  });
+
+  // Pre-fill the partner selector with the selected tenant's owning partner
+  useEffect(() => {
+    if (!multiPartnerEnabled || !tenantId?.value) return;
+    const partners = partnerTenants.data?.Results || [];
+    const owner =
+      partners.find((partner) => partner.partnerTenantId === tenantId?.addedFields?.partnerTenantId) ??
+      partners.find((partner) => partner.IsPrimary);
+    if (owner) {
+      formControl.setValue("partnerTenantId", {
+        label: owner.displayName,
+        value: owner.partnerTenantId,
+      });
+    }
+  }, [tenantId?.value, multiPartnerEnabled, partnerTenants.data, formControl]);
 
   const gdapRelationships = ApiGetCall({
     url: "/api/ListGDAPRelationships",
@@ -90,6 +124,7 @@ const Page = () => {
                   return `${tenant.displayName} (${tenant.defaultDomainName})`;
                 },
                 valueField: "customerId",
+                addedField: { partnerTenantId: "partnerTenantId" },
               }}
               required={true}
               multiple={false}
@@ -104,6 +139,25 @@ const Page = () => {
               }}
             />
           </Grid>
+          {tenantId && multiPartnerEnabled && (
+            <Grid size={12}>
+              <CippFormComponent
+                formControl={formControl}
+                name="partnerTenantId"
+                label="Offboard from Partner Tenant (defaults to the tenant's owning partner)"
+                type="autoComplete"
+                api={{
+                  url: "/api/ListPartnerTenants",
+                  dataKey: "Results",
+                  queryKey: "partnerTenants",
+                  labelField: "displayName",
+                  valueField: "partnerTenantId",
+                }}
+                multiple={false}
+                creatable={false}
+              />
+            </Grid>
+          )}
           {tenantId && (
             <>
               <Grid size={12}>

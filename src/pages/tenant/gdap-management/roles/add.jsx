@@ -3,23 +3,29 @@ import { CippIcons } from "../../../../utils/icon-registry";
 import { Alert, Button, SvgIcon, Typography, Tooltip, Link } from "@mui/material";
 import CippFormPage from "../../../../components/CippFormPages/CippFormPage";
 import { Layout as DashboardLayout } from "../../../../layouts/index";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { CippFormComponent } from "../../../../components/CippComponents/CippFormComponent";
 import GDAPRoles from "../../../../data/GDAPRoles";
 import { Box, Stack, Grid } from "@mui/system";
+import { useMultiPartner } from "../../../../hooks/use-multi-partner";
 import { ApiGetCall } from "../../../../api/ApiCall";
 import { CippDataTable } from "../../../../components/CippTable/CippDataTable";
 
 const Page = () => {
+  const { hasMultiplePartners, partnerOptions } = useMultiPartner();
   const formControl = useForm({
     mode: "onChange",
   });
 
   const [advancedMappings, setAdvancedMappings] = useState([]);
 
+  const selectedPartner = useWatch({ control: formControl.control, name: "partnerTenant" });
+  const partnerTenantId = selectedPartner?.value;
   const groupList = ApiGetCall({
-    url: "/api/ExecAddGDAPRole?Action=ListGroups",
-    queryKey: "ListGroups",
+    url: partnerTenantId
+      ? `/api/ExecAddGDAPRole?Action=ListGroups&partnerTenantId=${partnerTenantId}`
+      : "/api/ExecAddGDAPRole?Action=ListGroups",
+    queryKey: `ListGroups-${partnerTenantId ?? "primary"}`,
   });
 
   const handleAddMapping = () => {
@@ -69,10 +75,14 @@ const Page = () => {
         title="Map an existing group (Advanced)"
         backButtonTitle="Group Mappings"
         postUrl="/api/ExecAddGDAPRole"
-        customDataformatter={() => ({
-          Action: "AddRoleAdvanced",
-          Mappings: advancedMappings,
-        })}
+        customDataformatter={(values) => {
+          const partnerTenantId = values.partnerTenant?.value;
+          return {
+            Action: "AddRoleAdvanced",
+            Mappings: advancedMappings,
+            ...(partnerTenantId ? { partnerTenantId } : {}),
+          };
+        }}
       >
         <Stack spacing={2}>
           <Alert severity="warning">
@@ -102,6 +112,17 @@ const Page = () => {
               </li>
             </ul>
           </Alert>
+          {hasMultiplePartners && (
+            <CippFormComponent
+              formControl={formControl}
+              name="partnerTenant"
+              label="Partner Tenant the groups live in (defaults to the primary)"
+              type="autoComplete"
+              options={partnerOptions}
+              multiple={false}
+              creatable={false}
+            />
+          )}
           <Grid container spacing={2} sx={{
             alignItems: "center"
           }}>

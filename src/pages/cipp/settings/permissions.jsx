@@ -7,9 +7,45 @@ import CippPermissionCheck from "../../../components/CippSettings/CippPermission
 import { CippPermissionReport } from "../../../components/CippSettings/CippPermissionReport";
 import { useState } from "react";
 import { ApiGetCall } from "../../../api/ApiCall";
+import { usePermissions } from "../../../hooks/use-permissions";
+import { CippAutoComplete } from "../../../components/CippComponents/CippAutocomplete";
 
 const Page = () => {
   const [importReport, setImportReport] = useState(false);
+  const [selectedPartner, setSelectedPartner] = useState("");
+  const { checkRoles } = usePermissions();
+
+  const featureFlags = ApiGetCall({
+    url: "/api/ListFeatureFlags",
+    queryKey: "featureFlags",
+    staleTime: 600000,
+  });
+  const multiPartnerEnabled =
+    Array.isArray(featureFlags.data) &&
+    featureFlags.data.some((flag) => flag.Id === "MultiPartner" && flag.Enabled === true) &&
+    checkRoles(["superadmin"]);
+
+  const partnerTenants = ApiGetCall({
+    url: "/api/ListPartnerTenants",
+    queryKey: "partnerTenants",
+    waiting: multiPartnerEnabled,
+  });
+  const partnerOptions = (partnerTenants.data?.Results || []).map((partner) => ({
+    label: partner.displayName,
+    value: partner.IsPrimary ? "" : partner.partnerTenantId,
+  }));
+  const partnerPicker = multiPartnerEnabled ? (
+    <CippAutoComplete
+      options={partnerOptions}
+      label="Run checks as partner tenant"
+      multiple={false}
+      creatable={false}
+      disableClearable={true}
+      isFetching={partnerTenants.isFetching}
+      value={partnerOptions.find((option) => option.value === selectedPartner) ?? null}
+      onChange={(selected) => setSelectedPartner(selected?.value ?? "")}
+    />
+  ) : null;
 
   // Same signal the Add Tenant wizard uses to decide whether partner-only flows apply, and the
   // same shared query key so the two pages hit one cache entry.
@@ -26,20 +62,33 @@ const Page = () => {
   const showGdapCheck = !partnerCheckComplete || isPartner || Boolean(importReport?.GDAP);
 
   return (
-    <Container sx={{ pt: { xs: 0, md: 3 }, px: { xs: 1.5, md: 3 } }} maxWidth="xl">
+    <Container sx={{ pt: 0, px: { xs: 1.5, md: 3 } }} maxWidth="xl">
       <Grid container spacing={2}>
         {/* Below lg the report renders as a fixed FAB (plus a portaled dialog), so this item
             is empty in flow — display: contents dissolves it, or grid spacing leaves a blank
             16px row between the picker and the first card. */}
         <Grid size={{ xs: 12 }} sx={{ display: { xs: "contents", lg: "block" } }}>
-          <CippPermissionReport importReport={importReport} setImportReport={setImportReport} />
+          <CippPermissionReport
+            importReport={importReport}
+            setImportReport={setImportReport}
+            actions={partnerPicker}
+          />
         </Grid>
+
         <Grid size={{ lg: 6, md: 12, sm: 12, xs: 12 }}>
-          <CippPermissionCheck type="Permissions" importReport={importReport} />
+          <CippPermissionCheck
+            type="Permissions"
+            importReport={importReport}
+            partnerTenantId={selectedPartner || undefined}
+          />
         </Grid>
         <Grid size={{ lg: 6, md: 12, sm: 12, xs: 12 }}>
           {showGdapCheck ? (
-            <CippPermissionCheck type="GDAP" importReport={importReport} />
+            <CippPermissionCheck
+              type="GDAP"
+              importReport={importReport}
+              partnerTenantId={selectedPartner || undefined}
+            />
           ) : (
             <Alert severity="info">
               GDAP checks do not apply to this environment. Your tenants are added directly rather
@@ -49,7 +98,11 @@ const Page = () => {
           )}
         </Grid>
         <Grid size={{ lg: 12, md: 12, sm: 12, xs: 12 }}>
-          <CippPermissionCheck type="Tenants" importReport={importReport} />
+          <CippPermissionCheck
+            type="Tenants"
+            importReport={importReport}
+            partnerTenantId={selectedPartner || undefined}
+          />
         </Grid>
       </Grid>
     </Container>

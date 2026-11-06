@@ -57,7 +57,7 @@ const actions = [
   },
 ];
 
-const simpleColumns = ["TemplateId", "Roles", "GroupMappings"];
+const simpleColumns = ["TemplateId", "partnerDisplayName", "Roles", "GroupMappings"];
 
 const Page = () => {
   const [createDefaults, setCreateDefaults] = useState(false);

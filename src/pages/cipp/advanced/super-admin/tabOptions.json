@@ -5,6 +5,11 @@
     "icon": "Domain"
   },
   {
+    "label": "Partner Tenants",
+    "path": "/cipp/advanced/super-admin/partner-tenants",
+    "icon": "Handshake"
+  },
+  {
     "label": "Function Offloading",
     "path": "/cipp/advanced/super-admin/function-offloading",
     "icon": "Cloud"

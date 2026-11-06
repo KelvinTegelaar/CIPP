@@ -11,6 +11,7 @@ import GDAPRoles from "../../../../data/GDAPRoles";
 import {
   buildGdapTemplatePayload,
   buildGdapTemplateSelection,
+  gdapTemplatePartnerOption,
 } from "../../../../utils/gdap-role-options";
 
 const Page = () => {
@@ -51,6 +52,7 @@ const Page = () => {
         templateId: template.TemplateId,
         roleMappings: selection.selected,
         customSuffix: selection.customSuffix ?? "",
+        partnerTenant: gdapTemplatePartnerOption(template),
       });
     }
   }, [

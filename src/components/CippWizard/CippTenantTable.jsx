@@ -27,7 +27,7 @@ export const CippTenantTable = ({
       data: { value: "customerId" },
       confirmText: "Are you sure you want to exclude [displayName]?",
       multiPost: false,
-      condition: (row) => row.displayName !== "*Partner Tenant",
+      condition: (row) => !(row.isPartnerTenantRow === true || row.displayName?.startsWith("*Partner Tenant")),
     },
     {
       label: "Include Tenants",
@@ -37,7 +37,7 @@ export const CippTenantTable = ({
       data: { value: "customerId" },
       confirmText: "Are you sure you want to include [displayName]?",
       multiPost: false,
-      condition: (row) => row.displayName !== "*Partner Tenant",
+      condition: (row) => !(row.isPartnerTenantRow === true || row.displayName?.startsWith("*Partner Tenant")),
     },
     {
       label: "Refresh CPV Permissions",
@@ -58,7 +58,7 @@ export const CippTenantTable = ({
         "Are you sure you want to reset the CPV permissions for [displayName]? (This will delete the Service Principal and re-add it.)",
       multiPost: false,
       condition: (row) =>
-        row.displayName !== "*Partner Tenant" && row.delegatedPrivilegeStatus !== "directTenant",
+        !(row.isPartnerTenantRow === true || row.displayName?.startsWith("*Partner Tenant")) && row.delegatedPrivilegeStatus !== "directTenant",
     },
     {
       label: "Remove Tenant",
@@ -69,7 +69,7 @@ export const CippTenantTable = ({
       confirmText:
         "Are you sure you want to remove [displayName]? If this is a Direct Tenant, this will no longer be accessible until you add it via the Setup Wizard.",
       multiPost: false,
-      condition: (row) => row.displayName !== "*Partner Tenant",
+      condition: (row) => !(row.isPartnerTenantRow === true || row.displayName?.startsWith("*Partner Tenant")),
     },
     {
       label: "Refresh CIPPDB Cache",
