@@ -370,6 +370,26 @@ export const CippExchangeActions = () => {
       ],
     },
     {
+      label: "Set Mailbox Time Zone",
+      type: "POST",
+      url: "/api/ExecSetMailboxTimeZone",
+      data: { UPN: "UPN", Identity: "ExchangeGuid" },
+      confirmText:
+        "Set the time zone for [UPN]? This updates the mailbox time zone and the working hours time zone. Existing calendar items are not moved; use Migrate Calendar Time Zone for that.",
+      icon: <CippIcons.AccessTime />,
+      fields: [
+        {
+          type: "autoComplete",
+          name: "TimeZone",
+          label: "Time zone",
+          multiple: false,
+          creatable: false,
+          options: timezoneOptions,
+          validators: { required: "Please select a time zone" },
+        },
+      ],
+    },
+    {
       label: "Migrate Calendar Time Zone",
       type: "POST",
       url: "/api/ExecCalendarTimeZoneMigration",
