@@ -14,6 +14,7 @@ import ReactTimeAgo from 'react-time-ago'
 import CippButtonCard from './CippButtonCard'
 import { CippJobProgress } from '../CippComponents/CippJobProgress'
 import { CippBecContainmentDrawer } from '../CippComponents/CippBecContainmentDrawer'
+import { CippBecWindowSelect } from '../CippComponents/CippBecWindowSelect'
 
 const toDate = (value) => {
   if (!value) return null
@@ -42,6 +43,8 @@ export const CippBecRunStatusCard = ({
   poll,
   onStart,
   startPending = false,
+  windowDays,
+  onWindowDaysChange,
 }) => {
   const progress = poll?.Progress
   const steps = Array.isArray(progress?.Steps) ? progress.Steps : []
@@ -80,20 +83,36 @@ export const CippBecRunStatusCard = ({
     statusChip = <Chip size="small" color="error" label="Failed" />
   }
 
+  // The window is picked before the run starts; it is read-only once the run is queued.
   const startButton = (
-    <Button
-      variant="contained"
-      size="small"
-      onClick={() => onStart()}
-      disabled={busy}
-      startIcon={
-        <SvgIcon fontSize="small">
-          <CippIcons.TravelExplore />
-        </SvgIcon>
-      }
+    <Stack
+      direction="row"
+      spacing={1}
+      alignItems="center"
+      flexWrap="wrap"
+      useFlexGap
     >
-      {state === 'error' ? 'Run a new investigation' : 'Run investigation'}
-    </Button>
+      {onWindowDaysChange && (
+        <CippBecWindowSelect
+          value={windowDays}
+          onChange={onWindowDaysChange}
+          disabled={busy}
+        />
+      )}
+      <Button
+        variant="contained"
+        size="small"
+        onClick={() => onStart()}
+        disabled={busy}
+        startIcon={
+          <SvgIcon fontSize="small">
+            <CippIcons.TravelExplore />
+          </SvgIcon>
+        }
+      >
+        {state === 'error' ? 'Run a new investigation' : 'Run investigation'}
+      </Button>
+    </Stack>
   )
   const cardButtons =
     state === 'waiting' && caseId ? (

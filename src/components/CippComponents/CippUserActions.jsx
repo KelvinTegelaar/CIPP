@@ -11,6 +11,7 @@ import { CippFormCondition } from './CippFormCondition'
 import { useWatch } from 'react-hook-form'
 import { ApiGetCall } from '../../api/ApiCall'
 import { isMultiTenant, tenantScope } from '../../utils/tenant-selection'
+import { BEC_WINDOW_OPTIONS } from '../../utils/bec-objectives'
 
 // Separate component for Manage Licenses form to avoid hook issues
 const ManageLicensesForm = ({ formControl, tenant }) => {
@@ -636,6 +637,16 @@ export const useCippUserActions = () => {
       data: { UserIds: 'id' },
       multiPost: true,
       bulkFilterEligible: true,
+      fields: [
+        {
+          type: 'autoComplete',
+          name: 'windowDays',
+          label: 'How far back to look',
+          options: BEC_WINDOW_OPTIONS,
+          multiple: false,
+          creatable: false,
+        },
+      ],
       confirmText:
         'Queue a Business Email Compromise investigation for the selected users? Each run is kept; see the Business Email Compromise page under Identity.',
       condition: (row) => row.userType !== 'Guest',

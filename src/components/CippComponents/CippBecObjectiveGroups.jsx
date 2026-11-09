@@ -18,6 +18,7 @@ import {
   becWindowStart,
   joinList,
   BEC_FINDING_MARKERS,
+  BEC_WINDOW_OPTIONS,
 } from '../../utils/bec-objectives'
 
 const arr = (value) => (Array.isArray(value) ? value : [])
@@ -51,6 +52,16 @@ export const CippBecObjectiveGroups = ({
           icon: getIconByName('TravelExplore'),
           data: { UserIds: 'UserId', tenantFilter: `!${tenantFilter}` },
           multiPost: true,
+          fields: [
+            {
+              type: 'autoComplete',
+              name: 'windowDays',
+              label: 'How far back to look',
+              options: BEC_WINDOW_OPTIONS,
+              multiple: false,
+              creatable: false,
+            },
+          ],
           confirmText:
             'Queue a Business Email Compromise investigation for the selected account(s)? Each case appears on the Business Email Compromise page as it finishes.',
           condition: (row) => !!row.UserId,

@@ -134,7 +134,9 @@ const Page = () => {
   const startRunCall = ApiPostCall({
     relatedQueryKeys: [`ListBECReports-${tenant}-${userId}`],
   })
-  const startRun = () => {
+  // How far back the next run looks (days, '' = automatic); picked on the card before starting.
+  const [nextWindowDays, setNextWindowDays] = useState('')
+  const startRun = (days = nextWindowDays) => {
     startRunCall.mutate(
       {
         url: '/api/execBECCheck',
@@ -142,6 +144,7 @@ const Page = () => {
           tenantFilter: tenant,
           userid: userId,
           userName: userRequest.data?.Results?.[0]?.userPrincipalName,
+          ...(Number(days) ? { windowDays: Number(days) } : {}),
         },
       },
       {
@@ -165,8 +168,11 @@ const Page = () => {
       !startRunCall.isPending
     ) {
       autoStartedRef.current = true
-      startRun()
-      const { start, ...rest } = router.query
+      // the hub's drawer passes the window it was given along with the user
+      const chosen = Number(router.query.windowDays) || ''
+      setNextWindowDays(chosen)
+      startRun(chosen)
+      const { start, windowDays: _windowDays, ...rest } = router.query
       router.replace({ pathname: router.pathname, query: rest }, undefined, {
         shallow: true,
       })
@@ -308,8 +314,10 @@ const Page = () => {
             becData={becData}
             tenantFilter={tenant}
             caseId={becData?.CaseId || activeCaseId}
-            onStartNew={startRun}
+            onStartNew={() => startRun()}
             startPending={startRunCall.isPending}
+            windowDays={nextWindowDays}
+            onWindowDaysChange={setNextWindowDays}
             onJumpToGroup={jumpToGroup}
             caseSelector={caseSelector}
             relatedQueryKeys={[`ListBECReports-${tenant}-${userId}`]}
@@ -323,8 +331,10 @@ const Page = () => {
             caseId={activeCaseId}
             poll={poll}
             becData={becData}
-            onStart={startRun}
+            onStart={() => startRun()}
             startPending={startRunCall.isPending}
+            windowDays={nextWindowDays}
+            onWindowDaysChange={setNextWindowDays}
           />
         )}
         <CippApiResults apiObject={startRunCall} errorsOnly={true} />
