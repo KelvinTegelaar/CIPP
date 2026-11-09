@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { CippIcons } from "../../utils/icon-registry"
 import { Button, Stack, Box } from "@mui/material";
 import { useForm } from "react-hook-form";
@@ -137,6 +137,18 @@ const toOptionList = (values, optionList = []) =>
     return known ?? { label: value, value };
   });
 
+// Keep array defaults for all multi-select fields to avoid Autocomplete receiving undefined.
+const baseDefaultValues = {
+  RecordTypeFilters: [],
+  KeywordFilters: [],
+  OperationsFilters: [],
+  UserPrincipalNameFilters: [],
+  IPAddressFilters: [],
+  ObjectIdFilters: [],
+  AdministrativeUnitFilters: [],
+  ProcessLogs: false,
+};
+
 // Maps a Graph security/auditLog/queries object (what the manual-searches table lists) back onto
 // the form, so an existing search can be reopened with every filter it was created with.
 const mapSearchToFormValues = (search) => ({
@@ -145,7 +157,7 @@ const mapSearchToFormValues = (search) => ({
   EndTime: toUnixSeconds(search.filterEndDateTime),
   RecordTypeFilters: toOptionList(search.recordTypeFilters, recordTypeOptions),
   KeywordFilters: toOptionList(
-    typeof search.keywordFilter === "string" ? search.keywordFilter.split(/s+/) : []
+    typeof search.keywordFilter === "string" ? search.keywordFilter.split(/\s+/) : []
   ),
   OperationsFilters: toOptionList(search.operationFilters, operationOptions),
   UserPrincipalNameFilters: toOptionList(search.userPrincipalNameFilters),
@@ -178,30 +190,21 @@ export const CippAuditLogSearchDrawer = ({
     (tenant) => tenant.defaultDomainName === currentTenantDomain
   );
 
-  // Keep array defaults for all multi-select fields to avoid Autocomplete receiving undefined.
-  const baseDefaultValues = {
-    RecordTypeFilters: [],
-    KeywordFilters: [],
-    OperationsFilters: [],
-    UserPrincipalNameFilters: [],
-    IPAddressFilters: [],
-    ObjectIdFilters: [],
-    AdministrativeUnitFilters: [],
-    ProcessLogs: false,
-  };
-
   // Values for a fresh form, or for a copy of an existing search. The tenant is always the one
   // currently selected: the Graph query object does not carry it, and the table is tenant-scoped.
-  const buildFormValues = (source) => ({
-    ...baseDefaultValues,
-    ...(source ? mapSearchToFormValues(source) : {}),
-    TenantFilter: currentTenant
-      ? {
-          label: `${currentTenant.displayName} (${currentTenant.defaultDomainName})`,
-          value: currentTenant.defaultDomainName,
-        }
-      : null,
-  });
+  const buildFormValues = useCallback(
+    (source) => ({
+      ...baseDefaultValues,
+      ...(source ? mapSearchToFormValues(source) : {}),
+      TenantFilter: currentTenant
+        ? {
+            label: `${currentTenant.displayName} (${currentTenant.defaultDomainName})`,
+            value: currentTenant.defaultDomainName,
+          }
+        : null,
+    }),
+    [currentTenant]
+  );
 
   const formControl = useForm({
     defaultValues: buildFormValues(copySource),
@@ -213,7 +216,7 @@ export const CippAuditLogSearchDrawer = ({
     if (copySource) {
       setDrawerVisible(true);
     }
-  }, [currentTenant, copySource, formControl]);
+  }, [buildFormValues, copySource, formControl]);
 
   const createSearchApi = ApiPostCall({
     datafromUrl: false,

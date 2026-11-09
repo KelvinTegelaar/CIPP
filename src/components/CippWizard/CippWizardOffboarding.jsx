@@ -139,6 +139,7 @@ export const CippWizardOffboarding = (props) => {
       formControl.setValue('RemoveGroups', false)
       formControl.setValue('RemoveGroupOwnership', false)
       formControl.setValue('NewGroupOwner', null)
+      formControl.setValue('RemoveRoles', false)
       formControl.setValue('RemoveLicenses', false)
       formControl.setValue('RevokeSessions', false)
       formControl.setValue('DisableSignIn', false)
@@ -310,6 +311,13 @@ export const CippWizardOffboarding = (props) => {
                   one, groups where the user is the only owner cannot be released.
                 </Typography>
               </CippFormCondition>
+              <CippFormComponent
+                name="RemoveRoles"
+                label="Remove all admin roles"
+                type="switch"
+                formControl={formControl}
+                disabled={!!deleteUser}
+              />
               <CippFormComponent
                 name="RemoveLicenses"
                 label="Remove Licenses"
