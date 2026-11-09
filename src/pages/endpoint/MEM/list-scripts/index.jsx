@@ -265,6 +265,22 @@ const Page = () => {
     return mapping[scriptType] || 'deviceManagementScripts'
   }
 
+  // Builds a customDataformatter that handles both single-row and bulk (array) inputs.
+  const makeAssignFormatter = (getRowData) => (row, action, formData) => {
+    const formatRow = (singleRow) => {
+      const tenantFilterValue =
+        isMultiTenant(tenantFilter) && singleRow?.Tenant ? singleRow.Tenant : tenantFilter
+      return {
+        tenantFilter: tenantFilterValue,
+        ID: singleRow?.id,
+        Type: getScriptEndpoint(singleRow?.scriptType),
+        assignmentMode: formData?.assignmentMode || 'append',
+        ...getRowData(singleRow, formData),
+      }
+    }
+    return Array.isArray(row) ? row.map(formatRow) : formatRow(row)
+  }
+
   // Group picker (by ID) reused for both include and exclude selection
   const getGroupPickerField = (name, label, required) => ({
     type: 'autoComplete',
@@ -314,13 +330,7 @@ const Page = () => {
         },
       ],
       confirmText: 'Are you sure you want to assign "[displayName]" to all users?',
-      customDataformatter: (row, action, formData) => ({
-        tenantFilter: isMultiTenant(tenantFilter) && row?.Tenant ? row.Tenant : tenantFilter,
-        ID: row?.id,
-        Type: getScriptEndpoint(row?.scriptType),
-        AssignTo: 'allLicensedUsers',
-        assignmentMode: formData?.assignmentMode || 'append',
-      }),
+      customDataformatter: makeAssignFormatter(() => ({ AssignTo: 'allLicensedUsers' })),
     },
     {
       label: 'Assign to All Devices',
@@ -341,13 +351,7 @@ const Page = () => {
         },
       ],
       confirmText: 'Are you sure you want to assign "[displayName]" to all devices?',
-      customDataformatter: (row, action, formData) => ({
-        tenantFilter: isMultiTenant(tenantFilter) && row?.Tenant ? row.Tenant : tenantFilter,
-        ID: row?.id,
-        Type: getScriptEndpoint(row?.scriptType),
-        AssignTo: 'AllDevices',
-        assignmentMode: formData?.assignmentMode || 'append',
-      }),
+      customDataformatter: makeAssignFormatter(() => ({ AssignTo: 'AllDevices' })),
     },
     {
       label: 'Assign Globally (All Users / All Devices)',
@@ -368,13 +372,7 @@ const Page = () => {
         },
       ],
       confirmText: 'Are you sure you want to assign "[displayName]" to all users and devices?',
-      customDataformatter: (row, action, formData) => ({
-        tenantFilter: isMultiTenant(tenantFilter) && row?.Tenant ? row.Tenant : tenantFilter,
-        ID: row?.id,
-        Type: getScriptEndpoint(row?.scriptType),
-        AssignTo: 'AllDevicesAndUsers',
-        assignmentMode: formData?.assignmentMode || 'append',
-      }),
+      customDataformatter: makeAssignFormatter(() => ({ AssignTo: 'AllDevicesAndUsers' })),
     },
     {
       label: 'Assign to Custom Group',
@@ -429,23 +427,19 @@ const Page = () => {
             'Replace + Include: these groups become the only assignments, and All Users/All Devices are removed. Exclusions stay. Replace + Exclude: these groups become the only exclusions. Assignments stay. Append: adds these groups and removes nothing.',
         },
       ],
-      customDataformatter: (row, action, formData) => {
+      customDataformatter: makeAssignFormatter((singleRow, formData) => {
         const selectedGroups = Array.isArray(formData?.groupTargets) ? formData.groupTargets : []
         const isExclude = formData?.assignmentDirection === 'exclude'
         const ids = selectedGroups.map((group) => group.value).filter(Boolean)
         const names = selectedGroups.map((group) => group.label).filter(Boolean)
         return {
-          tenantFilter: isMultiTenant(tenantFilter) && row?.Tenant ? row.Tenant : tenantFilter,
-          ID: row?.id,
-          Type: getScriptEndpoint(row?.scriptType),
           GroupIds: isExclude ? [] : ids,
           GroupNames: isExclude ? [] : names,
           ExcludeGroupIds: isExclude ? ids : [],
           ExcludeGroupNames: isExclude ? names : [],
           assignmentDirection: formData?.assignmentDirection || 'include',
-          assignmentMode: formData?.assignmentMode || 'append',
         }
-      },
+      }),
     },
     {
       label: 'Edit Script',
