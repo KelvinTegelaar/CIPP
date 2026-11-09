@@ -6,6 +6,7 @@ import { useSettings } from "../../../../hooks/use-settings.js";
 import { useCippIntunePolicyActions } from "../../../../components/CippComponents/CippIntunePolicyActions.jsx";
 import { useCippReportDB } from "../../../../components/CippComponents/CippReportDBControls";
 import { Stack } from "@mui/system";
+import { CippIntuneDeploymentStatus } from "../../../../components/CippComponents/CippIntuneDeploymentStatus.jsx";
 
 const Page = () => {
   const pageTitle = "Intune Compliance Policies";
@@ -38,6 +39,10 @@ const Page = () => {
       "PolicyTypeName",
     ],
     actions: actions,
+    children: (row) => (
+      <CippIntuneDeploymentStatus row={row} tenant={tenant} type="deviceCompliancePolicies" />
+    ),
+    size: "lg",
   };
 
   const simpleColumns = [

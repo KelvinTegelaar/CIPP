@@ -5,6 +5,7 @@ import { CippApiDialog } from '../../../../components/CippComponents/CippApiDial
 import { CippApplicationDeployDrawer } from '../../../../components/CippComponents/CippApplicationDeployDrawer'
 import { Button } from '@mui/material'
 import { Stack } from '@mui/system'
+import { CippIntuneDeploymentStatus } from '../../../../components/CippComponents/CippIntuneDeploymentStatus.jsx'
 import { useSettings } from '../../../../hooks/use-settings.js'
 import { useDialog } from '../../../../hooks/use-dialog.js'
 import { useCippReportDB } from '../../../../components/CippComponents/CippReportDBControls'
@@ -364,6 +365,15 @@ const Page = () => {
       'rules.0.path',
     ],
     actions: actions,
+    children: (row) => (
+      <CippIntuneDeploymentStatus
+        row={row}
+        tenant={tenant}
+        type="mobileApps"
+        url="/api/ListAppDeploymentStatus"
+      />
+    ),
+    size: 'lg',
   }
 
   const simpleColumns = [

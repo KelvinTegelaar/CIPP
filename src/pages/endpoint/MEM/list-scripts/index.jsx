@@ -20,6 +20,7 @@ import { useState, useEffect, useMemo } from 'react'
 import { useDispatch } from 'react-redux'
 import { useSettings } from '../../../../hooks/use-settings'
 import { Stack } from '@mui/system'
+import { CippIntuneDeploymentStatus } from '../../../../components/CippComponents/CippIntuneDeploymentStatus.jsx'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { useCippReportDB } from '../../../../components/CippComponents/CippReportDBControls'
 import { isMultiTenant, tenantScope } from '../../../../utils/tenant-selection'
@@ -54,6 +55,14 @@ const getScriptContentFields = (script) => {
 
 const decodeScript = (value) => (value ? Buffer.from(value, 'base64').toString('utf8') : '')
 const encodeScript = (value) => Buffer.from(value ?? '', 'utf8').toString('base64')
+
+// Graph collection each script type lives in (Linux scripts are settings catalog policies)
+const SCRIPT_STATUS_TYPES = {
+  Windows: 'deviceManagementScripts',
+  MacOS: 'deviceShellScripts',
+  Remediation: 'deviceHealthScripts',
+  Linux: 'configurationPolicies',
+}
 
 const Page = () => {
   const pageTitle = 'Scripts'
@@ -475,6 +484,14 @@ const Page = () => {
       'enforceSignatureCheck',
     ],
     actions: actions,
+    children: (row) => (
+      <CippIntuneDeploymentStatus
+        row={row}
+        tenant={tenantFilter}
+        type={SCRIPT_STATUS_TYPES[row?.scriptType]}
+      />
+    ),
+    size: 'lg',
   }
 
   const simpleColumns = [
