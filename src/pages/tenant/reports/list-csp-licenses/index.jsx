@@ -70,13 +70,13 @@ const Page = () => {
       fields: [
         {
           type: "number",
-          name: "DaysBeforeRenewal",
-          label: "Days before renewal to execute (default 3)",
+          name: "DaysAfterRenewal",
+          label: "Days after renewal to execute (default 1, at most 6)",
           multiple: false,
         },
       ],
       confirmText:
-        "Schedule a decrease of 1 licence for [productName], executed shortly before the renewal date ([commitmentTerm.renewalConfiguration.renewalDate])? The decrease only happens if at least 1 licence is unassigned at that time; otherwise it is skipped and nothing changes.",
+        "Schedule a decrease of 1 licence for [productName], executed shortly after the renewal date ([commitmentTerm.renewalConfiguration.renewalDate])? Committed subscriptions can only be decreased in the first seven days of a new term, so the task runs just after renewal rather than before it. The decrease only happens if at least 1 licence is unassigned at that time; otherwise it is skipped and nothing changes.",
       multiPost: false,
     },
     {
