@@ -102,7 +102,7 @@ const PREVIEW_TOOLTIP =
 // ListBrandingSettings, and base64 adds about a third on top.
 const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
 
-// The formats the report engine draws, stored exactly as picked; Add-CIPPImage enforces the same
+// The formats the report engine draws; Add-CIPPImage enforces the same
 // list. TIFF is left out only because browsers cannot show it in the gallery.
 const SUPPORTED_IMAGE_TYPES = [
   "image/png",
