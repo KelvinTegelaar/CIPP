@@ -212,12 +212,15 @@ const Page = () => {
                 letterSpacing: 0.5,
               }}
             >
-              Used in Standards Templates
+              Used in Baselines and Standards Templates
             </Typography>
             <Table size="small" sx={{ mt: 1 }}>
               <TableHead>
                 <TableRow>
-                  <TableCell sx={{ fontWeight: 600 }}>Template Name</TableCell>
+                  <TableCell sx={{ fontWeight: 600 }}>Name</TableCell>
+                  <TableCell sx={{ fontWeight: 600 }}>Type</TableCell>
+                  <TableCell sx={{ fontWeight: 600 }}>Stage</TableCell>
+                  <TableCell sx={{ fontWeight: 600 }}>Remediation</TableCell>
                   <TableCell sx={{ fontWeight: 600 }}>Included In</TableCell>
                 </TableRow>
               </TableHead>
@@ -236,6 +239,28 @@ const Page = () => {
                       </Link>
                     </TableCell>
                     <TableCell>
+                      <Chip
+                        label={u.kind ?? 'Standards Template'}
+                        size="small"
+                        variant="outlined"
+                        color={u.kind === 'Baseline' ? 'primary' : 'default'}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      {u.kind === 'Baseline' && u.stage
+                        ? `${u.stage}${u.stageCount > 1 ? ` of ${u.stageCount}` : ''}${
+                            u.stageName ? ` (${u.stageName})` : ''
+                          }`
+                        : '-'}
+                    </TableCell>
+                    <TableCell>
+                      {u.remediateEnabled ? (
+                        <Chip label="Remediate" size="small" color="success" />
+                      ) : (
+                        <Chip label="Report only" size="small" variant="outlined" />
+                      )}
+                    </TableCell>
+                    <TableCell>
                       {u.matchType === 'package' ? (
                         <Tooltip title={`Included via package tag "${u.package}"`} arrow>
                           <Chip
@@ -247,7 +272,9 @@ const Page = () => {
                         </Tooltip>
                       ) : (
                         <Tooltip
-                          title="This template is directly referenced by GUID in the standards template"
+                          title={`This template is directly selected by GUID in the ${
+                            u.kind === 'Baseline' ? 'baseline' : 'standards template'
+                          }`}
                           arrow
                         >
                           <Chip label="Direct" size="small" variant="outlined" />

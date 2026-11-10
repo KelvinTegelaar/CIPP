@@ -1179,6 +1179,18 @@ export const getCippFormatting = (
     )
   }
 
+  // Template usage (Intune templates): one chip per baseline / standards template that
+  // references the template, instead of an opaque "N items" button (#1220).
+  if (
+    cellName === 'usage' &&
+    Array.isArray(data) &&
+    data.length > 0 &&
+    data.every((entry) => typeof entry?.label === 'string')
+  ) {
+    const labels = data.map((entry) => entry.label)
+    return isText ? labels.join(', ') : renderChipList(labels, 3)
+  }
+
   // handle role members
   // Without this the CSV/PDF exports fall through to the generic object branch and emit raw
   // JSON per member. The on-screen cell keeps rendering as the items button.
