@@ -35,6 +35,7 @@ import {
 import { Grid } from '@mui/system'
 import { useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/router'
+import NextLink from 'next/link'
 import { Layout as DashboardLayout } from '../../../../layouts/index'
 import { TabbedLayout } from '../../../../layouts/TabbedLayout'
 import tabOptions from '../tabOptions.json'
@@ -2602,13 +2603,17 @@ const Page = () => {
                 }}
               >
                 <Box sx={{ minWidth: 0 }}>
-                  <Typography
+                  <Link
+                    component={NextLink}
+                    href={`/tenant/baselines/template?id=${state.templateId}`}
                     variant="subtitle2"
-                    sx={{ fontWeight: 600 }}
+                    color="inherit"
+                    underline="hover"
+                    sx={{ fontWeight: 600, display: 'block' }}
                     noWrap
                   >
                     {state.templateName}
-                  </Typography>
+                  </Link>
                   <Typography variant="caption" sx={{
                     color: "text.secondary"
                   }}>
