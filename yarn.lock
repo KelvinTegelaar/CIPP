@@ -8287,10 +8287,10 @@ react-dropzone@20.1.2:
     attr-accept "^4.0.0"
     file-selector "^5.0.0"
 
-react-error-boundary@^6.1.2:
-  version "6.1.2"
-  resolved "https://registry.npmjs.org/react-error-boundary/-/react-error-boundary-6.1.2.tgz#d213780329ceb3678cec7813a76a00e2a7584f48"
-  integrity sha512-3DpCr5HVdZ0caUjYE/kIHBEJN0mNP3ZCgf16c48uJ5TbWjorKVp+YG8W3XqlJ7vJAVNw6wNIImyPXmFydwmyng==
+react-error-boundary@^6.1.6:
+  version "6.1.6"
+  resolved "https://registry.npmjs.org/react-error-boundary/-/react-error-boundary-6.1.6.tgz#1bdecd011681682db9112c204f8f5c5aad813318"
+  integrity sha512-CDXPnXDGyFIbkwaaJ6u+xgsRmJhSi6YdgUDW1vnyKHfXp1a9pfAlM+ZET2CDu80/A+8iRcmXN0NSY9BCCoWP5A==
 
 react-fast-compare@^2.0.1:
   version "2.0.4"
