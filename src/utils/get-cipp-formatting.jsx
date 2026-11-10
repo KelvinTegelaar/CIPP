@@ -111,6 +111,8 @@ const timeAgoArray = [
   'lastRemediated', // Baselines
   'deviationAt', // Baselines
   'deviationExpires', // Baselines
+  'overrideAt', // Baselines
+  'overrideExpires', // Baselines
   'enteredStageAt', // Baselines
   'LastRefresh',
   'createdDateTime',
