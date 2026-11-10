@@ -22,8 +22,8 @@ export const CippRestoreBackupDrawer = ({
 }) => {
   const [drawerVisible, setDrawerVisible] = useState(false)
   const userSettingsDefaults = useSettings()
-  const tenantLabel = useTenantLabel(tenantFilter)
   const tenantFilter = userSettingsDefaults.currentTenant || ''
+  const tenantLabel = useTenantLabel(tenantFilter)
 
   const formControl = useForm({
     mode: 'onChange',
