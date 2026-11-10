@@ -24,7 +24,9 @@ export const TenantMetricsGrid = ({ data, isLoading }) => {
       value: data?.GuestCount || 0,
       icon: CippIcons.PersonOutlined,
       color: 'info',
-      path: '/identity/administration/users',
+      path: `/identity/administration/users?filters=${encodeURIComponent(
+        JSON.stringify([{ id: 'userType', value: 'Guest' }])
+      )}`,
     },
     {
       label: 'Groups',
@@ -52,7 +54,7 @@ export const TenantMetricsGrid = ({ data, isLoading }) => {
       value: data?.ManagedDeviceCount || 0,
       icon: CippIcons.PhoneAndroid,
       color: 'success',
-      path: '/identity/administration/devices',
+      path: '/endpoint/MEM/devices',
     },
   ]
 

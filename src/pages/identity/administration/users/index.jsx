@@ -13,6 +13,7 @@ import { CippAddUserDrawer } from '../../../../components/CippComponents/CippAdd
 import { CippApiLogsDrawer } from '../../../../components/CippComponents/CippApiLogsDrawer.jsx'
 import { Box } from '@mui/material'
 import { isMultiTenant } from '../../../../utils/tenant-selection'
+import { useUrlFilters } from '../../../../utils/url-filters'
 
 // Live mode pages straight through Graph so large tenants stream in page by page.
 const liveApiData = {
@@ -31,6 +32,8 @@ const Page = () => {
   const tenant = useSettings().currentTenant
   const tenantQuery = isMultiTenant(tenant) ? '[Tenant]' : tenant
   const cardButtonPermissions = ['Identity.User.ReadWrite']
+  // Dashboard tiles link in with ?filters=, e.g. the Guests tile.
+  const urlFilters = useUrlFilters()
 
   // Cached mode reads the Users collection straight from the reporting database;
   // live mode keeps the Graph proxy below.
@@ -150,7 +153,7 @@ const Page = () => {
           'licenseAssignmentStates',
           'userType',
         ]}
-        filters={filters}
+        filters={[...filters, ...urlFilters]}
       />
       {reportDB.syncDialog}
     </>

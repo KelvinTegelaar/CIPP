@@ -938,7 +938,10 @@ export const CIPPTableToptoolbar = React.memo(
     }, [presetList?.isSuccess, presetList?.data, simpleColumns])
 
     const graphPresetItems = filterList?.filter((f) => f.type === 'graph') ?? []
-    const tablePresetItems = filterList?.filter((f) => f.type !== 'graph') ?? []
+    // Raw { id, value } column filters (e.g. ?filters= from a dashboard link) only seed the
+    // table; without a filterName they are not presets and would render as blank menu items.
+    const tablePresetItems =
+      filterList?.filter((f) => f.type !== 'graph' && f.filterName) ?? []
     const showFilterSections =
       graphPresetItems.length > 0 && tablePresetItems.length > 0
     const activeSlotCount =

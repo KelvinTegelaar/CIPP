@@ -204,6 +204,18 @@ describe('CIPPTableToptoolbar - preset list refresh', () => {
     expect(screen.getByText('Table filters')).toBeInTheDocument()
   }, 30000)
 
+  it('applies a raw URL column filter without listing it as a blank preset', async () => {
+    const user = userEvent.setup()
+    // pages spread ?filters= ({ id, value }) next to their named presets
+    renderGraphTable({ filters: [...tablePresets, { id: 'department', value: 'IT' }] })
+    await screen.findByText('1-2 of 2')
+
+    await user.click(screen.getByRole('button', { name: /Filters/ }))
+    await screen.findByRole('menuitem', { name: 'IT only' })
+    const items = within(screen.getByRole('menu')).getAllByRole('menuitem')
+    expect(items.every((item) => item.textContent.trim() !== '')).toBe(true)
+  }, 30000)
+
   it('button shows the active slot count', async () => {
     const user = userEvent.setup()
     renderGraphTable()
