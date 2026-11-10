@@ -48,7 +48,7 @@ const Section = ({ title, count, flagged = 0, note, children }) => (
     component="accordion"
     accordionExpanded={flagged > 0}
     title={
-      <Stack direction="row" spacing={1} alignItems="center">
+      <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
         <span>{title}</span>
         {flagged > 0 && (
           <Chip size="small" color="error" label={`${flagged} flagged`} />
@@ -113,7 +113,7 @@ const ContainmentHistory = ({ caseData, tenantFilter, relatedQueryKeys }) => {
       <Stack
         direction={{ xs: 'column', md: 'row' }}
         spacing={1}
-        alignItems={{ md: 'center' }}
+        sx={{ alignItems: { md: 'center' } }}
       >
         <TextField
           size="small"
@@ -239,7 +239,11 @@ export const CippNhiCaseReport = ({
                 <Typography variant="overline" color="text.secondary">
                   Case level
                 </Typography>
-                <Stack direction="row" spacing={1} alignItems="center">
+                <Stack
+                  direction="row"
+                  spacing={1}
+                  sx={{ alignItems: 'center' }}
+                >
                   <Chip
                     color={NHI_LEVEL_COLOR[score.Level] || 'default'}
                     label={score.Level || 'Unknown'}
@@ -321,8 +325,7 @@ export const CippNhiCaseReport = ({
               <Stack
                 direction="row"
                 spacing={1}
-                sx={{ mt: 2 }}
-                flexWrap="wrap"
+                sx={{ flexWrap: 'wrap', mt: 2 }}
                 useFlexGap
               >
                 <CippNhiContainmentDrawer

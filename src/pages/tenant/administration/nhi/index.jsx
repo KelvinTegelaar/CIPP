@@ -74,7 +74,11 @@ const StartInvestigationDrawer = ({ tenant }) => {
         footer={
           <Stack spacing={2}>
             <CippApiResults apiObject={queue} />
-            <Stack direction="row" spacing={1} justifyContent="flex-end">
+            <Stack
+              direction="row"
+              spacing={1}
+              sx={{ justifyContent: 'flex-end' }}
+            >
               <Button variant="outlined" onClick={handleClose}>
                 Close
               </Button>

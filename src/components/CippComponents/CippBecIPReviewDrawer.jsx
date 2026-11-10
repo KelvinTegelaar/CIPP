@@ -64,15 +64,14 @@ const VerdictCard = memo(({ verdict, index, formControl, showNote }) => {
         <Stack
           direction={{ xs: 'column', sm: 'row' }}
           spacing={1}
-          alignItems={{ xs: 'stretch', sm: 'flex-start' }}
+          sx={{ alignItems: { xs: 'stretch', sm: 'flex-start' } }}
         >
           <Box sx={{ flex: 1, minWidth: 0 }}>
             <Stack
               direction="row"
               spacing={1}
-              alignItems="center"
-              flexWrap="wrap"
               useFlexGap
+              sx={{ alignItems: 'center', flexWrap: 'wrap' }}
             >
               <Typography
                 variant="subtitle1"
@@ -139,7 +138,7 @@ const VerdictCard = memo(({ verdict, index, formControl, showNote }) => {
                 key={`${reason.Code}-${reason.Text}`}
                 direction="row"
                 spacing={1}
-                alignItems="flex-start"
+                sx={{ alignItems: 'flex-start' }}
               >
                 <Chip
                   size="small"
@@ -351,8 +350,10 @@ export const CippBecIPReviewDrawer = ({
             <Stack
               direction={{ xs: 'column', sm: 'row' }}
               spacing={1}
-              justifyContent="space-between"
-              alignItems={{ xs: 'stretch', sm: 'center' }}
+              sx={{
+                justifyContent: 'space-between',
+                alignItems: { xs: 'stretch', sm: 'center' },
+              }}
             >
               <Box>
                 {canSaveToList && (
@@ -365,8 +366,8 @@ export const CippBecIPReviewDrawer = ({
                 )}
               </Box>
               <Stack
-                alignItems={{ xs: 'stretch', sm: 'flex-end' }}
                 spacing={0.5}
+                sx={{ alignItems: { xs: 'stretch', sm: 'flex-end' } }}
               >
                 <Button
                   variant="contained"
@@ -411,7 +412,12 @@ export const CippBecIPReviewDrawer = ({
                   setPage(1)
                 }}
               />
-              <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+              <Stack
+                direction="row"
+                spacing={1}
+                useFlexGap
+                sx={{ flexWrap: 'wrap' }}
+              >
                 {verdictsPresent.map((value) => {
                   const active = verdictFilter.includes(value)
                   return (
@@ -438,9 +444,8 @@ export const CippBecIPReviewDrawer = ({
                 <Stack
                   direction="row"
                   spacing={1}
-                  alignItems="center"
-                  flexWrap="wrap"
                   useFlexGap
+                  sx={{ alignItems: 'center', flexWrap: 'wrap' }}
                 >
                   <Typography variant="body2" color="text.secondary">
                     Set all {shown.length} shown to

@@ -228,7 +228,7 @@ export const CippBecTriageHeader = ({
             <Typography
               variant="h3"
               color={`${lvlColor}.main`}
-              lineHeight={1.1}
+              sx={{ lineHeight: 1.1 }}
             >
               {score?.Value ?? '—'}
             </Typography>
@@ -238,7 +238,7 @@ export const CippBecTriageHeader = ({
             <Typography
               variant="caption"
               color="text.secondary"
-              display="block"
+              sx={{ display: 'block' }}
             >
               High ≥ {score?.Thresholds?.High} · Medium ≥{' '}
               {score?.Thresholds?.Medium}

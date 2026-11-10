@@ -202,8 +202,8 @@ const ReasonList = ({
       <Stack
         direction="row"
         spacing={1}
-        alignItems="center"
         sx={{
+          alignItems: 'center',
           px: 1.5,
           py: 1,
           bgcolor: 'action.hover',
@@ -253,8 +253,8 @@ const ReasonList = ({
                 key={reason.value || reason.label}
                 direction="row"
                 spacing={1.25}
-                alignItems="flex-start"
                 sx={{
+                  alignItems: 'flex-start',
                   px: 1.25,
                   py: 1,
                   borderRadius: 1.5,
@@ -275,7 +275,7 @@ const ReasonList = ({
                   <ReasonIcon fontSize="small" />
                 </Box>
                 <Stack spacing={0.75} sx={{ minWidth: 0, flexGrow: 1 }}>
-                  <Stack direction="row" spacing={0.75} useFlexGap flexWrap="wrap" alignItems="center">
+                  <Stack direction="row" spacing={0.75} useFlexGap sx={{ flexWrap: 'wrap', alignItems: 'center' }}>
                     <Tooltip title={typeMeta.tooltip} arrow placement="top-start">
                       <Chip
                         size="small"
@@ -399,8 +399,8 @@ const CoverageWhyOffCanvas = ({ row, tenantFilter }) => {
       <Stack
         direction="row"
         spacing={1.5}
-        alignItems="flex-start"
         sx={{
+          alignItems: 'flex-start',
           p: 1.5,
           borderRadius: 2,
           border: 1,
@@ -435,7 +435,7 @@ const CoverageWhyOffCanvas = ({ row, tenantFilter }) => {
               {row.userPrincipalName}
             </Typography>
           )}
-          <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap" sx={{ mt: 1 }}>
+          <Stack direction="row" spacing={1} useFlexGap sx={{ flexWrap: 'wrap', mt: 1 }}>
             {row.status && (
               <Chip
                 size="small"
@@ -590,7 +590,7 @@ export const CippCAPolicyCoverageDrawer = ({
             </Box>
           )}
           {results && (
-            <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap sx={{ mb: 2 }}>
+            <Stack direction="row" spacing={1} useFlexGap sx={{ flexWrap: 'wrap', mb: 2 }}>
               {results.includesAllUsers && (
                 <Chip size="small" color="info" variant="outlined" label="Includes all users" />
               )}

@@ -351,15 +351,14 @@ export const CippTenantModeDeploy = (props) => {
                   <Stack
                     direction="row"
                     spacing={2}
-                    alignItems="center"
-                    justifyContent="space-between"
+                    sx={{ alignItems: 'center', justifyContent: 'space-between' }}
                   >
                     <Stack direction="column" spacing={0.5}>
-                      <Stack direction="row" spacing={0.75} alignItems="center">
+                      <Stack direction="row" spacing={0.75} sx={{ alignItems: 'center' }}>
                         <SvgIcon fontSize="small">
                           <CippIcons.Apartment />
                         </SvgIcon>
-                        <Typography variant="body2" fontWeight="medium">
+                        <Typography variant="body2" sx={{ fontWeight: 'medium' }}>
                           {partner.displayName}
                         </Typography>
                         <Typography variant="caption" color="text.secondary">
@@ -367,7 +366,7 @@ export const CippTenantModeDeploy = (props) => {
                         </Typography>
                       </Stack>
                       {partner.authenticatedUserPrincipalName && (
-                        <Stack direction="row" spacing={0.75} alignItems="center">
+                        <Stack direction="row" spacing={0.75} sx={{ alignItems: 'center' }}>
                           <SvgIcon fontSize="small">
                             <CippIcons.Person />
                           </SvgIcon>

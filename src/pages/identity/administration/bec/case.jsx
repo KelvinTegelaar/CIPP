@@ -288,10 +288,8 @@ const Page = () => {
         <Stack
           direction="row"
           spacing={1}
-          alignItems="center"
-          justifyContent="space-between"
-          flexWrap="wrap"
           useFlexGap
+          sx={{ alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap' }}
         >
           <Link
             component={NextLink}

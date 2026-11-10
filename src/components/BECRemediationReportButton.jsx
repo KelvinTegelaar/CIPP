@@ -90,7 +90,7 @@ export const BECRemediationReportButton = ({ userData, becData, tenantName }) =>
             <Typography variant="h6" component="div">
               BEC Remediation Report Preview
             </Typography>
-            <Stack direction="row" spacing={1} alignItems="center">
+            <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
               <ToggleButtonGroup
                 size="small"
                 exclusive

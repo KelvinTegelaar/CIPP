@@ -41,7 +41,7 @@ export const CippAlertWithDetails = ({
         <Typography variant="body2">{summary}</Typography>
         {details && (
           <Collapse in={showDetails}>
-            <Box mt={2} sx={{ width: "100%" }}>
+            <Box sx={{ mt: 2, width: "100%" }}>
               <CippCodeBlock
                 code={typeof details === "string" ? details : JSON.stringify(details, null, 2)}
                 language={typeof details === "object" ? "json" : "text"}

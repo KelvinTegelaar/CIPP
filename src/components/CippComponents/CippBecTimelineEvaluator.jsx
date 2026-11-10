@@ -65,11 +65,13 @@ export const CippBecTimelineEvaluator = ({
       <Stack
         direction="row"
         spacing={1}
-        justifyContent="space-between"
-        alignItems="center"
-        flexWrap="wrap"
         useFlexGap
-        sx={{ mb: 1.5 }}
+        sx={{
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          mb: 1.5,
+        }}
       >
         <Typography variant="body2" color="text.secondary">
           The same correlated events as a dense timeline, or as a graph grouped
@@ -78,9 +80,8 @@ export const CippBecTimelineEvaluator = ({
         <Stack
           direction="row"
           spacing={1}
-          alignItems="center"
-          flexWrap="wrap"
           useFlexGap
+          sx={{ alignItems: 'center', flexWrap: 'wrap' }}
         >
           {toggle}
           <Button
@@ -108,18 +109,19 @@ export const CippBecTimelineEvaluator = ({
           <Stack
             direction="row"
             spacing={1}
-            alignItems="center"
-            justifyContent="space-between"
-            flexWrap="wrap"
             useFlexGap
+            sx={{
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              flexWrap: 'wrap',
+            }}
           >
             <Box component="span">Attack timeline</Box>
             <Stack
               direction="row"
               spacing={1}
-              alignItems="center"
-              flexWrap="wrap"
               useFlexGap
+              sx={{ alignItems: 'center', flexWrap: 'wrap' }}
             >
               {toggle}
               <Tooltip title="Close">

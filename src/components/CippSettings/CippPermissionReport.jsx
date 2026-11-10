@@ -324,8 +324,8 @@ export const CippPermissionReport = (props) => {
           </List>
         </CippPageActionsFab>
       ) : (
-        <Stack direction="row" spacing={2} alignItems="center" justifyContent="space-between">
-          <Stack direction="row" spacing={2} alignItems="center">
+        <Stack direction="row" spacing={2} sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
+          <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
             {reportButtons}
           </Stack>
           {actions ? <Box sx={{ minWidth: 320 }}>{actions}</Box> : null}

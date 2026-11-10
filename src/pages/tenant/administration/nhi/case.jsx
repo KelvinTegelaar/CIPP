@@ -181,10 +181,8 @@ const Page = () => {
         <Stack
           direction="row"
           spacing={1}
-          alignItems="center"
-          justifyContent="space-between"
-          flexWrap="wrap"
           useFlexGap
+          sx={{ alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap' }}
         >
           <Link
             component={NextLink}
@@ -243,7 +241,7 @@ const Page = () => {
         ) : (
           <CippButtonCard
             title={
-              <Stack direction="row" spacing={1} alignItems="center">
+              <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
                 <span>NHI compromise investigation: {name}</span>
                 {state === 'waiting' && (
                   <Chip

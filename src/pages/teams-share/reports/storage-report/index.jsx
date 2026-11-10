@@ -711,12 +711,9 @@ const Page = () => {
               <Grid size={{ md: 12, xs: 12 }}>
                 <Stack
                   direction="row"
-                  alignItems="flex-start"
-                  justifyContent="space-between"
                   useFlexGap
-                  flexWrap="wrap"
                   spacing={1}
-                  sx={{ mb: 1 }}
+                  sx={{ alignItems: 'flex-start', justifyContent: 'space-between', flexWrap: 'wrap', mb: 1 }}
                 >
                   <Stack spacing={0.25} sx={{ flex: '1 1 280px', minWidth: 0 }}>
                     <Typography variant="h5">Storage Report</Typography>
@@ -738,7 +735,7 @@ const Page = () => {
                       </Typography>
                     )}
                   </Stack>
-                  <Stack direction="row" spacing={1} alignItems="center" useFlexGap flexWrap="wrap">
+                  <Stack direction="row" spacing={1} useFlexGap sx={{ alignItems: 'center', flexWrap: 'wrap' }}>
                     <CippQueryRefreshButton
                       queryKeys={[...refreshKeys, ...cleanupRefreshKeys]}
                       isFetching={isFetching || cleanupScan.isFetching}
@@ -879,7 +876,7 @@ const Page = () => {
               </Grid>
 
               <Grid size={{ md: 12, xs: 12 }}>
-                <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap" sx={{ mb: 0.5 }} alignItems="center">
+                <Stack direction="row" spacing={1} useFlexGap sx={{ flexWrap: 'wrap', alignItems: 'center', mb: 0.5 }}>
                   <Chip
                     size="small"
                     color={nearQuota.length ? 'warning' : 'default'}

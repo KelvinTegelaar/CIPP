@@ -201,7 +201,7 @@ export const CippApiEgressCard = () => {
         <Grid container spacing={2}>
           {/* ── Used-of-cap gauge / total ── */}
           <Grid size={{ xs: 12, md: 4 }}>
-            <Stack alignItems="center" spacing={0.5}>
+            <Stack spacing={0.5} sx={{ alignItems: 'center' }}>
               {capBytes > 0 ? (
                 <>
                   <ResponsiveContainer width="100%" height={160}>
@@ -224,7 +224,7 @@ export const CippApiEgressCard = () => {
                   </Typography>
                 </>
               ) : (
-                <Stack alignItems="center" spacing={0.5} sx={{ py: 4 }}>
+                <Stack spacing={0.5} sx={{ alignItems: 'center', py: 4 }}>
                   <Typography variant="h5">{formatBytes(r?.BytesToday)}</Typography>
                   <Typography variant="body2" color="text.secondary">
                     used today (accounting only, no cap)

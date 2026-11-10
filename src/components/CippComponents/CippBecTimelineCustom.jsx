@@ -44,9 +44,8 @@ export const CippBecTimelineCustom = ({ becData, windowDays = 7 }) => {
       <Stack
         direction="row"
         spacing={1}
-        flexWrap="wrap"
         useFlexGap
-        sx={{ mb: 1 }}
+        sx={{ flexWrap: 'wrap', mb: 1 }}
       >
         {Object.entries(BEC_OBJECTIVE_LABEL).map(([key, label]) => (
           <Chip
@@ -94,9 +93,8 @@ export const CippBecTimelineCustom = ({ becData, windowDays = 7 }) => {
                 <Stack
                   direction="row"
                   spacing={1}
-                  alignItems="baseline"
-                  flexWrap="wrap"
                   useFlexGap
+                  sx={{ alignItems: 'baseline', flexWrap: 'wrap' }}
                 >
                   <Typography
                     variant="caption"
@@ -105,7 +103,7 @@ export const CippBecTimelineCustom = ({ becData, windowDays = 7 }) => {
                   >
                     {fmt(event.ts)}
                   </Typography>
-                  <Typography variant="body2" fontWeight={600}>
+                  <Typography variant="body2" sx={{ fontWeight: 600 }}>
                     {event.label}
                   </Typography>
                   {isStart && (

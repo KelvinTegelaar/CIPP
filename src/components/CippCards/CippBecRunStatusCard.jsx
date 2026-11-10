@@ -88,9 +88,8 @@ export const CippBecRunStatusCard = ({
     <Stack
       direction="row"
       spacing={1}
-      alignItems="center"
-      flexWrap="wrap"
       useFlexGap
+      sx={{ alignItems: 'center', flexWrap: 'wrap' }}
     >
       {onWindowDaysChange && (
         <CippBecWindowSelect
@@ -116,7 +115,7 @@ export const CippBecRunStatusCard = ({
   )
   const cardButtons =
     state === 'waiting' && caseId ? (
-      <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+      <Stack direction="row" spacing={1} useFlexGap sx={{ flexWrap: 'wrap' }}>
         {startButton}
         <CippBecContainmentDrawer
           userPrincipalName={userPrincipalName}
@@ -147,9 +146,8 @@ export const CippBecRunStatusCard = ({
           <Stack
             direction="row"
             spacing={1}
-            alignItems="center"
-            flexWrap="wrap"
             useFlexGap
+            sx={{ alignItems: 'center', flexWrap: 'wrap' }}
           >
             {statusChip}
             {caseId && (
@@ -162,7 +160,7 @@ export const CippBecRunStatusCard = ({
       isFetching={false}
     >
       {state === 'loading' && (
-        <Stack direction="row" spacing={1} alignItems="center">
+        <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
           <CircularProgress size={16} />
           <Typography variant="body2">
             Loading the user&apos;s runs...
