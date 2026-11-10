@@ -117,10 +117,8 @@ const VersionCleanupSlider = ({
         <Box sx={{ px: 1, pt: 0.5, pb: 1 }}>
           <Stack
             direction="row"
-            alignItems="baseline"
-            justifyContent="space-between"
             spacing={1}
-            sx={{ mb: 0.5 }}
+            sx={{ mb: 0.5, alignItems: 'baseline', justifyContent: 'space-between' }}
           >
             <Typography variant="body2" color="text.secondary">
               {label}
@@ -253,7 +251,7 @@ export const CippSharePointVersionCleanupFields = ({
               Select a single site to preview those limits here.
             </Typography>
           ) : siteProps.isFetching && !props ? (
-            <Stack direction="row" spacing={1} alignItems="center">
+            <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
               <CircularProgress size={16} />
               <Typography variant="body2">Loading this site&apos;s version policy…</Typography>
             </Stack>

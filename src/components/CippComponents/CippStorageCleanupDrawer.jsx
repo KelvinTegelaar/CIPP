@@ -26,7 +26,7 @@ import { Close, CleaningServices, DeleteSweep } from '@mui/icons-material'
 import { CippApiDialog } from './CippApiDialog'
 import { CippSharePointVersionCleanupFields } from './CippSharePointVersionCleanupFields'
 import CippFormComponent from './CippFormComponent'
-import { ApiGetCall, ApiPostCall } from '../../api/ApiCall'
+import { ApiGetCall, ApiGetCallWithPagination, ApiPostCall } from '../../api/ApiCall'
 import { useDialog } from '../../hooks/use-dialog'
 import { usePermissions } from '../../hooks/use-permissions'
 import { formatCleanupBytes } from '../../utils/storage-cleanup-opportunities'
@@ -34,6 +34,26 @@ import { tenantScope } from '../../utils/tenant-selection'
 
 const optionValue = (value) =>
   value && typeof value === 'object' && 'value' in value ? value.value : value
+
+const RECYCLE_SUM_FIELDS = [
+  'totalBytes',
+  'firstStageCount',
+  'firstStageBytes',
+  'secondStageCount',
+  'secondStageBytes',
+  'scannedItems',
+]
+
+const LabelValueRow = ({ label, value }) => (
+  <Stack direction="row" spacing={2} sx={{ justifyContent: 'space-between' }}>
+    <Typography variant="body2" color="text.secondary">
+      {label}
+    </Typography>
+    <Typography variant="body2" sx={{ textAlign: 'right' }}>
+      {value}
+    </Typography>
+  </Stack>
+)
 
 const TYPE_LABEL = {
   versions: 'Versions',
@@ -110,7 +130,7 @@ export const CippStorageCleanupDrawer = ({
     waiting: open && !!tenantFilter && !!siteUrl,
   })
 
-  const recycleApi = ApiGetCall({
+  const recycleApi = ApiGetCallWithPagination({
     url: '/api/ListSiteRecycleBinSummary',
     data: { ...tenantScope(tenantFilter), SiteUrl: siteUrl },
     queryKey: `CleanupRecycle-${tenantFilter}-${siteUrl}`,
@@ -125,7 +145,25 @@ export const CippStorageCleanupDrawer = ({
   }, [librariesApi.data])
 
   const composition = compositionApi.data?.Results
-  const recycle = recycleApi.data?.Results
+  // Each summary page counts its own slice of the bin; add the slices loaded so far.
+  const recycle = useMemo(() => {
+    const pages = (recycleApi.data?.pages ?? []).map((page) => page?.Results)
+    if (!pages[0] || typeof pages[0] !== 'object') return pages[0]
+    return Object.fromEntries(
+      RECYCLE_SUM_FIELDS.map((field) => [
+        field,
+        pages.reduce((total, page) => total + (Number(page?.[field]) || 0), 0),
+      ])
+    )
+  }, [recycleApi.data])
+  const recycleLoading = recycleApi.isFetching && !recycleApi.isFetchingNextPage
+  const jobStatus = jobStatusApi.data?.data?.Results
+  const jobStatusText =
+    typeof jobStatus === 'string'
+      ? jobStatus
+      : ['NoJob', 'NoRequestFound'].includes(jobStatus?.Status)
+        ? 'No version cleanup job has run on this site.'
+        : jobStatus?.Status
 
   const tipBytes = Number(composition?.tipBytes) || 0
   const versionBytes = Number(composition?.versionEstimateBytes) || 0
@@ -155,14 +193,19 @@ export const CippStorageCleanupDrawer = ({
 
   return (
     <>
-      <Drawer anchor="right" open={open} onClose={onClose} PaperProps={{ sx: { width: { xs: '100%', sm: 480, md: 560 } } }}>
-        <Stack spacing={2} sx={{ p: 2, height: '100%', overflow: 'auto' }}>
-          <Stack direction="row" alignItems="center" justifyContent="space-between">
-            <Stack direction="row" spacing={1} alignItems="center">
+      <Drawer
+        anchor="right"
+        open={open}
+        onClose={onClose}
+        slotProps={{ paper: { sx: { width: { xs: '100%', sm: 480, md: 560 } } } }}
+      >
+        <Stack spacing={2.5} sx={{ p: 3, height: '100%', overflow: 'auto' }}>
+          <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
+            <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
               <CleaningServices fontSize="small" />
               <Typography variant="h6">Storage cleanup</Typography>
             </Stack>
-            <IconButton onClick={onClose} aria-label="Close">
+            <IconButton onClick={onClose} aria-label="Close" sx={{ mr: -1 }}>
               <Close />
             </IconButton>
           </Stack>
@@ -171,7 +214,12 @@ export const CippStorageCleanupDrawer = ({
             <Chip
               size="small"
               color={focusItem.severity === 'high' ? 'warning' : 'default'}
-              label={`${TYPE_LABEL[focusItem.type] || focusItem.type}: ~${formatCleanupBytes(focusItem.estimatedBytes)}${focusItem.libraryName ? ` · ${focusItem.libraryName}` : ''}`}
+              sx={{ alignSelf: 'flex-start' }}
+              label={`${TYPE_LABEL[focusItem.type] || focusItem.type}${
+                focusItem.estimatedBytes != null
+                  ? `: ~${formatCleanupBytes(focusItem.estimatedBytes)}`
+                  : ''
+              }${focusItem.libraryName ? ` · ${focusItem.libraryName}` : ''}`}
             />
           ) : null}
 
@@ -194,15 +242,15 @@ export const CippStorageCleanupDrawer = ({
             <Typography variant="subtitle2">{siteName}</Typography>
           )}
 
-          <Alert severity="info" sx={{ py: 0.5 }}>
+          <Alert severity="info">
             Estimates from StorageMetrics (tip / versions) and recycle aggregates. No file names.
             Version trim reclaim may differ until the job reports Storage Released.
           </Alert>
 
           {(compositionApi.isFetching || librariesApi.isFetching) && <LinearProgress />}
 
-          <Stack spacing={0.5}>
-            <Typography variant="caption" color="text.secondary">
+          <Stack spacing={1.5}>
+            <Typography variant="overline" color="text.secondary" sx={{ lineHeight: 1.5 }}>
               Composition (estimate)
             </Typography>
             {[
@@ -210,10 +258,12 @@ export const CippStorageCleanupDrawer = ({
               { label: 'Previous versions', bytes: versionBytes },
               { label: 'Recycle bin', bytes: recycleBytes },
             ].map((row) => (
-              <Stack key={row.label} spacing={0.25}>
-                <Stack direction="row" justifyContent="space-between">
+              <Stack key={row.label} spacing={0.75}>
+                <Stack direction="row" sx={{ justifyContent: 'space-between' }}>
                   <Typography variant="body2">{row.label}</Typography>
-                  <Typography variant="body2">{formatCleanupBytes(row.bytes)}</Typography>
+                  <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                    {formatCleanupBytes(row.bytes)}
+                  </Typography>
                 </Stack>
                 <LinearProgress
                   variant="determinate"
@@ -232,12 +282,14 @@ export const CippStorageCleanupDrawer = ({
           </Tabs>
 
           {tab === 0 && (
-            <Stack spacing={1.5}>
+            <Stack spacing={2}>
               <Typography variant="body2" color="text.secondary">
                 Top libraries by version estimate
               </Typography>
               {librariesApi.isFetching ? (
-                <CircularProgress size={24} />
+                <Box sx={{ display: 'flex', justifyContent: 'center', py: 2 }}>
+                  <CircularProgress size={24} />
+                </Box>
               ) : (
                 <Table size="small">
                   <TableHead>
@@ -276,42 +328,58 @@ export const CippStorageCleanupDrawer = ({
                   Configure version cleanup…
                 </Button>
               ) : null}
-              {jobStatusApi.data?.Results || jobStatusApi.data ? (
-                <Typography variant="caption" color="text.secondary">
-                  Job status:{' '}
-                  {typeof (jobStatusApi.data?.Results ?? jobStatusApi.data) === 'object'
-                    ? (jobStatusApi.data?.Results ?? jobStatusApi.data)?.Status ||
-                      JSON.stringify(jobStatusApi.data?.Results ?? jobStatusApi.data).slice(0, 120)
-                    : String(jobStatusApi.data?.Results ?? jobStatusApi.data)}
+              {jobStatusText ? (
+                <Typography variant="body2" color="text.secondary">
+                  Job status: {jobStatusText}
                 </Typography>
               ) : null}
             </Stack>
           )}
 
           {tab === 1 && (
-            <Stack spacing={1.5}>
-              {recycleApi.isFetching ? (
-                <CircularProgress size={24} />
-              ) : recycle && typeof recycle === 'object' && recycle.totalBytes !== undefined ? (
+            <Stack spacing={2}>
+              {recycleLoading ? (
+                <Box sx={{ display: 'flex', justifyContent: 'center', py: 2 }}>
+                  <CircularProgress size={24} />
+                </Box>
+              ) : recycle && typeof recycle === 'object' ? (
                 <>
-                  <Typography variant="body2">
-                    Recycle total: <strong>{formatCleanupBytes(recycle.totalBytes)}</strong>
-                    {recycle.capped ? ' (scan capped)' : ''}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    First stage: {recycle.firstStageCount?.toLocaleString?.() ?? recycle.firstStageCount}{' '}
-                    items · {formatCleanupBytes(recycle.firstStageBytes)}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    Second stage: {recycle.secondStageCount?.toLocaleString?.() ?? recycle.secondStageCount}{' '}
-                    items · {formatCleanupBytes(recycle.secondStageBytes)}
-                  </Typography>
+                  <Stack spacing={1}>
+                    <LabelValueRow
+                      label="Recycle bin total"
+                      value={<strong>{formatCleanupBytes(recycle.totalBytes)}</strong>}
+                    />
+                    <LabelValueRow
+                      label="First stage"
+                      value={`${recycle.firstStageCount.toLocaleString()} items · ${formatCleanupBytes(recycle.firstStageBytes)}`}
+                    />
+                    <LabelValueRow
+                      label="Second stage"
+                      value={`${recycle.secondStageCount.toLocaleString()} items · ${formatCleanupBytes(recycle.secondStageBytes)}`}
+                    />
+                  </Stack>
+                  {recycleApi.hasNextPage ? (
+                    <Alert
+                      severity="info"
+                      action={
+                        <Button
+                          color="inherit"
+                          size="small"
+                          onClick={() => recycleApi.fetchNextPage()}
+                          disabled={recycleApi.isFetchingNextPage}
+                        >
+                          {recycleApi.isFetchingNextPage ? 'Counting…' : 'Load more'}
+                        </Button>
+                      }
+                    >
+                      Counted the newest {recycle.scannedItems.toLocaleString()} items. The bin holds
+                      more.
+                    </Alert>
+                  ) : null}
                 </>
               ) : (
                 <Alert severity="warning">
-                  {typeof recycleApi.data?.Results === 'string'
-                    ? recycleApi.data.Results
-                    : 'Could not load recycle summary.'}
+                  {typeof recycle === 'string' ? recycle : 'Could not load recycle summary.'}
                 </Alert>
               )}
               {canEmptyRecycle ? (
@@ -331,7 +399,7 @@ export const CippStorageCleanupDrawer = ({
           )}
 
           <Box sx={{ flexGrow: 1 }} />
-          <Button size="small" onClick={refreshPreview}>
+          <Button size="small" onClick={refreshPreview} sx={{ alignSelf: 'center' }}>
             Refresh preview
           </Button>
         </Stack>
