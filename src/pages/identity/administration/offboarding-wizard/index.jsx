@@ -8,7 +8,8 @@ import { CippWizardOffboarding } from "../../../../components/CippWizard/CippWiz
 import { useSettings } from "../../../../hooks/use-settings";
 import CippTablePage from "../../../../components/CippComponents/CippTablePage";
 import { Button } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 import ScheduledTaskDetails from "../../../../components/CippComponents/ScheduledTaskDetails";
 import { CippScheduledTaskActions } from "../../../../components/CippComponents/CippScheduledTaskActions";
 import { CippSchedulerDrawer } from "../../../../components/CippComponents/CippSchedulerDrawer";
@@ -20,6 +21,28 @@ const Page = () => {
   const [cloneTaskId, setCloneTaskId] = useState(null);
   const initialState = useSettings();
   const currentTenant = initialState.currentTenant;
+  const router = useRouter();
+  // Deep link: ?tenantFilter=<tenant>&users=<upn>,<upn> opens the wizard with those users selected
+  const linkedUsers = router.query.users
+    ? String(router.query.users)
+        .split(",")
+        .filter(Boolean)
+        .map((upn) => ({ label: upn, value: upn }))
+    : [];
+
+  useEffect(() => {
+    if (router.query.users && currentTenant === router.query.tenantFilter) {
+      setWizardOpen(true);
+    }
+  }, [router.query.users, router.query.tenantFilter, currentTenant]);
+
+  const closeWizard = () => {
+    setWizardOpen(false);
+    if (router.query.users) {
+      const { users, ...query } = router.query;
+      router.replace({ pathname: router.pathname, query }, undefined, { shallow: true });
+    }
+  };
 
   const drawerHandlers = {
     openEditDrawer: (row) => setEditTaskId(row.RowKey),
@@ -174,12 +197,13 @@ const Page = () => {
       <CippWizardPage
         dialogMode={true}
         open={wizardOpen}
-        onClose={() => setWizardOpen(false)}
+        onClose={closeWizard}
         dialogIcon={<CippIcons.PersonOff />}
         relatedQueryKeys={[`OffboardingJobs-${currentTenant}`]}
         initialState={{
           ...initialState.offboardingDefaults,
           ...{ Scheduled: { enabled: false } },
+          ...(linkedUsers.length > 0 && { user: linkedUsers }),
         }}
         steps={steps}
         postUrl="/api/ExecOffboardUser"

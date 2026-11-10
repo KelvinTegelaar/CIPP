@@ -2,9 +2,11 @@ import { Layout as DashboardLayout } from "../../../../layouts/index";
 import { CippIcons } from "../../../../utils/icon-registry"
 import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
 import { useCippReportDB } from "../../../../components/CippComponents/CippReportDBControls";
+import { useRouter } from "next/router";
 
 const Page = () => {
   const pageTitle = "Inactive users (6 months)";
+  const router = useRouter();
 
   const reportDB = useCippReportDB({
     apiUrl: "/api/ListInactiveAccounts",
@@ -43,6 +45,27 @@ const Page = () => {
       confirmText: "Are you sure you want to block the sign-in for this user?",
       multiPost: false,
       condition: (row) => row.accountEnabled !== false,
+    },
+    {
+      label: "Offboard User",
+      icon: <CippIcons.PersonOff />,
+      multiPost: true,
+      noConfirm: true,
+      customFunction: (rows) => {
+        const users = Array.isArray(rows) ? rows : [rows];
+        const tenants = [...new Set(users.map((user) => user.tenantId))];
+        if (tenants.length > 1) {
+          alert("The offboarding wizard runs for one tenant at a time. Select users from a single tenant.");
+          return;
+        }
+        router.push({
+          pathname: "/identity/administration/offboarding-wizard",
+          query: {
+            tenantFilter: tenants[0],
+            users: users.map((user) => user.userPrincipalName).join(","),
+          },
+        });
+      },
     },
     {
       label: "Delete User",

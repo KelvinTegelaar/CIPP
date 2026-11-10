@@ -927,6 +927,7 @@ const Page = () => {
     ...(resolvedApi.data?.summary ?? {}),
     rows: resolvedApi.data?.rows ?? [],
   }
+  const overrideCount = tenant.rows.filter((row) => row.sourceTemplate === 'Tenant Override').length
   const stageStates = resolvedApi.data?.stageStates ?? []
 
   const triageFormFields = ({ formHook }) => (
@@ -2405,6 +2406,11 @@ const Page = () => {
       value: [{ id: 'status', value: 'Skipped - No License' }],
       type: 'column',
     },
+    {
+      filterName: 'Tenant Overrides',
+      value: [{ id: 'sourceTemplate', value: 'Tenant Override', filterFn: 'equals' }],
+      type: 'column',
+    },
   ]
 
   const standardFilterList = [
@@ -2686,6 +2692,13 @@ const Page = () => {
           name: 'Open Deviations',
           data: tenant.drift,
           color: 'error',
+        },
+        {
+          icon: <CippIcons.Tune />,
+          name: 'Tenant Overrides',
+          data: overrideCount,
+          color: 'info',
+          toolTip: 'Standards configured by a tenant override instead of a baseline. Review them periodically.',
         },
         {
           icon: <CippIcons.Key />,

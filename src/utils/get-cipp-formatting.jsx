@@ -826,7 +826,7 @@ export const getCippFormatting = (
   if (cellName === 'sourceTemplate') {
     // Baselines: which template's configuration is effective for this row
     if (isText) return data
-    const color = data === 'Tenant Override' ? 'success' : 'info'
+    const color = data === 'Tenant Override' ? 'warning' : 'info'
     return <Chip variant="outlined" label={data} size="small" color={color} />
   }
 

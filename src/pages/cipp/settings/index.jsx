@@ -7,6 +7,7 @@ import tabOptions from "./tabOptions";
 import CippVersionProperties from "../../../components/CippSettings/CippVersionProperties";
 import CippPasswordSettings from "../../../components/CippSettings/CippPasswordSettings";
 import CippDnsSettings from "../../../components/CippSettings/CippDnsSettings";
+import CippDomainExclusionSettings from "../../../components/CippSettings/CippDomainExclusionSettings";
 import CippCacheSettings from "../../../components/CippSettings/CippCacheSettings";
 import CippBackupSettings from "../../../components/CippSettings/CippBackupSettings";
 import CippBackupRetentionSettings from "../../../components/CippSettings/CippBackupRetentionSettings";
@@ -25,6 +26,9 @@ const Page = () => {
         </Grid>
         <Grid size={{ lg: 4, md: 6, sm: 12, xs: 12 }}>
           <CippDnsSettings />
+        </Grid>
+        <Grid size={{ lg: 4, md: 6, sm: 12, xs: 12 }}>
+          <CippDomainExclusionSettings />
         </Grid>
         <Grid size={{ lg: 4, md: 6, sm: 12, xs: 12 }}>
           <CippCacheSettings />

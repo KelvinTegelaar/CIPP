@@ -87,6 +87,7 @@ import {
   BLOCK_CATEGORIES,
   StructuredBlockCard,
   TEST_RESULTS_SHAPE,
+  SECURITY_SIMULATION_SHAPES,
   blockTypesFor,
   createStructuredBlock,
   createPresetBlocks,
@@ -1106,7 +1107,7 @@ const Page = () => {
     }))
     // The in-app compliance test results are offered as a data source alongside the reporting
     // collections, so charts/tables/flows can be driven by test data too.
-    return [TEST_RESULTS_SHAPE, ...reporting]
+    return [TEST_RESULTS_SHAPE, ...SECURITY_SIMULATION_SHAPES, ...reporting]
   }, [dataShapeApi.data])
 
   const availableCacheTypes = useMemo(() => {

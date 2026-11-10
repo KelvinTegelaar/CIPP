@@ -42,6 +42,7 @@ import { CippIcons } from '../../../utils/icon-registry'
 import { useCraftJobEvents } from '../../../hooks/use-craft-events'
 import { fromCraftRun } from '../../../utils/craft-run'
 import { isMultiTenant } from '../../../utils/tenant-selection'
+import { exportRowsToCsv } from '../../../components/csvExportButton'
 
 // Scenarios are tests in the Security Simulations suite. The list comes from ListAvailableTests, the
 // results from ListTests, and a run is the test engine's own per-test refresh.
@@ -824,6 +825,19 @@ const ScenarioList = ({
             </Typography>
           )}
         </Box>
+        <Button
+          size="small"
+          sx={{ mr: 1 }}
+          disabled={scenarios.every((scenario) => !scenario.row)}
+          onClick={() =>
+            exportRowsToCsv({
+              rows: scenarios.filter((scenario) => scenario.row),
+              reportName: `Security simulation scenarios - ${tenant}`,
+            })
+          }
+        >
+          Export CSV
+        </Button>
         <Button
           variant="contained"
           size="small"
