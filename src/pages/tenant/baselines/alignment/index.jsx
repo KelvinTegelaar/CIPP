@@ -2251,6 +2251,43 @@ const Page = () => {
       multiPost: false,
       relatedQueryKeys,
     },
+    {
+      label: 'Move Tenants to Next Stage',
+      type: 'POST',
+      url: '/api/ExecBaselineStage',
+      icon: <CippIcons.ArrowForward />,
+      hideBulk: true,
+      condition: (row) =>
+        (row.tenantStates ?? []).some((state) => state.manualAdvance),
+      children: ({ formHook, row }) => (
+        <Box sx={{ mt: 2 }}>
+          <CippFormComponent
+            type="autoComplete"
+            name="tenants"
+            label="Tenants awaiting approval"
+            formControl={formHook}
+            multiple={true}
+            creatable={false}
+            options={(row.tenantStates ?? [])
+              .filter((state) => state.manualAdvance)
+              .map((state) => ({
+                label: `${state.tenantName} (stage ${state.currentStage} to ${state.nextStageName})`,
+                value: state.tenantFilter,
+              }))}
+            validators={{ required: 'Select at least one tenant' }}
+          />
+        </Box>
+      ),
+      customDataformatter: (row, action, formData) =>
+        (formData.tenants ?? []).map((tenant) => ({
+          action: 'advanceStage',
+          tenantFilter: tenant.value,
+          templateId: row.GUID,
+        })),
+      confirmText:
+        'Move the selected tenants of [templateName] into their next stage? Each tenant receives the standards of that stage on the next run.',
+      relatedQueryKeys,
+    },
   ]
 
   const templateOffCanvas = {

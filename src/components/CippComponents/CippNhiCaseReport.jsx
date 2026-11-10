@@ -21,6 +21,7 @@ import { CippNhiContainmentDrawer } from './CippNhiContainmentDrawer'
 import { useBecEvidenceDownload } from './CippBecEvidenceDownload'
 import { CippIcons } from '../../utils/icon-registry'
 import { ApiPostCall } from '../../api/ApiCall'
+import { PermissionButton } from '../../utils/permissions'
 
 export const NHI_LEVEL_COLOR = {
   Critical: 'error',
@@ -122,7 +123,8 @@ const ContainmentHistory = ({ caseData, tenantFilter, relatedQueryKeys }) => {
           onChange={(event) => setConfirmation(event.target.value)}
           sx={{ minWidth: 320 }}
         />
-        <Button
+        <PermissionButton
+          requiredPermissions={['Tenant.Application.ReadWrite']}
           variant="outlined"
           onClick={() =>
             releaseCall.mutate({
@@ -137,7 +139,7 @@ const ContainmentHistory = ({ caseData, tenantFilter, relatedQueryKeys }) => {
           disabled={!confirmation.trim() || releaseCall.isPending}
         >
           Release: re-enable the app
-        </Button>
+        </PermissionButton>
       </Stack>
       <CippApiResults apiObject={releaseCall} />
     </Section>

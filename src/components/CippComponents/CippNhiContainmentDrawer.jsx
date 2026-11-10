@@ -14,6 +14,7 @@ import { ApiGetCall, ApiPostCall } from '../../api/ApiCall'
 import { CippOffCanvas } from './CippOffCanvas'
 import CippFormComponent from './CippFormComponent'
 import { CippApiResults } from './CippApiResults'
+import { PermissionButton } from '../../utils/permissions'
 
 const IMPACT_ORDER = ['Critical', 'High', 'Medium', 'Low']
 const impactColor = (impact) =>
@@ -177,14 +178,15 @@ export const CippNhiContainmentDrawer = ({
 
   return (
     <>
-      <Button
+      <PermissionButton
+        requiredPermissions={['Tenant.Application.ReadWrite']}
         size="small"
         variant="contained"
         onClick={() => setVisible(true)}
         startIcon={<CippIcons.ShieldCheckIcon width={20} />}
       >
         Contain app
-      </Button>
+      </PermissionButton>
       <CippOffCanvas
         title={`Contain ${appName}`}
         visible={visible}
