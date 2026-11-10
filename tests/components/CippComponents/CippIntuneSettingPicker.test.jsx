@@ -12,10 +12,11 @@ import {
   forceListIdsDefinition,
   forceListIndexRows,
 } from '../../mocks/intune-chrome-forcelist'
+import { asrGroupId, asrIndexRows } from '../../mocks/intune-asr-rules'
 
 vi.mock('../../../src/hooks/use-intune-collection', () => ({
   useIntuneSettingIndex: () => ({
-    rows: forceListIndexRows,
+    rows: [...forceListIndexRows, ...asrIndexRows],
     isLoading: false,
     isError: false,
   }),
@@ -145,6 +146,47 @@ describe('CippIntuneSettingPicker', () => {
 
     expect(
       await screen.findByText(forceListIdsDefinition.displayName)
+    ).toBeInTheDocument()
+  })
+
+  it('hides a template-only setting from a settings catalog policy', async () => {
+    renderWithTheme(
+      <CippIntuneSettingPicker
+        open
+        onClose={() => {}}
+        onAdd={() => true}
+        platform="windows10"
+        technology="mdm,microsoftSense"
+      />
+    )
+
+    fireEvent.change(screen.getByLabelText('Search settings'), {
+      target: { value: 'per rule exclusions' },
+    })
+
+    expect(
+      await screen.findByText('No settings matched', { exact: false })
+    ).toBeInTheDocument()
+  })
+
+  it('offers a template-only setting in a policy built on its template', async () => {
+    renderWithTheme(
+      <CippIntuneSettingPicker
+        open
+        onClose={() => {}}
+        onAdd={() => true}
+        platform="windows10"
+        technology="mdm,microsoftSense"
+        templateSettings={new Map([[asrGroupId, {}]])}
+      />
+    )
+
+    fireEvent.change(screen.getByLabelText('Search settings'), {
+      target: { value: 'per rule exclusions' },
+    })
+
+    expect(
+      await screen.findByText('ASR Only Per Rule Exclusions')
     ).toBeInTheDocument()
   })
 

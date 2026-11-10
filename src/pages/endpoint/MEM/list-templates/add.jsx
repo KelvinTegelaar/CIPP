@@ -19,7 +19,7 @@ import CippFormComponent from '../../../../components/CippComponents/CippFormCom
 import CippIntuneSettingsEditor from '../../../../components/CippComponents/CippIntuneSettingsEditor'
 import { CippIntunePolicySettingsCard } from '../../../../components/CippComponents/CippIntunePolicySettingsCard'
 import { CippApiResults } from '../../../../components/CippComponents/CippApiResults'
-import { ApiPostCall } from '../../../../api/ApiCall'
+import { ApiGetCall, ApiPostCall } from '../../../../api/ApiCall'
 import { useIntunePolicyEditor } from '../../../../hooks/use-intune-policy-editor'
 import { defaultValueForLeaf } from '../../../../utils/intune-template-leaves'
 
@@ -40,6 +40,8 @@ const TECHNOLOGY_OPTIONS = [
   { label: 'Linux MDM', value: 'linuxMdm' },
 ]
 
+const CATALOG_OPTION = { label: 'Settings catalog', value: '' }
+
 const AddIntuneTemplate = () => {
   const router = useRouter()
   const formControl = useForm({
@@ -49,12 +51,58 @@ const AddIntuneTemplate = () => {
       description: '',
       platform: PLATFORM_OPTIONS[0],
       technology: TECHNOLOGY_OPTIONS[0],
+      baseTemplate: CATALOG_OPTION,
     },
   })
 
   const [policy, setPolicy] = useState({ settings: [] })
   const platform = formControl.watch('platform')?.value
-  const technology = formControl.watch('technology')?.value
+
+  // Endpoint security profiles are catalog policies on a template; some settings exist only there.
+  const templateIndex = ApiGetCall({
+    url: '/intune-templates/index.json',
+    queryKey: 'IntunePolicyTemplateIndex',
+  })
+  const endpointSecurityTemplates = (
+    Array.isArray(templateIndex.data) ? templateIndex.data : []
+  ).filter(
+    (template) =>
+      template.lifecycleState === 'active' &&
+      template.templateFamily?.startsWith('endpointSecurity') &&
+      template.platforms === platform
+  )
+  const baseTemplateId = formControl.watch('baseTemplate')?.value
+  const baseTemplate = endpointSecurityTemplates.find(
+    (template) => template.id === baseTemplateId
+  )
+  const technology =
+    baseTemplate?.technologies ?? formControl.watch('technology')?.value
+
+  useEffect(() => {
+    setPolicy(({ templateReference, ...current }) =>
+      baseTemplate
+        ? {
+            ...current,
+            templateReference: {
+              templateId: baseTemplate.id,
+              templateFamily: baseTemplate.templateFamily,
+              templateDisplayName: baseTemplate.displayName,
+              templateDisplayVersion: baseTemplate.displayVersion,
+            },
+          }
+        : current
+    )
+    if (baseTemplate)
+      formControl.setValue(
+        'technology',
+        TECHNOLOGY_OPTIONS.find(
+          (option) => option.value === baseTemplate.technologies
+        ) ?? {
+          label: baseTemplate.technologies,
+          value: baseTemplate.technologies,
+        }
+      )
+  }, [baseTemplate?.id]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const editor = useIntunePolicyEditor({ policy, setPolicy, formControl })
   const {
@@ -74,6 +122,7 @@ const AddIntuneTemplate = () => {
       description: current.description ?? '',
       platform: current.platform ?? PLATFORM_OPTIONS[0],
       technology: current.technology ?? TECHNOLOGY_OPTIONS[0],
+      baseTemplate: current.baseTemplate ?? CATALOG_OPTION,
       settingValues: leaves.map(defaultValueForLeaf),
     })
   }, [leaves, definitionsLoading]) // eslint-disable-line react-hooks/exhaustive-deps
@@ -161,7 +210,7 @@ const AddIntuneTemplate = () => {
                   creatable={false}
                   options={PLATFORM_OPTIONS}
                   formControl={formControl}
-                  disabled={settings.length > 0}
+                  disabled={settings.length > 0 || !!baseTemplate}
                   validators={{
                     validate: (value) => !!value?.value || 'Pick a platform',
                   }}
@@ -176,10 +225,30 @@ const AddIntuneTemplate = () => {
                   creatable={false}
                   options={TECHNOLOGY_OPTIONS}
                   formControl={formControl}
-                  disabled={settings.length > 0}
+                  disabled={settings.length > 0 || !!baseTemplate}
                   validators={{
                     validate: (value) => !!value?.value || 'Pick a technology',
                   }}
+                />
+              </Grid>
+              <Grid size={{ xs: 12, md: 6 }}>
+                <CippFormComponent
+                  type="autoComplete"
+                  label="Start from"
+                  name="baseTemplate"
+                  multiple={false}
+                  creatable={false}
+                  disableClearable
+                  options={[
+                    CATALOG_OPTION,
+                    ...endpointSecurityTemplates.map((template) => ({
+                      label: `Endpoint security: ${template.displayName}`,
+                      value: template.id,
+                    })),
+                  ]}
+                  formControl={formControl}
+                  disabled={settings.length > 0}
+                  helperText="Endpoint security profiles include settings the settings catalog does not, such as per-rule ASR exclusions."
                 />
               </Grid>
             </Grid>

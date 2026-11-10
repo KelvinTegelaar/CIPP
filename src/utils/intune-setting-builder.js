@@ -69,12 +69,17 @@ const simpleValueFor = (definition) => {
 const EMPTY_WANTED = new Set()
 
 // The option a choice is built with: the one leading to a setting the caller asked for, else the default.
+// An option id in `wanted` (one already chosen in the policy) wins among those candidates.
 export const optionFor = (definition, wanted = EMPTY_WANTED) => {
   const options = Array.isArray(definition?.options) ? definition.options : []
+  const leading = options.filter((option) =>
+    (option.dependedOnBy ?? []).some((link) => wanted.has(link?.dependedOnBy))
+  )
   return (
-    options.find((option) =>
-      (option.dependedOnBy ?? []).some((link) => wanted.has(link?.dependedOnBy))
+    (leading.length > 0 ? leading : options).find((option) =>
+      wanted.has(option.id)
     ) ??
+    leading[0] ??
     options.find((option) => option.id === definition.defaultOptionId) ??
     options[0] ??
     null
@@ -161,8 +166,12 @@ export const buildSettingInstance = (
       return instance
     }
     // Starts empty rather than with a blank entry Intune would deploy; saving it empty is refused by validation.
+    // So only the value type matters here, not whether an empty string meets the item format.
     case `${PREFIX}SimpleSettingCollectionInstance`: {
-      if (!simpleValueFor(definition)) return null
+      if (
+        !SIMPLE_VALUE_BY_DEFINITION[definition.valueDefinition?.['@odata.type']]
+      )
+        return null
       instance.simpleSettingCollectionValue = []
       return instance
     }

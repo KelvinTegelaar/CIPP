@@ -206,6 +206,7 @@ export const CippNhiCaseReport = ({
   const persistence = allActions.filter((a) => a.Kind === 'AppPersistence')
   // permissions and directory roles it gave itself, other apps or users
   const elevation = allActions.filter((a) => a.Kind === 'Elevation')
+  const otherTenants = list(caseData?.OtherTenants)
   const actions = allActions.filter(
     (a) => a.Kind !== 'AppPersistence' && a.Kind !== 'Elevation'
   )
@@ -556,6 +557,36 @@ export const CippNhiCaseReport = ({
               link: `/tenant/administration/nhi/case?servicePrincipalId=[TargetServicePrincipalId]&tenantFilter=${tenantFilter}&start=true`,
               multiPost: false,
               condition: (row) => !!row.TargetServicePrincipalId,
+            },
+          ]}
+        />
+      </Section>
+
+      <Section
+        title="This app in your other tenants"
+        count={otherTenants.length}
+        note={
+          caseData?.Completeness?.OtherTenants?.Skipped
+            ? `Not looked up: ${caseData.Completeness.OtherTenants.Requirement}.`
+            : 'The same app in the other tenants you manage, from the reporting database. A compromised app usually reaches every tenant it is consented in: investigate it there too.'
+        }
+      >
+        <Table
+          title="Other tenants"
+          rows={otherTenants}
+          columns={[
+            'Tenant',
+            'DisplayName',
+            'AccountEnabled',
+            'CreatedDateTime',
+          ]}
+          actions={[
+            {
+              label: 'Investigate in this tenant',
+              icon: <CippIcons.TravelExplore />,
+              link: '/tenant/administration/nhi/case?servicePrincipalId=[ServicePrincipalId]&tenantFilter=[Tenant]&start=true',
+              multiPost: false,
+              condition: (row) => !!row.ServicePrincipalId,
             },
           ]}
         />
