@@ -1812,15 +1812,15 @@
   dependencies:
     "@babel/runtime" "^7.29.7"
 
-"@mui/lab@9.0.0-beta.9":
-  version "9.0.0-beta.9"
-  resolved "https://registry.npmjs.org/@mui/lab/-/lab-9.0.0-beta.9.tgz#706ebc710e6b133d1fade3f4db1e5c2b8e42e8b6"
-  integrity sha512-LaYavRlbnsjGi09EYuRUpxUe4iqK1zWQHioxjJ0SXH7QBcYgmnUmHrMCwzsYb21VhpX5wjJ2ovLmX/CajGmvmw==
+"@mui/lab@9.0.0-beta.10":
+  version "9.0.0-beta.10"
+  resolved "https://registry.npmjs.org/@mui/lab/-/lab-9.0.0-beta.10.tgz#c3eb4b14657a8ff3febb5ae18404717532eed86d"
+  integrity sha512-XLjMJRiOQfD2p5YIorNuymI3CZqrAIAZJsaaeoomMEwAp3p1VwpSmR072VZZr+PfB1r2aUvouxmCXQNGHyw4qw==
   dependencies:
-    "@babel/runtime" "^7.29.7"
-    "@mui/system" "^9.4.0"
-    "@mui/types" "^9.4.0"
-    "@mui/utils" "^9.4.0"
+    "@babel/runtime" "^7.29.7 || ^8.0.5"
+    "@mui/system" "^9.5.0"
+    "@mui/types" "^9.5.0"
+    "@mui/utils" "^9.5.0"
     clsx "^2.1.1"
     prop-types "^15.8.1"
 
@@ -1863,7 +1863,7 @@
     csstype "^3.2.3"
     prop-types "^15.8.1"
 
-"@mui/system@9.5.0", "@mui/system@^9.4.0", "@mui/system@^9.5.0":
+"@mui/system@9.5.0", "@mui/system@^9.5.0":
   version "9.5.0"
   resolved "https://registry.npmjs.org/@mui/system/-/system-9.5.0.tgz#43db6b26b0cedefe4c0e452713a5150d0c9470ec"
   integrity sha512-OZuAwvoiaaHpvn0a540VH1DUwwmojJubGfNmO2g+nb2ybNDP4/gF7t7aA6AMduELSuJ5yxwlzyFvUO3CfLv1Yg==
@@ -1877,14 +1877,14 @@
     csstype "^3.2.3"
     prop-types "^15.8.1"
 
-"@mui/types@^9.4.0", "@mui/types@^9.5.0":
+"@mui/types@^9.5.0":
   version "9.5.0"
   resolved "https://registry.npmjs.org/@mui/types/-/types-9.5.0.tgz#a317cd2685505ac6194210b03c2c946f3923b5d1"
   integrity sha512-O0S6xS80qEQqW2CYNrd4GlBEQ1xpMOHZ5b4zO/DaLu6NZmtthM6smEg0Gz/u9gX5vL+8NB3EiBIxmxSCcG590Q==
   dependencies:
     "@babel/runtime" "^7.29.7 || ^8.0.5"
 
-"@mui/utils@^9.3.0", "@mui/utils@^9.4.0", "@mui/utils@^9.5.0":
+"@mui/utils@^9.3.0", "@mui/utils@^9.5.0":
   version "9.5.0"
   resolved "https://registry.npmjs.org/@mui/utils/-/utils-9.5.0.tgz#984e40fbbf2f17ba98a4d9268c5e855330e7041f"
   integrity sha512-8m0LfSgE2pj58znY3kZ+anwRKbnBkcu/7AJPA8L/77wEjN0QnpX4/zRAccyplp1VEUnMsUBADeTRin5Mkf7epA==
