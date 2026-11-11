@@ -8,6 +8,7 @@ import {
   SAMPLE_MAIL_FLOW,
   SAMPLE_PERMISSIONS,
   SAMPLE_SHARING,
+  SAMPLE_STORAGE,
   SAMPLE_TENANT_NAME,
 } from "../CippPdf/previewSampleData";
 
@@ -145,6 +146,19 @@ export const REPORT_COVER_PRESETS = [
     metaSecondary: `${SAMPLE_MAIL_FLOW_TOTAL.toLocaleString()} messages · ${SAMPLE_MAIL_FLOW.days} days · ${(
       SAMPLE_MAIL_FLOW.totals.EmailPhish + SAMPLE_MAIL_FLOW.totals.EmailMalware
     ).toLocaleString()} threats caught`,
+    footer: "Confidential — For Internal Use Only",
+  },
+  {
+    id: "storage",
+    label: "Storage Report",
+    reportName: "Storage Report",
+    coverLabel: "Storage Review",
+    title: "Storage",
+    accent: "Report",
+    subtitle:
+      "Where SharePoint and OneDrive storage is used, how much of it is old file versions, and what can be reclaimed.",
+    metaPrimary: SAMPLE_TENANT_NAME,
+    metaSecondary: `${SAMPLE_STORAGE.sharePointGb}.00 GB SharePoint · ${SAMPLE_STORAGE.teamsGb}.00 GB Teams · ${SAMPLE_STORAGE.oneDriveGb}.00 GB OneDrive`,
     footer: "Confidential — For Internal Use Only",
   },
   {

@@ -1,0 +1,352 @@
+[
+  {
+    "name": "Business",
+    "displayName": "Business",
+    "group": "BusinessUse"
+  },
+  {
+    "name": "CodeRepositories",
+    "displayName": "Code Repositories",
+    "group": "BusinessUse"
+  },
+  {
+    "name": "ComputersAndTechnology",
+    "displayName": "Computers And Technology",
+    "group": "BusinessUse"
+  },
+  {
+    "name": "Education",
+    "displayName": "Education",
+    "group": "BusinessUse"
+  },
+  {
+    "name": "Finance",
+    "displayName": "Finance",
+    "group": "BusinessUse"
+  },
+  {
+    "name": "ForumsAndNewsgroups",
+    "displayName": "Forums And Newsgroups",
+    "group": "BusinessUse"
+  },
+  {
+    "name": "Government",
+    "displayName": "Government",
+    "group": "BusinessUse"
+  },
+  {
+    "name": "HealthAndMedicine",
+    "displayName": "Health And Medicine",
+    "group": "BusinessUse"
+  },
+  {
+    "name": "JobSearch",
+    "displayName": "Job Search",
+    "group": "BusinessUse"
+  },
+  {
+    "name": "News",
+    "displayName": "News",
+    "group": "BusinessUse"
+  },
+  {
+    "name": "NonProfitsAndNgos",
+    "displayName": "Non Profits And Ngos",
+    "group": "BusinessUse"
+  },
+  {
+    "name": "PersonalSites",
+    "displayName": "Personal Sites",
+    "group": "BusinessUse"
+  },
+  {
+    "name": "PrivateIPAddresses",
+    "displayName": "Private IP Addresses",
+    "group": "BusinessUse"
+  },
+  {
+    "name": "ProfessionalNetworking",
+    "displayName": "Professional Networking",
+    "group": "BusinessUse"
+  },
+  {
+    "name": "SearchEnginesAndPortals",
+    "displayName": "Search Engines And Portals",
+    "group": "BusinessUse"
+  },
+  {
+    "name": "Translators",
+    "displayName": "Translators",
+    "group": "BusinessUse"
+  },
+  {
+    "name": "WebBasedEmail",
+    "displayName": "Web Based Email",
+    "group": "BusinessUse"
+  },
+  {
+    "name": "WebRepositoryAndStorage",
+    "displayName": "Web Repository And Storage",
+    "group": "BusinessUse"
+  },
+  {
+    "name": "Arts",
+    "displayName": "Arts",
+    "group": "GeneralSurfing"
+  },
+  {
+    "name": "FashionAndBeauty",
+    "displayName": "Fashion And Beauty",
+    "group": "GeneralSurfing"
+  },
+  {
+    "name": "General",
+    "displayName": "General",
+    "group": "GeneralSurfing"
+  },
+  {
+    "name": "HostedPaymentGateways",
+    "displayName": "Hosted Payment Gateways",
+    "group": "GeneralSurfing"
+  },
+  {
+    "name": "LeisureAndRecreation",
+    "displayName": "Leisure And Recreation",
+    "group": "GeneralSurfing"
+  },
+  {
+    "name": "NatureAndConservation",
+    "displayName": "Nature And Conservation",
+    "group": "GeneralSurfing"
+  },
+  {
+    "name": "PoliticsAndLaw",
+    "displayName": "Politics And Law",
+    "group": "GeneralSurfing"
+  },
+  {
+    "name": "RealEstate",
+    "displayName": "Real Estate",
+    "group": "GeneralSurfing"
+  },
+  {
+    "name": "Religion",
+    "displayName": "Religion",
+    "group": "GeneralSurfing"
+  },
+  {
+    "name": "RestaurantsAndDining",
+    "displayName": "Restaurants And Dining",
+    "group": "GeneralSurfing"
+  },
+  {
+    "name": "Sports",
+    "displayName": "Sports",
+    "group": "GeneralSurfing"
+  },
+  {
+    "name": "Transportation",
+    "displayName": "Transportation",
+    "group": "GeneralSurfing"
+  },
+  {
+    "name": "Travel",
+    "displayName": "Travel",
+    "group": "GeneralSurfing"
+  },
+  {
+    "name": "DownloadSites",
+    "displayName": "Download Sites",
+    "group": "HighBandwidth"
+  },
+  {
+    "name": "Entertainment",
+    "displayName": "Entertainment",
+    "group": "HighBandwidth"
+  },
+  {
+    "name": "ImageSharing",
+    "displayName": "Image Sharing",
+    "group": "HighBandwidth"
+  },
+  {
+    "name": "PeerToPeer",
+    "displayName": "Peer To Peer",
+    "group": "HighBandwidth"
+  },
+  {
+    "name": "StreamingMediaAndDownloads",
+    "displayName": "Streaming Media And Downloads",
+    "group": "HighBandwidth"
+  },
+  {
+    "name": "WebMeetings",
+    "displayName": "Web Meetings",
+    "group": "HighBandwidth"
+  },
+  {
+    "name": "AIAgents",
+    "displayName": "AI Agents",
+    "group": "Liability"
+  },
+  {
+    "name": "AlcoholAndTobacco",
+    "displayName": "Alcohol And Tobacco",
+    "group": "Liability"
+  },
+  {
+    "name": "ArtificialIntelligence",
+    "displayName": "Artificial Intelligence",
+    "group": "Liability"
+  },
+  {
+    "name": "Cheating",
+    "displayName": "Cheating",
+    "group": "Liability"
+  },
+  {
+    "name": "ChildAbuseImages",
+    "displayName": "Child Abuse Images",
+    "group": "Liability"
+  },
+  {
+    "name": "CriminalActivity",
+    "displayName": "Criminal Activity",
+    "group": "Liability"
+  },
+  {
+    "name": "CryptocurrencyMining",
+    "displayName": "Cryptocurrency Mining",
+    "group": "Liability"
+  },
+  {
+    "name": "DatingAndPersonals",
+    "displayName": "Dating And Personals",
+    "group": "Liability"
+  },
+  {
+    "name": "Gambling",
+    "displayName": "Gambling",
+    "group": "Liability"
+  },
+  {
+    "name": "Hacking",
+    "displayName": "Hacking",
+    "group": "Liability"
+  },
+  {
+    "name": "HateAndIntolerance",
+    "displayName": "Hate And Intolerance",
+    "group": "Liability"
+  },
+  {
+    "name": "IllegalDrug",
+    "displayName": "Illegal Drug",
+    "group": "Liability"
+  },
+  {
+    "name": "IllegalSoftware",
+    "displayName": "Illegal Software",
+    "group": "Liability"
+  },
+  {
+    "name": "LingerieAndSwimsuits",
+    "displayName": "Lingerie And Swimsuits",
+    "group": "Liability"
+  },
+  {
+    "name": "Marijuana",
+    "displayName": "Marijuana",
+    "group": "Liability"
+  },
+  {
+    "name": "Nudity",
+    "displayName": "Nudity",
+    "group": "Liability"
+  },
+  {
+    "name": "PornographyAndSexuallyExplicit",
+    "displayName": "Pornography And Sexually Explicit",
+    "group": "Liability"
+  },
+  {
+    "name": "RemoteAccess",
+    "displayName": "Remote Access",
+    "group": "Liability"
+  },
+  {
+    "name": "SelfHarm",
+    "displayName": "Self Harm",
+    "group": "Liability"
+  },
+  {
+    "name": "SexEducation",
+    "displayName": "Sex Education",
+    "group": "Liability"
+  },
+  {
+    "name": "Tasteless",
+    "displayName": "Tasteless",
+    "group": "Liability"
+  },
+  {
+    "name": "Violence",
+    "displayName": "Violence",
+    "group": "Liability"
+  },
+  {
+    "name": "Weapons",
+    "displayName": "Weapons",
+    "group": "Liability"
+  },
+  {
+    "name": "AdvertisementsAndPopUps",
+    "displayName": "Advertisements And Pop Ups",
+    "group": "Productivity"
+  },
+  {
+    "name": "Chat",
+    "displayName": "Chat",
+    "group": "Productivity"
+  },
+  {
+    "name": "Cults",
+    "displayName": "Cults",
+    "group": "Productivity"
+  },
+  {
+    "name": "Games",
+    "displayName": "Games",
+    "group": "Productivity"
+  },
+  {
+    "name": "InstantMessaging",
+    "displayName": "Instant Messaging",
+    "group": "Productivity"
+  },
+  {
+    "name": "Shopping",
+    "displayName": "Shopping",
+    "group": "Productivity"
+  },
+  {
+    "name": "SocialNetworking",
+    "displayName": "Social Networking",
+    "group": "Productivity"
+  },
+  {
+    "name": "NewlyRegisteredDomains",
+    "displayName": "Newly Registered Domains",
+    "group": "Uncategorized"
+  },
+  {
+    "name": "ParkedDomains",
+    "displayName": "Parked Domains",
+    "group": "Uncategorized"
+  },
+  {
+    "name": "Uncategorized",
+    "displayName": "Uncategorized",
+    "group": "Uncategorized"
+  }
+]

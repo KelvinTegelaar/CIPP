@@ -36,7 +36,8 @@ export const describeStageConditions = (stage) => {
     { logic: stage?.logic, conditions: stage?.conditions },
     ...(stage?.conditionGroups ?? []),
   ].filter((group) => group.conditions?.length)
-  if (!groups.length) return 'no conditions configured'
+  // A stage saved without conditions falls back to a manual move
+  if (!groups.length) return 'manual approval by an operator'
   const described = groups.map((group) =>
     group.conditions
       .map((condition) => {

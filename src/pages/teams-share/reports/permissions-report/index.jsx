@@ -12,8 +12,8 @@ import { PermissionsReportButton } from '../../../../components/CippPdf/Permissi
 import { useDialog } from '../../../../hooks/use-dialog'
 import { ApiGetCall } from '../../../../api/ApiCall'
 import { useSettings } from '../../../../hooks/use-settings'
-import { usePermissions } from '../../../../hooks/use-permissions'
-import { Alert, Button, Container, Stack, SvgIcon, Typography } from '@mui/material'
+import { PermissionButton } from '../../../../utils/permissions'
+import { Alert, Container, Stack, SvgIcon, Typography } from '@mui/material'
 import { Grid } from '@mui/system'
 import { CippExpandableAlert } from '../../../../components/CippComponents/CippExpandableAlert'
 import { isMultiTenant } from '../../../../utils/tenant-selection'
@@ -27,8 +27,6 @@ const EMPTY_ROWS = []
 
 const Page = () => {
   const currentTenant = useSettings().currentTenant
-  const { checkPermissions } = usePermissions()
-  const canSync = checkPermissions(['Sharepoint.Reports.ReadWrite'])
   const syncDialog = useDialog()
   const [syncQueueIds, setSyncQueueIds] = useState([])
   const newSyncRunRef = useRef(false)
@@ -124,10 +122,10 @@ const Page = () => {
                     label="Permission scan"
                   />
                   <PermissionsReportButton permissionsData={data} tenantName={currentTenant} />
-                  <Button
+                  <PermissionButton
+                    requiredPermissions={['Sharepoint.Reports.ReadWrite']}
                     size="small"
                     variant="outlined"
-                    disabled={!canSync}
                     onClick={() => {
                       newSyncRunRef.current = true
                       syncDialog.handleOpen()
@@ -139,7 +137,7 @@ const Page = () => {
                     }
                   >
                     Sync data
-                  </Button>
+                  </PermissionButton>
                 </Stack>
               </Stack>
               {needsSync && (

@@ -97,6 +97,12 @@ const openReport = async (user) => {
 }
 
 describe('describeStageConditions', () => {
+  it('describes a stage without conditions as a manual move', () => {
+    expect(describeStageConditions({ conditions: [], logic: 'and' })).toBe(
+      'manual approval by an operator'
+    )
+  })
+
   it('joins conditions with the stage logic', () => {
     expect(
       describeStageConditions({

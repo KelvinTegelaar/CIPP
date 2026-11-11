@@ -165,6 +165,7 @@ const StagePanel = ({
   tenantsInStage,
   catalogByName,
   registerSerializer,
+  onConditionCountChange,
   variableOptions,
   groupOptions,
 }) => {
@@ -197,6 +198,15 @@ const StagePanel = ({
       1
   )
   const newId = (prefix) => `${prefix}${nextId.current++}`
+  useEffect(() => {
+    onConditionCountChange(
+      stage.key,
+      conditionGroups.reduce(
+        (count, group) => count + group.conditionIds.length,
+        0
+      )
+    )
+  }, [conditionGroups, onConditionCountChange, stage.key])
   const updateGroup = (groupId, update) =>
     setConditionGroups((prev) =>
       prev.map((group) => (group.id === groupId ? update(group) : group))
@@ -439,9 +449,9 @@ const StagePanel = ({
                 ' Meeting any one condition group is enough.'}
             </Typography>
             {conditionGroups.every((group) => group.conditionIds.length === 0) && (
-              <Alert severity="warning">
-                No conditions configured - tenants can only be moved into this
-                stage manually.
+              <Alert severity="error">
+                Add at least one graduation condition. Use &quot;Manual approval
+                by an operator&quot; to move tenants into this stage by hand.
               </Alert>
             )}
             {conditionGroups.map((conditionGroup, groupIndex) => (
@@ -1054,6 +1064,15 @@ const Page = () => {
 
   const stageOccupancy = template?.occupancy ?? []
 
+  const [conditionCounts, setConditionCounts] = useState({})
+  const handleConditionCountChange = useCallback(
+    (stageKey, count) =>
+      setConditionCounts((prev) =>
+        prev[stageKey] === count ? prev : { ...prev, [stageKey]: count }
+      ),
+    []
+  )
+
   const registerSerializer = useCallback((stageKey, serialize) => {
     if (serialize) {
       stageSerializers.current[stageKey] = serialize
@@ -1091,6 +1110,10 @@ const Page = () => {
     {
       label: 'Add standards to at least one stage',
       done: uniqueStandards.length > 0,
+    },
+    {
+      label: 'Give every stage after Stage 1 a graduation condition',
+      done: stages.slice(1).every((stage) => conditionCounts[stage.key] !== 0),
     },
   ]
   const isSaveDisabled = steps.some((step) => !step.done)
@@ -1451,6 +1474,7 @@ const Page = () => {
                     tenantsInStage={stageOccupancy[index]?.tenants ?? null}
                     catalogByName={catalogByName}
                     registerSerializer={registerSerializer}
+                    onConditionCountChange={handleConditionCountChange}
                     variableOptions={variableOptions}
                     groupOptions={groupOptions}
                   />

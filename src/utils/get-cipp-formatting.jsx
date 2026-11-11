@@ -364,6 +364,7 @@ export const getCippFormatting = (
   if (
     cellName === 'prohibitSendReceiveQuotaInBytes' ||
     cellName === 'storageUsedInBytes' ||
+    cellName === 'fileStreamSizeInBytes' ||
     cellName === 'cleanupReclaimBytes' ||
     cellName === 'versionEstimateBytes' ||
     cellName === 'ArchiveSize'
@@ -511,6 +512,7 @@ export const getCippFormatting = (
   if (
     cellName === 'percentOfTenant' ||
     cellName === 'percentOfSite' ||
+    cellName === 'versionPercent' ||
     cellName === 'percentUsed'
   ) {
     if (data === undefined || data === null || data === '') {

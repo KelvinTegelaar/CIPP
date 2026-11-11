@@ -268,6 +268,22 @@ export const nativeMenuItems = [
         ],
       },
       {
+        title: 'Global Secure Access',
+        permissions: ['Tenant.GlobalSecureAccess.*'],
+        items: [
+          {
+            title: 'Filtering Policies',
+            path: '/tenant/gsa/filtering-policies',
+            permissions: ['Tenant.GlobalSecureAccess.*'],
+          },
+          {
+            title: 'Security Profiles',
+            path: '/tenant/gsa/security-profiles',
+            permissions: ['Tenant.GlobalSecureAccess.*'],
+          },
+        ],
+      },
+      {
         title: 'Reports',
         permissions: [
           'Tenant.Administration.*',

@@ -13,14 +13,13 @@ import { CippApiDialog } from '../../../../components/CippComponents/CippApiDial
 import { useDialog } from '../../../../hooks/use-dialog'
 import { ApiGetCall } from '../../../../api/ApiCall'
 import { useSettings } from '../../../../hooks/use-settings'
-import { usePermissions } from '../../../../hooks/use-permissions'
+import { PermissionButton } from '../../../../utils/permissions'
 import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
   Alert,
   Box,
-  Button,
   Chip,
   Container,
   Divider,
@@ -157,8 +156,6 @@ const EMPTY_ROWS = []
 
 const Page = () => {
   const currentTenant = useSettings().currentTenant
-  const { checkPermissions } = usePermissions()
-  const canSync = checkPermissions(['Sharepoint.Reports.ReadWrite'])
   const syncDialog = useDialog()
   // Each sync starts one queue per cache and returns its id in the response metadata, so the
   // ids are collected as the four responses arrive and handed to the tracker.
@@ -423,10 +420,10 @@ const Page = () => {
                     details={libraryProgress}
                   />
                   <SharingReportButton sharingData={data} tenantName={currentTenant} />
-                  <Button
+                  <PermissionButton
+                    requiredPermissions={['Sharepoint.Reports.ReadWrite']}
                     size="small"
                     variant="outlined"
-                    disabled={!canSync}
                     onClick={() => {
                       newSyncRunRef.current = true
                       syncDialog.handleOpen()
@@ -438,7 +435,7 @@ const Page = () => {
                     }
                   >
                     Sync data
-                  </Button>
+                  </PermissionButton>
                 </Stack>
               </Stack>
               {scan.inProgress && (

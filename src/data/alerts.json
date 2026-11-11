@@ -63,7 +63,8 @@
   },
   {
     "name": "AdminPassword",
-    "label": "Alert on changed admin Passwords",
+    "label": "Alert on changed Global Admin passwords",
+    "description": "Alerts when a Global Administrator's password was changed in the last 24 hours. Newly created accounts are not reported.",
     "recommendedRunInterval": "30m"
   },
   {

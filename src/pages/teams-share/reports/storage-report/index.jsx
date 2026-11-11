@@ -9,6 +9,7 @@ import { CippSharePointQuotaCard } from '../../../../components/CippCards/CippSh
 import { CippDataTable } from '../../../../components/CippTable/CippDataTable'
 import { CippApiDialog } from '../../../../components/CippComponents/CippApiDialog'
 import { CippStorageCleanupDrawer } from '../../../../components/CippComponents/CippStorageCleanupDrawer'
+import { StorageReportButton } from '../../../../components/CippPdf/StorageReportButton'
 import { useDialog } from '../../../../hooks/use-dialog'
 import { ApiGetCall } from '../../../../api/ApiCall'
 import { useSettings } from '../../../../hooks/use-settings'
@@ -422,6 +423,26 @@ const Page = () => {
     return raw && typeof raw === 'object' ? raw : EMPTY_SCANS
   }, [cleanupScan.data?.scans])
 
+  // scans is keyed by both the raw and normalised site URL, so one site can appear twice.
+  const libraryRows = useMemo(() => {
+    const siteNames = new Map(
+      rawSpRows.map((row) => [String(row.webUrl).replace(/\/+$/, ''), row.displayName])
+    )
+    const rows = new Map()
+    for (const scan of Object.values(cleanupScans)) {
+      for (const lib of scan?.libraries ?? []) {
+        const total = Number(lib.storageUsedInBytes)
+        const versions = Number(lib.versionEstimateBytes)
+        rows.set(`${lib.siteUrl}|${lib.id}`, {
+          ...lib,
+          siteName: siteNames.get(lib.siteUrl) ?? lib.siteUrl,
+          versionPercent: percentOf(versions, total),
+        })
+      }
+    }
+    return [...rows.values()]
+  }, [cleanupScans, rawSpRows])
+
   const opportunities = useMemo(
     () => buildCleanupOpportunities(spRows, cleanupScans),
     [spRows, cleanupScans]
@@ -740,12 +761,16 @@ const Page = () => {
                       queryKeys={[...refreshKeys, ...cleanupRefreshKeys]}
                       isFetching={isFetching || cleanupScan.isFetching}
                     />
+                    <StorageReportButton
+                      tenantName={currentTenant}
+                      disabled={rawSpRows.length === 0 && odRowsBase.length === 0}
+                    />
                     <CippMultiQueueTracker
                       queueIds={syncQueueIds}
                       relatedQueryKeys={refreshKeys}
                       label="Usage sync"
                     />
-                    <Tooltip title="Refresh SharePoint site usage and OneDrive sizes for charts, tables, and near-quota / inactive views.">
+                    <Tooltip title={canSync ? 'Refresh SharePoint site usage and OneDrive sizes for charts, tables, and near-quota / inactive views.' : 'Requires the Sharepoint.Reports.ReadWrite permission'}>
                       <span>
                         <Button
                           size="small"
@@ -770,7 +795,7 @@ const Page = () => {
                       relatedQueryKeys={cleanupRefreshKeys}
                       label="Cleanup scan"
                     />
-                    <Tooltip title="Queue library version estimates and recycle totals for reclaim columns. Does not refresh usage sizes.">
+                    <Tooltip title={canSync ? 'Queue library version estimates and recycle totals for reclaim columns. Does not refresh usage sizes.' : 'Requires the Sharepoint.Reports.ReadWrite permission'}>
                       <span>
                         <Button
                           size="small"
@@ -993,6 +1018,7 @@ const Page = () => {
                 >
                   <Tab label={`SharePoint Sites (${spRows.length})`} />
                   <Tab label={`OneDrive (${odRows.length})`} />
+                  <Tab label={`Libraries (${libraryRows.length})`} />
                 </Tabs>
               </Grid>
 
@@ -1028,6 +1054,34 @@ const Page = () => {
                       'reportRefreshDate',
                     ]}
                     subTables={librarySubTables}
+                  />
+                </Grid>
+              ) : inventoryTab === 2 ? (
+                <Grid size={{ md: 12, xs: 12 }}>
+                  {!hasScanned && (
+                    <Alert severity="info" sx={{ mb: 1 }}>
+                      Run Scan cleanup to list every document library with its version history and
+                      version policy.
+                    </Alert>
+                  )}
+                  <CippDataTable
+                    title="Document Libraries"
+                    queryKey={`${cleanupQueryKey}-libraries`}
+                    data={libraryRows}
+                    isFetching={cleanupScan.isFetching}
+                    refreshFunction={cleanupScan}
+                    defaultSorting={[{ id: 'versionEstimateBytes', desc: true }]}
+                    simpleColumns={[
+                      'siteName',
+                      'displayName',
+                      'storageUsedInBytes',
+                      'fileStreamSizeInBytes',
+                      'versionEstimateBytes',
+                      'versionPercent',
+                      'versionPolicy',
+                      'fileCount',
+                      'webUrl',
+                    ]}
                   />
                 </Grid>
               ) : (

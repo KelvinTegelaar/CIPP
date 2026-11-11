@@ -1,0 +1,12 @@
+[
+  {
+    "label": "Security Profiles",
+    "path": "/tenant/gsa/security-profiles",
+    "icon": "Shield"
+  },
+  {
+    "label": "Templates",
+    "path": "/tenant/gsa/security-profiles/templates",
+    "icon": "Description"
+  }
+]
