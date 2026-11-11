@@ -22,7 +22,8 @@
     "CIPPUsername": "String",
     "CIPPAddedKeyTypes": "String",
     "CIPPAddedKeys": "String",
-    "CIPPActor": "String"
+    "CIPPActor": "String",
+    "CIPPMicrosoftAppToMicrosoftApp": "String"
   },
   "Audit.Exchange": {
     "Id": "Combination GUID",
