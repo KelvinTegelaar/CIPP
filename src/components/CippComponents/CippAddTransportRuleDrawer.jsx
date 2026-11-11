@@ -97,9 +97,9 @@ export const CippAddTransportRuleDrawer = ({
                 variant="contained"
                 color="primary"
                 onClick={handleSubmit}
-                disabled={addTransportRule.isLoading || !isValid}
+                disabled={addTransportRule.isPending || !isValid}
               >
-                {addTransportRule.isLoading
+                {addTransportRule.isPending
                   ? "Deploying..."
                   : addTransportRule.isSuccess
                   ? "Deploy Another"

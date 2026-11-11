@@ -104,9 +104,9 @@ export const CippInviteGuestDrawer = ({
                 variant="contained"
                 color="primary"
                 onClick={handleSubmit}
-                disabled={inviteGuest.isLoading || !isValid}
+                disabled={inviteGuest.isPending || !isValid}
               >
-                {inviteGuest.isLoading
+                {inviteGuest.isPending
                   ? "Sending Invite..."
                   : inviteGuest.isSuccess
                     ? "Send Another Invite"

@@ -230,9 +230,9 @@ export const CippAddTenantAllowBlockListDrawer = ({
                 variant="contained"
                 color="primary"
                 onClick={handleSubmit}
-                disabled={addEntry.isLoading || !isValid}
+                disabled={addEntry.isPending || !isValid}
               >
-                {addEntry.isLoading ? "Adding..." : addEntry.isSuccess ? "Add Another" : "Add Entry"}
+                {addEntry.isPending ? "Adding..." : addEntry.isSuccess ? "Add Another" : "Add Entry"}
               </Button>
               <Button variant="outlined" onClick={handleCloseDrawer}>
                 Close

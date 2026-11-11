@@ -107,9 +107,9 @@ export const CippReusableSettingsDeployDrawer = ({
                 variant="contained"
                 color="primary"
                 onClick={handleSubmit}
-                disabled={deploy.isLoading || !isValid}
+                disabled={deploy.isPending || !isValid}
               >
-                {deploy.isLoading ? "Deploying..." : "Deploy"}
+                {deploy.isPending ? "Deploying..." : "Deploy"}
               </Button>
               <Button variant="outlined" onClick={handleCloseDrawer}>
                 Close

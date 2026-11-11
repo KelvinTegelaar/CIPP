@@ -99,9 +99,9 @@ export const CippAddRoomListDrawer = ({
                 variant="contained"
                 color="primary"
                 onClick={handleSubmit}
-                disabled={addRoomList.isLoading || !isValid}
+                disabled={addRoomList.isPending || !isValid}
               >
-                {addRoomList.isLoading
+                {addRoomList.isPending
                   ? "Creating..."
                   : addRoomList.isSuccess
                   ? "Create Another"

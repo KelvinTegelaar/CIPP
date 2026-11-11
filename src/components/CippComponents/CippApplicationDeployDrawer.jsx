@@ -189,9 +189,9 @@ export const CippApplicationDeployDrawer = ({
                 variant="contained"
                 color="primary"
                 onClick={handleSubmit}
-                disabled={deployApplication.isLoading}
+                disabled={deployApplication.isPending}
               >
-                {deployApplication.isLoading
+                {deployApplication.isPending
                   ? 'Deploying...'
                   : deployApplication.isSuccess
                     ? 'Deploy Another'

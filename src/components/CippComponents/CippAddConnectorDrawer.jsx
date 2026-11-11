@@ -97,9 +97,9 @@ export const CippAddConnectorDrawer = ({
                 variant="contained"
                 color="primary"
                 onClick={handleSubmit}
-                disabled={addConnector.isLoading || !isValid}
+                disabled={addConnector.isPending || !isValid}
               >
-                {addConnector.isLoading
+                {addConnector.isPending
                   ? "Deploying..."
                   : addConnector.isSuccess
                   ? "Deploy Another"

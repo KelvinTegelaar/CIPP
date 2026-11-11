@@ -317,7 +317,7 @@ export const CippGDAPTenantOnboarding = (props) => {
                 variant="contained"
                 onClick={handleStartOnboarding}
                 startIcon={<CippIcons.PlayArrow />}
-                disabled={startOnboarding.isLoading}
+                disabled={startOnboarding.isPending}
               >
                 Start Onboarding
               </Button>

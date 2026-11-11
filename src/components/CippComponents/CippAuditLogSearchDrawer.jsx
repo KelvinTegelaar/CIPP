@@ -226,6 +226,7 @@ export const CippAuditLogSearchDrawer = ({
   const handleCloseDrawer = () => {
     setDrawerVisible(false);
     formControl.reset(buildFormValues(null));
+    createSearchApi.reset();
     onClose?.();
   };
 
@@ -459,9 +460,9 @@ export const CippAuditLogSearchDrawer = ({
               <Button
                 variant="contained"
                 onClick={formControl.handleSubmit(handleCreateSearch)}
-                disabled={createSearchApi.isLoading}
+                disabled={createSearchApi.isPending}
               >
-                {createSearchApi.isLoading ? "Creating..." : "Create Search"}
+                {createSearchApi.isPending ? "Creating..." : "Create Search"}
               </Button>
               <Button variant="outlined" onClick={handleCloseDrawer}>
                 Cancel

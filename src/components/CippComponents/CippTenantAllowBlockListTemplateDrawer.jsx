@@ -273,9 +273,9 @@ export const CippTenantAllowBlockListTemplateDrawer = ({
                 variant="contained"
                 color="primary"
                 onClick={handleSubmit}
-                disabled={saveTemplate.isLoading || !isValid}
+                disabled={saveTemplate.isPending || !isValid}
               >
-                {saveTemplate.isLoading
+                {saveTemplate.isPending
                   ? 'Saving...'
                   : saveTemplate.isSuccess
                     ? isEditMode

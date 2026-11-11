@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { CippIcons } from "../../utils/icon-registry"
 import { Dialog, DialogContent, DialogTitle, Button, DialogActions } from "@mui/material";
 import { useForm, FormProvider } from "react-hook-form";
@@ -19,13 +18,11 @@ export const DomainAnalyserDialog = ({ createDialog }) => {
   // Use methods for form handling and control
   const { handleSubmit, control } = methods;
 
-  const [isRunning, setIsRunning] = useState(false);
   const domainAnalyserResults = ApiPostCall({
     urlFromData: true,
   });
 
   const handleForm = (values) => {
-    setIsRunning(true);
     domainAnalyserResults.mutate({
       url: "/api/ExecDomainAnalyser",
       queryKey: `domain-analyser-${values.tenantFilter}`,
@@ -33,9 +30,7 @@ export const DomainAnalyserDialog = ({ createDialog }) => {
     });
   };
 
-  // Reset running state when dialog is closed
   const handleClose = () => {
-    setIsRunning(false);
     createDialog.handleClose();
   };
 
@@ -66,7 +61,7 @@ export const DomainAnalyserDialog = ({ createDialog }) => {
             <Button
               type="submit"
               variant="contained"
-              disabled={isRunning || domainAnalyserResults.isLoading}
+              disabled={domainAnalyserResults.isPending}
               startIcon={<CippIcons.Refresh />}
             >
               Run Analysis

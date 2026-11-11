@@ -144,9 +144,9 @@ export const CippAutopilotProfileDrawer = ({
                 variant="contained"
                 color="primary"
                 onClick={handleSubmit}
-                disabled={createProfile.isLoading || !isValid}
+                disabled={createProfile.isPending || !isValid}
               >
-                {createProfile.isLoading
+                {createProfile.isPending
                   ? 'Creating...'
                   : createProfile.isSuccess
                     ? 'Create Another'

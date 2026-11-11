@@ -173,10 +173,10 @@ export const CippBulkInviteGuestDrawer = ({
                 color="primary"
                 onClick={handleSubmit}
                 disabled={
-                  inviteGuestsBulk.isLoading || !bulkGuestsData || bulkGuestsData.length === 0
+                  inviteGuestsBulk.isPending || !bulkGuestsData || bulkGuestsData.length === 0
                 }
               >
-                {inviteGuestsBulk.isLoading
+                {inviteGuestsBulk.isPending
                   ? "Sending Invites..."
                   : inviteGuestsBulk.isSuccess
                     ? "Send More Invites"

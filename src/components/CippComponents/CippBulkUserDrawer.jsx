@@ -186,12 +186,12 @@ export const CippBulkUserDrawer = ({
                 onClick={handleSubmit}
                 disabled={
                   isAllTenants ||
-                  createBulkUsers.isLoading ||
+                  createBulkUsers.isPending ||
                   !bulkUserData ||
                   bulkUserData.length === 0
                 }
               >
-                {createBulkUsers.isLoading
+                {createBulkUsers.isPending
                   ? "Creating Users..."
                   : createBulkUsers.isSuccess
                     ? "Create More Users"

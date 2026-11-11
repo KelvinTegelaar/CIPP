@@ -112,9 +112,9 @@ export const CippEnrollmentRestrictionDrawer = ({
                 variant="contained"
                 color="primary"
                 onClick={handleSubmit}
-                disabled={saveRestriction.isLoading || !isValid}
+                disabled={saveRestriction.isPending || !isValid}
               >
-                {saveRestriction.isLoading
+                {saveRestriction.isPending
                   ? 'Saving...'
                   : editing
                     ? 'Save Restriction'

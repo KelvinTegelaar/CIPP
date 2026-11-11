@@ -115,9 +115,9 @@ export const CippCADeployDrawer = ({
                 variant="contained"
                 color="primary"
                 onClick={handleSubmit}
-                disabled={deployPolicy.isLoading}
+                disabled={deployPolicy.isPending}
               >
-                {deployPolicy.isLoading
+                {deployPolicy.isPending
                   ? 'Deploying...'
                   : deployPolicy.isSuccess
                     ? 'Redeploy Policy'

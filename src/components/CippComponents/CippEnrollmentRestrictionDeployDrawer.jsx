@@ -159,9 +159,9 @@ export const CippEnrollmentRestrictionDeployDrawer = ({
                 variant="contained"
                 color="primary"
                 onClick={handleSubmit}
-                disabled={deployTemplate.isLoading || !isValid}
+                disabled={deployTemplate.isPending || !isValid}
               >
-                {deployTemplate.isLoading
+                {deployTemplate.isPending
                   ? 'Deploying...'
                   : deployTemplate.isSuccess
                     ? 'Redeploy Template'

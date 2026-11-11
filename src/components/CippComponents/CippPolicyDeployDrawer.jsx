@@ -162,9 +162,9 @@ export const CippPolicyDeployDrawer = ({
                 variant="contained"
                 color="primary"
                 onClick={handleSubmit}
-                disabled={deployPolicy.isLoading || !isValid}
+                disabled={deployPolicy.isPending || !isValid}
               >
-                {deployPolicy.isLoading
+                {deployPolicy.isPending
                   ? 'Deploying...'
                   : deployPolicy.isSuccess
                     ? 'Redeploy Policy'

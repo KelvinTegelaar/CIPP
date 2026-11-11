@@ -87,9 +87,9 @@ export const CippDeployContactTemplateDrawer = ({
                 variant="contained"
                 color="primary"
                 onClick={handleSubmit}
-                disabled={deployTemplate.isLoading || !isValid}
+                disabled={deployTemplate.isPending || !isValid}
               >
-                {deployTemplate.isLoading
+                {deployTemplate.isPending
                   ? "Deploying..."
                   : deployTemplate.isSuccess
                   ? "Deploy Another"

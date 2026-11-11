@@ -80,9 +80,9 @@ export const CippHVEUserDrawer = ({
                 variant="contained"
                 color="primary"
                 onClick={handleSubmit}
-                disabled={createHVEUser.isLoading}
+                disabled={createHVEUser.isPending}
               >
-                {createHVEUser.isLoading
+                {createHVEUser.isPending
                   ? "Creating User..."
                   : createHVEUser.isSuccess
                   ? "Create Another User"

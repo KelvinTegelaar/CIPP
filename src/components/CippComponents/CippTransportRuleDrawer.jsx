@@ -1494,8 +1494,9 @@ export const CippTransportRuleDrawer = ({
                 variant="contained"
                 color="primary"
                 onClick={handleSubmit}
+                disabled={submitRule.isPending}
               >
-                {submitRule.isLoading
+                {submitRule.isPending
                   ? isEditMode ? "Updating..." : "Creating..."
                   : templateMode
                     ? isEditMode ? "Update Template" : "Create Template"

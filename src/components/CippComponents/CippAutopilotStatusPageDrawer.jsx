@@ -74,9 +74,9 @@ export const CippAutopilotStatusPageDrawer = ({
                 variant="contained"
                 color="primary"
                 onClick={handleSubmit}
-                disabled={!isValid || createStatusPage.isLoading}
+                disabled={!isValid || createStatusPage.isPending}
               >
-                {createStatusPage.isLoading
+                {createStatusPage.isPending
                   ? "Creating..."
                   : createStatusPage.isSuccess
                   ? "Create Another"
