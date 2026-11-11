@@ -6,9 +6,12 @@ import {
   Alert,
   Box,
   Button,
+  Checkbox,
   Dialog,
   DialogTitle,
   DialogContent,
+  FormControlLabel,
+  FormHelperText,
   IconButton,
   CircularProgress,
   DialogActions,
@@ -75,6 +78,7 @@ const Page = () => {
   const [warnOpen, setWarnOpen] = useState(false)
   const [currentScript, setCurrentScript] = useState(null)
   const [scriptTenant, setScriptTenant] = useState(null)
+  const [replaceVariables, setReplaceVariables] = useState(false)
 
   const tenantFilter = useSettings().currentTenant
   const reportDB = useCippReportDB({
@@ -138,6 +142,7 @@ const Page = () => {
     setCurrentScript(null)
     setScriptContents({})
     setActiveContentTab(0)
+    setReplaceVariables(false)
   }
 
   const handleScriptEdit = async (row, action) => {
@@ -215,6 +220,7 @@ const Page = () => {
         ScriptId: id,
         ScriptType: scriptType,
         IntuneScript: JSON.stringify(intuneScript),
+        ReplaceVariables: replaceVariables,
       }
 
       const response = await fetch('/api/EditIntuneScript', {
@@ -574,6 +580,24 @@ const Page = () => {
                   language={language}
                   readOnly={isReadOnly}
                 />
+              )}
+              {activeField && !isReadOnly && (
+                <Box sx={{ mt: 2 }}>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={replaceVariables}
+                        onChange={(event) => setReplaceVariables(event.target.checked)}
+                      />
+                    }
+                    label="Replace CIPP variables on save"
+                  />
+                  <FormHelperText>
+                    Tokens such as %tenantid%, %defaultdomain% or your custom variables are replaced
+                    with this tenant's values before saving. Intune stores the replaced values, so
+                    the tokens are not shown when you edit the script again.
+                  </FormHelperText>
+                </Box>
               )}
             </>
           )}
