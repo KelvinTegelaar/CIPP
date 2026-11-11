@@ -8117,7 +8117,7 @@
       {
         "type": "switch",
         "name": "standards.DefenderCompliancePolicy.AllowMEMEnforceCompliance",
-        "label": "Allow MEM enforcement of compliance",
+        "label": "Allow Microsoft Defender for Endpoint to enforce Endpoint Security Configurations",
         "defaultValue": false
       }
     ],
