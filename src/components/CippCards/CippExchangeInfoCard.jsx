@@ -175,40 +175,11 @@ export const CippExchangeInfoCard = (props) => {
                 let cleanAddress = ''
 
                 if (forwardingAddress) {
-                  // Handle array of forwarding addresses
-                  if (Array.isArray(forwardingAddress)) {
-                    cleanAddress = forwardingAddress
-                      .map((addr) =>
-                        typeof addr === 'string' ? addr.replace(/^smtp:/i, '') : String(addr)
-                      )
-                      .join(', ')
-                    // Check if any address has smtp: prefix (external) or contains @ (external email)
-                    forwardingType = forwardingAddress.some(
-                      (addr) =>
-                        (typeof addr === 'string' && addr.toLowerCase().startsWith('smtp:')) ||
-                        (typeof addr === 'string' && addr.includes('@'))
-                    )
-                      ? 'External'
-                      : 'Internal'
-                  }
-                  // Handle single string address
-                  else if (typeof forwardingAddress === 'string') {
-                    if (forwardingAddress.startsWith('smtp:')) {
-                      forwardingType = 'External'
-                      cleanAddress = forwardingAddress.replace(/^smtp:/i, '')
-                    } else if (forwardingAddress.includes('@')) {
-                      forwardingType = 'External'
-                      cleanAddress = forwardingAddress
-                    } else {
-                      forwardingType = 'Internal'
-                      cleanAddress = forwardingAddress
-                    }
-                  }
-                  // Fallback for other types
-                  else {
-                    forwardingType = 'Internal'
-                    cleanAddress = String(forwardingAddress)
-                  }
+                  // The backend resolves an internal forward to a UPN, so an '@' doesn't mean external
+                  forwardingType = exchangeData?.MailboxActionsData?.ForwardingSmtpAddress
+                    ? 'External'
+                    : 'Internal'
+                  cleanAddress = [].concat(forwardingAddress).map(String).join(', ')
                 }
 
                 return (
