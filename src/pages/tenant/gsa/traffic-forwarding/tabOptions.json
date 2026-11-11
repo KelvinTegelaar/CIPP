@@ -1,0 +1,12 @@
+[
+  {
+    "label": "Profiles",
+    "path": "/tenant/gsa/traffic-forwarding",
+    "icon": "SwapHoriz"
+  },
+  {
+    "label": "Remote networks",
+    "path": "/tenant/gsa/traffic-forwarding/remote-networks",
+    "icon": "Public"
+  }
+]

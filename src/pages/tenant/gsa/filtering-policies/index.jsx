@@ -1,9 +1,13 @@
+import { useState } from 'react'
+import Link from 'next/link'
+import { Button, Stack } from '@mui/material'
 import { Layout as DashboardLayout } from '../../../../layouts/index'
 import { TabbedLayout } from '../../../../layouts/TabbedLayout'
 import { CippTablePage } from '../../../../components/CippComponents/CippTablePage.jsx'
 import CippJsonView from '../../../../components/CippFormPages/CippJSONView'
 import { CippIcons } from '../../../../utils/icon-registry'
 import { useSettings } from '../../../../hooks/use-settings'
+import { CippGSADeployTemplateDrawer } from '../../../../components/CippComponents/CippGSADeployTemplateDrawer'
 import tabOptions from './tabOptions.json'
 
 const actions = [
@@ -47,18 +51,50 @@ const actions = [
 
 const Page = () => {
   const tenant = useSettings().currentTenant
+  const [deployOpen, setDeployOpen] = useState(false)
   return (
-    <CippTablePage
-      title="Filtering Policies"
-      apiUrl="/api/ListGSAFilteringPolicies"
-      queryKey={`ListGSAFilteringPolicies-${tenant}`}
-      actions={actions}
-      offCanvas={{
-        children: (row) => <CippJsonView object={row} defaultOpen={true} />,
-        size: 'xl',
-      }}
-      simpleColumns={['name', 'action', 'description', 'securityProfiles']}
-    />
+    <>
+      <CippTablePage
+        cardButton={
+          <Stack direction="row" spacing={1}>
+            <Button
+              component={Link}
+              href="/tenant/gsa/filtering-policies/edit"
+              startIcon={<CippIcons.Add />}
+            >
+              Add Policy
+            </Button>
+            <Button
+              onClick={() => setDeployOpen(true)}
+              startIcon={<CippIcons.RocketLaunch />}
+            >
+              Deploy Template
+            </Button>
+          </Stack>
+        }
+        title="Filtering Policies"
+        apiUrl="/api/ListGSAFilteringPolicies"
+        queryKey={`ListGSAFilteringPolicies-${tenant}`}
+        actions={actions}
+        offCanvas={{
+          children: (row) => <CippJsonView object={row} defaultOpen={true} />,
+          size: 'xl',
+        }}
+        simpleColumns={[
+          'name',
+          'action',
+          'policyRules',
+          'securityProfiles',
+          'description',
+          'lastModifiedDateTime',
+        ]}
+      />
+      <CippGSADeployTemplateDrawer
+        kind="filteringPolicy"
+        open={deployOpen}
+        onClose={() => setDeployOpen(false)}
+      />
+    </>
   )
 }
 

@@ -1,3 +1,7 @@
+import { useState } from 'react'
+import Link from 'next/link'
+import { Button, Stack } from '@mui/material'
+import { CippGSADeployTemplateDrawer } from '../../../../components/CippComponents/CippGSADeployTemplateDrawer'
 import { Layout as DashboardLayout } from '../../../../layouts/index'
 import { TabbedLayout } from '../../../../layouts/TabbedLayout'
 import { CippTablePage } from '../../../../components/CippComponents/CippTablePage.jsx'
@@ -47,25 +51,51 @@ const actions = [
 
 const Page = () => {
   const tenant = useSettings().currentTenant
+  const [deployOpen, setDeployOpen] = useState(false)
   return (
-    <CippTablePage
-      title="Security Profiles"
-      apiUrl="/api/ListGSASecurityProfiles"
-      queryKey={`ListGSASecurityProfiles-${tenant}`}
-      actions={actions}
-      offCanvas={{
-        children: (row) => <CippJsonView object={row} defaultOpen={true} />,
-        size: 'xl',
-      }}
-      simpleColumns={[
-        'name',
-        'priority',
-        'state',
-        'filteringPolicies',
-        'conditionalAccessPolicyNames',
-        'description',
-      ]}
-    />
+    <>
+      <CippTablePage
+        cardButton={
+          <Stack direction="row" spacing={1}>
+            <Button
+              component={Link}
+              href="/tenant/gsa/security-profiles/edit"
+              startIcon={<CippIcons.Add />}
+            >
+              Add Profile
+            </Button>
+            <Button
+              onClick={() => setDeployOpen(true)}
+              startIcon={<CippIcons.RocketLaunch />}
+            >
+              Deploy Template
+            </Button>
+          </Stack>
+        }
+        title="Security Profiles"
+        apiUrl="/api/ListGSASecurityProfiles"
+        queryKey={`ListGSASecurityProfiles-${tenant}`}
+        actions={actions}
+        offCanvas={{
+          children: (row) => <CippJsonView object={row} defaultOpen={true} />,
+          size: 'xl',
+        }}
+        simpleColumns={[
+          'name',
+          'priority',
+          'state',
+          'filteringPolicies',
+          'conditionalAccessPolicyNames',
+          'description',
+          'lastModifiedDateTime',
+        ]}
+      />
+      <CippGSADeployTemplateDrawer
+        kind="securityProfile"
+        open={deployOpen}
+        onClose={() => setDeployOpen(false)}
+      />
+    </>
   )
 }
 

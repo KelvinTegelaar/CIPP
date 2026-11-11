@@ -6,6 +6,7 @@ import { Layout as DashboardLayout } from '../../../../layouts/index'
 import CippFormPage from '../../../../components/CippFormPages/CippFormPage'
 import CippFormSkeleton from '../../../../components/CippFormPages/CippFormSkeleton'
 import CippGSAFilteringPolicyForm, {
+  filteringPolicyDefaults,
   filteringPolicyToBody,
   filteringPolicyToForm,
 } from '../../../../components/CippFormPages/CippGSAFilteringPolicyForm'
@@ -16,7 +17,10 @@ const Page = () => {
   const router = useRouter()
   const { id } = router.query
   const tenantFilter = useSettings().currentTenant
-  const formControl = useForm({ mode: 'onChange' })
+  const formControl = useForm({
+    mode: 'onChange',
+    defaultValues: filteringPolicyDefaults,
+  })
   const policies = ApiGetCall({
     url: `/api/ListGSAFilteringPolicies?tenantFilter=${tenantFilter}`,
     queryKey: `ListGSAFilteringPolicies-edit-${tenantFilter}`,
@@ -31,7 +35,7 @@ const Page = () => {
   return (
     <CippFormPage
       title={policy ? `Filtering Policy: ${policy.name}` : 'Filtering Policy'}
-      formPageType="Edit"
+      formPageType={id ? 'Edit' : 'Add'}
       backButtonTitle="Filtering Policies"
       formControl={formControl}
       postUrl="/api/EditGSAFilteringPolicy"
@@ -42,7 +46,7 @@ const Page = () => {
         ...filteringPolicyToBody(values),
       })}
     >
-      {policy ? (
+      {!id || policy ? (
         <CippGSAFilteringPolicyForm
           formControl={formControl}
           nameHelperText="Changes apply to this tenant straight away."

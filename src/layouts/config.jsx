@@ -281,6 +281,11 @@ export const nativeMenuItems = [
             path: '/tenant/gsa/security-profiles',
             permissions: ['Tenant.GlobalSecureAccess.*'],
           },
+          {
+            title: 'Traffic Forwarding',
+            path: '/tenant/gsa/traffic-forwarding',
+            permissions: ['Tenant.GlobalSecureAccess.*'],
+          },
         ],
       },
       {

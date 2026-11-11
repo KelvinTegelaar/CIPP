@@ -1,94 +1,14 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import Link from 'next/link'
-import { useForm } from 'react-hook-form'
-import { Alert, Button, Stack } from '@mui/material'
+import { Button } from '@mui/material'
 import { Layout as DashboardLayout } from '../../../../layouts/index'
 import { TabbedLayout } from '../../../../layouts/TabbedLayout'
 import tabOptions from './tabOptions.json'
 import { CippTablePage } from '../../../../components/CippComponents/CippTablePage.jsx'
-import { CippOffCanvas } from '../../../../components/CippComponents/CippOffCanvas'
-import CippFormComponent from '../../../../components/CippComponents/CippFormComponent'
-import { CippFormTenantSelector } from '../../../../components/CippComponents/CippFormTenantSelector'
-import { CippApiResults } from '../../../../components/CippComponents/CippApiResults'
 import CippJsonView from '../../../../components/CippFormPages/CippJSONView'
-import { ApiGetCall, ApiPostCall } from '../../../../api/ApiCall'
+import { ApiGetCall } from '../../../../api/ApiCall'
+import { CippGSADeployTemplateDrawer } from '../../../../components/CippComponents/CippGSADeployTemplateDrawer'
 import { CippIcons } from '../../../../utils/icon-registry'
-
-const DeployDrawer = ({ template, onClose }) => {
-  const formControl = useForm()
-  const deploy = ApiPostCall({})
-  const option = template
-    ? { value: template.GUID, label: template.name }
-    : null
-
-  useEffect(() => {
-    if (template) {
-      formControl.reset({
-        TemplateList: { value: template.GUID, label: template.name },
-      })
-      deploy.reset()
-    }
-  }, [template]) // eslint-disable-line react-hooks/exhaustive-deps
-
-  return (
-    <CippOffCanvas
-      title="Deploy Security Profile"
-      visible={!!template}
-      onClose={onClose}
-      size="lg"
-      footer={
-        <Stack spacing={2}>
-          <CippApiResults apiObject={deploy} />
-          <Stack direction="row" spacing={2}>
-            <Button
-              variant="contained"
-              disabled={deploy.isPending}
-              onClick={formControl.handleSubmit((values) =>
-                deploy.mutate({
-                  url: '/api/ExecDeployGSASecurityProfileTemplate',
-                  data: values,
-                })
-              )}
-            >
-              {deploy.isPending ? 'Deploying...' : 'Deploy'}
-            </Button>
-            <Button variant="outlined" onClick={onClose}>
-              Close
-            </Button>
-          </Stack>
-        </Stack>
-      }
-    >
-      <Stack spacing={2}>
-        <Alert severity="info">
-          Creates or updates this security profile and the filtering policies it
-          links in each tenant, so they match the template. A security profile
-          filters nothing until a Conditional Access policy uses it. Tenants
-          without a Microsoft Entra Internet Access licence are left unchanged.
-        </Alert>
-        <CippFormTenantSelector
-          formControl={formControl}
-          name="tenantFilter"
-          required={true}
-          disableClearable={false}
-          preselectedEnabled={false}
-          allTenants={true}
-          type="multiple"
-        />
-        <CippFormComponent
-          type="autoComplete"
-          name="TemplateList"
-          label="Security profile template"
-          options={option ? [option] : []}
-          multiple={false}
-          creatable={false}
-          disabled
-          formControl={formControl}
-        />
-      </Stack>
-    </CippOffCanvas>
-  )
-}
 
 const Page = () => {
   const [deployTemplate, setDeployTemplate] = useState(null)
@@ -191,7 +111,9 @@ const Page = () => {
           </Button>
         }
       />
-      <DeployDrawer
+      <CippGSADeployTemplateDrawer
+        kind="securityProfile"
+        open={!!deployTemplate}
         template={deployTemplate}
         onClose={() => setDeployTemplate(null)}
       />

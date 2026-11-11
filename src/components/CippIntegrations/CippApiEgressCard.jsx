@@ -1,8 +1,10 @@
 import { useMemo, useState } from "react";
 import {
+  Alert,
   Card,
   CardContent,
   CardHeader,
+  Link,
   Stack,
   ToggleButton,
   ToggleButtonGroup,
@@ -177,6 +179,16 @@ export const CippApiEgressCard = () => {
     : theme.palette.success.main;
   const gaugeData = [{ name: "used", value: Math.min(100, Math.max(0, pct)), fill: gaugeColor }];
 
+  // Same bar as CIPP Monitor's check: 50 MB or more today with 80% or more of the requests uncompressed
+  const uncompressed = (r?.Clients ?? []).flatMap((c) => {
+    const tracked = (c.Endpoints ?? []).filter((e) => e.BrRequests != null);
+    const requests = tracked.reduce((n, e) => n + e.Requests, 0);
+    const none = tracked.reduce((n, e) => n + e.Requests - e.BrRequests - e.GzipRequests, 0);
+    return c.Bytes >= 50 * 1048576 && requests > 0 && none / requests >= 0.8
+      ? [`${c.Name} (${Math.round((none / requests) * 100)}% of requests, ${formatBytes(c.Bytes)})`]
+      : [];
+  });
+
   return (
     <Card>
       <CardHeader
@@ -198,6 +210,20 @@ export const CippApiEgressCard = () => {
         }
       />
       <CardContent sx={{ pt: 0 }}>
+        {uncompressed.length > 0 && (
+          <Alert severity="warning" sx={{ mb: 2 }}>
+            Uncompressed today: {uncompressed.join(", ")}. Uncompressed responses use the daily cap
+            5-10 times faster. Have the client send <code>Accept-Encoding: br, gzip</code>: PowerShell
+            7 does, Windows PowerShell 5.1 doesn't, and curl needs <code>--compressed</code>.{" "}
+            <Link
+              href="https://docs.cipp.app/api-documentation/setup-and-authentication#response-compression"
+              target="_blank"
+              rel="noopener"
+            >
+              Response compression
+            </Link>
+          </Alert>
+        )}
         <Grid container spacing={2}>
           {/* ── Used-of-cap gauge / total ── */}
           <Grid size={{ xs: 12, md: 4 }}>

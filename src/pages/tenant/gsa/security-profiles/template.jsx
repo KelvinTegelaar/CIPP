@@ -56,7 +56,8 @@ const Page = () => {
           url: '/api/ListGSAFilteringPolicyTemplates',
           labelField: 'name',
           valueField: 'GUID',
-          queryKey: 'ListGSAFilteringPolicyTemplates',
+          queryKey: 'ListGSAFilteringPolicyTemplates-picker',
+          excludeTenantFilter: true,
         }}
       />
     </CippFormPage>

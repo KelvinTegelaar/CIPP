@@ -1187,6 +1187,7 @@ function SessionControlsSection({ formControl, disabled, live }) {
               labelField: "name",
               valueField: "GUID",
               queryKey: "ListGSASecurityProfileTemplates-picker",
+              excludeTenantFilter: true,
             }}
           />
         )}

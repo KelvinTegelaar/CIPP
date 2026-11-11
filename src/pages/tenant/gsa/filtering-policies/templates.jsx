@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import Link from 'next/link'
 import { Button } from '@mui/material'
 import { Layout as DashboardLayout } from '../../../../layouts/index'
@@ -7,8 +8,10 @@ import { CippTablePage } from '../../../../components/CippComponents/CippTablePa
 import CippJsonView from '../../../../components/CippFormPages/CippJSONView'
 import { CippIcons } from '../../../../utils/icon-registry'
 import { ApiGetCall } from '../../../../api/ApiCall'
+import { CippGSADeployTemplateDrawer } from '../../../../components/CippComponents/CippGSADeployTemplateDrawer'
 
 const Page = () => {
+  const [deployTemplate, setDeployTemplate] = useState(null)
   const integrations = ApiGetCall({
     url: '/api/ListExtensionsConfig',
     queryKey: 'Integrations',
@@ -16,6 +19,13 @@ const Page = () => {
     refetchOnReconnect: false,
   })
   const actions = [
+    {
+      label: 'Deploy Template',
+      customFunction: (row) => setDeployTemplate(row),
+      noConfirm: true,
+      icon: <CippIcons.RocketLaunch />,
+      color: 'success',
+    },
     {
       label: 'Edit Template',
       link: '/tenant/gsa/filtering-policies/template?GUID=[GUID]',
@@ -78,27 +88,35 @@ const Page = () => {
     },
   ]
   return (
-    <CippTablePage
-      title="Filtering Policy Templates"
-      tenantInTitle={false}
-      apiUrl="/api/ListGSAFilteringPolicyTemplates"
-      queryKey="ListGSAFilteringPolicyTemplates"
-      actions={actions}
-      offCanvas={{
-        children: (row) => <CippJsonView object={row} defaultOpen={true} />,
-        size: 'xl',
-      }}
-      simpleColumns={['name', 'action', 'description']}
-      cardButton={
-        <Button
-          component={Link}
-          href="/tenant/gsa/filtering-policies/template"
-          startIcon={<CippIcons.Add />}
-        >
-          Add Template
-        </Button>
-      }
-    />
+    <>
+      <CippTablePage
+        title="Filtering Policy Templates"
+        tenantInTitle={false}
+        apiUrl="/api/ListGSAFilteringPolicyTemplates"
+        queryKey="ListGSAFilteringPolicyTemplates"
+        actions={actions}
+        offCanvas={{
+          children: (row) => <CippJsonView object={row} defaultOpen={true} />,
+          size: 'xl',
+        }}
+        simpleColumns={['name', 'action', 'description']}
+        cardButton={
+          <Button
+            component={Link}
+            href="/tenant/gsa/filtering-policies/template"
+            startIcon={<CippIcons.Add />}
+          >
+            Add Template
+          </Button>
+        }
+      />
+      <CippGSADeployTemplateDrawer
+        kind="filteringPolicy"
+        open={!!deployTemplate}
+        template={deployTemplate}
+        onClose={() => setDeployTemplate(null)}
+      />
+    </>
   )
 }
 

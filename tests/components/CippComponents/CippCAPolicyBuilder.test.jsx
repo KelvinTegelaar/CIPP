@@ -3,6 +3,7 @@ import { waitFor } from '@testing-library/react'
 import { useForm } from 'react-hook-form'
 import { renderWithProviders } from '../../test-utils'
 import { apiCallMock } from '../../mocks/api-call'
+import { ApiGetCallWithPagination } from '../../../src/api/ApiCall'
 import CippCAPolicyBuilder, {
   extractCAPolicyJSON,
 } from '../../../src/components/CippComponents/CippCAPolicyBuilder'
@@ -280,5 +281,27 @@ describe('CippCAPolicyBuilder session controls', () => {
       isEnabled: true,
       profileId: { label: profileId, value: profileId },
     })
+  })
+
+  it('lists security profile templates without a tenant, and live profiles for the tenant', async () => {
+    const requestFor = (url) =>
+      ApiGetCallWithPagination.mock.calls
+        .map(([options]) => options)
+        .filter((options) => options?.url === url)
+        .at(-1)
+    renderWithProviders(<Harness />)
+    await waitFor(() =>
+      expect(requestFor('/api/ListGSASecurityProfileTemplates')).toBeDefined()
+    )
+    expect(
+      requestFor('/api/ListGSASecurityProfileTemplates').data
+    ).not.toHaveProperty('tenantFilter')
+    renderWithProviders(<Harness live />)
+    await waitFor(() =>
+      expect(requestFor('/api/ListGSASecurityProfiles')).toBeDefined()
+    )
+    expect(requestFor('/api/ListGSASecurityProfiles').data).toHaveProperty(
+      'tenantFilter'
+    )
   })
 })

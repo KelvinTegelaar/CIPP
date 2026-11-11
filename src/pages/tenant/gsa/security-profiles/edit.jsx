@@ -6,6 +6,7 @@ import { Layout as DashboardLayout } from '../../../../layouts/index'
 import CippFormPage from '../../../../components/CippFormPages/CippFormPage'
 import CippFormSkeleton from '../../../../components/CippFormPages/CippFormSkeleton'
 import CippGSASecurityProfileForm, {
+  securityProfileDefaults,
   securityProfileToBody,
   securityProfileToForm,
 } from '../../../../components/CippFormPages/CippGSASecurityProfileForm'
@@ -16,7 +17,10 @@ const Page = () => {
   const router = useRouter()
   const { id } = router.query
   const tenantFilter = useSettings().currentTenant
-  const formControl = useForm({ mode: 'onChange' })
+  const formControl = useForm({
+    mode: 'onChange',
+    defaultValues: securityProfileDefaults,
+  })
   const profiles = ApiGetCall({
     url: `/api/ListGSASecurityProfiles?tenantFilter=${tenantFilter}`,
     queryKey: `ListGSASecurityProfiles-edit-${tenantFilter}`,
@@ -41,7 +45,7 @@ const Page = () => {
   return (
     <CippFormPage
       title={profile ? `Security Profile: ${profile.name}` : 'Security Profile'}
-      formPageType="Edit"
+      formPageType={id ? 'Edit' : 'Add'}
       backButtonTitle="Security Profiles"
       formControl={formControl}
       postUrl="/api/EditGSASecurityProfile"
@@ -52,7 +56,7 @@ const Page = () => {
         ...securityProfileToBody(values),
       })}
     >
-      {profile ? (
+      {!id || profile ? (
         <CippGSASecurityProfileForm
           formControl={formControl}
           nameHelperText="Changes apply to this tenant straight away."
@@ -63,7 +67,7 @@ const Page = () => {
             valueField: 'id',
             queryKey: 'ListGSAFilteringPolicies-picker',
           }}
-          isBaseline={profile.priority === 65000}
+          isBaseline={profile?.priority === 65000}
         />
       ) : profiles.isSuccess || profiles.isError ? (
         <Alert severity="warning">
