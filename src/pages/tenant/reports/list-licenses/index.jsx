@@ -26,6 +26,7 @@ const Page = () => {
 
   const simpleColumns = [
     'Tenant',
+    'TenantName',
     'License',
     'CountUsed',
     'CountAvailable',
@@ -83,6 +84,7 @@ const Page = () => {
   const offCanvas = {
     extendedInfoFields: [
       'Tenant',
+      'TenantName',
       'License',
       'CountUsed',
       'CountAvailable',
