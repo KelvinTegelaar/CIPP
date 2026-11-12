@@ -4,7 +4,7 @@
  */
 
 import { getMissingFromCache, addLicensesToCache } from "./cipp-license-cache";
-import { tenantScope } from "./tenant-selection";
+import { isTenantGroup } from "./tenant-selection";
 
 const getCurrentTenant = () => {
   try {
@@ -108,7 +108,8 @@ class LicenseBackfillManager {
 
       const response = await axios.post(
         "/api/ExecLicenseSearch",
-        { skuIds: skuIdsToFetch, ...tenantScope(tenantFilter) },
+        // The tenant is only a fallback for SKU names; ExecLicenseSearch does not take a group
+        { skuIds: skuIdsToFetch, ...(isTenantGroup(tenantFilter) ? {} : { tenantFilter }) },
         { headers: await buildVersionedHeaders() }
       );
 
