@@ -815,6 +815,12 @@
     "description": "Monitors for user requests to release quarantined messages and provides a CIPP-native alternative to the external email forwarding method. This helps MSPs maintain secure configurations while getting timely notifications about quarantine activity. Links to the tenant's quarantine page are provided in alerts."
   },
   {
+    "name": "LicenseRequests",
+    "label": "Alert on pending license requests from users",
+    "recommendedRunInterval": "1h",
+    "description": "Monitors for license requests that users send with the 'Ask for a license' button in Microsoft 365 apps. Microsoft shows these requests only under Billing > License requests in the admin center, so they are easy to miss. Each request alerts once, with the user, the product, the reason and a link to the License requests page."
+  },
+  {
     "name": "StaleEntraDevices",
     "label": "Alert on stale Entra devices that have not been active for X days",
     "recommendedRunInterval": "1d",
