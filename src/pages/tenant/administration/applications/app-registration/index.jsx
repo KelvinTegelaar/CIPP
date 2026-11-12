@@ -55,7 +55,9 @@ const Page = () => {
         : 'applications',
       tenantFilter: router.query.tenantFilter ?? userSettingsDefaults.currentTenant,
       // Always fetch live data on this management page so credential/URI/audience edits reflect immediately.
+      // SkipCache only skips the report cache; the response cache would replay the pre-edit answer.
       SkipCache: true,
+      InvalidateCIPPCache: true,
     },
     queryKey: `Application-appId-${applicationClientId}`,
     waiting: waiting,
