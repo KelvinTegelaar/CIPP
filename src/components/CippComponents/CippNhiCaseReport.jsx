@@ -104,7 +104,7 @@ const ContainmentHistory = ({ caseData, tenantFilter, relatedQueryKeys }) => {
     }))
   )
   return (
-    <Section title="Containment history" count={history.length}>
+    <Section title="Containment history" count={rows.length}>
       <Table
         title="Containment history"
         rows={rows}
