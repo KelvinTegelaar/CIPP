@@ -516,6 +516,8 @@ const CippSchedulerForm = (props) => {
           const ResetParams = {
             tenantFilter: tenantFilterForForm,
             PsaTicketStrategy: psaStrategyValue,
+            PsaTicketId: task.PsaTicketId,
+            reference: task.Reference,
             RowKey: router.query.Clone || cloneMode ? null : task.RowKey,
             Name:
               router.query.Clone || cloneMode
