@@ -13,6 +13,7 @@ export const CippTextFieldWithVariables = ({
   includeSystemVariables = false,
   autocompleteTrigger = "%",
   autocompleteOptions = null,
+  extraAutocompleteOptions = null,
   ...textFieldProps
 }) => {
   const [showAutocomplete, setShowAutocomplete] = useState(false);
@@ -84,8 +85,14 @@ export const CippTextFieldWithVariables = ({
       cursorPos >= autocompleteTrigger.length &&
       newValue.substring(cursorPos - autocompleteTrigger.length, cursorPos) === autocompleteTrigger;
 
-    // Check if trigger was just typed
-    if (justTypedTrigger) {
+    // A % typed after a name ends a hand-typed variable. Reopening the list here let Tab or Enter
+    // replace that closing % with the first variable offered.
+    const closesTypedVariable =
+      justTypedTrigger && autocompleteTrigger === "%" && showAutocomplete && searchQuery.length > 0;
+
+    if (closesTypedVariable) {
+      closeAutocomplete();
+    } else if (justTypedTrigger) {
       // Position autocomplete near cursor
       setAutocompleteAnchor(textFieldRef.current);
       setSearchQuery("");
@@ -249,6 +256,7 @@ export const CippTextFieldWithVariables = ({
         includeSystemVariables={includeSystemVariables}
         position={getCursorPosition()}
         customVariables={autocompleteOptions}
+        extraVariables={extraAutocompleteOptions}
       />
     </>
   );
