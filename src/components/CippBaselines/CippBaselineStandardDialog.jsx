@@ -51,11 +51,29 @@ const extractTagFramework = (tag) => {
     const versionMatch = tag.match(/NIST CSF (\d+\.\d+)/)
     return versionMatch ? `NIST CSF ${versionMatch[1]}` : 'NIST CSF'
   }
+  if (tag.startsWith('NIST SP 800-171')) return 'NIST SP 800-171'
+  if (tag.startsWith('CMMC ')) {
+    const levelMatch = tag.match(/\.L(\d)-/)
+    return levelMatch ? `CMMC Level ${levelMatch[1]}` : 'CMMC'
+  }
   if (tag.startsWith('exo_')) return 'Secure Score - Exchange'
   if (tag.startsWith('mdo_')) return 'Secure Score - Defender'
   if (tag.startsWith('spo_')) return 'Secure Score - SharePoint'
   if (tag.startsWith('mip_')) return 'Secure Score - Purview'
   return null
+}
+
+// A 'FedRAMP A-D (KSI-...)' tag counts for every certification class in its range.
+const fedrampClasses = ['A', 'B', 'C', 'D']
+const extractTagFrameworks = (tag) => {
+  const classRange = tag.match(/^FedRAMP ([A-D])-([A-D]) /)
+  if (classRange) {
+    return fedrampClasses
+      .slice(fedrampClasses.indexOf(classRange[1]), fedrampClasses.indexOf(classRange[2]) + 1)
+      .map((certificationClass) => `FedRAMP Class ${certificationClass}`)
+  }
+  const framework = extractTagFramework(tag)
+  return framework ? [framework] : []
 }
 
 // One sort control instead of separate field + direction dropdowns: each option
@@ -137,8 +155,9 @@ export const CippBaselineStandardDialog = ({
           recommendedBySet.add(source)
         }
         for (const tag of standard.tag ?? []) {
-          const framework = extractTagFramework(tag)
-          if (framework) tagFrameworkSet.add(framework)
+          for (const framework of extractTagFrameworks(tag)) {
+            tagFrameworkSet.add(framework)
+          }
         }
       }
       const impactOrder = ['Low Impact', 'Medium Impact', 'High Impact']
@@ -186,10 +205,11 @@ export const CippBaselineStandardDialog = ({
       )
     const matchesTagFramework =
       selectedTagFrameworks.length === 0 ||
-      (standard.tag ?? []).some((tag) => {
-        const framework = extractTagFramework(tag)
-        return framework && selectedTagFrameworks.includes(framework)
-      })
+      (standard.tag ?? []).some((tag) =>
+        extractTagFrameworks(tag).some((framework) =>
+          selectedTagFrameworks.includes(framework)
+        )
+      )
     const isSelected = instanceCountOf(standard) > 0
     const matchesStatusFilter =
       statusFilter === 'all' ||
