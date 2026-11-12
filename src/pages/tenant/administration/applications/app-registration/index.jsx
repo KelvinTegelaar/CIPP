@@ -61,6 +61,15 @@ const Page = () => {
     waiting: waiting,
   })
 
+  // Graph can take a few seconds to show a credential change, so read again after the first refresh.
+  const refreshTimers = useRef([])
+  const refreshApp = () => {
+    appRequest.refetch()
+    refreshTimers.current.forEach(clearTimeout)
+    refreshTimers.current = [4000, 12000].map((ms) => setTimeout(() => appRequest.refetch(), ms))
+  }
+  useEffect(() => () => refreshTimers.current.forEach(clearTimeout), [])
+
   let appData = null
   if (appRequest.isSuccess && appRequest.data) {
     if (Array.isArray(appRequest.data.Results)) {
@@ -282,9 +291,9 @@ const Page = () => {
           graphObjectId={data?.id}
           tenantFilter={tenantForApi}
           canRemove={canWriteApplication}
-          onRemoved={() => appRequest.refetch()}
+          onRemoved={refreshApp}
           canAdd={canWriteApplication}
-          onAdded={() => appRequest.refetch()}
+          onAdded={refreshApp}
         />
       ),
     },
@@ -315,7 +324,7 @@ const Page = () => {
           graphObjectId={data?.id}
           tenantFilter={tenantForApi}
           canRemove={canWriteApplication}
-          onRemoved={() => appRequest.refetch()}
+          onRemoved={refreshApp}
         />
       ),
     },
