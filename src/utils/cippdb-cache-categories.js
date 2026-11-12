@@ -113,6 +113,7 @@ const CACHE_TYPE_COLLECTIONS = {
     "RoleEligibilitySchedules",
     "RoleAssignmentScheduleInstances",
     "RoleManagementPolicies",
+    "PIMGroupEligibilitySchedules",
   ],
   Intune: [
     "ManagedDevices",

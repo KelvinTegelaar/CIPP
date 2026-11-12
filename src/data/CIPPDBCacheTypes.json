@@ -121,6 +121,11 @@
     "description": "PIM role eligibility schedules"
   },
   {
+    "type": "PIMGroupEligibilitySchedules",
+    "friendlyName": "PIM for Groups Eligibility",
+    "description": "Who is eligible for membership or ownership of role-assignable groups through PIM for Groups, with the users inside eligible groups"
+  },
+  {
     "type": "RoleManagementPolicies",
     "friendlyName": "Role Management Policies",
     "description": "Role management policies"
