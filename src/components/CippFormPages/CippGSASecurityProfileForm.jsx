@@ -159,7 +159,7 @@ const CippGSASecurityProfileForm = ({
                 }}
               />
             </Grid>
-            <Grid size={{ xs: 6, md: 2 }}>
+            <Grid size={{ xs: 12, sm: 6, md: 2 }}>
               <CippFormComponent
                 type="switch"
                 name={`policies.${index}.enabled`}
@@ -167,7 +167,7 @@ const CippGSASecurityProfileForm = ({
                 formControl={formControl}
               />
             </Grid>
-            <Grid size={{ xs: 6, md: 2 }}>
+            <Grid size={{ xs: 12, sm: 6, md: 2 }}>
               <CippFormComponent
                 type="switch"
                 name={`policies.${index}.logging`}

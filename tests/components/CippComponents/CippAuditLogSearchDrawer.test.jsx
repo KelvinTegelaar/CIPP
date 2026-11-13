@@ -73,7 +73,7 @@ describe('CippAuditLogSearchDrawer', () => {
     vi.clearAllMocks()
     mutateAsync = vi.fn(() => Promise.resolve({}))
     ApiGetCall.mockImplementation(({ url }) => (url === '/api/ListTenants' ? tenants : idleGet))
-    ApiPostCall.mockImplementation(() => ({ isLoading: false, mutateAsync }))
+    ApiPostCall.mockImplementation(() => ({ isPending: false, mutateAsync, reset: vi.fn() }))
   })
 
   it('opens empty for a new search', async () => {
