@@ -9,11 +9,12 @@ const tenant = (domain, displayName = domain) => ({
   displayName,
 })
 
-const row = (Tenant, Type, hours, Count = 1) => ({
+const row = (Tenant, Type, hours, Count = 1, Scheduled = true) => ({
   Tenant,
   Type,
   Count,
   LastRefresh: hoursAgo(hours),
+  Scheduled,
 })
 
 describe('deriveCacheSummary', () => {
@@ -32,15 +33,15 @@ describe('deriveCacheSummary', () => {
     })
   })
 
-  it('ignores collections the nightly orchestrator never refreshes', () => {
-    // SharePointSharingLinks is populated on demand only, so a months-old row says nothing about
-    // whether this tenant is still syncing.
+  it('ignores collections the nightly run never refreshes', () => {
+    // On-demand, baseline-only and retired types age forever, so they say nothing about whether
+    // this tenant is still syncing.
     const summary = deriveCacheSummary(
       [
         row('a.com', 'Users', 2),
-        row('a.com', 'SharePointSharingLinks', 24 * 90),
-        row('a.com', 'SharePointPermissions', 24 * 60),
-        row('a.com', 'OneDriveRootPermissions', 24 * 45),
+        row('a.com', 'SharePointSharingLinks', 24 * 90, 1, false),
+        row('a.com', 'OneDriveQuotas', 24 * 24, 1, false),
+        row('a.com', 'SPOTenantSyncClientRestriction', 24 * 22, 1, false),
       ],
       [tenant('a.com', 'Alpha')]
     )
@@ -49,34 +50,13 @@ describe('deriveCacheSummary', () => {
     expect(summary.staleTenants).toEqual([])
   })
 
-  it('ignores collections that are no longer cached', () => {
+  it('judges rows without the Scheduled flag, so a cached older response is not all on-demand', () => {
     const summary = deriveCacheSummary(
-      [
-        row('a.com', 'Users', 2),
-        row('a.com', 'CredentialUserRegistrationDetails', 24 * 12),
-        row('a.com', 'DeviceSettings', 24 * 5),
-      ],
+      [{ Tenant: 'a.com', Type: 'Users', Count: 1, LastRefresh: hoursAgo(2) }],
       [tenant('a.com', 'Alpha')]
     )
 
     expect(summary.freshness).toEqual({ fresh: 1, stale: 0, missing: 0 })
-    expect(summary.staleTenants).toEqual([])
-  })
-
-  it('says so when a tenant has only ad-hoc collections rather than none', () => {
-    const summary = deriveCacheSummary(
-      [row('a.com', 'SharePointSharingLinks', 24 * 90)],
-      [tenant('a.com', 'Alpha')]
-    )
-
-    expect(summary.freshness).toEqual({ fresh: 0, stale: 0, missing: 1 })
-    expect(summary.staleTenants[0]).toMatchObject({
-      name: 'Alpha',
-      detail: 'Only on-demand collections cached',
-      severity: 'critical',
-      ageHours: null,
-      collections: [],
-    })
   })
 
   it('treats a collection that missed one nightly run as fresh', () => {
@@ -153,7 +133,7 @@ describe('deriveCacheSummary', () => {
       [
         row('a.com', 'Users', 2, 40),
         row('b.com', 'Users', 2, 60),
-        row('a.com', 'SharePointSharingLinks', 24 * 90, 500),
+        row('a.com', 'SharePointSharingLinks', 24 * 90, 500, false),
       ],
       [tenant('a.com'), tenant('b.com')]
     )

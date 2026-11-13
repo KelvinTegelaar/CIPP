@@ -39,7 +39,7 @@ const actions = [
         },
       },
     ],
-    relatedQueryKeys: ["ListGDAPRoleTemplates"],
+    relatedQueryKeys: ["ListGDAPRoleTemplates*"],
   },
   {
     label: "Create Invite",
@@ -53,10 +53,11 @@ const actions = [
     icon: <CippIcons.Delete />,
     data: { TemplateId: "TemplateId" },
     confirmText: "Are you sure you want to delete this Role Template?",
+    relatedQueryKeys: ["ListGDAPRoleTemplates*"],
   },
 ];
 
-const simpleColumns = ["TemplateId", "Roles", "GroupMappings"];
+const simpleColumns = ["TemplateId", "partnerDisplayName", "Roles", "GroupMappings"];
 
 const Page = () => {
   const [createDefaults, setCreateDefaults] = useState(false);
@@ -69,7 +70,7 @@ const Page = () => {
 
   const createCippDefaults = ApiPostCall({
     urlFromData: true,
-    relatedQueryKeys: ["ListGDAPRoleTemplates", "ListGDAPRoles"],
+    relatedQueryKeys: ["ListGDAPRoleTemplates*", "ListGDAPRoles"],
   });
 
   useEffect(() => {
@@ -213,7 +214,7 @@ const Page = () => {
 };
 
 Page.getLayout = (page) => (
-  <DashboardLayout>
+  <DashboardLayout usesTenant={false}>
     <TabbedLayout tabOptions={tabOptions}>{page}</TabbedLayout>
   </DashboardLayout>
 );

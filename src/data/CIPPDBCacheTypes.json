@@ -100,6 +100,12 @@
     "description": "Microsoft Secure Score and control profiles"
   },
   {
+    "type": "SecureScoreSummary",
+    "collectedBy": "SecureScore",
+    "friendlyName": "Secure Score Summary",
+    "description": "Compact per-tenant secure score, history and per-control results used by the All Tenants secure score views"
+  },
+  {
     "type": "PIMSettings",
     "friendlyName": "PIM Settings",
     "description": "Privileged Identity Management settings and assignments"
@@ -113,6 +119,11 @@
     "type": "RoleEligibilitySchedules",
     "friendlyName": "Role Eligibility Schedules",
     "description": "PIM role eligibility schedules"
+  },
+  {
+    "type": "PIMGroupEligibilitySchedules",
+    "friendlyName": "PIM for Groups Eligibility",
+    "description": "Who is eligible for membership or ownership of role-assignable groups through PIM for Groups, with the users inside eligible groups"
   },
   {
     "type": "RoleManagementPolicies",
@@ -148,6 +159,16 @@
     "type": "ServicePrincipalSignInActivities",
     "friendlyName": "Service Principal Sign-In Activity",
     "description": "Last sign-in of every app, delegated or app-only (Entra ID P1)"
+  },
+  {
+    "type": "AppCredentialSignInActivities",
+    "friendlyName": "App Credential Sign-In Activity",
+    "description": "Last sign-in of every app secret and certificate that signed in (Entra ID P1)"
+  },
+  {
+    "type": "AppFederatedCredentials",
+    "friendlyName": "App Federated Credentials",
+    "description": "Federated identity credentials on app registrations: the issuer and subject whose tokens sign in as the app"
   },
   {
     "type": "AppCredentialChanges",
@@ -435,6 +456,11 @@
     "type": "IntuneAppInstallStatus",
     "friendlyName": "Intune App Install Status",
     "description": "Per-application install status rollup (failed/installed/pending device counts) from the AppInstallStatusAggregate report"
+  },
+  {
+    "type": "IntuneNonCompliantSettings",
+    "friendlyName": "Intune Non-Compliant Settings",
+    "description": "Every failing compliance setting on every non-compliant device from the NoncompliantDevicesAndSettingsV3 report"
   },
   {
     "type": "DomainAnalyser",

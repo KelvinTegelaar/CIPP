@@ -18,6 +18,7 @@ import { ApiPostCall, ApiGetCall } from "../../api/ApiCall";
 import { CippWizardStepButtons } from "./CippWizardStepButtons";
 import { CippTenantTable } from "./CippTenantTable";
 import { getCippTranslation } from "../../utils/get-cipp-translation";
+import { usePermissions } from "../../hooks/use-permissions";
 
 export const CippTenantModeDeploy = (props) => {
   const { formControl, currentStep, onPreviousStep, onNextStep } = props;
@@ -28,6 +29,24 @@ export const CippTenantModeDeploy = (props) => {
 
   const updateRefreshToken = ApiPostCall({ urlfromdata: true, relatedQueryKeys: ["listAppId"] });
   const addTenant = ApiPostCall({ urlfromdata: true, relatedQueryKeys: ["tenants-table"] });
+  const addPartner = ApiPostCall({ urlfromdata: true, relatedQueryKeys: ["partnerTenants"] });
+
+  const featureFlags = ApiGetCall({
+    url: "/api/ListFeatureFlags",
+    queryKey: "featureFlags",
+    staleTime: 600000,
+  });
+  const { checkRoles } = usePermissions();
+  const multiPartnerEnabled =
+    Array.isArray(featureFlags.data) &&
+    featureFlags.data.some((flag) => flag.Id === "MultiPartner" && flag.Enabled === true) &&
+    checkRoles(["superadmin"]);
+
+  const partnerTenants = ApiGetCall({
+    url: "/api/ListPartnerTenants",
+    queryKey: "partnerTenants",
+    waiting: multiPartnerEnabled,
+  });
 
   // Get partner tenant info using the same API call as CIPPM365OAuthButton
   const partnerTenantInfo = ApiGetCall({
@@ -304,6 +323,109 @@ export const CippTenantModeDeploy = (props) => {
       </Box>
 
       <CippApiResults apiObject={updateRefreshToken} />
+
+      {/* Additional Partner Tenants (MultiPartner feature) */}
+      {multiPartnerEnabled && (
+        <Box>
+          <Typography variant="h6" gutterBottom>
+            Additional Partner Tenants
+          </Typography>
+          <Typography variant="body2" sx={{ mt: 2, mb: 2 }}>
+            Connect additional partner (CSP) tenants. Customer tenants found via each partner's
+            GDAP relationships are managed with that partner's credentials. Sign in with a
+            dedicated CIPP service account in the partner tenant you want to add.
+          </Typography>
+
+          {Array.isArray(partnerTenants.data?.Results) &&
+            partnerTenants.data.Results.filter((partner) => !partner.IsPrimary).map((partner) => (
+              <Box key={partner.partnerTenantId} sx={{ mb: 1 }}>
+                <Box
+                  sx={{
+                    p: 2,
+                    bgcolor: "background.paper",
+                    borderRadius: 1,
+                    border: "1px solid",
+                    borderColor: "divider",
+                  }}
+                >
+                  <Stack
+                    direction="row"
+                    spacing={2}
+                    sx={{ alignItems: 'center', justifyContent: 'space-between' }}
+                  >
+                    <Stack direction="column" spacing={0.5}>
+                      <Stack direction="row" spacing={0.75} sx={{ alignItems: 'center' }}>
+                        <SvgIcon fontSize="small">
+                          <CippIcons.Apartment />
+                        </SvgIcon>
+                        <Typography variant="body2" sx={{ fontWeight: 'medium' }}>
+                          {partner.displayName}
+                        </Typography>
+                        <Typography variant="caption" color="text.secondary">
+                          {partner.partnerTenantId}
+                        </Typography>
+                      </Stack>
+                      {partner.authenticatedUserPrincipalName && (
+                        <Stack direction="row" spacing={0.75} sx={{ alignItems: 'center' }}>
+                          <SvgIcon fontSize="small">
+                            <CippIcons.Person />
+                          </SvgIcon>
+                          <Typography variant="caption" color="text.secondary">
+                            {partner.authenticatedUserPrincipalName}
+                          </Typography>
+                        </Stack>
+                      )}
+                    </Stack>
+                    <Chip
+                      label={`${partner.tenantCount} tenant(s)`}
+                      size="small"
+                      color="default"
+                    />
+                  </Stack>
+                </Box>
+              </Box>
+            ))}
+
+          <Typography variant="caption" color="text.secondary" sx={{ display: "block", mt: 2 }}>
+            Beta: additional partner tenants are under active development and not yet officially
+            supported.
+          </Typography>
+          <Box sx={{ display: "flex", justifyContent: "flex-start", mt: 1, mb: 2 }}>
+            <Box sx={{ position: "relative" }}>
+              {!partnerTenantInfo?.data?.orgName && (
+                <Box
+                  sx={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    zIndex: 1,
+                    cursor: "not-allowed",
+                  }}
+                />
+              )}
+              <Box sx={{ opacity: !partnerTenantInfo?.data?.orgName ? 0.5 : 1 }}>
+                <CIPPM365OAuthButton
+                  onAuthSuccess={(tokenData) => {
+                    if (!partnerTenantInfo?.data?.orgName) return;
+                    addPartner.mutate({
+                      url: "/api/ExecUpdateRefreshToken",
+                      data: { ...tokenData, tenantMode: "GDAP", addPartner: true },
+                    });
+                  }}
+                  tokenUpdateBody={{ tenantMode: "GDAP", addPartner: true }}
+                  buttonText="Add Partner Tenant"
+                  showSuccessAlert={false}
+                  scope="https://graph.microsoft.com/DelegatedPermissionGrant.ReadWrite.All https://graph.microsoft.com/Directory.ReadWrite.All https://graph.microsoft.com/AppRoleAssignment.ReadWrite.All offline_access profile openid"
+                />
+              </Box>
+            </Box>
+          </Box>
+
+          <CippApiResults apiObject={addPartner} />
+        </Box>
+      )}
 
       {/* Per-Tenant */}
       <Box>

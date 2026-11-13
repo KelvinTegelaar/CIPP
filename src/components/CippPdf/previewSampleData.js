@@ -291,6 +291,12 @@ export const SAMPLE_PERMISSIONS = {
   },
 }
 
+export const SAMPLE_STORAGE = {
+  sharePointGb: 574,
+  teamsGb: 268,
+  oneDriveGb: 68,
+}
+
 export const SAMPLE_MAIL_FLOW = {
   days: 14,
   totals: {

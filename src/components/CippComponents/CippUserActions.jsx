@@ -10,6 +10,8 @@ import { CippSharedMailboxLicenseAlert } from './CippSharedMailboxLicenseAlert'
 import { CippFormCondition } from './CippFormCondition'
 import { useWatch } from 'react-hook-form'
 import { ApiGetCall } from '../../api/ApiCall'
+import { isMultiTenant, tenantScope } from '../../utils/tenant-selection'
+import { BEC_WINDOW_OPTIONS } from '../../utils/bec-objectives'
 
 // Separate component for Manage Licenses form to avoid hook issues
 const ManageLicensesForm = ({ formControl, tenant }) => {
@@ -170,14 +172,14 @@ const ManageLicensesForm = ({ formControl, tenant }) => {
 export const TemporaryAccessPassForm = ({ formControl, row }) => {
   const tenantFilter = useSettings().currentTenant
   const rowData = Array.isArray(row) ? row[0] : row
-  const tenant = tenantFilter === 'AllTenants' && rowData?.Tenant ? rowData.Tenant : tenantFilter
+  const tenant = isMultiTenant(tenantFilter) && rowData?.Tenant ? rowData.Tenant : tenantFilter
 
   const tapPolicy = ApiGetCall({
     url: '/api/ListGraphRequest',
     data: {
       Endpoint:
         'policies/authenticationMethodsPolicy/authenticationMethodConfigurations/TemporaryAccessPass',
-      tenantFilter: tenant,
+      ...tenantScope(tenant),
     },
     queryKey: `TAPPolicy-${tenant}`,
   })
@@ -299,7 +301,7 @@ export const TemporaryAccessPassForm = ({ formControl, row }) => {
 export const OutOfOfficeForm = ({ formControl, row }) => {
   const tenantFilter = useSettings().currentTenant
   const rowData = Array.isArray(row) ? row[0] : row
-  const tenant = tenantFilter === 'AllTenants' && rowData?.Tenant ? rowData.Tenant : tenantFilter
+  const tenant = isMultiTenant(tenantFilter) && rowData?.Tenant ? rowData.Tenant : tenantFilter
   // Only prefill for a single selected user; with multiple users there is no single current value
   const singleUserUpn =
     (!Array.isArray(row) || row.length === 1) && rowData?.userPrincipalName
@@ -308,7 +310,7 @@ export const OutOfOfficeForm = ({ formControl, row }) => {
 
   const currentOoO = ApiGetCall({
     url: '/api/ListOoO',
-    data: { UserId: singleUserUpn, tenantFilter: tenant },
+    data: { UserId: singleUserUpn, ...tenantScope(tenant) },
     queryKey: `ListOoO-${singleUserUpn}-${tenant}`,
     waiting: !!singleUserUpn,
   })
@@ -601,7 +603,7 @@ export const useCippUserActions = () => {
           })) || []
         const primDomain = user.userPrincipalName?.split('@')[1] || ''
         return {
-          tenantFilter: tenant,
+          ...tenantScope(tenant),
           templateName: formData.templateName,
           defaultForTenant: formData.defaultForTenant || false,
           sourceUserId: user.id,
@@ -635,6 +637,16 @@ export const useCippUserActions = () => {
       data: { UserIds: 'id' },
       multiPost: true,
       bulkFilterEligible: true,
+      fields: [
+        {
+          type: 'autoComplete',
+          name: 'windowDays',
+          label: 'How far back to look',
+          options: BEC_WINDOW_OPTIONS,
+          multiple: false,
+          creatable: false,
+        },
+      ],
       confirmText:
         'Queue a Business Email Compromise investigation for the selected users? Each run is kept; see the Business Email Compromise page under Identity.',
       condition: (row) => row.userType !== 'Guest',
@@ -794,7 +806,7 @@ export const useCippUserActions = () => {
 
         return selectedGroups.map((group) => ({
           addMember: addMember,
-          tenantFilter: tenant,
+          ...tenantScope(tenant),
           groupId: group,
         }))
       },

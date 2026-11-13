@@ -83,6 +83,6 @@ const EditAssignmentFilter = () => {
   );
 };
 
-EditAssignmentFilter.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+EditAssignmentFilter.getLayout = (page) => <DashboardLayout usesTenant={false}>{page}</DashboardLayout>;
 
 export default EditAssignmentFilter;

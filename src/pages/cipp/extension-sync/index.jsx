@@ -10,9 +10,6 @@ const Page = () => {
     <CippTablePage
       title={pageTitle}
       apiUrl="/api/ListExtensionSync"
-      apiData={{
-        TenantFilter: "TenantFilter", // Added for tenant-specific filtering
-      }}
       apiDataKey="Results"
       queryKey="ExtensionSyncReport"
       simpleColumns={[
@@ -38,6 +35,6 @@ const Page = () => {
   );
 };
 
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+Page.getLayout = (page) => <DashboardLayout tenantGroupSupport={true}>{page}</DashboardLayout>;
 
 export default Page;

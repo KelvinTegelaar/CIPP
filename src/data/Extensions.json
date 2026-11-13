@@ -992,6 +992,28 @@
         }
       },
       {
+        "type": "switch",
+        "name": "Hudu.HideLicenseFullWarning",
+        "label": "Hide fully assigned license warning in Magic Dash",
+        "condition": {
+          "field": "Hudu.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
+      },
+      {
+        "type": "switch",
+        "name": "Hudu.HideLicenseNearFullWarning",
+        "label": "Hide nearly full (90% or more) license warning in Magic Dash",
+        "condition": {
+          "field": "Hudu.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
+      },
+      {
         "type": "LocaleSelect",
         "name": "Hudu.Locale",
         "label": "Date and number format (default English (United Kingdom))",

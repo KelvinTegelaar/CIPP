@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { CippIcons } from "../../utils/icon-registry";
-import { Button } from "@mui/material";
+import { Button, Stack } from "@mui/material";
 import { Grid } from "@mui/system";
 import { useForm, useFormState } from "react-hook-form";
 import { CippOffCanvas } from "./CippOffCanvas";
@@ -97,23 +97,26 @@ export const CippInviteGuestDrawer = ({
         onClose={handleCloseDrawer}
         size="md"
         footer={
-          <div style={{ display: "flex", gap: "8px", justifyContent: "flex-start" }}>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleSubmit}
-              disabled={inviteGuest.isLoading || !isValid}
-            >
-              {inviteGuest.isLoading
-                ? "Sending Invite..."
-                : inviteGuest.isSuccess
-                  ? "Send Another Invite"
-                  : "Send Invite"}
-            </Button>
-            <Button variant="outlined" onClick={handleCloseDrawer}>
-              Close
-            </Button>
-          </div>
+          <Stack spacing={2}>
+            <CippApiResults apiObject={inviteGuest} />
+            <div style={{ display: "flex", gap: "8px", justifyContent: "flex-start" }}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleSubmit}
+                disabled={inviteGuest.isPending || !isValid}
+              >
+                {inviteGuest.isPending
+                  ? "Sending Invite..."
+                  : inviteGuest.isSuccess
+                    ? "Send Another Invite"
+                    : "Send Invite"}
+              </Button>
+              <Button variant="outlined" onClick={handleCloseDrawer}>
+                Close
+              </Button>
+            </div>
+          </Stack>
         }
       >
         <Grid container spacing={2}>
@@ -171,8 +174,6 @@ export const CippInviteGuestDrawer = ({
               formControl={formControl}
             />
           </Grid>
-
-          <CippApiResults apiObject={inviteGuest} />
         </Grid>
       </CippOffCanvas>
     </>

@@ -1,6 +1,7 @@
 import { Alert, Link } from '@mui/material'
 import { ApiGetCallWithPagination } from '../../api/ApiCall'
 import { useSettings } from '../../hooks/use-settings'
+import { tenantScope } from '../../utils/tenant-selection'
 
 // When M365 "conceal user/site names in reports" is enabled, Graph usage reports return
 // 32-char hex hashes (e.g. 85926F73B5A9FA60D166E6057BA76F4A) instead of names/UPNs.
@@ -46,7 +47,7 @@ export const useReportAnonymized = ({ url, data, queryKey, dataKey, fields, chec
   const tenant = useSettings().currentTenant
   const query = ApiGetCallWithPagination({
     url,
-    data: { tenantFilter: tenant, ...data },
+    data: { ...tenantScope(tenant), ...data },
     queryKey,
   })
   if (!query.isSuccess || query.isFetching) return false

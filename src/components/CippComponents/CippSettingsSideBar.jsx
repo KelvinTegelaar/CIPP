@@ -72,6 +72,7 @@ export const CippSettingsSideBar = (props) => {
       bookmarkPopover: formValues.bookmarkPopover,
       bookmarkReorderMode: formValues.bookmarkReorderMode,
       compactNav: formValues.compactNav,
+      showRecentTenants: formValues.showRecentTenants,
 
       // Portal Links Configuration
       portalLinks: {
@@ -94,6 +95,7 @@ export const CippSettingsSideBar = (props) => {
         ConvertToShared: formValues.offboardingDefaults?.ConvertToShared,
         RemoveGroups: formValues.offboardingDefaults?.RemoveGroups,
         RemoveGroupOwnership: formValues.offboardingDefaults?.RemoveGroupOwnership,
+        RemoveRoles: formValues.offboardingDefaults?.RemoveRoles,
         HideFromGAL: formValues.offboardingDefaults?.HideFromGAL,
         RemoveLicenses: formValues.offboardingDefaults?.RemoveLicenses,
         removeCalendarInvites: formValues.offboardingDefaults?.removeCalendarInvites,

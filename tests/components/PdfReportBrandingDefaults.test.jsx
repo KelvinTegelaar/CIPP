@@ -6,6 +6,7 @@ import { api, getResult } from '../mocks/api-call'
 import { SharingReportButton } from '../../src/components/CippPdf/SharingReportButton'
 import { PermissionsReportButton } from '../../src/components/CippPdf/PermissionsReportButton'
 import { MailFlowReportButton } from '../../src/components/CippPdf/MailFlowReportButton'
+import { StorageReportButton } from '../../src/components/CippPdf/StorageReportButton'
 import { ShadowAIReportButton } from '../../src/components/ShadowAIReportButton'
 
 vi.mock('../../src/api/ApiCall', async () =>
@@ -17,6 +18,7 @@ const defaults = {
   sharing: 'preset-sharing',
   permissions: 'preset-permissions',
   mailFlow: 'preset-mail',
+  storage: 'preset-storage',
   shadowAI: 'preset-ai',
 }
 let fetchMock
@@ -75,6 +77,13 @@ const reports = [
     ),
     endpoint: 'ExecGetMailFlowReportPdf',
     preset: defaults.mailFlow,
+    button: /export report/i,
+  },
+  {
+    name: 'Storage',
+    component: <StorageReportButton tenantName="Contoso" />,
+    endpoint: 'ExecGetStorageReportPdf',
+    preset: defaults.storage,
     button: /export report/i,
   },
   {

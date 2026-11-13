@@ -8,6 +8,7 @@ import { useSettings } from "../../hooks/use-settings";
 import { ApiPostCall } from "../../api/ApiCall";
 import CippAddEditUser from "../CippFormPages/CippAddEditUser";
 import { Stack } from "@mui/system";
+import { isMultiTenant } from "../../utils/tenant-selection";
 
 export const CippAddUserDrawer = ({
   buttonText = "Add User",
@@ -27,7 +28,7 @@ export const CippAddUserDrawer = ({
   // submit rather than letting it appear to succeed while creating nothing.
   const isAllTenants =
     !userSettingsDefaults?.currentTenant ||
-    userSettingsDefaults.currentTenant === "AllTenants";
+    isMultiTenant(userSettingsDefaults.currentTenant);
 
   const formControl = useForm({
     mode: "onChange",

@@ -7,12 +7,14 @@ import tabOptions from "./tabOptions";
 import CippVersionProperties from "../../../components/CippSettings/CippVersionProperties";
 import CippPasswordSettings from "../../../components/CippSettings/CippPasswordSettings";
 import CippDnsSettings from "../../../components/CippSettings/CippDnsSettings";
+import CippDomainExclusionSettings from "../../../components/CippSettings/CippDomainExclusionSettings";
 import CippCacheSettings from "../../../components/CippSettings/CippCacheSettings";
 import CippBackupSettings from "../../../components/CippSettings/CippBackupSettings";
 import CippBackupRetentionSettings from "../../../components/CippSettings/CippBackupRetentionSettings";
 import CippLogRetentionSettings from "../../../components/CippSettings/CippLogRetentionSettings";
 import CippJitAdminSettings from "../../../components/CippSettings/CippJitAdminSettings";
 import CippBecRemediationSettings from "../../../components/CippSettings/CippBecRemediationSettings";
+import CippBaselineExpirySettings from "../../../components/CippSettings/CippBaselineExpirySettings";
 const Page = () => {
   return (
     <Container sx={{ pt: { xs: 0, md: 3 }, px: { xs: 1.5, md: 3 } }} maxWidth="xl">
@@ -25,6 +27,9 @@ const Page = () => {
         </Grid>
         <Grid size={{ lg: 4, md: 6, sm: 12, xs: 12 }}>
           <CippDnsSettings />
+        </Grid>
+        <Grid size={{ lg: 4, md: 6, sm: 12, xs: 12 }}>
+          <CippDomainExclusionSettings />
         </Grid>
         <Grid size={{ lg: 4, md: 6, sm: 12, xs: 12 }}>
           <CippCacheSettings />
@@ -53,13 +58,16 @@ const Page = () => {
         <Grid size={{ lg: 4, md: 6, sm: 12, xs: 12 }}>
           <CippBecRemediationSettings />
         </Grid>
+        <Grid size={{ lg: 4, md: 6, sm: 12, xs: 12 }}>
+          <CippBaselineExpirySettings />
+        </Grid>
       </Grid>
     </Container>
   );
 };
 
 Page.getLayout = (page) => (
-  <DashboardLayout>
+  <DashboardLayout usesTenant={false}>
     <TabbedLayout tabOptions={tabOptions}>{page}</TabbedLayout>
   </DashboardLayout>
 );

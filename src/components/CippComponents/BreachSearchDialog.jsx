@@ -1,10 +1,10 @@
-import { useState } from "react";
 import { CippIcons } from "../../utils/icon-registry"
 import { Dialog, DialogContent, DialogTitle, Button, DialogActions } from "@mui/material";
 import { useForm, FormProvider } from "react-hook-form";
 import { ApiPostCall } from "../../api/ApiCall";
 import { CippApiResults } from "./CippApiResults";
 import { useSettings } from "../../hooks/use-settings";
+import { tenantScope } from "../../utils/tenant-selection";
 
 export const BreachSearchDialog = ({ createDialog }) => {
   const tenantFilter = useSettings()?.currentTenant;
@@ -15,23 +15,19 @@ export const BreachSearchDialog = ({ createDialog }) => {
   // Use methods for form handling and control
   const { handleSubmit } = methods;
 
-  const [isRunning, setIsRunning] = useState(false);
   const breachSearchResults = ApiPostCall({
     urlFromData: true,
   });
 
   const handleForm = () => {
-    setIsRunning(true);
     breachSearchResults.mutate({
       url: "/api/ExecBreachSearch",
       queryKey: `breach-search-${tenantFilter}`,
-      data: { tenantFilter: tenantFilter },
+      data: { ...tenantScope(tenantFilter) },
     });
   };
 
-  // Reset running state when dialog is closed
   const handleClose = () => {
-    setIsRunning(false);
     createDialog.handleClose();
   };
 
@@ -54,7 +50,7 @@ export const BreachSearchDialog = ({ createDialog }) => {
             <Button
               type="submit"
               variant="contained"
-              disabled={isRunning || breachSearchResults.isLoading}
+              disabled={breachSearchResults.isPending}
               startIcon={<CippIcons.MagnifyingGlassIcon />}
             >
               Run Breach Search

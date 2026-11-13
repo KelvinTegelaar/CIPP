@@ -19,7 +19,8 @@ import { CippTenantResults } from "./CippTenantResults";
 import { CippTimeAgo } from "../CippComponents/CippTimeAgo";
 
 const CippPermissionCheck = (props) => {
-  const { type, importReport = false, variant } = props;
+  const { type, importReport = false, variant, partnerTenantId } = props;
+  const isPrimaryPartner = !partnerTenantId;
   const [skipCache, setSkipCache] = useState(false);
   const [cardIcon, setCardIcon] = useState(null);
   const [offcanvasVisible, setOffcanvasVisible] = useState(false);
@@ -32,9 +33,13 @@ const CippPermissionCheck = (props) => {
 
   const executeCheck = ApiGetCall({
     url: "/api/ExecAccessChecks",
-    data: { Type: type, SkipCache: skipCache },
+    data: {
+      Type: type,
+      SkipCache: skipCache,
+      ...(partnerTenantId ? { partnerTenantId } : {}),
+    },
     waiting: importReport ? false : true,
-    queryKey: `ExecAccessChecks-${type}`,
+    queryKey: `ExecAccessChecks-${type}${partnerTenantId ? `-${partnerTenantId}` : ""}`,
   });
 
   const handlePermissionCheck = () => {
@@ -182,6 +187,7 @@ const CippPermissionCheck = (props) => {
               <CippPermissionResults
                 executeCheck={executeCheck}
                 importReport={importReport?.[type]}
+                isPrimaryPartner={isPrimaryPartner}
                 setSkipCache={setSkipCache}
                 offcanvasVisible={offcanvasVisible}
                 setOffcanvasVisible={setOffcanvasVisible}
@@ -192,6 +198,7 @@ const CippPermissionCheck = (props) => {
               <CippGDAPResults
                 executeCheck={executeCheck}
                 importReport={importReport?.[type]}
+                isPrimaryPartner={isPrimaryPartner}
                 offcanvasVisible={offcanvasVisible}
                 setOffcanvasVisible={setOffcanvasVisible}
                 setCardIcon={setCardIcon}

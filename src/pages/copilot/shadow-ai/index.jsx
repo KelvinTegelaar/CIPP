@@ -27,6 +27,7 @@ import {
 import { useTheme } from '@mui/material/styles'
 import { riskChartColor, sortByRiskSeverity } from '../../../utils/shadow-ai'
 import { Grid } from '@mui/system'
+import { isMultiTenant } from '../../../utils/tenant-selection'
 
 const riskChipColor = (risk) => {
   switch (String(risk).toLowerCase()) {
@@ -232,7 +233,7 @@ const Page = () => {
     url: '/api/ListShadowAI',
     data: { tenantFilter: currentTenant },
     queryKey: queryKey,
-    waiting: !!currentTenant && currentTenant !== 'AllTenants',
+    waiting: !!currentTenant && !isMultiTenant(currentTenant),
   })
 
   const data = shadowAi.data ?? {}
@@ -310,7 +311,7 @@ const Page = () => {
   return (
     <Container maxWidth={false} sx={{ flexGrow: 1, py: 2 }}>
       <Grid container spacing={2}>
-        {currentTenant === 'AllTenants' ? (
+        {isMultiTenant(currentTenant) ? (
           <Grid size={{ md: 4, xs: 12 }}>
             <CippImageCard
               title="Not supported"
@@ -521,7 +522,7 @@ const Page = () => {
   );
 }
 
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>
+Page.getLayout = (page) => <DashboardLayout usesTenant={false}>{page}</DashboardLayout>
 
 export default Page
 

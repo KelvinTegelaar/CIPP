@@ -118,6 +118,6 @@ const Page = () => {
 };
 
 // Adding the layout for the dashboard
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+Page.getLayout = (page) => <DashboardLayout tenantGroupSupport={true}>{page}</DashboardLayout>;
 
 export default Page;

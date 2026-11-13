@@ -64,7 +64,12 @@ export const CippWizardVacationConfirmation = (props) => {
         // Only send the travel policy fields on the first request so the
         // temporary policy is scheduled once, not once per selected CA policy
         ...(index === 0 && createTravelPolicy
-          ? { CreateTravelPolicy: true, TravelCountries: values.travelCountries }
+          ? {
+              CreateTravelPolicy: true,
+              TravelCountries: values.travelCountries,
+              TravelExistingLocations: values.travelExistingLocations || [],
+              TravelAllowTrusted: values.travelAllowTrusted || false,
+            }
           : {}),
       }))
       caExclusion.mutate({
@@ -317,6 +322,18 @@ export const CippWizardVacationConfirmation = (props) => {
                               ? values.travelCountries.map((c) => c.label || c.value).join(', ')
                               : 'Not set'}
                           </Typography>
+                          {Array.isArray(values.travelExistingLocations) &&
+                            values.travelExistingLocations.length > 0 && (
+                              <Typography variant="body2">
+                                Also allowed:{' '}
+                                {values.travelExistingLocations
+                                  .map((l) => l.label || l.value)
+                                  .join(', ')}
+                              </Typography>
+                            )}
+                          {values.travelAllowTrusted && (
+                            <Typography variant="body2">Also allowed: all trusted locations</Typography>
+                          )}
                           <Typography variant="body2" sx={{
                             color: "text.secondary"
                           }}>

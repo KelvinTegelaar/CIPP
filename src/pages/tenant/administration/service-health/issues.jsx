@@ -18,6 +18,8 @@ import { useUrlFilters } from '../../../../utils/url-filters'
 import { ApiGetCall } from '../../../../api/ApiCall'
 import tabOptions from './tabOptions'
 
+import { tenantScope } from '../../../../utils/tenant-selection'
+
 const Page = () => {
   const { currentTenant } = useSettings()
 
@@ -38,7 +40,7 @@ const Page = () => {
   // Info bar counters follow the table's Live/Cached mode
   const issues = ApiGetCall({
     url: reportDB.resolvedApiUrl,
-    data: { tenantFilter: currentTenant },
+    data: { ...tenantScope(currentTenant) },
     queryKey: `issues-${reportDB.resolvedQueryKey}`,
     waiting: !!currentTenant,
   })
@@ -207,7 +209,7 @@ const Page = () => {
 }
 
 Page.getLayout = (page) => (
-  <DashboardLayout allTenantsSupport={true}>
+  <DashboardLayout tenantGroupSupport={true} allTenantsSupport={true}>
     <TabbedLayout tabOptions={tabOptions}>{page}</TabbedLayout>
   </DashboardLayout>
 )

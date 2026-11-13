@@ -25,7 +25,9 @@ import {
   gdapSelectionRoleId,
   resolveGdapSelections,
   selectGdapDefaultOptions,
+  filterGdapMappingsByPartner,
 } from "../../utils/gdap-role-options";
+import { useMultiPartner } from "../../hooks/use-multi-partner";
 
 export const CippAddEditGdapRoleTemplate = (props) => {
   const { formControl, availableRoles, extraOptions, mixedSuffixes } = props;
@@ -33,7 +35,12 @@ export const CippAddEditGdapRoleTemplate = (props) => {
 
   const selectedRoles = useWatch({ control: formControl.control, name: "roleMappings" });
   const customSuffix = useWatch({ control: formControl.control, name: "customSuffix" });
-  const mappings = availableRoles?.data;
+  const selectedPartner = useWatch({ control: formControl.control, name: "partnerTenant" });
+  const { hasMultiplePartners, partnerOptions } = useMultiPartner();
+  const mappings = useMemo(
+    () => filterGdapMappingsByPartner(availableRoles?.data, selectedPartner?.value),
+    [availableRoles?.data, selectedPartner?.value]
+  );
 
   // The suffix decides which group each role targets, so both the option list and its
   // mapped/unmapped headings have to be rebuilt when it changes.
@@ -91,6 +98,20 @@ export const CippAddEditGdapRoleTemplate = (props) => {
           required={true}
         />
       </Box>
+
+      {hasMultiplePartners && (
+        <Box>
+          <CippFormComponent
+            formControl={formControl}
+            name="partnerTenant"
+            label="Partner Tenant the groups live in (defaults to the primary)"
+            type="autoComplete"
+            options={partnerOptions}
+            multiple={false}
+            creatable={false}
+          />
+        </Box>
+      )}
 
       <Box>
         <Button

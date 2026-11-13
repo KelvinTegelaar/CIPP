@@ -11,6 +11,7 @@ import { CippDataTable } from '../../../../components/CippTable/CippDataTable'
 import { useCippRoleAssignmentActions } from '../../../../components/CippComponents/CippRoleAssignmentActions'
 import { useCippReportDB } from '../../../../components/CippComponents/CippReportDBControls'
 import tabOptions from './tabOptions.json'
+import { isMultiTenant } from '../../../../utils/tenant-selection'
 
 // Drill-in panel: the role's assignments with the secure-direction actions (convert to
 // eligible, grant time-bound, extend, renew, remove). The rows are embedded in the role row,
@@ -71,8 +72,7 @@ const Page = () => {
     cacheColumns: ['CacheTimestamp'],
     apiData,
   })
-  const tenantQuery =
-    currentTenant === 'AllTenants' ? '[Tenant]' : currentTenant
+  const tenantQuery = isMultiTenant(currentTenant) ? '[Tenant]' : currentTenant
 
   const actions = [
     {
@@ -214,7 +214,7 @@ const Page = () => {
 }
 
 Page.getLayout = (page) => (
-  <DashboardLayout allTenantsSupport={true}>
+  <DashboardLayout tenantGroupSupport={true} allTenantsSupport={true}>
     <TabbedLayout tabOptions={tabOptions}>{page}</TabbedLayout>
   </DashboardLayout>
 )

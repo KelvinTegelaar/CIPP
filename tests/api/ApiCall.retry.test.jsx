@@ -13,7 +13,12 @@ import { beforeEach, afterEach, describe, it, expect, vi } from 'vitest'
 vi.mock('axios', () => {
   const isAxiosError = (e) => Boolean(e && e.isAxiosError)
   return {
-    default: { get: vi.fn(), post: vi.fn(), isAxiosError },
+    default: {
+      get: vi.fn(),
+      post: vi.fn(),
+      isAxiosError,
+      interceptors: { request: { use: vi.fn() } },
+    },
     isAxiosError,
   }
 })

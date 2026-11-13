@@ -29,7 +29,7 @@ import { CippSharePointFolderView } from '../../../components/CippComponents/Cip
 import { CippApiDialog } from '../../../components/CippComponents/CippApiDialog'
 import CippFormComponent from '../../../components/CippComponents/CippFormComponent'
 import { CippDataTable } from '../../../components/CippTable/CippDataTable'
-import { ApiGetCall, ApiPostCall } from '../../../api/ApiCall'
+import { ApiGetCall, ApiGetCallWithPagination, ApiPostCall } from '../../../api/ApiCall'
 import { useIsNarrowForTables } from '../../../hooks/use-breakpoint'
 import { useDialog } from '../../../hooks/use-dialog'
 import { usePermissions } from '../../../hooks/use-permissions'
@@ -38,9 +38,9 @@ import {
   libraryRecyclePathSeed,
   projectRecycleBinTree,
   expandRecycleRestoreRows,
-  RECYCLE_BIN_CAP,
 } from '../../../utils/sharepoint-recycle-bin-tree'
 import { useSharePointBrowserRecents } from '../../../hooks/use-sharepoint-browser-recents'
+import { isMultiTenant } from '../../../utils/tenant-selection'
 
 const optionValue = (value) =>
   value && typeof value === 'object' && 'value' in value ? value.value : value
@@ -209,7 +209,7 @@ const SharePointBrowserMobile = ({ tenantFilter, canReadSite, canWriteSite }) =>
     </Button>
   ) : null
 
-  if (!tenantFilter || tenantFilter === 'AllTenants') {
+  if (!tenantFilter || isMultiTenant(tenantFilter)) {
     return (
       <Typography sx={{
         color: "text.secondary"
@@ -314,7 +314,7 @@ const SharePointBrowserDesktop = ({ tenantFilter, canReadSite, canWriteSite }) =
       router.isReady &&
       resolvingSiteUrl &&
       !!tenantFilter &&
-      tenantFilter !== 'AllTenants',
+      !isMultiTenant(tenantFilter),
   })
 
   useEffect(() => {
@@ -331,7 +331,7 @@ const SharePointBrowserDesktop = ({ tenantFilter, canReadSite, canWriteSite }) =
     url: '/api/ListSiteBrowser',
     data: { tenantFilter },
     queryKey: rootQueryKey,
-    waiting: router.isReady && !!tenantFilter && tenantFilter !== 'AllTenants' && !resolvingSiteUrl,
+    waiting: router.isReady && !!tenantFilter && !isMultiTenant(tenantFilter) && !resolvingSiteUrl,
   })
   const browserApi = ApiGetCall({
     url: '/api/ListSiteBrowser',
@@ -343,12 +343,12 @@ const SharePointBrowserDesktop = ({ tenantFilter, canReadSite, canWriteSite }) =
     waiting:
       router.isReady &&
       !!tenantFilter &&
-      tenantFilter !== 'AllTenants' &&
+      !isMultiTenant(tenantFilter) &&
       !resolvingSiteUrl,
   })
 
   const recycleQueryKey = `SiteBrowserRecycleBin-${openedSite?.webUrl ?? ''}`
-  const recycleApi = ApiGetCall({
+  const recycleApi = ApiGetCallWithPagination({
     url: '/api/ListSiteRecycleBin',
     data: {
       SiteUrl: openedSite?.webUrl,
@@ -359,7 +359,7 @@ const SharePointBrowserDesktop = ({ tenantFilter, canReadSite, canWriteSite }) =
       inRecycle &&
       router.isReady &&
       !!tenantFilter &&
-      tenantFilter !== 'AllTenants' &&
+      !isMultiTenant(tenantFilter) &&
       !!openedSite?.webUrl,
   })
 
@@ -395,9 +395,13 @@ const SharePointBrowserDesktop = ({ tenantFilter, canReadSite, canWriteSite }) =
     return rawRootResults.filter((row) => row?.type === 'site')
   }, [atRoot, browseItems, rawRootResults])
 
-  const rawRecycleResults = recycleApi.data?.Results
+  const rawRecycleResults = useMemo(() => {
+    const pages = recycleApi.data?.pages ?? []
+    if (!Array.isArray(pages[0]?.Results)) return pages[0]?.Results
+    return pages.flatMap((page) => (Array.isArray(page?.Results) ? page.Results : []))
+  }, [recycleApi.data])
   const recycleProjection = useMemo(() => {
-    if (!inRecycle) return { items: [], capped: false, totalMatching: 0 }
+    if (!inRecycle) return { items: [], totalMatching: 0 }
     return projectRecycleBinTree(Array.isArray(rawRecycleResults) ? rawRecycleResults : [], {
       recyclePath,
       recycleStage,
@@ -800,13 +804,22 @@ const SharePointBrowserDesktop = ({ tenantFilter, canReadSite, canWriteSite }) =
     ) : null
 
   const infoMessage = inRecycle
-    ? recycleProjection.capped ||
-      (Array.isArray(rawRecycleResults) && rawRecycleResults.length >= RECYCLE_BIN_CAP)
-      ? `Showing up to ${RECYCLE_BIN_CAP} newest deleted items (API cap). ${
-          recycleView === 'list'
-            ? 'List view shows every item under this location.'
-            : 'Folder view groups by path.'
-        }`
+    ? recycleApi.hasNextPage
+      ? (
+          <>
+            Showing the newest {rawRecycleResults?.length?.toLocaleString()} deleted items. The
+            bin holds more.
+            <Button
+              size="small"
+              color="inherit"
+              sx={{ ml: 1 }}
+              onClick={() => recycleApi.fetchNextPage()}
+              disabled={recycleApi.isFetchingNextPage}
+            >
+              {recycleApi.isFetchingNextPage ? 'Loading…' : 'Load more'}
+            </Button>
+          </>
+        )
       : recycleView === 'list'
         ? 'Flat list of deleted items under this location. Switch to Folders to drill by path.'
         : 'Deleted items from this site. Drill into folders by path; restore is the primary action.'
@@ -820,7 +833,7 @@ const SharePointBrowserDesktop = ({ tenantFilter, canReadSite, canWriteSite }) =
       : `${restoreItems.length} items`
   })()
 
-  if (!tenantFilter || tenantFilter === 'AllTenants') {
+  if (!tenantFilter || isMultiTenant(tenantFilter)) {
     return (
       <Typography sx={{
         color: "text.secondary"
@@ -1063,6 +1076,6 @@ const Page = () => {
   )
 }
 
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>
+Page.getLayout = (page) => <DashboardLayout usesTenant={false}>{page}</DashboardLayout>
 
 export default Page

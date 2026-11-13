@@ -29,6 +29,7 @@ import { useSettings } from '../../../hooks/use-settings'
 import { CippDataTable } from '../../../components/CippTable/CippDataTable'
 import tabOptions from './tabOptions.json'
 import { CippHead } from '../../../components/CippComponents/CippHead'
+import { isMultiTenant } from '../../../utils/tenant-selection'
 
 const Page = () => {
   const router = useRouter()
@@ -104,15 +105,15 @@ const Page = () => {
 
   const tenantDetails = ApiGetCall({
     url:
-      currentTenant && currentTenant !== 'AllTenants'
+      currentTenant && !isMultiTenant(currentTenant)
         ? `/api/ListTenantDetails?tenantFilter=${currentTenant}`
         : null,
     queryKey:
-      currentTenant && currentTenant !== 'AllTenants' ? `TenantProperties_${currentTenant}` : null,
+      currentTenant && !isMultiTenant(currentTenant) ? `TenantProperties_${currentTenant}` : null,
   })
 
   useEffect(() => {
-    if (tenantDetails.isSuccess && tenantDetails.data && currentTenant !== 'AllTenants') {
+    if (tenantDetails.isSuccess && tenantDetails.data && !isMultiTenant(currentTenant)) {
       formControl.reset({
         customerId: currentTenant,
         Alias: tenantDetails?.data?.customProperties?.Alias ?? '',
@@ -139,6 +140,7 @@ const Page = () => {
         ConvertToShared: false,
         RemoveGroups: false,
         RemoveGroupOwnership: false,
+        RemoveRoles: false,
         HideFromGAL: false,
         RemoveLicenses: false,
         removeCalendarInvites: false,
@@ -199,6 +201,7 @@ const Page = () => {
       ConvertToShared: false,
       RemoveGroups: false,
       RemoveGroupOwnership: false,
+      RemoveRoles: false,
       HideFromGAL: false,
       RemoveLicenses: false,
       removeCalendarInvites: false,
@@ -234,7 +237,7 @@ const Page = () => {
   const title = 'Manage Tenant'
 
   // Show message for AllTenants
-  if (currentTenant === 'AllTenants') {
+  if (isMultiTenant(currentTenant)) {
     return (
       <HeaderedTabbedLayout
         tabOptions={tabOptions}
@@ -611,6 +614,6 @@ const Page = () => {
   );
 }
 
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>
+Page.getLayout = (page) => <DashboardLayout usesTenant={false}>{page}</DashboardLayout>
 
 export default Page

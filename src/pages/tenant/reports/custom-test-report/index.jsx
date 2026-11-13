@@ -10,6 +10,7 @@ import { CippApiDialog } from '../../../../components/CippComponents/CippApiDial
 import { CippHead } from '../../../../components/CippComponents/CippHead.jsx'
 import CippFormComponent from '../../../../components/CippComponents/CippFormComponent'
 import { useSettings } from '../../../../hooks/use-settings'
+import { isMultiTenant, tenantScope } from '../../../../utils/tenant-selection'
 
 const Page = () => {
   const { currentTenant } = useSettings()
@@ -24,7 +25,7 @@ const Page = () => {
     .filter(Boolean)
     .join(',')
 
-  const isAllTenants = !currentTenant || currentTenant === 'AllTenants'
+  const isAllTenants = !currentTenant || isMultiTenant(currentTenant)
   const scopeLabel = isAllTenants ? 'all tenants' : currentTenant
 
   // Custom test definitions drive the picker (one option per script, latest version).
@@ -39,7 +40,7 @@ const Page = () => {
   const resultsQueryKey = `TestResultsTenants-${currentTenant}-${testIdParam || 'all'}`
   const resultsApi = ApiGetCall({
     url: '/api/ListTestResultsTenants',
-    data: { testId: testIdParam, tenantFilter: currentTenant, testType: 'Custom' },
+    data: { testId: testIdParam, ...tenantScope(currentTenant), testType: 'Custom' },
     queryKey: resultsQueryKey,
     waiting: !!currentTenant,
   })
@@ -125,7 +126,7 @@ const Page = () => {
         api={{
           url: '/api/ExecCustomTestRun',
           type: 'POST',
-          data: { tenantFilter: currentTenant },
+          data: { ...tenantScope(currentTenant) },
           confirmText: `This re-runs your enabled Custom Tests against ${scopeLabel} using the most recent cached data.${
             isAllTenants ? ' A run across all tenants can take a while;' : ''
           } results appear here as each tenant finishes.`,
@@ -136,7 +137,7 @@ const Page = () => {
   )
 }
 
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>
+Page.getLayout = (page) => <DashboardLayout tenantGroupSupport={true}>{page}</DashboardLayout>
 
 export default Page
 

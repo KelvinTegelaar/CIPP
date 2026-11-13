@@ -12,10 +12,11 @@ import { PermissionsReportButton } from '../../../../components/CippPdf/Permissi
 import { useDialog } from '../../../../hooks/use-dialog'
 import { ApiGetCall } from '../../../../api/ApiCall'
 import { useSettings } from '../../../../hooks/use-settings'
-import { usePermissions } from '../../../../hooks/use-permissions'
-import { Alert, Button, Container, Stack, SvgIcon, Typography } from '@mui/material'
+import { PermissionButton } from '../../../../utils/permissions'
+import { Alert, Container, Stack, SvgIcon, Typography } from '@mui/material'
 import { Grid } from '@mui/system'
 import { CippExpandableAlert } from '../../../../components/CippComponents/CippExpandableAlert'
+import { isMultiTenant } from '../../../../utils/tenant-selection'
 
 // This report is compiled from one cache, so Sync starts a single queue.
 const syncRows = [{ Name: 'SharePointPermissions' }]
@@ -26,8 +27,6 @@ const EMPTY_ROWS = []
 
 const Page = () => {
   const currentTenant = useSettings().currentTenant
-  const { checkPermissions } = usePermissions()
-  const canSync = checkPermissions(['Sharepoint.Reports.ReadWrite'])
   const syncDialog = useDialog()
   const [syncQueueIds, setSyncQueueIds] = useState([])
   const newSyncRunRef = useRef(false)
@@ -37,7 +36,7 @@ const Page = () => {
     url: '/api/ListSharePointPermissions',
     data: { tenantFilter: currentTenant },
     queryKey: queryKey,
-    waiting: !!currentTenant && currentTenant !== 'AllTenants',
+    waiting: !!currentTenant && !isMultiTenant(currentTenant),
   })
 
   const data = permissions.data ?? {}
@@ -85,7 +84,7 @@ const Page = () => {
   return (
     <Container maxWidth={false} sx={{ flexGrow: 1, py: 2 }}>
       <Grid container spacing={2}>
-        {currentTenant === 'AllTenants' ? (
+        {isMultiTenant(currentTenant) ? (
           <Grid size={{ md: 4, xs: 12 }}>
             <CippImageCard
               title="Not supported"
@@ -123,10 +122,10 @@ const Page = () => {
                     label="Permission scan"
                   />
                   <PermissionsReportButton permissionsData={data} tenantName={currentTenant} />
-                  <Button
+                  <PermissionButton
+                    requiredPermissions={['Sharepoint.Reports.ReadWrite']}
                     size="small"
                     variant="outlined"
-                    disabled={!canSync}
                     onClick={() => {
                       newSyncRunRef.current = true
                       syncDialog.handleOpen()
@@ -138,7 +137,7 @@ const Page = () => {
                     }
                   >
                     Sync data
-                  </Button>
+                  </PermissionButton>
                 </Stack>
               </Stack>
               {needsSync && (
@@ -318,6 +317,6 @@ const Page = () => {
   );
 }
 
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>
+Page.getLayout = (page) => <DashboardLayout usesTenant={false}>{page}</DashboardLayout>
 
 export default Page

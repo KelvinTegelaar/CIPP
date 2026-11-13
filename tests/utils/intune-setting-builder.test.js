@@ -17,6 +17,14 @@ import {
   forceListIdsDefinition,
   forceListDisabled,
 } from '../mocks/intune-chrome-forcelist'
+import {
+  adobeExclusionsDefinition,
+  adobeExclusionsId,
+  adobeRuleId,
+  asrChildren,
+  asrGroupDefinition,
+  webshellRuleId,
+} from '../mocks/intune-asr-rules'
 
 // The discriminators are the whole point of this module. Intune rejects a policy whose settings do
 // not declare their type, and a wrong one is worse than a missing one - it is accepted by the schema
@@ -376,6 +384,48 @@ describe('building towards a nested setting', () => {
         simpleSettingCollectionValue: [],
       },
     ])
+  })
+
+  it('builds a list whose item format an empty string fails, because the list starts empty', () => {
+    expect(
+      buildSettingInstance(adobeExclusionsDefinition)
+        .simpleSettingCollectionValue
+    ).toEqual([])
+  })
+
+  it('reaches a rule exclusion through the first mode that offers it when none is chosen', () => {
+    const instance = buildSettingInstance(
+      asrGroupDefinition,
+      asrChildren,
+      new Set([adobeRuleId, adobeExclusionsId])
+    )
+    const [adobe] = instance.groupSettingCollectionValue[0].children
+    expect(adobe.choiceSettingValue.value).toBe(`${adobeRuleId}_block`)
+    expect(adobe.choiceSettingValue.children[0].settingDefinitionId).toBe(
+      adobeExclusionsId
+    )
+  })
+
+  it('keeps the chosen mode of the rule and of its siblings when building towards an exclusion', () => {
+    const instance = buildSettingInstance(
+      asrGroupDefinition,
+      asrChildren,
+      new Set([
+        adobeRuleId,
+        adobeExclusionsId,
+        `${adobeRuleId}_audit`,
+        `${webshellRuleId}_warn`,
+      ])
+    )
+    const [adobe, webshell] = instance.groupSettingCollectionValue[0].children
+    expect(adobe.choiceSettingValue.value).toBe(`${adobeRuleId}_audit`)
+    expect(adobe.choiceSettingValue.children[0].settingDefinitionId).toBe(
+      adobeExclusionsId
+    )
+    expect(webshell.choiceSettingValue).toEqual({
+      value: `${webshellRuleId}_warn`,
+      children: [],
+    })
   })
 
   it('still builds the default option when nothing beneath is wanted', () => {

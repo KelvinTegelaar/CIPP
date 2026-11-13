@@ -5505,7 +5505,7 @@
     "name": "standards.SPGuestPeoplePicker",
     "cat": "SharePoint Standards",
     "tag": [],
-    "helpText": "Controls whether guest (external) users already in the tenant appear as suggestions in the SharePoint and OneDrive People Picker. Enforces the wanted state on BOTH the tenant default and every existing site collection - they are set independently, so changing the tenant default does not update existing sites. The per-site picture is read from the SharePoint reporting cache (refreshed daily), so a large tenant is never enumerated live during a run; a 24h rerun guard stops the write sweep from repeating before that cache refreshes and re-evaluates the result.",
+    "helpText": "Controls whether existing guest users appear as suggestions in the SharePoint and OneDrive People Picker. Applies to the tenant default and all existing sites, since changing the tenant setting alone does not update existing sites.",
     "executiveText": "Makes existing external collaborators discoverable (or hidden) when sharing SharePoint and OneDrive content, consistently across the tenant default and every existing site. This keeps the sharing experience predictable and prevents individual sites from drifting away from the agreed collaboration posture.",
     "addedComponent": [
       {
@@ -6251,8 +6251,7 @@
   {
     "name": "standards.TeamsExternalChatWithAnyone",
     "cat": "Teams Standards",
-    "tag": ["CIS M365 7.0.0 (8.2.3)"],
-    "appliesToTest": ["CIS_8_2_3"],
+    "tag": [],
     "helpText": "Controls whether users can start Teams chats with any email address, inviting external recipients as guests via email.",
     "docsDescription": "Manages the Teams messaging policy setting UseB2BInvitesToAddExternalUsers. When enabled, users can start chats with any email address and recipients receive an invitation to join the chat as guests. Disabling the setting prevents these external email chats from being created, keeping conversations limited to internal users and approved guests.",
     "executiveText": "Allows organizations to decide if employees can launch Microsoft Teams chats with anyone on the internet using just an email address. Disabling the feature keeps conversations inside trusted boundaries and helps prevent accidental data exposure through unexpected external invitations.",
@@ -6426,8 +6425,8 @@
   {
     "name": "standards.TeamsExternalAccessPolicy",
     "cat": "Teams Standards",
-    "tag": ["CIS M365 7.0.0 (8.2.1)", "CIS M365 7.0.0 (8.2.2)"],
-    "appliesToTest": ["CIS_8_2_1", "CIS_8_2_2"],
+    "tag": ["CIS M365 7.0.0 (8.2.1)", "CIS M365 7.0.0 (8.2.2)", "CIS M365 7.0.0 (8.2.3)"],
+    "appliesToTest": ["CIS_8_2_1", "CIS_8_2_2", "CIS_8_2_3"],
     "helpText": "Sets the properties of the Global external access policy.",
     "docsDescription": "Sets the properties of the Global external access policy. External access policies determine whether or not your users can: 1) communicate with users who have Session Initiation Protocol (SIP) accounts with a federated organization; 2) communicate with users who are using custom applications built with Azure Communication Services; 3) access Skype for Business Server over the Internet, without having to log on to your internal network; 4) communicate with users who have SIP accounts with a public instant messaging (IM) provider such as Skype; and, 5) communicate with people who are using Teams with an account that's not managed by an organization.",
     "executiveText": "Defines the organization's policy for communicating with external users through Teams, including other organizations, Skype users, and unmanaged accounts. This fundamental setting determines the scope of external collaboration while maintaining security boundaries for business communications.",
@@ -7961,11 +7960,18 @@
     "docsDescription": "Creates five Exchange Online transport rules grouped by the first letter of user display names (A-E, F-J, K-O, P-T, U-Z). Each rule fires when an external sender's From header matches a display name in that group, prepends a configurable HTML warning banner, and skips emails from accepted organisational domains. Any manually configured sender or domain exemptions on existing rules are preserved when the standard runs. The disclaimer HTML is fully customisable via the standard settings.",
     "executiveText": "Protects staff from display-name impersonation attacks by injecting a visible warning banner on emails that appear to come from a colleague but originate externally. Rules are maintained automatically across all letter groups and updated whenever the standard runs.",
     "addedComponent": [
+
       {
         "type": "textField",
         "name": "standards.ColleagueImpersonationAlert.disclaimerHtml",
         "label": "Disclaimer HTML – Paste the full HTML for the warning banner",
         "required": true
+      },
+      {
+        "type": "textField",
+        "name": "standards.ColleagueImpersonationAlert.displayNameSeparator",
+        "label": "Display name separator – Optional, for example |",
+        "required": false
       },
       {
         "type": "autoComplete",
@@ -8111,7 +8117,7 @@
       {
         "type": "switch",
         "name": "standards.DefenderCompliancePolicy.AllowMEMEnforceCompliance",
-        "label": "Allow MEM enforcement of compliance",
+        "label": "Allow Microsoft Defender for Endpoint to enforce Endpoint Security Configurations",
         "defaultValue": false
       }
     ],

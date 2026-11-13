@@ -10,10 +10,12 @@ import Link from "next/link";
 import { useSettings } from "../../../../hooks/use-settings";
 import { useDialog } from "../../../../hooks/use-dialog";
 import { ApiGetCall } from "../../../../api/ApiCall";
+import { useTenantLabel } from "../../../../hooks/use-tenant-label";
 
 const Page = () => {
   const pageTitle = "Quarantine Policies";
   const { currentTenant } = useSettings();
+  const tenantLabel = useTenantLabel(currentTenant);
 
   const createDialog = useDialog();
 
@@ -326,7 +328,7 @@ const Page = () => {
       <Stack spacing={2} sx={{ px: 3, pb: 3, mt: 1 }}>
         <CippButtonCard
           component="card"
-          title={`Global Quarantine Settings - ${currentTenant}`}
+          title={`Global Quarantine Settings - ${tenantLabel}`}
           cardActions={buttonCardActions}
         >
           <Grid container spacing={2}>

@@ -47,7 +47,7 @@ export function useCippGDAPTrace() {
       customFunction: (row) => ref.current?.open(row),
       // Direct tenants have no GDAP relationship to trace.
       condition: (row) =>
-        row.displayName !== "*Partner Tenant" && row.delegatedPrivilegeStatus !== "directTenant",
+        !(row.isPartnerTenantRow === true || row.displayName?.startsWith("*Partner Tenant")) && row.delegatedPrivilegeStatus !== "directTenant",
     }),
     []
   );

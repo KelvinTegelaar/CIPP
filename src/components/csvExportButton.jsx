@@ -57,12 +57,15 @@ export const exportRowsToCsv = ({
   reportName = 'Export',
   columnVisibility = {},
 }) => {
-  if (!rows.length || !columns.length) {
+  if (!rows.length) {
     return
   }
 
   const rowData = rows.map((row) => flattenObject(row.original ?? row))
-  const columnKeys = columns.filter((c) => columnVisibility[c.id]).map((c) => c.id)
+  // Without table columns (a page that is not a table), every field is exported
+  const columnKeys = columns.length
+    ? columns.filter((c) => columnVisibility[c.id]).map((c) => c.id)
+    : [...new Set(rowData.flatMap((row) => Object.keys(row)))]
 
   const filterRowData = (row, allowedKeys) => {
     const filteredRow = {}

@@ -13,6 +13,7 @@ import { CippHead } from '../../../../../components/CippComponents/CippHead'
 import { CippTablePage } from '../../../../../components/CippComponents/CippTablePage.jsx'
 import CippJsonView from '../../../../../components/CippFormPages/CippJSONView'
 import { PRIVILEGED_ROLE_TOOLTIP, getRoleRow } from '../../../../../utils/role-detail-shared'
+import { isMultiTenant } from '../../../../../utils/tenant-selection'
 
 const GUID_RE =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
@@ -31,7 +32,7 @@ const Page = () => {
   const { roleTemplateId } = router.query
   const tenantFilter =
     router.query.tenantFilter ?? userSettingsDefaults.currentTenant
-  const needsTenant = !tenantFilter || tenantFilter === 'AllTenants'
+  const needsTenant = !tenantFilter || isMultiTenant(tenantFilter)
   const roleId =
     typeof roleTemplateId === 'string' && GUID_RE.test(roleTemplateId)
       ? roleTemplateId
@@ -173,6 +174,6 @@ const Page = () => {
   )
 }
 
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>
+Page.getLayout = (page) => <DashboardLayout usesTenant={false}>{page}</DashboardLayout>
 
 export default Page

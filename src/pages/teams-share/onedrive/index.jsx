@@ -5,6 +5,7 @@ import { useCippReportDB } from '../../../components/CippComponents/CippReportDB
 import { useSettings } from '../../../hooks/use-settings'
 import { usePermissions } from '../../../hooks/use-permissions'
 import { CippEditSitePropertiesForm } from '../../../components/CippComponents/CippEditSitePropertiesForm'
+import { tenantScope } from '../../../utils/tenant-selection'
 
 const Page = () => {
   const pageTitle = 'OneDrive'
@@ -118,7 +119,7 @@ const Page = () => {
         // applies to every selected row.
         const formatRow = (siteRow) => {
           const payload = {
-            tenantFilter: siteRow.Tenant ?? tenantFilter,
+            ...tenantScope(siteRow.Tenant ?? tenantFilter),
             SiteUrl: siteRow.webUrl,
             Title: formData.Title,
             SharingCapability: v(formData.SharingCapability),
@@ -179,7 +180,7 @@ const Page = () => {
       // request per row.
       customDataformatter: (row) => {
         const formatRow = (siteRow) => ({
-          tenantFilter: siteRow.Tenant ?? tenantFilter,
+          ...tenantScope(siteRow.Tenant ?? tenantFilter),
           SiteUrl: siteRow.webUrl,
           SiteId: siteRow.siteId,
           WebId: siteRow.webId,
@@ -221,6 +222,6 @@ const Page = () => {
   )
 }
 
-Page.getLayout = (page) => <DashboardLayout allTenantsSupport={true}>{page}</DashboardLayout>
+Page.getLayout = (page) => <DashboardLayout tenantGroupSupport={true} allTenantsSupport={true}>{page}</DashboardLayout>
 
 export default Page

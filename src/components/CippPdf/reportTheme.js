@@ -311,8 +311,20 @@ export const buildPalette = (branding, { primary, secondary }) => {
  * Being a CIPP variable is about where it is documented and offered, not about who substitutes it.
  */
 export const REPORT_VARIABLES = [
-  { value: '%reportname%', label: 'Report name' },
-  { value: '%reportdate%', label: 'Report date' },
+  {
+    name: 'reportname',
+    variable: '%reportname%',
+    description: 'The name of the report',
+    type: 'reserved',
+    category: 'report',
+  },
+  {
+    name: 'reportdate',
+    variable: '%reportdate%',
+    description: 'The date the report was generated',
+    type: 'reserved',
+    category: 'report',
+  },
 ]
 
 /**

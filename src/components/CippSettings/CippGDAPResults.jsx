@@ -6,9 +6,17 @@ import { CippDataTable } from "../CippTable/CippDataTable";
 import { ApiPostCall } from "../../api/ApiCall";
 import { CippApiResults } from "../CippComponents/CippApiResults";
 import { useEffect, useState } from "react";
+import { CippCheckFatalAlert } from "./CippCheckFatalAlert";
 
 export const CippGDAPResults = (props) => {
-  const { executeCheck, offcanvasVisible, setOffcanvasVisible, importReport, setCardIcon } = props;
+  const {
+    executeCheck,
+    offcanvasVisible,
+    setOffcanvasVisible,
+    importReport,
+    setCardIcon,
+    isPrimaryPartner,
+  } = props;
   const [results, setResults] = useState({});
 
   const repairRoleMappings = ApiPostCall({
@@ -26,6 +34,12 @@ export const CippGDAPResults = (props) => {
 
   const hasRoleMappingIssues = results?.Results?.RoleMappingResults?.some(
     (item) => item?.Status === "Stale" || item?.Status === "Missing",
+  );
+
+  // The check aborted before anything ran - the per-item results below would all be
+  // defaults, so show only the fatal error instead of a misleading checklist.
+  const fatalIssue = results?.Results?.GDAPIssues?.find((issue) =>
+    /could not run/i.test(issue?.Issue ?? ""),
   );
 
   useEffect(() => {
@@ -119,24 +133,27 @@ export const CippGDAPResults = (props) => {
     },
   ];
 
-  const propertyItems = [
-    {
-      label: "Warnings",
-      value: <GdapIssueValue results={results} type="Warning" />,
-    },
-    {
-      label: "Errors",
-      value: <GdapIssueValue results={results} type="Error" />,
-    },
-    {
-      label: "Microsoft Led Transition Relationships",
-      value: <GdapIssueValue results={results} match=".+Microsoft Led Transition.+" />,
-    },
-    {
-      label: "Global Admin Relationships",
-      value: <GdapIssueValue results={results} match=".+global administrator.+" />,
-    },
-  ];
+  // A fatal run shows only the error alert - no counters at all
+  const propertyItems = fatalIssue
+    ? []
+    : [
+        {
+          label: "Warnings",
+          value: <GdapIssueValue results={results} type="Warning" />,
+        },
+        {
+          label: "Errors",
+          value: <GdapIssueValue results={results} type="Error" />,
+        },
+        {
+          label: "Microsoft Led Transition Relationships",
+          value: <GdapIssueValue results={results} match=".+Microsoft Led Transition.+" />,
+        },
+        {
+          label: "Global Admin Relationships",
+          value: <GdapIssueValue results={results} match=".+global administrator.+" />,
+        },
+      ];
 
   return (
     <>
@@ -165,6 +182,8 @@ export const CippGDAPResults = (props) => {
           Failed to load GDAP check results. Please try refreshing or contact support if the issue
           persists.
         </Alert>
+      ) : fatalIssue ? (
+        <CippCheckFatalAlert message={fatalIssue.Issue} isPrimaryPartner={isPrimaryPartner} />
       ) : (
         <>
           <List>
@@ -193,7 +212,9 @@ export const CippGDAPResults = (props) => {
             })}
           </List>
 
-          <CippOffCanvas
+        </>
+      )}
+      <CippOffCanvas
             size="xl"
             title="GDAP Details"
             visible={offcanvasVisible}
@@ -292,9 +313,7 @@ export const CippGDAPResults = (props) => {
                 />
               </>
             )}
-          </CippOffCanvas>
-        </>
-      )}
+      </CippOffCanvas>
     </>
   );
 };

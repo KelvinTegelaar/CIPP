@@ -111,6 +111,8 @@ const timeAgoArray = [
   'lastRemediated', // Baselines
   'deviationAt', // Baselines
   'deviationExpires', // Baselines
+  'overrideAt', // Baselines
+  'overrideExpires', // Baselines
   'enteredStageAt', // Baselines
   'LastRefresh',
   'createdDateTime',
@@ -362,6 +364,7 @@ export const getCippFormatting = (
   if (
     cellName === 'prohibitSendReceiveQuotaInBytes' ||
     cellName === 'storageUsedInBytes' ||
+    cellName === 'fileStreamSizeInBytes' ||
     cellName === 'cleanupReclaimBytes' ||
     cellName === 'versionEstimateBytes' ||
     cellName === 'ArchiveSize'
@@ -509,6 +512,7 @@ export const getCippFormatting = (
   if (
     cellName === 'percentOfTenant' ||
     cellName === 'percentOfSite' ||
+    cellName === 'versionPercent' ||
     cellName === 'percentUsed'
   ) {
     if (data === undefined || data === null || data === '') {
@@ -826,7 +830,7 @@ export const getCippFormatting = (
   if (cellName === 'sourceTemplate') {
     // Baselines: which template's configuration is effective for this row
     if (isText) return data
-    const color = data === 'Tenant Override' ? 'success' : 'info'
+    const color = data === 'Tenant Override' ? 'warning' : 'info'
     return <Chip variant="outlined" label={data} size="small" color={color} />
   }
 
@@ -1175,6 +1179,18 @@ export const getCippFormatting = (
     ) : (
       <CippDataTableButton data={data} tableTitle="Assigned Groups" />
     )
+  }
+
+  // Template usage (Intune templates): one chip per baseline / standards template that
+  // references the template, instead of an opaque "N items" button (#1220).
+  if (
+    cellName === 'usage' &&
+    Array.isArray(data) &&
+    data.length > 0 &&
+    data.every((entry) => typeof entry?.label === 'string')
+  ) {
+    const labels = data.map((entry) => entry.label)
+    return isText ? labels.join(', ') : renderChipList(labels, 3)
   }
 
   // handle role members

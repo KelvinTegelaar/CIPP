@@ -31,24 +31,36 @@ const operatorLabels = {
 // Human-readable summary of a stage's graduation conditions. Used by the alignment and
 // template pages - deliberately NOT by the PDF, which tells the rollout in plain words.
 export const describeStageConditions = (stage) => {
-  if (!stage?.conditions?.length) return 'no conditions configured'
-  const parts = stage.conditions.map((condition) => {
-    switch (condition.type) {
-      case 'time':
-        return `${condition.days} ${condition.unit ?? 'days'} in the previous stage`
-      case 'variable':
-        return `${condition.variable} ${operatorLabels[condition.operator] ?? condition.operator} '${condition.value}'`
-      case 'group':
-        return `the tenant is in the '${condition.groupName ?? condition.group}' group`
-      case 'success':
-        return 'all previous stage items applied successfully'
-      case 'manual':
-        return 'manual approval by an operator'
-      default:
-        return condition.type
-    }
-  })
-  return parts.join(stage.logic === 'or' ? ' OR ' : ' AND ')
+  // The stage's own conditions and each of its condition groups are alternatives.
+  const groups = [
+    { logic: stage?.logic, conditions: stage?.conditions },
+    ...(stage?.conditionGroups ?? []),
+  ].filter((group) => group.conditions?.length)
+  // A stage saved without conditions falls back to a manual move
+  if (!groups.length) return 'manual approval by an operator'
+  const described = groups.map((group) =>
+    group.conditions
+      .map((condition) => {
+        switch (condition.type) {
+          case 'time':
+            return `${condition.days} ${condition.unit ?? 'days'} in the previous stage`
+          case 'variable':
+            return `${condition.variable} ${operatorLabels[condition.operator] ?? condition.operator} '${condition.value}'`
+          case 'group':
+            return `the tenant is in the '${condition.groupName ?? condition.group}' group`
+          case 'success':
+            return 'all previous stage items applied successfully'
+          case 'manual':
+            return 'manual approval by an operator'
+          default:
+            return condition.type
+        }
+      })
+      .join(group.logic === 'or' ? ' OR ' : ' AND ')
+  )
+  return described.length > 1
+    ? described.map((text) => `(${text})`).join(' OR ')
+    : described[0]
 }
 
 // Report option toggles shown in the sidebar, in the executive report's card style. The keys

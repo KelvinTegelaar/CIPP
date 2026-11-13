@@ -1,5 +1,5 @@
 ﻿import React, { useState, useEffect } from "react";
-import { Button, Divider } from "@mui/material";
+import { Button, Divider, Stack } from "@mui/material";
 import { CippIcons } from "../../utils/icon-registry";
 import { Grid } from "@mui/system";
 import { useForm, useFormState } from "react-hook-form";
@@ -32,7 +32,7 @@ export const CippAddRoomDrawer = ({
 
   const addRoom = ApiPostCall({
     urlFromData: true,
-    relatedQueryKeys: [`RoomMailbox-${tenantDomain}`],
+    relatedQueryKeys: [`Rooms - ${tenantDomain}`],
   });
 
   // Reset form fields on successful creation
@@ -70,7 +70,7 @@ export const CippAddRoomDrawer = ({
     addRoom.mutate({
       url: "/api/AddRoomMailbox",
       data: shippedValues,
-      relatedQueryKeys: [`RoomMailbox-${tenantDomain}`],
+      relatedQueryKeys: [`Rooms - ${tenantDomain}`],
     });
   };
 
@@ -99,23 +99,26 @@ export const CippAddRoomDrawer = ({
         onClose={handleCloseDrawer}
         size="md"
         footer={
-          <div style={{ display: "flex", gap: "8px", justifyContent: "flex-start" }}>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleSubmit}
-              disabled={addRoom.isLoading || !isValid}
-            >
-              {addRoom.isLoading
-                ? "Creating..."
-                : addRoom.isSuccess
-                ? "Create Another"
-                : "Create Room Mailbox"}
-            </Button>
-            <Button variant="outlined" onClick={handleCloseDrawer}>
-              Close
-            </Button>
-          </div>
+          <Stack spacing={2}>
+            <CippApiResults apiObject={addRoom} />
+            <div style={{ display: "flex", gap: "8px", justifyContent: "flex-start" }}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleSubmit}
+                disabled={addRoom.isPending || !isValid}
+              >
+                {addRoom.isPending
+                  ? "Creating..."
+                  : addRoom.isSuccess
+                  ? "Create Another"
+                  : "Create Room Mailbox"}
+              </Button>
+              <Button variant="outlined" onClick={handleCloseDrawer}>
+                Close
+              </Button>
+            </div>
+          </Stack>
         }
       >
         <Grid container spacing={2}>
@@ -162,8 +165,6 @@ export const CippAddRoomDrawer = ({
               formControl={formControl}
             />
           </Grid>
-
-          <CippApiResults apiObject={addRoom} />
         </Grid>
       </CippOffCanvas>
     </>

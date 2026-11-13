@@ -18,6 +18,7 @@ import CippFormComponent from './CippFormComponent'
 import { ApiGetCall } from '../../api/ApiCall'
 import { useDialog } from '../../hooks/use-dialog'
 import { usePermissions } from '../../hooks/use-permissions'
+import { tenantScope } from '../../utils/tenant-selection'
 
 // Sentinel for "the site itself" in the scope picker. A site collection root web always holds its
 // own permissions, so it has no inheritance to manage - only assignments.
@@ -69,21 +70,21 @@ export const CippLibraryPermissionsDialog = ({
 
   const libraries = ApiGetCall({
     url: '/api/ListSiteLibraries',
-    data: { SiteId: siteId, SiteUrl: siteUrl, tenantFilter: tenant },
+    data: { SiteId: siteId, SiteUrl: siteUrl, ...tenantScope(tenant) },
     queryKey: `SiteLibraries-${siteId ?? siteUrl}`,
     waiting: isOpen && !!siteUrl,
   })
 
   const permissions = ApiGetCall({
     url: '/api/ListSitePermissions',
-    data: { SiteUrl: siteUrl, ListId: listId, tenantFilter: tenant },
+    data: { SiteUrl: siteUrl, ListId: listId, ...tenantScope(tenant) },
     queryKey: permissionsQueryKey,
     waiting: isOpen && !!siteUrl,
   })
 
   const roleDefinitions = ApiGetCall({
     url: '/api/ListSiteRoleDefinitions',
-    data: { SiteUrl: siteUrl, tenantFilter: tenant },
+    data: { SiteUrl: siteUrl, ...tenantScope(tenant) },
     queryKey: `SiteRoleDefinitions-${siteUrl}`,
     waiting: isOpen && !!siteUrl,
   })
@@ -115,7 +116,7 @@ export const CippLibraryPermissionsDialog = ({
 
   // Payload shared by every action on the current scope.
   const scopePayload = {
-    tenantFilter: tenant,
+    ...tenantScope(tenant),
     SiteUrl: siteUrl,
     ListId: listId,
     LibraryName: libraryName,

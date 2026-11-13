@@ -1,4 +1,3 @@
-const RECYCLE_BIN_CAP = 500
 
 const STAGE_LABELS = {
   all: null,
@@ -161,14 +160,13 @@ function attachRestoreSource(folder, item) {
  * @param {'all'|'first'|'second'} [options.recycleStage='all']
  * @param {'folders'|'list'} [options.recycleView='folders'] - folders = drill-in; list = flat leaves under path
  * @param {string} [options.siteWebUrl] - used to strip site prefix from DirName
- * @returns {{ items: object[], capped: boolean, totalMatching: number }}
+ * @returns {{ items: object[], totalMatching: number }}
  */
 export function projectRecycleBinTree(
   results,
   { recyclePath = [], recycleStage = 'all', recycleView = 'folders', siteWebUrl } = {}
 ) {
   const list = Array.isArray(results) ? results : []
-  const capped = list.length >= RECYCLE_BIN_CAP
   const staged = list.filter((item) => matchesStage(item, recycleStage))
   const depth = recyclePath.length
   const prefixKey = pathKey(recyclePath).toLowerCase()
@@ -188,7 +186,6 @@ export function projectRecycleBinTree(
     }
     return {
       items: leaves,
-      capped,
       totalMatching: staged.length,
     }
   }
@@ -263,7 +260,6 @@ export function projectRecycleBinTree(
 
   return {
     items: [...folders, ...leaves],
-    capped,
     totalMatching: staged.length,
   }
 }
@@ -354,4 +350,3 @@ export function expandRecycleRestoreRows(
   return { items, folderLabel }
 }
 
-export { RECYCLE_BIN_CAP }

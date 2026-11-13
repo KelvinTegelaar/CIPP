@@ -11,10 +11,20 @@ import {
   forceListEnabled,
   forceListIdsDefinition,
 } from '../mocks/intune-chrome-forcelist'
+import {
+  adobeExclusionsId,
+  adobeRuleId,
+  asrChildren,
+  asrGroupDefinition,
+  asrGroupId,
+  webshellRuleId,
+} from '../mocks/intune-asr-rules'
 
 const definitions = {
   [forceListDefinition.id]: forceListDefinition,
   ...forceListChildren,
+  [asrGroupDefinition.id]: asrGroupDefinition,
+  ...asrChildren,
 }
 
 vi.mock('../../src/hooks/use-intune-collection', async (importOriginal) => ({
@@ -24,9 +34,12 @@ vi.mock('../../src/hooks/use-intune-collection', async (importOriginal) => ({
     isLoading: false,
     isError: false,
   }),
-  fetchIntuneDescendants: vi.fn(async (definition) =>
-    definition.defaultOptionId === forceListEnabled ? forceListChildren : {}
-  ),
+  fetchIntuneDescendants: vi.fn(async (definition) => {
+    if (definition.id.startsWith(asrGroupId)) return asrChildren
+    return definition.defaultOptionId === forceListEnabled
+      ? forceListChildren
+      : {}
+  }),
 }))
 
 const useHarness = (initial) => {
@@ -95,6 +108,100 @@ describe('useIntunePolicyEditor', () => {
 
     expect(added).toBe(false)
     expect(enabledValue(result.current.policy).value).toBe(forceListDisabled)
+  })
+
+  describe('ASR rule exclusions', () => {
+    const asrPolicy = (chosen) => ({
+      settings: [
+        buildSetting(asrGroupDefinition, asrChildren, new Set(chosen)),
+      ],
+    })
+    const rules = (policy) =>
+      policy.settings[0].settingInstance.groupSettingCollectionValue[0].children
+    const entry = {
+      '@odata.type':
+        '#microsoft.graph.deviceManagementConfigurationStringSettingValue',
+      value: 'C:\\Apps\\reader.exe',
+    }
+    const auditWithExclusion = () => {
+      const policy = asrPolicy([
+        adobeRuleId,
+        adobeExclusionsId,
+        `${adobeRuleId}_audit`,
+      ])
+      rules(
+        policy
+      )[0].choiceSettingValue.children[0].simpleSettingCollectionValue = [entry]
+      return policy
+    }
+
+    it('adds a rule exclusion without moving that rule or any other off its chosen mode', () => {
+      const { result } = renderHook(() =>
+        useHarness(
+          asrPolicy([`${adobeRuleId}_audit`, `${webshellRuleId}_warn`])
+        )
+      )
+
+      act(() => {
+        result.current.editor.addSetting(
+          asrGroupDefinition,
+          asrChildren,
+          new Set([adobeRuleId, adobeExclusionsId])
+        )
+      })
+
+      const [adobe, webshell] = rules(result.current.policy)
+      expect(adobe.choiceSettingValue.value).toBe(`${adobeRuleId}_audit`)
+      expect(
+        adobe.choiceSettingValue.children.map(
+          (child) => child.settingDefinitionId
+        )
+      ).toEqual([adobeExclusionsId])
+      expect(webshell.choiceSettingValue.value).toBe(`${webshellRuleId}_warn`)
+    })
+
+    it('keeps the exclusion and its entries when the rule moves to another mode that offers it', async () => {
+      const { result } = renderHook(() => useHarness(auditWithExclusion()))
+
+      act(() => {
+        result.current.formControl.setValue('settingValues.0', {
+          label: 'Warn',
+          value: `${adobeRuleId}_warn`,
+        })
+      })
+
+      await waitFor(() =>
+        expect(rules(result.current.policy)[0].choiceSettingValue.value).toBe(
+          `${adobeRuleId}_warn`
+        )
+      )
+      expect(
+        rules(result.current.policy)[0].choiceSettingValue.children
+      ).toEqual([
+        expect.objectContaining({
+          settingDefinitionId: adobeExclusionsId,
+          simpleSettingCollectionValue: [entry],
+        }),
+      ])
+    })
+
+    it('drops the exclusion when the rule is turned off', async () => {
+      const { result } = renderHook(() => useHarness(auditWithExclusion()))
+
+      act(() => {
+        result.current.formControl.setValue('settingValues.0', {
+          label: 'Off',
+          value: `${adobeRuleId}_off`,
+        })
+      })
+
+      await waitFor(() =>
+        expect(rules(result.current.policy)[0].choiceSettingValue).toEqual({
+          value: `${adobeRuleId}_off`,
+          children: [],
+        })
+      )
+    })
   })
 
   it("stamps the template's references on a setting added to a template-based policy", async () => {

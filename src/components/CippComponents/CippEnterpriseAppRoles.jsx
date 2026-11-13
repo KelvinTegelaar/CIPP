@@ -33,6 +33,9 @@ const roleRisk = (id) => ROLE_RISK.get(String(id || '').toLowerCase()) || null
 const riskChipColor = (risk) =>
   ({ Critical: 'error', High: 'warning', Medium: 'info' })[risk] || 'default'
 
+const roleAssignmentsUrl = (principalId) =>
+  `/roleManagement/directory/roleAssignments?$filter=principalId eq '${principalId}'&$expand=roleDefinition($select=id,templateId,displayName,description,isBuiltIn)`
+
 const scopeLabel = (directoryScopeId) =>
   !directoryScopeId || directoryScopeId === '/' ? 'Directory' : directoryScopeId
 
@@ -42,6 +45,7 @@ const CippEnterpriseAppRoles = ({
   canEdit = false,
 }) => {
   const rolesBulk = ApiPostCall({ urlFromData: true })
+  const groupRolesBulk = ApiPostCall({ urlFromData: true })
   const actionDialog = useDialog()
   const [dialogAction, setDialogAction] = useState(null)
 
@@ -56,7 +60,12 @@ const CippEnterpriseAppRoles = ({
         Requests: [
           {
             id: 'roleAssignments',
-            url: `/roleManagement/directory/roleAssignments?$filter=principalId eq '${servicePrincipalId}'&$expand=roleDefinition($select=id,templateId,displayName,description,isBuiltIn)`,
+            url: roleAssignmentsUrl(servicePrincipalId),
+            method: 'GET',
+          },
+          {
+            id: 'groups',
+            url: `/servicePrincipals/${servicePrincipalId}/memberOf/microsoft.graph.group?$select=id,displayName,isAssignableToRole`,
             method: 'GET',
           },
         ],
@@ -70,22 +79,58 @@ const CippEnterpriseAppRoles = ({
 
   const rows = getListGraphBulkRequestRows(rolesBulk)
   const roleRow = rows.find((r) => r.id === 'roleAssignments')
-  const assignments = useMemo(
+  // Only role-assignable groups can hold directory roles.
+  const roleGroups = useMemo(
     () =>
-      [...(roleRow?.body?.value || [])].sort((a, b) =>
-        String(
-          a.roleDefinition?.displayName || a.roleDefinitionId
-        ).localeCompare(
-          String(b.roleDefinition?.displayName || b.roleDefinitionId),
-          undefined,
-          { sensitivity: 'base' }
-        )
+      (rows.find((r) => r.id === 'groups')?.body?.value || []).filter(
+        (g) => g.isAssignableToRole
       ),
-    [roleRow]
+    [rows]
+  )
+  const roleGroupKey = roleGroups.map((g) => g.id).join(',')
+
+  useEffect(() => {
+    if (!roleGroupKey) {
+      return
+    }
+    groupRolesBulk.mutate({
+      url: '/api/ListGraphBulkRequest',
+      data: {
+        tenantFilter,
+        Requests: roleGroups.map((g) => ({
+          id: g.id,
+          url: roleAssignmentsUrl(g.id),
+          method: 'GET',
+        })),
+      },
+    })
+  }, [roleGroupKey])
+
+  const groupRoleRows = getListGraphBulkRequestRows(groupRolesBulk)
+  const groupAssignments = roleGroupKey
+    ? groupRoleRows.flatMap((r) =>
+        (r.body?.value || []).map((a) => ({
+          ...a,
+          viaGroup: roleGroups.find((g) => g.id === r.id)?.displayName || r.id,
+        }))
+      )
+    : []
+  const directAssignments = roleRow?.body?.value || []
+  const assignments = [...directAssignments, ...groupAssignments].sort((a, b) =>
+    String(a.roleDefinition?.displayName || a.roleDefinitionId).localeCompare(
+      String(b.roleDefinition?.displayName || b.roleDefinitionId),
+      undefined,
+      { sensitivity: 'base' }
+    )
   )
   const loadError =
     roleRow && roleRow.status >= 400 ? roleRow.body?.error?.message : null
-  const loading = rolesBulk.isPending || rolesBulk.isIdle
+  const loading =
+    rolesBulk.isPending ||
+    rolesBulk.isIdle ||
+    (Boolean(roleGroupKey) &&
+      (groupRolesBulk.isPending || groupRolesBulk.isIdle))
+  const directOnly = assignments.filter((a) => !a.viaGroup)
 
   const openAction = (action) => {
     setDialogAction({ ...action, key: Date.now() })
@@ -112,9 +157,9 @@ const CippEnterpriseAppRoles = ({
         <Box>
           <Typography variant="h6">Directory roles</Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-            Entra roles held by this enterprise application. A role lets the app
-            act as that administrator through any application permission it
-            uses.
+            Entra roles held by this enterprise application, directly or through
+            a role-assignable group. A role lets the app act as that
+            administrator through any application permission it uses.
           </Typography>
         </Box>
         {canEdit && (
@@ -124,12 +169,12 @@ const CippEnterpriseAppRoles = ({
               variant="outlined"
               color="error"
               startIcon={<CippIcons.DeleteSweep />}
-              disabled={loading || assignments.length === 0}
+              disabled={loading || directOnly.length === 0}
               onClick={() =>
                 openRemove(
                   'Remove all directory roles',
-                  assignments,
-                  `all ${assignments.length} directory role(s) from this application`
+                  directOnly,
+                  `all ${directOnly.length} directly assigned directory role(s) from this application`
                 )
               }
             >
@@ -183,7 +228,11 @@ const CippEnterpriseAppRoles = ({
                 a.roleDefinition?.templateId || a.roleDefinitionId
               )
               return (
-                <ListItem key={a.id} divider sx={{ py: 1 }}>
+                <ListItem
+                  key={`${a.viaGroup || ''}${a.id}`}
+                  divider
+                  sx={{ py: 1 }}
+                >
                   <ListItemText
                     primary={roleName(a)}
                     secondary={a.roleDefinition?.description || undefined}
@@ -231,12 +280,22 @@ const CippEnterpriseAppRoles = ({
                       a.roleDefinition.isBuiltIn === false && (
                         <Chip size="small" label="Custom" variant="outlined" />
                       )}
+                    {a.viaGroup && (
+                      <Tooltip title="Held through membership of this role-assignable group. Remove the application from the group, or the role from the group, to take it away.">
+                        <Chip
+                          size="small"
+                          label={`Via group ${a.viaGroup}`}
+                          variant="outlined"
+                          color="info"
+                        />
+                      </Tooltip>
+                    )}
                     <Chip
                       size="small"
                       label={scopeLabel(a.directoryScopeId)}
                       variant="outlined"
                     />
-                    {canEdit && (
+                    {canEdit && !a.viaGroup && (
                       <Tooltip title={`Remove ${roleName(a)}`}>
                         <IconButton
                           size="small"
@@ -311,7 +370,7 @@ const CippEnterpriseAppRoles = ({
                       options
                         .filter(
                           (o) =>
-                            !assignments.some(
+                            !directOnly.some(
                               (a) =>
                                 a.roleDefinitionId === o.value &&
                                 scopeLabel(a.directoryScopeId) === 'Directory'

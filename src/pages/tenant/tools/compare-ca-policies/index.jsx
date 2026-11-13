@@ -59,6 +59,7 @@ const SourceSelector = ({ prefix, formControl, label }) => {
               formControl={formControl}
               multiple={false}
               creatable={false}
+              sortOptions={true}
               api={{
                 url: '/api/ListCATemplates',
                 queryKey: `ListCATemplates-${prefix}`,
@@ -93,6 +94,7 @@ const SourceSelector = ({ prefix, formControl, label }) => {
                 formControl={formControl}
                 multiple={false}
                 creatable={false}
+                sortOptions={true}
                 isFetching={!tenantValue}
                 api={
                   tenantValue
@@ -281,6 +283,6 @@ const Page = () => {
   )
 }
 
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>
+Page.getLayout = (page) => <DashboardLayout usesTenant={false}>{page}</DashboardLayout>
 
 export default Page

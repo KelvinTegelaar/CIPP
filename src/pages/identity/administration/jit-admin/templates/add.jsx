@@ -14,6 +14,7 @@ import { useSettings } from "../../../../../hooks/use-settings";
 import { useJitAllowedRoles } from "../../../../../hooks/use-jit-allowed-roles";
 import { CippJitRoleTemplateApply } from "../../../../../components/CippComponents/CippJitRoleTemplateApply";
 import { useEffect } from "react";
+import { isMultiTenant } from "../../../../../utils/tenant-selection";
 import {
   JIT_TEMPLATE_VARIABLES,
   JIT_USERNAME_VARIABLES,
@@ -88,7 +89,7 @@ const Page = () => {
     formControl.setValue("defaultGroups", []);
     formControl.setValue("defaultDomain", null);
     formControl.setValue("defaultVacationCAPolicy", []);
-    if (currentTenant === "AllTenants" && formControl.getValues("defaultUserAction") === "select") {
+    if (isMultiTenant(currentTenant) && formControl.getValues("defaultUserAction") === "select") {
       formControl.setValue("defaultUserAction", null);
     }
   }, [currentTenant]);
@@ -547,6 +548,6 @@ const Page = () => {
   );
 };
 
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+Page.getLayout = (page) => <DashboardLayout usesTenant={false}>{page}</DashboardLayout>;
 
 export default Page;

@@ -134,8 +134,8 @@ const Page = () => {
 
   const title = "View History";
   // Sort logs by date (newest first)
-  const sortedLogs = logsData.data
-    ? [...logsData.data].sort((a, b) => new Date(b.DateTime) - new Date(a.DateTime))
+  const sortedLogs = logsData.data?.Results
+    ? [...logsData.data.Results].sort((a, b) => new Date(b.DateTime) - new Date(a.DateTime))
     : [];
 
   return (
@@ -332,6 +332,6 @@ const Page = () => {
   );
 };
 
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+Page.getLayout = (page) => <DashboardLayout usesTenant={false}>{page}</DashboardLayout>;
 
 export default Page;

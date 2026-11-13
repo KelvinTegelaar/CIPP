@@ -6,7 +6,12 @@ import { CippTenantSelector } from '../../../src/components/CippComponents/CippT
 import { tenantsContosoFabrikam } from '../../mocks/fixtures'
 
 // url-keyed api state + per-test router, both hoisted for the mock factories
-const apiState = vi.hoisted(() => ({ tenants: {}, details: {}, urls: [] }))
+const apiState = vi.hoisted(() => ({
+  tenants: {},
+  details: {},
+  groups: {},
+  urls: [],
+}))
 const routerState = vi.hoisted(() => ({ router: null }))
 
 vi.mock('../../../src/api/ApiCall', () => ({
@@ -30,6 +35,9 @@ vi.mock('../../../src/api/ApiCall', () => ({
     apiState.urls.push(url)
     if (url === '/api/listTenants') {
       return apiState.tenants
+    }
+    if (url === '/api/ListTenantGroups') {
+      return apiState.groups
     }
     return apiState.details
   },
@@ -66,6 +74,7 @@ describe('CippTenantSelector', () => {
   beforeEach(() => {
     apiState.tenants = result({ data: tenantsContosoFabrikam })
     apiState.details = result()
+    apiState.groups = result({ data: { Results: [{ Id: 'g1', Name: 'Managed' }] } })
     apiState.urls = []
     routerState.router = {
       isReady: true,
@@ -86,6 +95,101 @@ describe('CippTenantSelector', () => {
       expect(screen.getByRole('combobox')).toHaveValue('Contoso (contoso.com)')
     })
     expect(settings.handleUpdate).toHaveBeenCalledWith({ currentTenant: 'contoso.com' })
+  })
+
+  it('selects the tenant group named in the url and stores it as the selection', async () => {
+    routerState.router.query = { tenantGroup: 'g1' }
+    const settings = makeSettings()
+    renderWithProviders(<CippTenantSelector />, { settings })
+
+    await waitFor(() => {
+      expect(screen.getByRole('combobox')).toHaveValue('Managed')
+    })
+    expect(settings.handleUpdate).toHaveBeenCalledWith({ currentTenant: 'group:g1' })
+    expect(routerState.router.replace).not.toHaveBeenCalledWith(
+      expect.objectContaining({
+        query: expect.objectContaining({ tenantFilter: expect.anything() }),
+      }),
+      undefined,
+      { shallow: true }
+    )
+  })
+
+  it('puts a picked tenant group in the url as tenantGroup instead of tenantFilter', async () => {
+    const user = userEvent.setup()
+    routerState.router.query = { tenantFilter: 'contoso.com' }
+    renderWithProviders(<CippTenantSelector />, { settings: makeSettings() })
+
+    await user.click(screen.getByRole('combobox'))
+    await user.click(
+      await screen.findByRole('option', { name: /^Managed$/ })
+    )
+
+    expect(routerState.router.replace).toHaveBeenLastCalledWith(
+      { pathname: '/', query: { tenantGroup: 'g1' } },
+      undefined,
+      { shallow: true }
+    )
+  })
+
+  it('turns a group selection left in tenantFilter into tenantGroup', async () => {
+    routerState.router.query = { tenantFilter: 'group:g1' }
+    renderWithProviders(<CippTenantSelector />, { settings: makeSettings() })
+
+    await waitFor(() => {
+      expect(routerState.router.replace).toHaveBeenCalledWith(
+        { pathname: '/', query: { tenantGroup: 'g1' } },
+        undefined,
+        { shallow: true }
+      )
+    })
+  })
+
+  it('puts a stored group selection back in the url as tenantGroup', async () => {
+    renderWithProviders(<CippTenantSelector />, {
+      settings: makeSettings({ currentTenant: 'group:g1' }),
+    })
+
+    await waitFor(() => {
+      expect(routerState.router.replace).toHaveBeenCalledWith(
+        { pathname: '/', query: { tenantGroup: 'g1' } },
+        undefined,
+        { shallow: true }
+      )
+    })
+  })
+
+  it('lists tenant groups in their own section after the tenants', async () => {
+    const user = userEvent.setup()
+    renderWithProviders(<CippTenantSelector />, { settings: makeSettings() })
+
+    await user.click(screen.getByRole('combobox'))
+    const labels = (await screen.findAllByRole('option')).map((el) => el.textContent)
+    const group = labels.findIndex((l) => l.startsWith('Managed'))
+    const lastTenant = labels.findLastIndex((l) => /\(.*\.com\)/.test(l))
+    expect(group).toBeGreaterThan(lastTenant)
+    expect(screen.getByText('Tenant groups')).toBeInTheDocument()
+  })
+
+  it('swaps tenantGroup back to tenantFilter when a tenant is picked', async () => {
+    const user = userEvent.setup()
+    routerState.router.query = { tenantGroup: 'g1' }
+    renderWithProviders(<CippTenantSelector />, { settings: makeSettings() })
+
+    await waitFor(() => {
+      expect(screen.getByRole('combobox')).toHaveValue('Managed')
+    })
+    await user.click(screen.getByRole('combobox'))
+    await user.click(await screen.findByRole('option', { name: /Fabrikam/ }))
+
+    expect(routerState.router.replace).toHaveBeenLastCalledWith(
+      {
+        pathname: '/',
+        query: { tenantFilter: expect.stringContaining('fabrikam') },
+      },
+      undefined,
+      { shallow: true }
+    )
   })
 
   it('normalizes a customerId hotlink to the default domain in the url', async () => {
@@ -122,15 +226,20 @@ describe('CippTenantSelector', () => {
 
     const combobox = screen.getByRole('combobox')
     expect(combobox).toBeDisabled()
-    expect(combobox.getAttribute('placeholder')).toMatch(/Error loading Tenants/)
+    expect(combobox.getAttribute('placeholder')).toMatch(
+      /Error loading Tenants/
+    )
   })
 
-  it('refetches the tenant list from the refresh button', async () => {
+  it('refetches the tenant and tenant group lists from the refresh button', async () => {
     const user = userEvent.setup()
-    renderWithProviders(<CippTenantSelector refreshButton />, { settings: makeSettings() })
+    renderWithProviders(<CippTenantSelector refreshButton />, {
+      settings: makeSettings(),
+    })
 
     await user.click(screen.getByRole('button', { name: 'refresh' }))
     expect(apiState.tenants.refetch).toHaveBeenCalledTimes(1)
+    expect(apiState.groups.refetch).toHaveBeenCalledTimes(1)
   })
 
   it('filters portal links by settings in the tenant offcanvas', async () => {
@@ -167,9 +276,18 @@ describe('CippTenantSelector', () => {
         initialDomainName: `${name.toLowerCase()}.onmicrosoft.com`,
       })),
     })
-    const pref = (name) => ({ value: `${name.toLowerCase()}.com`, label: `${name} (${name.toLowerCase()}.com)` })
-    localStorage.setItem('cipp:favoriteTenants', JSON.stringify([pref('Delta'), pref('Alpha')]))
-    localStorage.setItem('cipp:recentTenants', JSON.stringify([pref('Charlie'), pref('Bravo')]))
+    const pref = (name) => ({
+      value: `${name.toLowerCase()}.com`,
+      label: `${name} (${name.toLowerCase()}.com)`,
+    })
+    localStorage.setItem(
+      'cipp:favoriteTenants',
+      JSON.stringify([pref('Delta'), pref('Alpha')])
+    )
+    localStorage.setItem(
+      'cipp:recentTenants',
+      JSON.stringify([pref('Charlie'), pref('Bravo')])
+    )
 
     renderWithProviders(<CippTenantSelector />, { settings: makeSettings() })
     await user.click(screen.getByRole('combobox'))

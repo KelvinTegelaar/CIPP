@@ -636,6 +636,6 @@ const EditRoomMailbox = () => {
   );
 };
 
-EditRoomMailbox.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+EditRoomMailbox.getLayout = (page) => <DashboardLayout usesTenant={false}>{page}</DashboardLayout>;
 
 export default EditRoomMailbox;

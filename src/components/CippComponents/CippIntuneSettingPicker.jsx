@@ -104,7 +104,7 @@ export const CippIntuneSettingPicker = ({
 
   // A template-based policy only accepts the settings its template defines; deployment drops the rest.
   const pickableRows = useMemo(() => {
-    if (!templateSettings) return rows
+    if (!templateSettings) return rows.filter((row) => !row.templateOnly)
     return rows.filter((row) => {
       let root = row
       for (let depth = 0; root.parentId && depth < MAX_DEPTH; depth++) {

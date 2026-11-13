@@ -18,6 +18,7 @@ import { CippLibraryPermissionsDialog } from '../../../components/CippComponents
 import { CippCheckUserAccessDialog } from '../../../components/CippComponents/CippCheckUserAccessDialog'
 import { CippSharePointQuotaCard } from '../../../components/CippCards/CippSharePointQuotaCard'
 import { CippSharePointVersionCleanupFields } from '../../../components/CippComponents/CippSharePointVersionCleanupFields'
+import { tenantScope } from '../../../utils/tenant-selection'
 import {
   CippAnonymizedReportAlert,
   isReportAnonymized,
@@ -118,7 +119,7 @@ const VersionCleanupStatusModal = ({ row, tenantFilter, drawerVisible, setDrawer
   const statusApi = ApiGetCall({
     url: '/api/ListSPOVersionCleanup',
     data: {
-      tenantFilter: siteRow?.Tenant ?? tenantFilter,
+      ...tenantScope(siteRow?.Tenant ?? tenantFilter),
       SiteUrl: siteUrl,
     },
     queryKey: `SPOVersionCleanupStatus-${siteUrl}`,
@@ -278,7 +279,7 @@ const Page = () => {
               data: {
                 SiteId: siteRow?.siteId,
                 SiteUrl: siteRow?.webUrl,
-                tenantFilter: siteRow?.Tenant ?? tenantFilter,
+                ...tenantScope(siteRow?.Tenant ?? tenantFilter),
               },
               queryKey: `SiteMembersPicker-${siteRow?.siteId}`,
               dataKey: 'Results',
@@ -335,7 +336,7 @@ const Page = () => {
               data: {
                 SiteId: siteRow?.siteId,
                 SiteUrl: siteRow?.webUrl,
-                tenantFilter: siteRow?.Tenant ?? tenantFilter,
+                ...tenantScope(siteRow?.Tenant ?? tenantFilter),
               },
               queryKey: `SiteMembersPicker-${siteRow?.siteId}`,
               dataKey: 'Results',
@@ -406,7 +407,7 @@ const Page = () => {
         const formatRow = (siteRow) => {
           const isGroupSite = siteRow?.rootWebTemplate === 'Group'
           const payload = {
-            tenantFilter: siteRow.Tenant ?? tenantFilter,
+            ...tenantScope(siteRow.Tenant ?? tenantFilter),
             SiteUrl: siteRow.webUrl,
             SharingCapability: v(formData.SharingCapability),
             DefaultSharingLinkType: v(formData.DefaultSharingLinkType),
@@ -624,7 +625,7 @@ const Page = () => {
       },
       customDataformatter: (row, action, formData) => {
         const formatRow = (singleRow) => ({
-          tenantFilter: singleRow.Tenant ?? tenantFilter,
+          ...tenantScope(singleRow.Tenant ?? tenantFilter),
           SiteUrl: singleRow.webUrl,
           BatchDeleteMode: parseInt(formData.BatchDeleteMode, 10),
           DeleteOlderThanDays:
@@ -686,7 +687,7 @@ const Page = () => {
           data: {
             SiteId: row.siteId,
             SiteUrl: row.webUrl,
-            tenantFilter: tenantFilter,
+            ...tenantScope(tenantFilter),
           },
           dataKey: 'Results',
         }}
@@ -806,6 +807,6 @@ const Page = () => {
   )
 }
 
-Page.getLayout = (page) => <DashboardLayout allTenantsSupport={true}>{page}</DashboardLayout>
+Page.getLayout = (page) => <DashboardLayout tenantGroupSupport={true} allTenantsSupport={true}>{page}</DashboardLayout>
 
 export default Page

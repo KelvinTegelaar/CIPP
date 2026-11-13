@@ -1,4 +1,5 @@
 import Button from '@mui/material/Button'
+import Tooltip from '@mui/material/Tooltip'
 import { usePermissions } from '../hooks/use-permissions.js'
 import { matchPattern } from './permission-rules'
 /**
@@ -181,6 +182,23 @@ export const PermissionButton = ({
 
   if (!hasRequiredAccess && hideIfNoAccess) {
     return null
+  }
+
+  if (!hasRequiredAccess && isAuthenticated) {
+    const needed = [
+      ...requiredPermissions.map((permission) => `the ${permission} permission`),
+      ...requiredRoles.map((role) => `the ${role} role`),
+    ].join(' or ')
+    // a disabled button fires no pointer events, so the span carries the tooltip
+    return (
+      <Tooltip title={`Requires ${needed}`}>
+        <span>
+          <Button {...buttonProps} disabled>
+            {children}
+          </Button>
+        </span>
+      </Tooltip>
+    )
   }
 
   return (

@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useMemo, useState, useRef } from 'react'
 import { usePathname, useSearchParams } from 'next/navigation'
-import { Box, Container, Divider, Stack } from '@mui/material'
+import { Divider, Stack } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import { useIsMobileLayout } from '../hooks/use-breakpoint'
 import { useSettings } from '../hooks/use-settings'
+import { SettingsContext } from '../contexts/settings-context'
 import { Footer } from './footer'
 import { MobileNav } from './mobile-nav'
 import { SideNav } from './side-nav'
@@ -11,8 +12,12 @@ import { TopNav } from './top-nav'
 import { ApiGetCall } from '../api/ApiCall'
 import { useDispatch } from 'react-redux'
 import { showToast } from '../store/toasts'
-import Grid from '@mui/system/Grid'
-import { CippImageCard } from '../components/CippCards/CippImageCard'
+import { CippErrorState } from '../components/CippComponents/CippErrorState'
+import {
+  isMultiTenant,
+  isTenantGroup,
+  toTenantGroup,
+} from '../utils/tenant-selection'
 import { nativeMenuItems } from './config'
 import { CippBreadcrumbNav } from '../components/CippComponents/CippBreadcrumbNav'
 import { SsoMigrationDialog } from '../components/CippComponents/SsoMigrationDialog'
@@ -91,7 +96,15 @@ const LayoutContainer = styled('div')({
 export const Layout = (props) => {
   // showBreadcrumb: the error routes opt out — there is no trail to a page that
   // doesn't exist or just crashed, and the bookmark button lives in there too.
-  const { children, allTenantsSupport = true, showBreadcrumb = true } = props
+  // tenantGroupSupport: only pages whose API calls declare TenantGroup support can show a tenant group
+  const {
+    children,
+    allTenantsSupport = true,
+    tenantGroupSupport = false,
+    // false on pages that never use the selected tenant (settings, templates)
+    usesTenant = true,
+    showBreadcrumb = true,
+  } = props
   // one gate for the swap: drawer, the hamburger that opens it (top-nav), the gutter below
   const navCollapsed = useIsMobileLayout()
   const settings = useSettings()
@@ -100,7 +113,53 @@ export const Layout = (props) => {
   const [menuItems, setMenuItems] = useState(nativeMenuItems)
   const lastUserSettingsUpdate = useRef(null)
   const currentTenant = settings?.currentTenant
+  // A page that doesn't use the tenant runs as it does with All Tenants while a group is selected
+  const pageSettings = useMemo(
+    () =>
+      !usesTenant && isTenantGroup(currentTenant)
+        ? { ...settings, currentTenant: 'AllTenants' }
+        : null,
+    [usesTenant, currentTenant, settings]
+  )
   const urlTenant = useSearchParams()?.get('tenantFilter')
+  // Same query as the tenant selector, so this reads its cache rather than fetching again.
+  const tenantList = ApiGetCall({
+    url: '/api/listTenants',
+    data: { AllTenantSelector: true },
+    queryKey: 'TenantSelector',
+    refetchOnMount: false,
+  })
+  const urlTenantMatch = tenantList.isSuccess
+    ? (tenantList.data ?? []).find((t) =>
+        [t.defaultDomainName, t.customerId, t.initialDomainName].includes(
+          urlTenant
+        )
+      )
+    : undefined
+  // A tenant the user cannot access shows a notice instead of a page full of failing calls, and a
+  // page waits for the URL's tenant to be applied so its first call is not sent without one.
+  const urlTenantUnavailable =
+    !!urlTenant && tenantList.isSuccess && !urlTenantMatch
+  const urlGroup = useSearchParams()?.get('tenantGroup')
+  const groupList = ApiGetCall({
+    url: '/api/ListTenantGroups',
+    data: { TenantSelector: true },
+    queryKey: 'TenantSelectorGroups',
+    refetchOnMount: false,
+  })
+  const urlGroupUnavailable =
+    !!urlGroup &&
+    groupList.isSuccess &&
+    !(groupList.data?.Results ?? []).some((group) => group.Id === urlGroup)
+  const urlTenantPending =
+    (!!urlTenant &&
+      !urlTenantUnavailable &&
+      !tenantList.isError &&
+      (urlTenantMatch?.defaultDomainName ?? urlTenant) !== currentTenant) ||
+    (!!urlGroup &&
+      !urlGroupUnavailable &&
+      !groupList.isError &&
+      currentTenant !== toTenantGroup(urlGroup))
   const [hideSidebar, setHideSidebar] = useState(false)
 
   const swaStatus = ApiGetCall({
@@ -313,32 +372,62 @@ export const Layout = (props) => {
           <LegacyInfrastructureDialog alert={blockingAlert} />
           <SsoMigrationDialog meData={currentRole.data} />
           <ForcedSsoMigrationDialog />
-          {(currentTenant === 'AllTenants' ||
+          {(isMultiTenant(currentTenant) ||
             urlTenant === 'AllTenants' ||
+            !!urlGroup ||
             !currentTenant) &&
           !allTenantsSupport ? (
-            <Box sx={{ flexGrow: 1, py: 3 }}>
-              <Container maxWidth={false}>
-                <CippBreadcrumbNav mode="hierarchical" />
-                <Grid container spacing={3}>
-                  <Grid size={{ xs: 12, sm: 6 }}>
-                    <CippImageCard
-                      title="Not supported"
-                      imageUrl="/assets/illustrations/undraw_website_ij0l.svg"
-                      text={
-                        'The page does not support all Tenants, please select a different tenant using the tenant selector.'
-                      }
-                    />
-                  </Grid>
-                </Grid>
-              </Container>
-            </Box>
-          ) : (
+            <Stack>
+              {showBreadcrumb && <CippBreadcrumbNav withRail />}
+              <CippErrorState
+                title="Pick a tenant"
+                description="This page works on one tenant at a time. Choose a tenant from the tenant selector to continue."
+                imageUrl="/cippy-404.png"
+              />
+            </Stack>
+          ) : usesTenant &&
+            (!!urlGroup || (!urlTenant && isTenantGroup(currentTenant))) &&
+            !tenantGroupSupport ? (
+            <Stack>
+              {showBreadcrumb && <CippBreadcrumbNav withRail />}
+              <CippErrorState
+                title="Pick a tenant or All Tenants"
+                description="This page can't show a tenant group. Choose a tenant or All Tenants from the tenant selector to continue."
+                imageUrl="/cippy-404.png"
+              />
+            </Stack>
+          ) : urlTenantUnavailable ? (
+            <Stack>
+              {showBreadcrumb && <CippBreadcrumbNav withRail />}
+              <CippErrorState
+                title="Tenant not available"
+                description={`You don't have access to ${urlTenant}, or CIPP doesn't manage it. Pick another tenant from the tenant selector.`}
+                imageUrl="/cippy-401.png"
+                actionText="Return to Home"
+                actionHref="/"
+              />
+            </Stack>
+          ) : urlGroupUnavailable ? (
+            <Stack>
+              {showBreadcrumb && <CippBreadcrumbNav withRail />}
+              <CippErrorState
+                title="Tenant group not available"
+                description="You don't have access to this tenant group, or it no longer exists. Pick a tenant or another group from the tenant selector."
+                imageUrl="/cippy-401.png"
+                actionText="Return to Home"
+                actionHref="/"
+              />
+            </Stack>
+          ) : urlTenantPending ? null : (
             <Stack>
               {/* The nav carries its own rail chrome (gutter + divider) so that when it
                   renders nothing — a single crumb on a phone — no hairline is left behind. */}
               {showBreadcrumb && <CippBreadcrumbNav withRail />}
-              {children}
+              {pageSettings ? (
+                <SettingsContext.Provider value={pageSettings}>{children}</SettingsContext.Provider>
+              ) : (
+                children
+              )}
             </Stack>
           )}
           <Footer />

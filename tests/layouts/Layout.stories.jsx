@@ -1,8 +1,10 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { within, expect, waitFor } from 'storybook/test'
 import { http, HttpResponse } from 'msw'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { Layout } from '../../src/layouts/index'
+import { SettingsContext } from '../../src/contexts/settings-context'
+import { useSettings } from '../../src/hooks/use-settings'
 
 // authenticated principal: side-nav needs userRoles.length > 2, permissions
 // drive nativeMenuItems filtering ('CIPP.Core.Read' matches 'CIPP.Core.*')
@@ -281,5 +283,36 @@ export const LegacyInfrastructure = {
         within(banner).queryByRole('button', { name: /dismiss maintenance notice/i })
       ).toBeNull()
     })
+  },
+}
+
+const withGroupSelected = (Story) => {
+  const settings = useContext(SettingsContext)
+  return (
+    <SettingsContext.Provider value={{ ...settings, currentTenant: 'group:g1' }}>
+      <Story />
+    </SettingsContext.Provider>
+  )
+}
+
+const SelectionProbe = () => <p>Page sees: {useSettings().currentTenant}</p>
+
+export const TenantGroupOnTenantPage = {
+  args: { children: <SelectionProbe /> },
+  decorators: [withGroupSelected],
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    await expect(await canvas.findByText('Pick a tenant or All Tenants')).toBeInTheDocument()
+    await expect(canvas.queryByText(/Page sees:/)).toBeNull()
+  },
+}
+
+export const TenantGroupOnPageWithoutTenant = {
+  args: { children: <SelectionProbe />, usesTenant: false },
+  decorators: [withGroupSelected],
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    await expect(await canvas.findByText('Page sees: AllTenants')).toBeInTheDocument()
+    await expect(canvas.queryByText('Pick a tenant or All Tenants')).toBeNull()
   },
 }

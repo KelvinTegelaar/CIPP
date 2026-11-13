@@ -5,10 +5,39 @@ import { Button } from "@mui/material";
 import Link from "next/link";
 import { useSettings } from "../../../../hooks/use-settings.js";
 import ScheduledTaskDetails from "../../../../components/CippComponents/ScheduledTaskDetails";
+import { ApiGetCallWithPagination } from "../../../../api/ApiCall";
+import { tenantScope } from "../../../../utils/tenant-selection";
 
 const Page = () => {
   const initialState = useSettings();
   const currentTenant = initialState.currentTenant;
+  // Action conditions only see their own row, so subscribe to the table's own paginated query
+  // (same hook, same key) to find a row's start counterpart; a separate copy of the list went
+  // stale against the table's refresh and the action's invalidation
+  const vacationTasks = ApiGetCallWithPagination({
+    url: "/api/ListScheduledItems?SearchTitle=*Vacation*",
+    data: { ...tenantScope(currentTenant) },
+    queryKey: `VacationMode-${currentTenant}`,
+  });
+  const allVacationTasks = (vacationTasks.data?.pages ?? []).flatMap((page) =>
+    Array.isArray(page) ? page : page?.Results ?? [],
+  );
+
+  // A Remove task's start counterpart is "Add ..." ("Create ..." for travel policies) with the same
+  // suffix; forwarding appends " -> target" to the Add name only
+  const startPending = (removeRow) => {
+    const suffix = removeRow.Name.slice("Remove ".length);
+    return allVacationTasks.some((task) => {
+      const startSuffix = task.Name?.replace(/^(Add|Create) /, "");
+      return (
+        startSuffix !== task.Name &&
+        (startSuffix === suffix || startSuffix.startsWith(`${suffix} -> `)) &&
+        (task.Tenant?.value ?? task.Tenant) === (removeRow.Tenant?.value ?? removeRow.Tenant) &&
+        !["Completed", "Failed"].includes(task.TaskState) &&
+        new Date(task.ScheduledTime) <= new Date(removeRow.ScheduledTime)
+      );
+    });
+  };
 
   const actions = [
     {
@@ -18,12 +47,28 @@ const Page = () => {
       icon: <CippIcons.EyeIcon />,
     },
     {
+      label: "End Vacation Now",
+      type: "POST",
+      url: "/api/AddScheduledItem",
+      data: { RowKey: "RowKey", RunNow: true },
+      confirmText:
+        "Run [Name] now? This reverts the vacation change immediately instead of waiting for the end date. Use this when the user is back early.",
+      icon: <CippIcons.PlayArrow />,
+      multiPost: false,
+      // Running the revert before the start task leaves the start change in place with no cleanup
+      condition: (row) =>
+        vacationTasks.isSuccess &&
+        row?.TaskState === "Planned" &&
+        row?.Name?.startsWith("Remove ") &&
+        !startPending(row),
+    },
+    {
       label: "Cancel Vacation Mode",
       type: "POST",
       url: "/api/RemoveScheduledItem",
       data: { ID: "RowKey" },
       confirmText:
-        "Are you sure you want to cancel this vacation mode entry? This might mean the user will remain in vacation mode permanently.",
+        "Cancel deletes this scheduled task without reverting anything, so the user might remain in vacation mode permanently. If the user is back early, use 'End Vacation Now' on the Remove task instead.",
       icon: <CippIcons.Delete />,
       multiPost: false,
     },
@@ -114,6 +159,6 @@ const Page = () => {
   );
 };
 
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+Page.getLayout = (page) => <DashboardLayout tenantGroupSupport={true}>{page}</DashboardLayout>;
 
 export default Page;

@@ -42,8 +42,14 @@ const skeleton = (instance) => ({
 
 // A string with a required length or format has no valid empty value, so the builder leaves it out
 // on purpose rather than seed a value Intune rejects; a technician captures those from a tenant.
+// A list starts empty, so the format of its items does not stop it being built.
 const unseedable = (id) => {
-  const valueDefinition = getCatalogDefinition(id)?.valueDefinition
+  const definition = getCatalogDefinition(id)
+  if (
+    definition?.['@odata.type']?.endsWith('SimpleSettingCollectionDefinition')
+  )
+    return false
+  const valueDefinition = definition?.valueDefinition
   if (valueDefinition?.minimumLength > 0) return true
   try {
     return (

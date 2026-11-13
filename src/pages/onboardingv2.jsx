@@ -3,6 +3,6 @@ import OnboardingWizardPage from '../components/CippWizard/OnboardingWizardPage.
 
 const Page = () => <OnboardingWizardPage />
 
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>
+Page.getLayout = (page) => <DashboardLayout usesTenant={false}>{page}</DashboardLayout>
 
 export default Page

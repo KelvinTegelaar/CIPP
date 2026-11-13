@@ -189,6 +189,6 @@ const CreateBackup = () => {
   );
 };
 
-CreateBackup.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+CreateBackup.getLayout = (page) => <DashboardLayout usesTenant={false}>{page}</DashboardLayout>;
 
 export default CreateBackup;

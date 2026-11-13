@@ -7,6 +7,7 @@ import { CippDateRangeFilter } from "../../../../components/CippComponents/CippD
 import tabOptions from "./tabOptions.json";
 import { useSettings } from "../../../../hooks/use-settings";
 import { ApiGetCall } from "../../../../api/ApiCall";
+import { tenantScope } from "../../../../utils/tenant-selection";
 
 // Log Searches lists the V2 audit-log coverage ledger - one row per search window the pipeline runs.
 // The full diagnostic dashboard lives on the advanced "Search Coverage" tab; this is the everyday view.
@@ -42,7 +43,7 @@ const Page = () => {
   // Small health summary (own fetch; the table fetches separately). Both honour the tenant selector.
   const statsQuery = ApiGetCall({
     url: apiUrl,
-    data: { tenantFilter: tenant, ...dateApiData },
+    data: { ...tenantScope(tenant), ...dateApiData },
     queryKey: `LogSearchHealth-${tenant}-${periodKey}`,
     waiting: !!tenant,
   });
@@ -101,7 +102,7 @@ const Page = () => {
 };
 
 Page.getLayout = (page) => (
-  <DashboardLayout>
+  <DashboardLayout tenantGroupSupport={true}>
     <TabbedLayout tabOptions={tabOptions}>{page}</TabbedLayout>
   </DashboardLayout>
 );

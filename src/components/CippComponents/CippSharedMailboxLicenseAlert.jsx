@@ -2,6 +2,7 @@ import { Alert, AlertTitle } from '@mui/material'
 import { useWatch } from 'react-hook-form'
 import { ApiGetCall } from '../../api/ApiCall'
 import { useSettings } from '../../hooks/use-settings.js'
+import { isMultiTenant, tenantScope } from '../../utils/tenant-selection'
 
 // Unlicensed shared mailboxes and their archives are capped at 50 GiB; warn at 49 GiB.
 const SHARED_MAILBOX_WARN_BYTES = 49 * 1024 ** 3
@@ -28,7 +29,7 @@ export const getSharedMailboxLicenseReasons = (mb) => {
 export const useSharedMailboxLicenseData = (tenant, enabled) =>
   ApiGetCall({
     url: '/api/ListMailboxes',
-    data: { tenantFilter: tenant, UseReportDB: true },
+    data: { ...tenantScope(tenant), UseReportDB: true },
     queryKey: `SharedMailboxLicenseCheck-${tenant}`,
     waiting: !!enabled && !!tenant,
   })
@@ -37,7 +38,7 @@ export const useSharedMailboxLicenseData = (tenant, enabled) =>
 export const CippSharedMailboxLicenseAlert = ({ formControl, row }) => {
   const tenantFilter = useSettings().currentTenant
   const rowData = Array.isArray(row) ? row[0] : row
-  const tenant = tenantFilter === 'AllTenants' && rowData?.Tenant ? rowData.Tenant : tenantFilter
+  const tenant = isMultiTenant(tenantFilter) && rowData?.Tenant ? rowData.Tenant : tenantFilter
   const upn = (rowData?.userPrincipalName ?? rowData?.UPN)?.toString().toLowerCase()
   const isShared = useWatch({ control: formControl.control, name: 'MailboxType' }) === 'Shared'
   const mailboxes = useSharedMailboxLicenseData(tenant, isShared && !!upn)

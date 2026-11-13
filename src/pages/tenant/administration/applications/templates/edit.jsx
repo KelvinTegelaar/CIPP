@@ -99,6 +99,6 @@ const Page = () => {
 };
 
 // Changed from TabbedLayout to just DashboardLayout
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+Page.getLayout = (page) => <DashboardLayout usesTenant={false}>{page}</DashboardLayout>;
 
 export default Page;

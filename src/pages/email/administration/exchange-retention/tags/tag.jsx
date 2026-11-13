@@ -271,6 +271,6 @@ const RetentionTag = () => {
   );
 };
 
-RetentionTag.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+RetentionTag.getLayout = (page) => <DashboardLayout usesTenant={false}>{page}</DashboardLayout>;
 
 export default RetentionTag;

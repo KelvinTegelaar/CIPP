@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useWatch } from "react-hook-form";
 import { CippFormComponent } from "./CippFormComponent";
 import { useSettings } from "../../hooks/use-settings";
 import { GroupHeader, GroupItems } from "../CippComponents/CippAutocompleteGrouping";
@@ -16,6 +17,9 @@ export const CippFormTenantSelector = ({
   preselectedEnabled = false,
   removeOptions = [],
   includeGroups = false,
+  // Offer tenant groups that add their member tenants to the selection, so the form still sends
+  // plain tenants. For endpoints that store group selectors themselves, use includeGroups instead.
+  expandGroups = type !== "single" && !includeGroups,
   includeTenantDefaults = false,
   // Deprecated alias for includeTenantDefaults.
   includeOffboardingDefaults = false,
@@ -63,13 +67,37 @@ export const CippFormTenantSelector = ({
     url: "/api/ListTenantGroups",
     data: { AllTenantSelector: true },
     queryKey: "TenantGroupSelector",
-    waiting: includeGroups,
+    waiting: includeGroups || expandGroups,
   });
 
   const [options, setOptions] = useState([]);
+  const selected = useWatch({ control: formControl.control, name });
+
+  // Replace a picked group with its member tenants. Members are matched against this user's tenant
+  // options, so tenants outside their access are left out.
+  useEffect(() => {
+    if (!expandGroups || !Array.isArray(selected)) return;
+    const pickedGroups = selected.filter((item) => item?.type === "Group");
+    if (pickedGroups.length === 0) return;
+    const byCustomerId = new Map(
+      options.filter((option) => option.type === "Tenant").map((option) => [option.addedFields?.customerId, option])
+    );
+    const expanded = selected.filter((item) => item?.type !== "Group");
+    const chosen = new Set(expanded.map((item) => item?.value));
+    for (const group of pickedGroups) {
+      for (const member of group.addedFields?.members ?? []) {
+        const option = byCustomerId.get(member.customerId);
+        if (option && !chosen.has(option.value)) {
+          expanded.push(option);
+          chosen.add(option.value);
+        }
+      }
+    }
+    formControl.setValue(name, expanded, { shouldDirty: true, shouldValidate: true });
+  }, [selected, expandGroups, options, formControl, name]);
 
   useEffect(() => {
-    if (tenantList.isSuccess && (!includeGroups || tenantGroupList.isSuccess)) {
+    if (tenantList.isSuccess && (!(includeGroups || expandGroups) || tenantGroupList.isSuccess)) {
       const tenantData = Array.isArray(tenantList.data)
         ? tenantList.data.map((tenant) => ({
             value: tenant[valueField],
@@ -87,18 +115,28 @@ export const CippFormTenantSelector = ({
           }))
         : [];
 
+      // An expanding group lists only the members this user can pick, and is left out when that is none
+      const pickableIds = new Set(tenantData.map((tenant) => tenant.addedFields.customerId));
       const groupData =
-        includeGroups && Array.isArray(tenantGroupList?.data?.Results)
-          ? tenantGroupList.data.Results.map((group) => ({
-              value: group.Id,
-              label: group.Name,
-              type: "Group",
-            }))
+        (includeGroups || expandGroups) && Array.isArray(tenantGroupList?.data?.Results)
+          ? tenantGroupList.data.Results.flatMap((group) => {
+              if (!expandGroups) return [{ value: group.Id, label: group.Name, type: "Group" }];
+              const members = (group.Members ?? []).filter((member) => pickableIds.has(member.customerId));
+              if (members.length === 0) return [];
+              return [
+                {
+                  value: group.Id,
+                  label: `${group.Name} (adds ${members.length} ${members.length === 1 ? "tenant" : "tenants"})`,
+                  type: "Group",
+                  addedFields: { members },
+                },
+              ];
+            })
           : [];
 
       setOptions([...tenantData, ...groupData]);
     }
-  }, [tenantList.isSuccess, tenantGroupList.isSuccess, includeGroups, includeDefaults]);
+  }, [tenantList.isSuccess, tenantGroupList.isSuccess, includeGroups, expandGroups, includeDefaults]);
 
   return (
     <CippFormComponent
@@ -116,8 +154,8 @@ export const CippFormTenantSelector = ({
       groupBy={(option) => option.type}
       renderGroup={(params) => (
         <li key={params.key}>
-          {includeGroups && <GroupHeader>{params.group}</GroupHeader>}
-          {includeGroups ? <GroupItems>{params.children}</GroupItems> : params.children}
+          {(includeGroups || expandGroups) && <GroupHeader>{params.group}</GroupHeader>}
+          {includeGroups || expandGroups ? <GroupItems>{params.children}</GroupItems> : params.children}
         </li>
       )}
       isFetching={tenantList.isFetching || tenantGroupList.isFetching}

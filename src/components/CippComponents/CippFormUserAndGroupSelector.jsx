@@ -39,12 +39,7 @@ export const CippFormUserAndGroupSelector = ({
           return `${option.displayName} (${groupType})`;
         },
         valueField: valueField ? valueField : "id",
-        queryKey: `ListUsersAndGroups-${
-          currentTenant?.value ? currentTenant.value : selectedTenant
-        }`,
-        data: {
-          TenantFilter: currentTenant ? currentTenant.value : selectedTenant,
-        },
+        queryKey: "ListUsersAndGroups",
         dataFilter: (options) => {
           if (dataFilter) {
             return options.filter(dataFilter);

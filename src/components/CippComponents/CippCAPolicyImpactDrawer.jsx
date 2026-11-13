@@ -35,6 +35,7 @@ import {
   mergeImpactSegments,
   summarizeImpact,
 } from '../../utils/ca-policy-impact'
+import { tenantScope } from '../../utils/tenant-selection'
 
 const DAY_OPTIONS = [
   { value: 1, label: '24h' },
@@ -143,7 +144,12 @@ export const CippCAPolicyImpactDrawer = ({
   const segmentCall = (segment) =>
     ApiGetCall({
       url: '/api/ListCAPolicyImpact',
-      data: { tenantFilter, GUID: policyId, Days: days, Segment: segment },
+      data: {
+        ...tenantScope(tenantFilter),
+        GUID: policyId,
+        Days: days,
+        Segment: segment,
+      },
       queryKey: `CAPolicyImpact-${tenantFilter}-${policyId}-${days}-${segment}`,
       waiting: ready && segment < segmentCount,
     })
@@ -349,8 +355,7 @@ export const CippCAPolicyImpactDrawer = ({
                 direction="row"
                 spacing={1}
                 useFlexGap
-                flexWrap="wrap"
-                alignItems="center"
+                sx={{ flexWrap: 'wrap', alignItems: 'center' }}
               >
                 {results?.state && (
                   <Chip

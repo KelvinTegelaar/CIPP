@@ -11,6 +11,9 @@ import { Box, Button } from "@mui/material";
 import { useDialog } from "../../../../../hooks/use-dialog.js";
 import { useState } from "react"
 
+// Tenant onboarding owns this group; the API refuses edits and deletes too
+const onboardingGroupName = "Excluded onboarded tenants";
+
 const Page = () => {
   const pageTitle = "Tenant Groups";
   const createDefaultGroupsDialog = useDialog();
@@ -32,6 +35,7 @@ const Page = () => {
       link: "/tenant/administration/tenants/groups/edit?id=[Id]",
       pinned: true,
       icon: <CippIcons.Edit />,
+      condition: (row) => row.Name !== onboardingGroupName,
     },
     {
       label: "Run Dynamic Rules",
@@ -51,6 +55,7 @@ const Page = () => {
       data: { action: "Delete", groupId: "Id" },
       queryKey: "TenantGroupListPage",
       confirmText: "Are you sure you want to delete [Name]?",
+      condition: (row) => row.Name !== onboardingGroupName,
     },
   ];
 
@@ -100,7 +105,7 @@ const Page = () => {
 };
 
 Page.getLayout = (page) => (
-  <DashboardLayout>
+  <DashboardLayout usesTenant={false}>
     <TabbedLayout tabOptions={tabOptions}>{page}</TabbedLayout>
   </DashboardLayout>
 );

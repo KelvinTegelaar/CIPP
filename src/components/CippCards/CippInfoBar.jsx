@@ -15,7 +15,7 @@ export const CippInfoBar = ({ data, isFetching }) => {
         {data.map((item, index) => (
           <Fragment key={item.name}>
             <Grid
-              size={{ md: 3, sm: 6, xs: 12 }}
+              size={{ md: 12 / Math.max(data.length, 4), sm: 6, xs: 12 }}
               onClick={
                 item.offcanvas
                   ? () => setVisibleIndex(index)
@@ -42,7 +42,7 @@ export const CippInfoBar = ({ data, isFetching }) => {
                     sm: 'none',
                   }),
                 },
-                '&:nth-of-type(4)': {
+                [data.length > 4 ? '&:last-of-type' : '&:nth-of-type(4)']: {
                   borderBottom: 'none',
                   borderRight: 'none',
                 },

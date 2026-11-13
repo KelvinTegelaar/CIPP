@@ -1,6 +1,7 @@
 import { useState, useCallback, useRef, useEffect } from "react";
 import { ApiPostCall } from "../api/ApiCall";
 import { useSettings } from "./use-settings";
+import { isMultiTenant } from "../utils/tenant-selection";
 
 // Function to check if a string is a GUID
 const isGuid = (str) => {
@@ -402,7 +403,7 @@ export const useGuidResolver = (manualTenant = null) => {
 
       // Handle regular GUIDs (current tenant) - these should NOT include partner tenant GUIDs
       // AllTenants is not a directory to look GUIDs up in.
-      if (guidsSet.size > 0 && activeTenant && activeTenant !== "AllTenants") {
+      if (guidsSet.size > 0 && activeTenant && !isMultiTenant(activeTenant)) {
         const guidsArray = Array.from(guidsSet);
         const notResolvedGuids = guidsArray.filter(
           (guid) => !guidMapping[guid] && !notFoundGuidsRef.current.has(guid)

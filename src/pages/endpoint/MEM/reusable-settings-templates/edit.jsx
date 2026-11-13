@@ -450,6 +450,6 @@ const EditReusableSettingsTemplate = () => {
   );
 };
 
-EditReusableSettingsTemplate.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+EditReusableSettingsTemplate.getLayout = (page) => <DashboardLayout usesTenant={false}>{page}</DashboardLayout>;
 
 export default EditReusableSettingsTemplate;

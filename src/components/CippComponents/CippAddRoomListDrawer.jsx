@@ -1,5 +1,5 @@
 ﻿import React, { useState, useEffect } from "react";
-import { Button, InputAdornment, Divider } from "@mui/material";
+import { Button, InputAdornment, Divider, Stack } from "@mui/material";
 import { CippIcons } from "../../utils/icon-registry";
 import { Grid } from "@mui/system";
 import { useForm, useFormState } from "react-hook-form";
@@ -92,23 +92,26 @@ export const CippAddRoomListDrawer = ({
         onClose={handleCloseDrawer}
         size="md"
         footer={
-          <div style={{ display: "flex", gap: "8px", justifyContent: "flex-start" }}>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleSubmit}
-              disabled={addRoomList.isLoading || !isValid}
-            >
-              {addRoomList.isLoading
-                ? "Creating..."
-                : addRoomList.isSuccess
-                ? "Create Another"
-                : "Create Room List"}
-            </Button>
-            <Button variant="outlined" onClick={handleCloseDrawer}>
-              Close
-            </Button>
-          </div>
+          <Stack spacing={2}>
+            <CippApiResults apiObject={addRoomList} />
+            <div style={{ display: "flex", gap: "8px", justifyContent: "flex-start" }}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleSubmit}
+                disabled={addRoomList.isPending || !isValid}
+              >
+                {addRoomList.isPending
+                  ? "Creating..."
+                  : addRoomList.isSuccess
+                  ? "Create Another"
+                  : "Create Room List"}
+              </Button>
+              <Button variant="outlined" onClick={handleCloseDrawer}>
+                Close
+              </Button>
+            </div>
+          </Stack>
         }
       >
         <Grid container spacing={2}>
@@ -148,8 +151,6 @@ export const CippAddRoomListDrawer = ({
               validators={{ required: "Domain is required" }}
             />
           </Grid>
-
-          <CippApiResults apiObject={addRoomList} />
         </Grid>
       </CippOffCanvas>
     </>

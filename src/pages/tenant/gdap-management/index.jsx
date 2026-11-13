@@ -47,7 +47,7 @@ const Page = () => {
 
   const createCippDefaults = ApiPostCall({
     urlFromData: true,
-    relatedQueryKeys: ['ListGDAPRoleTemplates', 'ListGDAPRoles'],
+    relatedQueryKeys: ['ListGDAPRoleTemplates*', 'ListGDAPRoles'],
   })
 
   useEffect(() => {
@@ -195,7 +195,7 @@ const Page = () => {
 }
 
 Page.getLayout = (page) => (
-  <DashboardLayout>
+  <DashboardLayout usesTenant={false}>
     <TabbedLayout tabOptions={tabOptions}>{page}</TabbedLayout>
   </DashboardLayout>
 )

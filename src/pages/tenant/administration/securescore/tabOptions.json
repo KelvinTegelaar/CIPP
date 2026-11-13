@@ -8,5 +8,11 @@
     "label": "Table Overview",
     "path": "/tenant/administration/securescore/table",
     "icon": "BarChart"
+  },
+  {
+    "label": "Controls",
+    "path": "/tenant/administration/securescore/controls",
+    "icon": "FactCheck",
+    "allTenantsOnly": true
   }
 ]

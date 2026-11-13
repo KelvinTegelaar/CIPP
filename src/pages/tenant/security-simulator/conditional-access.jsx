@@ -19,7 +19,9 @@ import { CippHead } from '../../../components/CippComponents/CippHead'
 import CippFormSkeleton from '../../../components/CippFormPages/CippFormSkeleton'
 import { CippCAPersonaMatrix } from '../../../components/CippSecuritySimulations/CippCAPersonaMatrix'
 import { ApiGetCall } from '../../../api/ApiCall'
+import { exportRowsToCsv } from '../../../components/csvExportButton'
 import { useSettings } from '../../../hooks/use-settings'
+import { isMultiTenant } from '../../../utils/tenant-selection'
 
 const asArray = (value) =>
   (Array.isArray(value) ? value : value ? [value] : []).filter(
@@ -38,7 +40,7 @@ const severityRank = { Critical: 0, High: 1, Medium: 2, Low: 3, Info: 4 }
 const Page = () => {
   const pageTitle = 'Conditional Access Gap Analysis'
   const tenant = useSettings().currentTenant
-  const tenantSelected = Boolean(tenant) && tenant !== 'AllTenants'
+  const tenantSelected = Boolean(tenant) && !isMultiTenant(tenant)
 
   const analysis = ApiGetCall({
     url: '/api/ListCAGapAnalysis',
@@ -189,6 +191,25 @@ const Page = () => {
                   <Card style={{ width: '100%', height: '100%' }}>
                     <CardHeader
                       title="Coverage by persona"
+                      action={
+                        <Button
+                          size="small"
+                          disabled={
+                            asArray(data?.analysis?.personaMatrix?.cells)
+                              .length === 0
+                          }
+                          onClick={() =>
+                            exportRowsToCsv({
+                              rows: asArray(
+                                data?.analysis?.personaMatrix?.cells
+                              ),
+                              reportName: `CA persona coverage - ${tenant}`,
+                            })
+                          }
+                        >
+                          Export CSV
+                        </Button>
+                      }
                       subheader={`${counts?.policyCount ?? 0} policies · ${counts?.enabledCount ?? 0} enforced · ${counts?.reportOnlyCount ?? 0} report-only · ${counts?.disabledCount ?? 0} disabled. Personas come from how each policy targets identities; hover a cell for the policies behind it.${counts?.licenses?.hasEntraIdP2 === false ? ' Risk-based controls are excluded: this tenant has no Entra ID P2 license.' : ''}`}
                       slotProps={{ subheader: { variant: 'caption' } }}
                     />
@@ -205,6 +226,20 @@ const Page = () => {
               <Card>
                 <CardHeader
                   title="Policy findings"
+                  action={
+                    <Button
+                      size="small"
+                      disabled={findings.length === 0}
+                      onClick={() =>
+                        exportRowsToCsv({
+                          rows: findings,
+                          reportName: `CA gap findings - ${tenant}`,
+                        })
+                      }
+                    >
+                      Export CSV
+                    </Button>
+                  }
                   subheader={`${findings.length} finding${findings.length === 1 ? '' : 's'} from the cached policies, most severe first`}
                   slotProps={{ subheader: { variant: 'caption' } }}
                 />
@@ -307,7 +342,7 @@ const Page = () => {
 }
 
 Page.getLayout = (page) => (
-  <DashboardLayout>
+  <DashboardLayout usesTenant={false}>
     <TabbedLayout tabOptions={tabOptions}>{page}</TabbedLayout>
   </DashboardLayout>
 )

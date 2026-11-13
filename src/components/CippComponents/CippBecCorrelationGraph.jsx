@@ -246,10 +246,8 @@ export const CippBecCorrelationGraph = ({
       <Stack
         direction="row"
         spacing={1}
-        flexWrap="wrap"
         useFlexGap
-        alignItems="center"
-        sx={{ mb: 1 }}
+        sx={{ flexWrap: 'wrap', alignItems: 'center', mb: 1 }}
       >
         <Typography variant="caption" color="text.secondary">
           The account fans out to each source it acted from, each source to what
@@ -319,7 +317,10 @@ export const CippBecCorrelationGraph = ({
                       color: 'primary.contrastText',
                     }}
                   >
-                    <Typography variant="body2" fontWeight={700} sx={oneLine}>
+                    <Typography
+                      variant="body2"
+                      sx={{ ...oneLine, fontWeight: 700 }}
+                    >
                       {node.name}
                     </Typography>
                     <Typography variant="caption" sx={{ opacity: 0.85 }}>
@@ -360,8 +361,7 @@ export const CippBecCorrelationGraph = ({
                   >
                     <Typography
                       variant="body2"
-                      fontWeight={700}
-                      sx={{ ...oneLine, color: colour }}
+                      sx={{ fontWeight: 700, ...oneLine, color: colour }}
                     >
                       {cluster.ip
                         ? `${cluster.foreign ? '🌐 ' : ''}${cluster.ip}`
@@ -408,7 +408,10 @@ export const CippBecCorrelationGraph = ({
                       bgcolor: 'background.paper',
                     }}
                   >
-                    <Typography variant="body2" fontWeight={600} sx={oneLine}>
+                    <Typography
+                      variant="body2"
+                      sx={{ ...oneLine, fontWeight: 600 }}
+                    >
                       👥 {target.account}
                     </Typography>
                     <Typography variant="caption" color="text.secondary">
@@ -458,8 +461,10 @@ export const CippBecCorrelationGraph = ({
                   <Stack
                     direction="row"
                     spacing={0.75}
-                    alignItems="center"
-                    justifyContent="space-between"
+                    sx={{
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}
                   >
                     <Typography variant="caption" color="text.secondary" noWrap>
                       {fmt(event.ts)}
@@ -473,7 +478,10 @@ export const CippBecCorrelationGraph = ({
                       />
                     )}
                   </Stack>
-                  <Typography variant="body2" fontWeight={600} sx={oneLine}>
+                  <Typography
+                    variant="body2"
+                    sx={{ ...oneLine, fontWeight: 600 }}
+                  >
                     {event.label}
                   </Typography>
                   {event.graphDetail && (

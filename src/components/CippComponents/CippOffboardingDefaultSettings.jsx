@@ -70,6 +70,16 @@ export const CippOffboardingDefaultSettings = (props) => {
             ),
           },
           {
+            label: 'Remove all admin roles',
+            value: (
+              <CippFormComponent
+                type="switch"
+                name="offboardingDefaults.RemoveRoles"
+                formControl={formControl}
+              />
+            ),
+          },
+          {
             label: 'Hide from Global Address List',
             value: (
               <CippFormComponent

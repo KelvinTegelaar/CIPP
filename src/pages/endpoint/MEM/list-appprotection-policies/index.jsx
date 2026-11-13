@@ -6,6 +6,7 @@ import { useSettings } from '../../../../hooks/use-settings.js'
 import { useCippIntunePolicyActions } from '../../../../components/CippComponents/CippIntunePolicyActions.jsx'
 import { useCippReportDB } from '../../../../components/CippComponents/CippReportDBControls'
 import { Stack } from '@mui/system'
+import { CippIntuneDeploymentStatus } from '../../../../components/CippComponents/CippIntuneDeploymentStatus.jsx'
 
 const Page = () => {
   const pageTitle = 'App Protection & Configuration Policies'
@@ -40,6 +41,8 @@ const Page = () => {
       'PolicySource',
     ],
     actions: actions,
+    children: (row) => <CippIntuneDeploymentStatus row={row} tenant={tenant} />,
+    size: 'lg',
   }
 
   const simpleColumns = [
@@ -80,5 +83,5 @@ const Page = () => {
   );
 }
 
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>
+Page.getLayout = (page) => <DashboardLayout tenantGroupSupport={true}>{page}</DashboardLayout>
 export default Page

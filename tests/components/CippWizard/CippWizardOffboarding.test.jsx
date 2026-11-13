@@ -95,6 +95,7 @@ describe('CippWizardOffboarding', () => {
           WipeMobile: true,
           RemoveMobile: true,
           RemoveGroups: true,
+          RemoveRoles: true,
           RemoveLicenses: true,
           RevokeSessions: true,
           DisableSignIn: true,
@@ -129,6 +130,7 @@ describe('CippWizardOffboarding', () => {
     expect(formApi.getValues('WipeMobile')).toBe(false)
     expect(formApi.getValues('RemoveMobile')).toBe(false)
     expect(formApi.getValues('RemoveGroups')).toBe(false)
+    expect(formApi.getValues('RemoveRoles')).toBe(false)
     expect(formApi.getValues('RemoveLicenses')).toBe(false)
     expect(formApi.getValues('RevokeSessions')).toBe(false)
     expect(formApi.getValues('DisableSignIn')).toBe(false)

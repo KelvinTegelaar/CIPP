@@ -1043,6 +1043,6 @@ const DeployDefenderForm = () => {
   )
 }
 
-DeployDefenderForm.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>
+DeployDefenderForm.getLayout = (page) => <DashboardLayout usesTenant={false}>{page}</DashboardLayout>
 
 export default DeployDefenderForm

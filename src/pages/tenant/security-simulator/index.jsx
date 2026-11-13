@@ -41,6 +41,8 @@ import { useDialog } from '../../../hooks/use-dialog'
 import { CippIcons } from '../../../utils/icon-registry'
 import { useCraftJobEvents } from '../../../hooks/use-craft-events'
 import { fromCraftRun } from '../../../utils/craft-run'
+import { isMultiTenant } from '../../../utils/tenant-selection'
+import { exportRowsToCsv } from '../../../components/csvExportButton'
 
 // Scenarios are tests in the Security Simulations suite. The list comes from ListAvailableTests, the
 // results from ListTests, and a run is the test engine's own per-test refresh.
@@ -824,6 +826,19 @@ const ScenarioList = ({
           )}
         </Box>
         <Button
+          size="small"
+          sx={{ mr: 1 }}
+          disabled={scenarios.every((scenario) => !scenario.row)}
+          onClick={() =>
+            exportRowsToCsv({
+              rows: scenarios.filter((scenario) => scenario.row),
+              reportName: `Security simulation scenarios - ${tenant}`,
+            })
+          }
+        >
+          Export CSV
+        </Button>
+        <Button
           variant="contained"
           size="small"
           disabled={refresh.running || scenarios.length === 0}
@@ -946,7 +961,7 @@ const Page = () => {
   const router = useRouter()
   const tenant = useSettings().currentTenant
   const scenarioId = router.query.scenario
-  const tenantSelected = Boolean(tenant) && tenant !== 'AllTenants'
+  const tenantSelected = Boolean(tenant) && !isMultiTenant(tenant)
 
   const tests = ApiGetCall({
     url: '/api/ListTests',
@@ -1047,7 +1062,7 @@ const Page = () => {
 }
 
 Page.getLayout = (page) => (
-  <DashboardLayout>
+  <DashboardLayout usesTenant={false}>
     <TabbedLayout tabOptions={tabOptions}>{page}</TabbedLayout>
   </DashboardLayout>
 )

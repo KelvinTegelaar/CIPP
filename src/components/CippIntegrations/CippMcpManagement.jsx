@@ -81,7 +81,7 @@ const McpClientCard = ({ client, baseMcpUrl }) => {
       <CardContent>
         <Stack spacing={2}>
           {baseMcpUrl && (
-            <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap" useFlexGap>
+            <Stack direction="row" spacing={1} useFlexGap sx={{ alignItems: 'center', flexWrap: 'wrap' }}>
               <Typography variant="body2" sx={{ fontWeight: 600 }}>
                 Connector URL
               </Typography>

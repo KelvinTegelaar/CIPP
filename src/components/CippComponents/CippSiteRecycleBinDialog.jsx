@@ -2,6 +2,7 @@ import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/
 import { CippIcons } from '../../utils/icon-registry'
 import { CippDataTable } from '../CippTable/CippDataTable'
 import { usePermissions } from '../../hooks/use-permissions'
+import { tenantScope } from '../../utils/tenant-selection'
 
 // Custom-component action dialog: lists a site's recycle bin (first + second stage) and
 // restores selected items via ExecRestoreRecycleBinItems.
@@ -29,7 +30,7 @@ export const CippSiteRecycleBinDialog = ({
         // Literal values: these keys do not exist on the recycle bin rows, so the
         // action data mapper passes them through as-is.
         SiteUrl: siteUrl,
-        tenantFilter: tenant,
+        ...tenantScope(tenant),
       },
       confirmText: 'Restore [LeafName] from the recycle bin?',
       condition: () => canRestore,
@@ -51,7 +52,7 @@ export const CippSiteRecycleBinDialog = ({
             url: '/api/ListSiteRecycleBin',
             data: {
               SiteUrl: siteUrl,
-              tenantFilter: tenant,
+              ...tenantScope(tenant),
             },
             dataKey: 'Results',
           }}

@@ -10,12 +10,13 @@ import { CippReportToolbar } from '../../../components/CippComponents/CippReport
 import { CippHead } from '../../../components/CippComponents/CippHead.jsx'
 import { AllTenantsTestResults } from '../../../components/CippAllTenants/AllTenantsTestResults'
 import { useRouter } from 'next/router'
+import { isMultiTenant, tenantScope } from '../../../utils/tenant-selection'
 
 const Page = () => {
   const settings = useSettings()
   const { currentTenant } = settings
   const router = useRouter()
-  const isAllTenants = !currentTenant || currentTenant === 'AllTenants'
+  const isAllTenants = !currentTenant || isMultiTenant(currentTenant)
   const defaultReportId =
     settings.UserSpecificSettings?.defaultTestSuite?.value ||
     settings.defaultTestSuite?.value ||
@@ -27,7 +28,7 @@ const Page = () => {
 
   const testsApi = ApiGetCall({
     url: '/api/ListTests',
-    data: { tenantFilter: currentTenant, reportId: selectedReport },
+    data: { ...tenantScope(currentTenant), reportId: selectedReport },
     queryKey: `${currentTenant}-ListTests-${selectedReport}`,
     waiting: !isAllTenants && !!currentTenant && !!selectedReport,
   })
@@ -124,7 +125,7 @@ const Page = () => {
 }
 
 Page.getLayout = (page) => (
-  <DashboardLayout>
+  <DashboardLayout tenantGroupSupport={true}>
     <TabbedLayout tabOptions={tabOptions}>{page}</TabbedLayout>
   </DashboardLayout>
 )

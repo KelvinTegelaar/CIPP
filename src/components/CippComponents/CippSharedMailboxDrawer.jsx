@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { CippIcons } from "../../utils/icon-registry"
-import { Button } from "@mui/material";
+import { Button, Stack } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { CippOffCanvas } from "./CippOffCanvas";
 import CippFormComponent from "./CippFormComponent";
@@ -29,7 +29,7 @@ export const CippSharedMailboxDrawer = ({
 
   const createSharedMailbox = ApiPostCall({
     urlFromData: true,
-    relatedQueryKeys: ["Mailboxes"],
+    relatedQueryKeys: [`ListMailboxes-${tenantDomain}-true`, `ListMailboxes-${tenantDomain}-false`],
   });
 
   const handleSubmit = () => {
@@ -43,7 +43,7 @@ export const CippSharedMailboxDrawer = ({
     createSharedMailbox.mutate({
       url: "/api/AddSharedMailbox",
       data: postData,
-      relatedQueryKeys: ["Mailboxes"],
+      relatedQueryKeys: [`ListMailboxes-${tenantDomain}-true`, `ListMailboxes-${tenantDomain}-false`],
     });
   };
 
@@ -83,23 +83,26 @@ export const CippSharedMailboxDrawer = ({
         onClose={handleCloseDrawer}
         size="md"
         footer={
-          <div style={{ display: "flex", gap: "8px", justifyContent: "flex-start" }}>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleSubmit}
-              disabled={createSharedMailbox.isLoading}
-            >
-              {createSharedMailbox.isLoading
-                ? "Creating Mailbox..."
-                : createSharedMailbox.isSuccess
-                ? "Create Another Mailbox"
-                : "Create Shared Mailbox"}
-            </Button>
-            <Button variant="outlined" onClick={handleCloseDrawer}>
-              Close
-            </Button>
-          </div>
+          <Stack spacing={2}>
+            <CippApiResults apiObject={createSharedMailbox} />
+            <div style={{ display: "flex", gap: "8px", justifyContent: "flex-start" }}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleSubmit}
+                disabled={createSharedMailbox.isPending}
+              >
+                {createSharedMailbox.isPending
+                  ? "Creating Mailbox..."
+                  : createSharedMailbox.isSuccess
+                  ? "Create Another Mailbox"
+                  : "Create Shared Mailbox"}
+              </Button>
+              <Button variant="outlined" onClick={handleCloseDrawer}>
+                Close
+              </Button>
+            </div>
+          </Stack>
         }
       >
         <Grid container spacing={2}>
@@ -130,8 +133,6 @@ export const CippSharedMailboxDrawer = ({
               required
             />
           </Grid>
-
-          <CippApiResults apiObject={createSharedMailbox} />
         </Grid>
       </CippOffCanvas>
     </>

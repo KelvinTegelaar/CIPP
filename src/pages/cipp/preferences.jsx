@@ -494,6 +494,16 @@ const Page = () => {
                             />
                           ),
                         },
+                        {
+                          label: "Show Recent Tenants in Tenant Selector",
+                          value: (
+                            <CippFormComponent
+                              type="switch"
+                              name="showRecentTenants"
+                              formControl={formcontrol}
+                            />
+                          ),
+                        },
                       ]}
                     />
                     <CippOffboardingDefaultSettings
@@ -547,6 +557,6 @@ const Page = () => {
   );
 };
 
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+Page.getLayout = (page) => <DashboardLayout usesTenant={false}>{page}</DashboardLayout>;
 
 export default Page;

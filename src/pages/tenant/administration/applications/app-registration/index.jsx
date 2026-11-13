@@ -55,11 +55,22 @@ const Page = () => {
         : 'applications',
       tenantFilter: router.query.tenantFilter ?? userSettingsDefaults.currentTenant,
       // Always fetch live data on this management page so credential/URI/audience edits reflect immediately.
+      // SkipCache only skips the report cache; the response cache would replay the pre-edit answer.
       SkipCache: true,
+      InvalidateCIPPCache: true,
     },
     queryKey: `Application-appId-${applicationClientId}`,
     waiting: waiting,
   })
+
+  // Graph can take a few seconds to show a credential change, so read again after the first refresh.
+  const refreshTimers = useRef([])
+  const refreshApp = () => {
+    appRequest.refetch()
+    refreshTimers.current.forEach(clearTimeout)
+    refreshTimers.current = [4000, 12000].map((ms) => setTimeout(() => appRequest.refetch(), ms))
+  }
+  useEffect(() => () => refreshTimers.current.forEach(clearTimeout), [])
 
   let appData = null
   if (appRequest.isSuccess && appRequest.data) {
@@ -88,6 +99,11 @@ const Page = () => {
       {
         id: 'servicePrincipals',
         url: `/servicePrincipals?$filter=appId eq '${applicationClientId}'`,
+        method: 'GET',
+      },
+      {
+        id: 'federated',
+        url: `/applications/${appData.id}/federatedIdentityCredentials`,
         method: 'GET',
       },
     ]
@@ -125,6 +141,11 @@ const Page = () => {
 
   const owners = ownersData?.body?.value ?? []
   const servicePrincipals = servicePrincipalsData?.body?.value ?? []
+  const federatedData = bulkData.find((item) => item.id === 'federated')
+  const federatedCredentials = (federatedData?.body?.value ?? []).map((fic) => ({
+    ...fic,
+    subject: fic.subject ?? (fic.claimsMatchingExpression?.value ? `Matches ${fic.claimsMatchingExpression.value}` : null),
+  }))
 
   // Without an appId nothing is ever fetched, so falling back to the loading label here
   // would leave it stuck forever.
@@ -172,8 +193,11 @@ const Page = () => {
         ]
       : []
 
+  const refreshRef = useRef(refreshFunction)
+  refreshRef.current = refreshFunction
+
   const appActions = useMemo(
-    () => getAppRegistrationDetailHeaderActions(canWriteApplication),
+    () => getAppRegistrationDetailHeaderActions(canWriteApplication, () => refreshRef.current()),
     [canWriteApplication]
   )
 
@@ -269,9 +293,9 @@ const Page = () => {
           graphObjectId={data?.id}
           tenantFilter={tenantForApi}
           canRemove={canWriteApplication}
-          onRemoved={() => appRequest.refetch()}
+          onRemoved={refreshApp}
           canAdd={canWriteApplication}
-          onAdded={() => appRequest.refetch()}
+          onAdded={refreshApp}
         />
       ),
     },
@@ -302,10 +326,67 @@ const Page = () => {
           graphObjectId={data?.id}
           tenantFilter={tenantForApi}
           canRemove={canWriteApplication}
-          onRemoved={() => appRequest.refetch()}
+          onRemoved={refreshApp}
         />
       ),
     },
+    federatedData != null && typeof federatedData.status === 'number' && federatedData.status !== 200
+      ? {
+          id: 3,
+          cardLabelBox: '!',
+          text: 'Error loading federated credentials',
+          subtext: federatedData?.body?.error?.message || 'Unknown error',
+          statusColor: 'error.main',
+          statusText: 'Error',
+          propertyItems: [],
+        }
+      : {
+          id: 3,
+          cardLabelBox:
+            federatedCredentials.length > 0 ? { cardLabelBoxHeader: <CippIcons.Link /> } : '-',
+          text: 'Federated Credentials',
+          subtext:
+            federatedCredentials.length > 0
+              ? 'Tokens from these issuers sign in as the app without a secret'
+              : 'No other identity provider can sign in as this app',
+          statusColor: federatedCredentials.length > 0 ? 'info.main' : 'success.main',
+          statusText: `${federatedCredentials.length} credential(s)`,
+          ...(federatedCredentials.length > 0
+            ? {
+                table: {
+                  title: 'Federated Credentials',
+                  hideTitle: true,
+                  data: federatedCredentials,
+                  refreshFunction: refreshFunction,
+                  simpleColumns: ['name', 'issuer', 'subject', 'audiences', 'description'],
+                  actions: canWriteApplication
+                    ? [
+                        {
+                          icon: <CippIcons.LinkOff />,
+                          label: 'Remove',
+                          type: 'POST',
+                          color: 'danger',
+                          url: '/api/ExecManageAppCredentials',
+                          multiPost: false,
+                          customDataformatter: (row) => ({
+                            tenantFilter: tenantForApi,
+                            Id: data?.id,
+                            AppType: 'applications',
+                            Action: 'Remove',
+                            CredentialType: 'federated',
+                            KeyId: row.id,
+                            DisplayName: row.name,
+                          }),
+                          confirmText:
+                            "Remove the federated credential '[name]'? Tokens from [issuer] for this subject can no longer sign in as the app.",
+                          onSuccess: () => refreshFunction(),
+                        },
+                      ]
+                    : [],
+                },
+              }
+            : { propertyItems: [] }),
+        },
   ]
 
   const enterpriseAppItems =
@@ -546,6 +627,6 @@ const Page = () => {
   );
 }
 
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>
+Page.getLayout = (page) => <DashboardLayout usesTenant={false}>{page}</DashboardLayout>
 
 export default Page

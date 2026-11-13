@@ -20,7 +20,7 @@ import {
 } from '@mui/material'
 import { CippIcons } from '../../../utils/icon-registry'
 import { Grid } from '@mui/system'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { Fragment, useCallback, useEffect, useRef, useState } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
@@ -105,6 +105,26 @@ const toOptionArray = (value) => {
 const newStageKey = () =>
   globalThis.crypto?.randomUUID?.() ?? Math.random().toString(36).slice(2)
 
+// The stage's own conditions are group 1; stored conditionGroups are the OR alternatives after it.
+// Condition ids are unique across groups so the form keeps one flat `conditions` branch.
+const toEditorConditionGroups = (stage) => {
+  let conditionNumber = 0
+  const conditionDefaults = {}
+  const conditionGroups = [
+    { logic: stage.logic, conditions: stage.conditions ?? [] },
+    ...(stage.conditionGroups ?? []),
+  ].map((group, groupIndex) => ({
+    id: `g${groupIndex + 1}`,
+    logic: logicOptions.find((option) => option.value === (group.logic ?? 'and')),
+    conditionIds: (group.conditions ?? []).map((condition) => {
+      conditionNumber += 1
+      conditionDefaults[`c${conditionNumber}`] = toConditionDefaults(condition)
+      return `c${conditionNumber}`
+    }),
+  }))
+  return { conditionGroups, conditionDefaults }
+}
+
 const buildEditorStages = (templateDefinition) =>
   (
     templateDefinition?.stages ?? [
@@ -124,16 +144,7 @@ const buildEditorStages = (templateDefinition) =>
         config,
       ])
     ),
-    conditionIds: stage.conditions.map((condition, index) => `c${index + 1}`),
-    conditionDefaults: Object.fromEntries(
-      stage.conditions.map((condition, index) => [
-        `c${index + 1}`,
-        toConditionDefaults(condition),
-      ])
-    ),
-    logic: logicOptions.find(
-      (option) => option.value === (stage.logic ?? 'and')
-    ),
+    ...toEditorConditionGroups(stage),
   }))
 
 // One panel per stage with its own form, so the same standard configured in two stages never
@@ -154,13 +165,19 @@ const StagePanel = ({
   tenantsInStage,
   catalogByName,
   registerSerializer,
+  onConditionCountChange,
   variableOptions,
   groupOptions,
 }) => {
   const formControl = useForm({
     mode: 'onBlur',
     defaultValues: {
-      conditionLogic: stage.logic ?? logicOptions[0],
+      groupLogic: Object.fromEntries(
+        stage.conditionGroups.map((group) => [
+          group.id,
+          group.logic ?? logicOptions[0],
+        ])
+      ),
       conditions: stage.conditionDefaults,
     },
   })
@@ -172,19 +189,57 @@ const StagePanel = ({
     name: 'conditions',
   })
   const [expandedStandard, setExpandedStandard] = useState(null)
-  const [conditionIds, setConditionIds] = useState(stage.conditionIds)
-  const [nextConditionId, setNextConditionId] = useState(
-    stage.conditionIds.length + 1
+  const [conditionGroups, setConditionGroups] = useState(
+    stage.conditionGroups
   )
+  const nextId = useRef(
+    Object.keys(stage.conditionDefaults).length +
+      stage.conditionGroups.length +
+      1
+  )
+  const newId = (prefix) => `${prefix}${nextId.current++}`
+  useEffect(() => {
+    onConditionCountChange(
+      stage.key,
+      conditionGroups.reduce(
+        (count, group) => count + group.conditionIds.length,
+        0
+      )
+    )
+  }, [conditionGroups, onConditionCountChange, stage.key])
+  const updateGroup = (groupId, update) =>
+    setConditionGroups((prev) =>
+      prev.map((group) => (group.id === groupId ? update(group) : group))
+    )
 
-  const handleAddCondition = () => {
-    setConditionIds((prev) => [...prev, `c${nextConditionId}`])
-    setNextConditionId((prev) => prev + 1)
+  const handleAddCondition = (groupId) => {
+    const conditionId = newId('c')
+    updateGroup(groupId, (group) => ({
+      ...group,
+      conditionIds: [...group.conditionIds, conditionId],
+    }))
   }
 
-  const handleRemoveCondition = (conditionId) => {
-    setConditionIds((prev) => prev.filter((id) => id !== conditionId))
+  const handleRemoveCondition = (groupId, conditionId) => {
+    updateGroup(groupId, (group) => ({
+      ...group,
+      conditionIds: group.conditionIds.filter((id) => id !== conditionId),
+    }))
     formControl.unregister(`conditions.${conditionId}`)
+  }
+
+  const handleAddGroup = () => {
+    const group = { id: newId('g'), conditionIds: [newId('c')] }
+    formControl.setValue(`groupLogic.${group.id}`, logicOptions[0])
+    setConditionGroups((prev) => [...prev, group])
+  }
+
+  const handleRemoveGroup = (groupId) => {
+    conditionGroups
+      .find((group) => group.id === groupId)
+      ?.conditionIds.forEach((id) => formControl.unregister(`conditions.${id}`))
+    formControl.unregister(`groupLogic.${groupId}`)
+    setConditionGroups((prev) => prev.filter((group) => group.id !== groupId))
   }
 
   const handleRemoveStandard = (standardName) => {
@@ -254,11 +309,9 @@ const StagePanel = ({
         : unwrapValue(value)
     registerSerializer(stage.key, () => {
       const values = formControl.getValues()
-      return {
-        name: stage.name,
-        sourceStage: stage.sourceStage ?? null,
-        logic: unwrapValue(values.conditionLogic) ?? 'and',
-        conditions: conditionIds.map((conditionId) => {
+      const [primaryGroup, ...extraGroups] = conditionGroups.map((group) => ({
+        logic: unwrapValue(values.groupLogic?.[group.id]) ?? 'and',
+        conditions: group.conditionIds.map((conditionId) => {
           const condition = values.conditions?.[conditionId] ?? {}
           return {
             type: unwrapValue(condition.type),
@@ -271,6 +324,13 @@ const StagePanel = ({
             groupName: condition.group?.label ?? unwrapValue(condition.group),
           }
         }),
+      }))
+      return {
+        name: stage.name,
+        sourceStage: stage.sourceStage ?? null,
+        logic: primaryGroup.logic,
+        conditions: primaryGroup.conditions,
+        conditionGroups: extraGroups,
         standards: stage.standards.map((instanceKey) => {
           const config = values[instanceKey] ?? {}
           // A standard the operator never expanded never mounts its settings fields,
@@ -385,167 +445,221 @@ const StagePanel = ({
               the conditions below are met. Earlier stages keep applying; if
               the same standard is configured in both, this stage's settings
               win.
+              {conditionGroups.length > 1 &&
+                ' Meeting any one condition group is enough.'}
             </Typography>
-            {conditionIds.length > 1 && (
-              <Box sx={{ maxWidth: 380 }}>
-                <CippFormComponent
-                  type="autoComplete"
-                  name="conditionLogic"
-                  label="Condition Logic"
-                  formControl={formControl}
-                  options={logicOptions}
-                  multiple={false}
-                  creatable={false}
-                />
-              </Box>
-            )}
-            {conditionIds.length === 0 && (
-              <Alert severity="warning">
-                No conditions configured - tenants can only be moved into this
-                stage manually.
+            {conditionGroups.every((group) => group.conditionIds.length === 0) && (
+              <Alert severity="error">
+                Add at least one graduation condition. Use &quot;Manual approval
+                by an operator&quot; to move tenants into this stage by hand.
               </Alert>
             )}
-            {conditionIds.map((conditionId) => {
-              const conditionType = get(
-                watchConditions,
-                `${conditionId}.type`
-              )?.value
-              return (
-                <Card key={conditionId} variant="outlined">
-                  <CardContent>
-                    <Stack spacing={2}>
-                      <Stack
-                        direction="row"
-                        spacing={2}
-                        sx={{
-                          alignItems: "flex-start"
-                        }}
-                      >
-                        <Box sx={{ flexGrow: 1 }}>
-                          <CippFormComponent
-                            type="autoComplete"
-                            name={`conditions.${conditionId}.type`}
-                            label="Condition"
-                            formControl={formControl}
-                            options={conditionTypeOptions}
-                            multiple={false}
-                            creatable={false}
-                          />
-                        </Box>
-                        <Tooltip title="Remove this condition">
+            {conditionGroups.map((conditionGroup, groupIndex) => (
+              <Fragment key={conditionGroup.id}>
+                {groupIndex > 0 && (
+                  <Divider>
+                    <Chip size="small" label="OR" />
+                  </Divider>
+                )}
+                <Stack
+                  spacing={2}
+                  sx={
+                    conditionGroups.length > 1
+                      ? {
+                          p: 2,
+                          border: '1px dashed',
+                          borderColor: 'divider',
+                          borderRadius: 1,
+                        }
+                      : undefined
+                  }
+                >
+                  {conditionGroups.length > 1 && (
+                    <Stack direction="row" sx={{ alignItems: 'center' }}>
+                      <Typography variant="subtitle2" sx={{ flexGrow: 1 }}>
+                        Condition group {groupIndex + 1}
+                      </Typography>
+                      {groupIndex > 0 && (
+                        <Tooltip title="Remove this condition group">
                           <IconButton
                             size="small"
-                            onClick={() => handleRemoveCondition(conditionId)}
+                            onClick={() => handleRemoveGroup(conditionGroup.id)}
                           >
                             <CippIcons.Delete fontSize="small" />
                           </IconButton>
                         </Tooltip>
-                      </Stack>
-                      {conditionType === 'time' && (
-                        <Stack
-                          direction={{ xs: 'column', md: 'row' }}
-                          spacing={2}
-                        >
-                          <Box sx={{ flex: 1 }}>
-                            <CippFormComponent
-                              type="number"
-                              name={`conditions.${conditionId}.days`}
-                              label="Duration in the previous stage"
-                              formControl={formControl}
-                            />
-                          </Box>
-                          <Box sx={{ flex: 1 }}>
-                            <CippFormComponent
-                              type="autoComplete"
-                              name={`conditions.${conditionId}.unit`}
-                              label="Unit"
-                              formControl={formControl}
-                              options={unitOptions}
-                              multiple={false}
-                              creatable={false}
-                            />
-                          </Box>
-                        </Stack>
-                      )}
-                      {conditionType === 'variable' && (
-                        <Stack
-                          direction={{ xs: 'column', md: 'row' }}
-                          spacing={2}
-                        >
-                          <Box sx={{ flex: 1 }}>
-                            <CippFormComponent
-                              type="autoComplete"
-                              name={`conditions.${conditionId}.variable`}
-                              label="Variable"
-                              formControl={formControl}
-                              options={variableOptions}
-                              multiple={false}
-                              creatable={true}
-                            />
-                          </Box>
-                          <Box sx={{ flex: 1 }}>
-                            <CippFormComponent
-                              type="autoComplete"
-                              name={`conditions.${conditionId}.operator`}
-                              label="Operator"
-                              formControl={formControl}
-                              options={operatorOptions}
-                              multiple={false}
-                              creatable={false}
-                            />
-                          </Box>
-                          <Box sx={{ flex: 1 }}>
-                            <CippFormComponent
-                              type="textField"
-                              name={`conditions.${conditionId}.value`}
-                              label="Value"
-                              formControl={formControl}
-                            />
-                          </Box>
-                        </Stack>
-                      )}
-                      {conditionType === 'group' && (
-                        <Box sx={{ maxWidth: 380 }}>
-                          <CippFormComponent
-                            type="autoComplete"
-                            name={`conditions.${conditionId}.group`}
-                            label="Tenant group"
-                            formControl={formControl}
-                            options={groupOptions}
-                            multiple={false}
-                            creatable={false}
-                          />
-                        </Box>
-                      )}
-                      {conditionType === 'success' && (
-                        <Typography variant="body2" sx={{
-                          color: "text.secondary"
-                        }}>
-                          Advances when every standard from the previous stages
-                          reports Compliant for the tenant.
-                        </Typography>
-                      )}
-                      {conditionType === 'manual' && (
-                        <Typography variant="body2" sx={{
-                          color: "text.secondary"
-                        }}>
-                          An operator advances the tenant from the Alignment
-                          page.
-                        </Typography>
                       )}
                     </Stack>
-                  </CardContent>
-                </Card>
-              );
-            })}
+                  )}
+                  {conditionGroup.conditionIds.length > 1 && (
+                    <Box sx={{ maxWidth: 380 }}>
+                      <CippFormComponent
+                        type="autoComplete"
+                        name={`groupLogic.${conditionGroup.id}`}
+                        label="Condition Logic"
+                        formControl={formControl}
+                        options={logicOptions}
+                        multiple={false}
+                        creatable={false}
+                      />
+                    </Box>
+                  )}
+                  {conditionGroup.conditionIds.map((conditionId) => {
+                    const conditionType = get(
+                      watchConditions,
+                      `${conditionId}.type`
+                    )?.value
+                    return (
+                      <Card key={conditionId} variant="outlined">
+                        <CardContent>
+                          <Stack spacing={2}>
+                            <Stack
+                              direction="row"
+                              spacing={2}
+                              sx={{
+                                alignItems: "flex-start"
+                              }}
+                            >
+                              <Box sx={{ flexGrow: 1 }}>
+                                <CippFormComponent
+                                  type="autoComplete"
+                                  name={`conditions.${conditionId}.type`}
+                                  label="Condition"
+                                  formControl={formControl}
+                                  options={conditionTypeOptions}
+                                  multiple={false}
+                                  creatable={false}
+                                />
+                              </Box>
+                              <Tooltip title="Remove this condition">
+                                <IconButton
+                                  size="small"
+                                  onClick={() =>
+                                    handleRemoveCondition(conditionGroup.id, conditionId)
+                                  }
+                                >
+                                  <CippIcons.Delete fontSize="small" />
+                                </IconButton>
+                              </Tooltip>
+                            </Stack>
+                            {conditionType === 'time' && (
+                              <Stack
+                                direction={{ xs: 'column', md: 'row' }}
+                                spacing={2}
+                              >
+                                <Box sx={{ flex: 1 }}>
+                                  <CippFormComponent
+                                    type="number"
+                                    name={`conditions.${conditionId}.days`}
+                                    label="Duration in the previous stage"
+                                    formControl={formControl}
+                                  />
+                                </Box>
+                                <Box sx={{ flex: 1 }}>
+                                  <CippFormComponent
+                                    type="autoComplete"
+                                    name={`conditions.${conditionId}.unit`}
+                                    label="Unit"
+                                    formControl={formControl}
+                                    options={unitOptions}
+                                    multiple={false}
+                                    creatable={false}
+                                  />
+                                </Box>
+                              </Stack>
+                            )}
+                            {conditionType === 'variable' && (
+                              <Stack
+                                direction={{ xs: 'column', md: 'row' }}
+                                spacing={2}
+                              >
+                                <Box sx={{ flex: 1 }}>
+                                  <CippFormComponent
+                                    type="autoComplete"
+                                    name={`conditions.${conditionId}.variable`}
+                                    label="Variable"
+                                    formControl={formControl}
+                                    options={variableOptions}
+                                    multiple={false}
+                                    creatable={true}
+                                  />
+                                </Box>
+                                <Box sx={{ flex: 1 }}>
+                                  <CippFormComponent
+                                    type="autoComplete"
+                                    name={`conditions.${conditionId}.operator`}
+                                    label="Operator"
+                                    formControl={formControl}
+                                    options={operatorOptions}
+                                    multiple={false}
+                                    creatable={false}
+                                  />
+                                </Box>
+                                <Box sx={{ flex: 1 }}>
+                                  <CippFormComponent
+                                    type="textField"
+                                    name={`conditions.${conditionId}.value`}
+                                    label="Value"
+                                    formControl={formControl}
+                                  />
+                                </Box>
+                              </Stack>
+                            )}
+                            {conditionType === 'group' && (
+                              <Box sx={{ maxWidth: 380 }}>
+                                <CippFormComponent
+                                  type="autoComplete"
+                                  name={`conditions.${conditionId}.group`}
+                                  label="Tenant group"
+                                  formControl={formControl}
+                                  options={groupOptions}
+                                  multiple={false}
+                                  creatable={false}
+                                />
+                              </Box>
+                            )}
+                            {conditionType === 'success' && (
+                              <Typography variant="body2" sx={{
+                                color: "text.secondary"
+                              }}>
+                                Advances when every standard from the previous stages
+                                reports Compliant for the tenant.
+                              </Typography>
+                            )}
+                            {conditionType === 'manual' && (
+                              <Typography variant="body2" sx={{
+                                color: "text.secondary"
+                              }}>
+                                An operator advances the tenant from the Alignment
+                                page.
+                              </Typography>
+                            )}
+                          </Stack>
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
+                  <Box>
+                    <Button
+                      variant="outlined"
+                      size="small"
+                      startIcon={<CippIcons.Add />}
+                      onClick={() => handleAddCondition(conditionGroup.id)}
+                    >
+                      Add Condition
+                    </Button>
+                  </Box>
+                </Stack>
+              </Fragment>
+            ))}
             <Box>
               <Button
                 variant="outlined"
                 size="small"
                 startIcon={<CippIcons.Add />}
-                onClick={handleAddCondition}
+                onClick={handleAddGroup}
               >
-                Add Condition
+                Add OR Condition Group
               </Button>
             </Box>
           </Stack>
@@ -836,11 +950,7 @@ const Page = () => {
         name: `Stage ${prev.length + 1}`,
         standards: [],
         standardConfigs: {},
-        conditionIds: ['c1'],
-        conditionDefaults: {
-          c1: toConditionDefaults({ type: 'time', days: 7 }),
-        },
-        logic: logicOptions[0],
+        ...toEditorConditionGroups({ conditions: [{ type: 'time', days: 7 }] }),
       },
     ])
     setActiveStage(stages.length)
@@ -876,9 +986,11 @@ const Page = () => {
           name: `${source.name} (Copy)`,
           standards: [...source.standards],
           standardConfigs: { ...source.standardConfigs },
-          conditionIds: [...source.conditionIds],
+          conditionGroups: source.conditionGroups.map((group) => ({
+            ...group,
+            conditionIds: [...group.conditionIds],
+          })),
           conditionDefaults: { ...source.conditionDefaults },
-          logic: source.logic,
         },
       ]
     })
@@ -952,6 +1064,15 @@ const Page = () => {
 
   const stageOccupancy = template?.occupancy ?? []
 
+  const [conditionCounts, setConditionCounts] = useState({})
+  const handleConditionCountChange = useCallback(
+    (stageKey, count) =>
+      setConditionCounts((prev) =>
+        prev[stageKey] === count ? prev : { ...prev, [stageKey]: count }
+      ),
+    []
+  )
+
   const registerSerializer = useCallback((stageKey, serialize) => {
     if (serialize) {
       stageSerializers.current[stageKey] = serialize
@@ -989,6 +1110,10 @@ const Page = () => {
     {
       label: 'Add standards to at least one stage',
       done: uniqueStandards.length > 0,
+    },
+    {
+      label: 'Give every stage after Stage 1 a graduation condition',
+      done: stages.slice(1).every((stage) => conditionCounts[stage.key] !== 0),
     },
   ]
   const isSaveDisabled = steps.some((step) => !step.done)
@@ -1349,6 +1474,7 @@ const Page = () => {
                     tenantsInStage={stageOccupancy[index]?.tenants ?? null}
                     catalogByName={catalogByName}
                     registerSerializer={registerSerializer}
+                    onConditionCountChange={handleConditionCountChange}
                     variableOptions={variableOptions}
                     groupOptions={groupOptions}
                   />
@@ -1389,6 +1515,6 @@ const Page = () => {
   );
 }
 
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>
+Page.getLayout = (page) => <DashboardLayout usesTenant={false}>{page}</DashboardLayout>
 
 export default Page

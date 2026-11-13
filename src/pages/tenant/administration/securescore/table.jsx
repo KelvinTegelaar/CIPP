@@ -7,12 +7,13 @@ import { useSecureScore } from '../../../../hooks/use-securescore'
 import { CippInfoBar } from '../../../../components/CippCards/CippInfoBar'
 import { Container } from '@mui/material'
 import { useSettings } from '../../../../hooks/use-settings'
-import { AllTenantsSecureScoreTable } from '../../../../components/CippAllTenants/AllTenantsSecureScore'
+import { AllTenantsSecureScoreControlsTable } from '../../../../components/CippAllTenants/AllTenantsSecureScore'
+import { isMultiTenant } from '../../../../utils/tenant-selection'
 const Page = () => {
   const secureScore = useSecureScore()
   const currentTenant = useSettings().currentTenant
 
-  if (currentTenant === 'AllTenants') {
+  if (isMultiTenant(currentTenant)) {
     return (
       <Container
         sx={{
@@ -21,7 +22,7 @@ const Page = () => {
         }}
         maxWidth={false}
       >
-        <AllTenantsSecureScoreTable />
+        <AllTenantsSecureScoreControlsTable />
       </Container>
     )
   }
@@ -73,7 +74,7 @@ const Page = () => {
 }
 
 Page.getLayout = (page) => (
-  <DashboardLayout>
+  <DashboardLayout tenantGroupSupport={true}>
     <TabbedLayout tabOptions={tabOptions}>{page}</TabbedLayout>
   </DashboardLayout>
 )

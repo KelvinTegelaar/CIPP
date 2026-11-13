@@ -19,6 +19,8 @@ import { useBecEvidenceDownload } from '../../../../components/CippComponents/Ci
 import { CippIcons } from '../../../../utils/icon-registry'
 import { ApiGetCall, ApiPostCall } from '../../../../api/ApiCall'
 import { useSettings } from '../../../../hooks/use-settings'
+import { isMultiTenant, tenantScope } from '../../../../utils/tenant-selection'
+import { BEC_WINDOW_OPTIONS } from '../../../../utils/bec-objectives'
 
 // Columns shown for a single run — used both by the flat "All runs" table and inside a
 // user's run-history drawer, so the two never drift.
@@ -61,10 +63,10 @@ const UserRunsDrawer = ({ row, actions, drawerVisible, setDrawerVisible }) => {
 const StartInvestigationDrawer = ({ tenant }) => {
   const router = useRouter()
   const [visible, setVisible] = useState(false)
-  const isAllTenants = tenant === 'AllTenants'
+  const isAllTenants = isMultiTenant(tenant)
   const formControl = useForm({
     mode: 'onChange',
-    defaultValues: { users: [] },
+    defaultValues: { users: [], windowDays: BEC_WINDOW_OPTIONS[0] },
   })
   const selectedUsers = useWatch({ control: formControl.control, name: 'users' }) || []
   const selectedCount = selectedUsers.length
@@ -78,20 +80,22 @@ const StartInvestigationDrawer = ({ tenant }) => {
   const handleClose = () => {
     setVisible(false)
     queue.reset()
-    formControl.reset({ users: [] })
+    formControl.reset({ users: [], windowDays: BEC_WINDOW_OPTIONS[0] })
   }
 
   const handleStart = () => {
     const users = formControl.getValues('users') || []
     const ids = users.map((u) => u?.value ?? u).filter(Boolean)
     if (ids.length === 0) return
+    // How far back to look, in days; empty leaves it to the run.
+    const windowDays = Number(formControl.getValues('windowDays')?.value) || ''
     // One user: open its case workspace and start the run there, so you watch it run.
     if (ids.length === 1) {
       handleClose()
       router.push(
         `/identity/administration/bec/case?userId=${encodeURIComponent(ids[0])}&tenantFilter=${encodeURIComponent(
           tenant
-        )}&start=true`
+        )}&start=true${windowDays ? `&windowDays=${windowDays}` : ''}`
       )
       return
     }
@@ -100,7 +104,11 @@ const StartInvestigationDrawer = ({ tenant }) => {
     queue.mutate(
       {
         url: '/api/ExecBECBulkCheck',
-        data: { tenantFilter: tenant, UserIds: ids },
+        data: {
+          ...tenantScope(tenant),
+          UserIds: ids,
+          ...(windowDays ? { windowDays } : {}),
+        },
       },
       { onSuccess: () => handleClose() }
     )
@@ -132,7 +140,7 @@ const StartInvestigationDrawer = ({ tenant }) => {
         footer={
           <Stack spacing={2}>
             <CippApiResults apiObject={queue} />
-            <Stack direction="row" spacing={1} justifyContent="flex-end">
+            <Stack direction="row" spacing={1} sx={{ justifyContent: 'flex-end' }}>
               <Button variant="outlined" onClick={handleClose}>
                 Close
               </Button>
@@ -178,6 +186,17 @@ const StartInvestigationDrawer = ({ tenant }) => {
               queryKey: `BECUserPicker-${tenant}`,
             }}
           />
+          <CippFormComponent
+            type="autoComplete"
+            name="windowDays"
+            label="How far back to look"
+            formControl={formControl}
+            multiple={false}
+            creatable={false}
+            disableClearable
+            disabled={queue.isPending}
+            options={BEC_WINDOW_OPTIONS}
+          />
         </Stack>
       </CippOffCanvas>
     </>
@@ -197,7 +216,7 @@ const Page = () => {
   // and reading it here as a plain array yielded nothing, so the grouped view came up empty.
   const groupedCall = ApiGetCall({
     url: '/api/ListBECReports',
-    data: { tenantFilter: currentTenant },
+    data: { ...tenantScope(currentTenant) },
     queryKey: `ListBECReports-grouped-${currentTenant}`,
     waiting: isByUser,
   })
@@ -410,7 +429,7 @@ const Page = () => {
 }
 
 Page.getLayout = (page) => (
-  <DashboardLayout allTenantsSupport={true}>{page}</DashboardLayout>
+  <DashboardLayout tenantGroupSupport={true} allTenantsSupport={true}>{page}</DashboardLayout>
 )
 
 export default Page

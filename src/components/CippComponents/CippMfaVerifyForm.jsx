@@ -3,6 +3,7 @@ import { Box, Typography, Alert, Skeleton, Chip } from '@mui/material'
 import { ApiGetCall } from '../../api/ApiCall'
 import { useSettings } from '../../hooks/use-settings.js'
 import CippFormComponent from './CippFormComponent'
+import { isMultiTenant, tenantScope } from '../../utils/tenant-selection'
 
 // Maps a Graph authentication-method @odata.type to a friendly label and its MFA capabilities. The MFA
 // connector verifies typed codes (software OATH or the Authenticator app's own code) and pushes to the
@@ -44,14 +45,14 @@ const PREFERRED_TO_TYPE = {
 export const MfaVerifyForm = ({ formControl, row }) => {
   const tenantFilter = useSettings().currentTenant
   const rowData = Array.isArray(row) ? row[0] : row
-  const tenant = tenantFilter === 'AllTenants' && rowData?.Tenant ? rowData.Tenant : tenantFilter
+  const tenant = isMultiTenant(tenantFilter) && rowData?.Tenant ? rowData.Tenant : tenantFilter
   const upn = rowData?.userPrincipalName ?? rowData?.UPN
 
   const methods = ApiGetCall({
     url: '/api/ListGraphRequest',
     data: {
       Endpoint: `users/${upn}/authentication/methods`,
-      tenantFilter: tenant,
+      ...tenantScope(tenant),
     },
     queryKey: `MFAMethods-${tenant}-${upn}`,
   })
@@ -59,7 +60,7 @@ export const MfaVerifyForm = ({ formControl, row }) => {
     url: '/api/ListGraphRequest',
     data: {
       Endpoint: `users/${upn}/authentication/signInPreferences`,
-      tenantFilter: tenant,
+      ...tenantScope(tenant),
     },
     queryKey: `MFAPreferred-${tenant}-${upn}`,
   })

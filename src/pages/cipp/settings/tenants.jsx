@@ -8,11 +8,23 @@ import { TabbedLayout } from "../../../layouts/TabbedLayout";
 import tabOptions from "./tabOptions";
 import { useDialog } from "../../../hooks/use-dialog";
 import cacheTypes from "../../../data/CIPPDBCacheTypes.json";
+import { ApiGetCall } from "../../../api/ApiCall.jsx";
+import { usePermissions } from "../../../hooks/use-permissions";
 
 const Page = () => {
   const pageTitle = "Tenants - Backend";
   const createDialog = useDialog();
   const { ref: gdapRef, traceGdapAction, CippGDAPTrace } = useCippGDAPTrace();
+  const { checkRoles } = usePermissions();
+
+  const featureFlags = ApiGetCall({
+    url: "/api/ListFeatureFlags",
+    queryKey: "featureFlags",
+    staleTime: 600000,
+  });
+  const multiPartnerEnabled =
+    Array.isArray(featureFlags.data) &&
+    featureFlags.data.some((flag) => flag.Id === "MultiPartner" && flag.Enabled === true);
 
   const actions = [
     {
@@ -23,7 +35,7 @@ const Page = () => {
       data: { value: "customerId" },
       confirmText: "Are you sure you want to exclude [displayName]?",
       multiPost: false,
-      condition: (row) => row.displayName !== "*Partner Tenant",
+      condition: (row) => !(row.isPartnerTenantRow === true || row.displayName?.startsWith("*Partner Tenant")),
     },
     {
       label: "Include Tenants",
@@ -33,7 +45,7 @@ const Page = () => {
       data: { value: "customerId" },
       confirmText: "Are you sure you want to include [displayName]?",
       multiPost: false,
-      condition: (row) => row.displayName !== "*Partner Tenant",
+      condition: (row) => !(row.isPartnerTenantRow === true || row.displayName?.startsWith("*Partner Tenant")),
     },
     {
       label: "Refresh CPV Permissions",
@@ -43,7 +55,8 @@ const Page = () => {
       data: { tenantFilter: "customerId" },
       confirmText: "Are you sure you want to refresh the CPV permissions for [displayName]?",
       multiPost: false,
-      condition: (row) => row.delegatedPrivilegeStatus !== "directTenant",
+      condition: (row) =>
+        !(row.isPartnerTenantRow === true || row.displayName?.startsWith("*Partner Tenant")) && row.delegatedPrivilegeStatus !== "directTenant",
     },
     {
       label: "Re-authenticate Connection",
@@ -61,7 +74,48 @@ const Page = () => {
         "Are you sure you want to reset the CPV permissions for [displayName]? (This will delete the Service Principal and re-add it.)",
       multiPost: false,
       condition: (row) =>
-        row.displayName !== "*Partner Tenant" && row.delegatedPrivilegeStatus !== "directTenant",
+        !(row.isPartnerTenantRow === true || row.displayName?.startsWith("*Partner Tenant")) && row.delegatedPrivilegeStatus !== "directTenant",
+    },
+    {
+      label: "Reassign Owning Partner",
+      type: "POST",
+      url: "/api/ExecAssignPartnerTenant",
+      icon: <CippIcons.SwapHoriz />,
+      data: { customerId: "customerId" },
+      confirmText:
+        "Select the partner tenant that should own [displayName]. The new partner must have an active GDAP relationship with this tenant.",
+      multiPost: false,
+      hideBulk: true,
+      fields: [
+        {
+          type: "autoComplete",
+          name: "partnerTenantId",
+          label: "New Owning Partner",
+          multiple: false,
+          creatable: false,
+          required: true,
+          api: {
+            url: "/api/ListPartnerTenants",
+            labelField: "displayName",
+            valueField: "partnerTenantId",
+            dataKey: "Results",
+            queryKey: "partnerTenants",
+          },
+        },
+      ],
+      customDataformatter: (rowData, actionData, formData) => ({
+        customerId: rowData?.customerId,
+        partnerTenantId: formData.partnerTenantId?.value || formData.partnerTenantId,
+      }),
+      condition: (row) =>
+        multiPartnerEnabled &&
+        checkRoles(["superadmin"]) &&
+        !(row.isPartnerTenantRow === true || row.displayName?.startsWith("*Partner Tenant")) &&
+        row.isPartnerTenantRow !== true &&
+        row.delegatedPrivilegeStatus !== "directTenant" &&
+        // knownPartners is a comma-joined GUID list; only offer reassignment when
+        // more than one partner holds an active relationship with this customer.
+        String(row.knownPartners ?? "").split(",").filter(Boolean).length > 1,
     },
     {
       label: "Remove Tenant",
@@ -72,7 +126,7 @@ const Page = () => {
       confirmText:
         "Are you sure you want to remove [displayName]? If this is a Direct Tenant, this will no longer be accessible until you add it via the Setup Wizard.",
       multiPost: false,
-      condition: (row) => row.displayName !== "*Partner Tenant",
+      condition: (row) => !(row.isPartnerTenantRow === true || row.displayName?.startsWith("*Partner Tenant")),
     },
     {
       label: "Refresh CIPPDB Cache",
@@ -119,6 +173,7 @@ const Page = () => {
       "delegatedPrivilegeStatus",
       "directTenantUserPrincipalName",
       "directTenantAuthDate",
+      ...(multiPartnerEnabled ? ["partnerTenantId", "partnerAssignmentMode", "knownPartners"] : []),
       "Excluded",
       "ExcludeDate",
       "ExcludeUser",
@@ -130,6 +185,7 @@ const Page = () => {
     "displayName",
     "defaultDomainName",
     "delegatedPrivilegeStatus",
+    ...(multiPartnerEnabled ? ["partnerTenantId"] : []),
     "Excluded",
     "ExcludeDate",
     "ExcludeUser",
@@ -212,7 +268,7 @@ const Page = () => {
 };
 
 Page.getLayout = (page) => (
-  <DashboardLayout>
+  <DashboardLayout usesTenant={false}>
     <TabbedLayout tabOptions={tabOptions}>{page}</TabbedLayout>
   </DashboardLayout>
 );

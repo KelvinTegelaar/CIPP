@@ -20,6 +20,7 @@ import {
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { ApiGetCall, ApiPostCall } from "../../api/ApiCall";
+import { getCippError } from "../../utils/get-cipp-error";
 import { getListGraphBulkRequestRows } from "../../utils/getListGraphBulkRequestRows.js";
 import riskyPermissionsJson from "../../data/RiskyPermissions.json";
 import { useDialog } from "../../hooks/use-dialog";
@@ -567,13 +568,9 @@ const CippEnterpriseAppPermissions = ({ servicePrincipalId, tenantFilter, canEdi
     });
   }, [scopesForResource, resourceSpMap]);
 
-  const permLoading =
-    permissionsBulk.isPending ||
-    permissionsBulk.isLoading ||
-    (!permissionsBulk.isIdle && !permissionsBulk.isSuccess);
-  const resLoading =
-    resourceIds.length > 0 &&
-    (resourcesBulk.isPending || resourcesBulk.isLoading);
+  const permLoading = permissionsBulk.isPending;
+  const permFailed = permissionsBulk.isError;
+  const resLoading = resourceIds.length > 0 && resourcesBulk.isPending;
 
   const openAction = (action) => {
     setDialogAction({ ...action, key: Date.now() });
@@ -638,6 +635,18 @@ const CippEnterpriseAppPermissions = ({ servicePrincipalId, tenantFilter, canEdi
 
   return (
     <Stack spacing={4} sx={{ py: 2 }}>
+      {permFailed && (
+        <Alert
+          severity="error"
+          action={
+            <Button color="inherit" size="small" onClick={loadPermissions}>
+              Retry
+            </Button>
+          }
+        >
+          Could not load the permissions: {getCippError(permissionsBulk.error)}
+        </Alert>
+      )}
       <Box>
         {sectionHeader("Application permissions", "Application")}
         <Typography
@@ -649,7 +658,7 @@ const CippEnterpriseAppPermissions = ({ servicePrincipalId, tenantFilter, canEdi
           App roles assigned to this enterprise application (app-only), grouped by resource API.
         </Typography>
         {permLoading && <Skeleton variant="rectangular" height={80} />}
-        {!permLoading && sortedResourceIdsApp.length === 0 && (
+        {!permLoading && !permFailed && sortedResourceIdsApp.length === 0 && (
           <Alert severity="info">No application permissions are assigned.</Alert>
         )}
         {!permLoading &&
@@ -723,7 +732,7 @@ const CippEnterpriseAppPermissions = ({ servicePrincipalId, tenantFilter, canEdi
           OAuth2 delegated permission grants for this enterprise application, grouped by resource API.
         </Typography>
         {permLoading && <Skeleton variant="rectangular" height={80} />}
-        {!permLoading && sortedResourceIdsDelegated.length === 0 && (
+        {!permLoading && !permFailed && sortedResourceIdsDelegated.length === 0 && (
           <Alert severity="info">No delegated permission grants are present.</Alert>
         )}
         {!permLoading &&

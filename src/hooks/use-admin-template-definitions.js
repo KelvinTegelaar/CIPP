@@ -5,6 +5,7 @@ import { useMemo } from 'react'
 import { ApiGetCall } from '../api/ApiCall'
 import { useSettings } from './use-settings'
 import { definitionBindPattern, extractBindGuid } from '../utils/intune-bind-helpers'
+import { isMultiTenant } from '../utils/tenant-selection'
 
 export const useAdminTemplateDefinitions = ({ added = [], manualTenant = null, waiting = true } = {}) => {
   const tenantFilter = useSettings().currentTenant
@@ -27,7 +28,7 @@ export const useAdminTemplateDefinitions = ({ added = [], manualTenant = null, w
   }, [added])
 
   const canResolveDefinitions =
-    waiting && Boolean(activeTenant) && activeTenant !== 'AllTenants' && definitionIds.length > 0
+    waiting && Boolean(activeTenant) && !isMultiTenant(activeTenant) && definitionIds.length > 0
 
   const definitionsRequest = ApiGetCall({
     url: '/api/ListIntunePolicy',

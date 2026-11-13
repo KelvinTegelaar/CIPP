@@ -2,6 +2,8 @@ import { Alert, Card, Divider } from "@mui/material";
 import { Box, Container, Stack } from "@mui/system";
 import { CippDataTable } from "../CippTable/CippDataTable";
 import { useSettings } from "../../hooks/use-settings";
+import { useTenantLabel } from "../../hooks/use-tenant-label";
+import { tenantScope } from "../../utils/tenant-selection";
 import { useTableViewMode } from "../../hooks/use-breakpoint";
 import { CippHead } from "./CippHead";
 import { useState, useEffect } from "react";
@@ -30,6 +32,7 @@ export const CippTablePage = (props) => {
     ...other
   } = props;
   const tenant = useSettings().currentTenant;
+  const tenantLabel = useTenantLabel(tenant);
   const viewMode = useTableViewMode({ viewMode: other.viewMode });
   const isCardView = viewMode === "cards";
 
@@ -48,13 +51,13 @@ export const CippTablePage = (props) => {
       cardButton={cardButton}
       // Card view drops the tenant suffix: the tenant lives in the top bar there, and
       // the concatenated string wraps to multiple lines at phone widths.
-      title={tenantInTitle && tenant !== null && !isCardView ? `${title} - ${tenant}` : title}
+      title={tenantInTitle && tenant !== null && !isCardView ? `${title} - ${tenantLabel}` : title}
       noDataButton={noDataButton}
       actions={actions}
       simple={false}
       api={{
         url: apiUrl,
-        data: { tenantFilter: tenant, ...apiData },
+        data: { ...tenantScope(tenant), ...apiData },
         dataKey: apiDataKey,
       }}
       columns={columns}

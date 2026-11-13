@@ -184,6 +184,39 @@ export const TEST_RESULTS_SHAPE = {
   ],
 }
 
+// The Security Simulations Conditional Access gap analysis, which the server computes from cached
+// policies when a report renders (Resolve-CippReportDataToken). The scenarios are test results already.
+export const SECURITY_SIMULATION_SHAPES = [
+  {
+    type: 'CAGapFindings',
+    count: null,
+    fields: ['title', 'severity', 'category', 'description', 'remediation', 'affectedPolicies'].map(
+      (name) => ({ name, type: 'string' })
+    ),
+  },
+  {
+    type: 'CAPersonaCoverage',
+    count: null,
+    fields: ['persona', 'control', 'state', 'policies'].map((name) => ({ name, type: 'string' })),
+  },
+  {
+    type: 'CAPosture',
+    count: null,
+    fields: [
+      'score',
+      'scoreMax',
+      'enforcedControls',
+      'applicableControls',
+      'criticalFindings',
+      'highFindings',
+      'policyCount',
+      'enabledCount',
+      'reportOnlyCount',
+      'disabledCount',
+    ].map((name) => ({ name, type: 'number' })),
+  },
+]
+
 // A chart's page width: full, or half so two can sit side by side (the engine pairs adjacent halves).
 export const CHART_WIDTHS = [
   { label: 'Full width', value: 'full' },

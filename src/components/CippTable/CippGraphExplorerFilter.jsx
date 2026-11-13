@@ -15,6 +15,7 @@ import CippSchedulerForm from '../CippFormPages/CippSchedulerForm'
 import defaultPresets from '../../data/GraphExplorerPresets'
 import { Grid, Stack } from '@mui/system'
 import { GroupHeader, GroupItems } from '../CippComponents/CippAutocompleteGrouping'
+import { tenantScope } from '../../utils/tenant-selection'
 
 const CippGraphExplorerFilter = ({
   endpointFilter = '',
@@ -93,7 +94,7 @@ const CippGraphExplorerFilter = ({
     data: {
       Endpoint: currentEndpoint,
       ListProperties: true,
-      TenantFilter: tenant,
+      ...tenantScope(tenant),
       IgnoreErrors: true,
     },
     waiting: false,
@@ -386,7 +387,7 @@ const CippGraphExplorerFilter = ({
       },
       parameters: {
         Endpoint: formParameters.endpoint,
-        skipCache: true,
+        SkipCache: true,
         NoPagination: formParameters.NoPagination,
         AsApp: formParameters.AsApp,
         ReverseTenantLookup: formParameters.ReverseTenantLookup,

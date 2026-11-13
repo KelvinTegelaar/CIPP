@@ -139,6 +139,6 @@ const AddPolicy = () => {
   );
 };
 
-AddPolicy.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+AddPolicy.getLayout = (page) => <DashboardLayout usesTenant={false}>{page}</DashboardLayout>;
 
 export default AddPolicy;

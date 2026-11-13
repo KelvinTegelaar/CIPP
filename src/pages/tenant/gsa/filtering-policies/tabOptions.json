@@ -1,0 +1,12 @@
+[
+  {
+    "label": "Filtering Policies",
+    "path": "/tenant/gsa/filtering-policies",
+    "icon": "FilterAlt"
+  },
+  {
+    "label": "Templates",
+    "path": "/tenant/gsa/filtering-policies/templates",
+    "icon": "Description"
+  }
+]

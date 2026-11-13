@@ -450,6 +450,6 @@ const EditEquipmentMailbox = () => {
   );
 };
 
-EditEquipmentMailbox.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+EditEquipmentMailbox.getLayout = (page) => <DashboardLayout usesTenant={false}>{page}</DashboardLayout>;
 
 export default EditEquipmentMailbox;

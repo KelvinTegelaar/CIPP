@@ -4,6 +4,7 @@ import { Avatar, Box, Card, Chip, Divider, Skeleton, Typography } from '@mui/mat
 import { ApiGetCallWithPagination } from '../../api/ApiCall'
 import { useSettings } from '../../hooks/use-settings'
 import { parseCippDate } from '../../utils/parse-cipp-date'
+import { tenantScope } from '../../utils/tenant-selection'
 
 // Scheduled tasks are picked up by Start-UserTasksOrchestrator, which runs on the fixed cron
 // `0 */15 * * * *` (backend/Config/CIPPTimers.json). Every IANA UTC offset is a whole multiple of
@@ -125,7 +126,7 @@ export const CippSchedulerCountdown = ({ apiUrl, queryKey }) => {
   const tenant = useSettings().currentTenant
   const tasks = ApiGetCallWithPagination({
     url: apiUrl,
-    data: { tenantFilter: tenant },
+    data: { ...tenantScope(tenant) },
     queryKey,
     waiting: Boolean(apiUrl && queryKey),
   })

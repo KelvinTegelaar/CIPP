@@ -10,6 +10,13 @@ import { useIsMobileLayout } from '../../hooks/use-breakpoint'
 const MAX_HISTORY_STORAGE = 20 // Maximum number of pages to keep in history
 const MAX_BREADCRUMB_DISPLAY = 5 // Maximum number of breadcrumbs to display at once
 
+// The browser copies each crumb and separator onto its own line
+const copyOnOneLine = (event) => {
+  const text = window.getSelection().toString().trim()
+  event.clipboardData.setData('text/plain', text.split(/\s*\n\s*/).join(' '))
+  event.preventDefault()
+}
+
 /**
  * Load every tabOptions.json under pages/ at build time. Globbed rather than listed so a new
  * tabbed page picks up correct breadcrumb labels - and therefore a correct bookmark name - without
@@ -656,6 +663,7 @@ export const CippBreadcrumbNav = ({ withRail = false } = {}) => {
         <Breadcrumbs
           separator=">"
           aria-label="page hierarchy"
+          onCopy={copyOnOneLine}
           maxItems={mdDown ? 2 : undefined}
           itemsBeforeCollapse={mdDown ? 0 : 1}
           itemsAfterCollapse={mdDown ? 2 : 1}
@@ -778,6 +786,7 @@ export const CippBreadcrumbNav = ({ withRail = false } = {}) => {
         itemsAfterCollapse={mdDown ? 2 : 1}
         separator=">"
         aria-label="navigation history"
+        onCopy={copyOnOneLine}
         sx={{
           fontSize: '0.875rem',
           minWidth: 0,

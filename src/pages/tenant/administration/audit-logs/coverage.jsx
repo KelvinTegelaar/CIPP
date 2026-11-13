@@ -26,6 +26,7 @@ import CippJsonView from "../../../../components/CippFormPages/CippJSONView";
 import tabOptions from "./tabOptions.json";
 import { useSettings } from "../../../../hooks/use-settings";
 import { ApiGetCall } from "../../../../api/ApiCall";
+import { tenantScope } from "../../../../utils/tenant-selection";
 import {
   buildBuckets,
   bucketIndexOf,
@@ -87,7 +88,7 @@ const Page = () => {
   // Charts/KPIs/heatmap share one fetch; the detail table fetches separately. Both honour the selector.
   const statsQuery = ApiGetCall({
     url: "/api/ListAuditLogCoverage",
-    data: { tenantFilter: tenant, ...dateApiData },
+    data: { ...tenantScope(tenant), ...dateApiData },
     queryKey: `AuditLogCoverageStats-${tenant}-${periodKey}`,
     waiting: !!tenant,
   });
@@ -506,7 +507,7 @@ const Page = () => {
                 title={tenant ? `Search Coverage - ${tenant}` : "Search Coverage"}
                 api={{
                   url: "/api/ListAuditLogCoverage",
-                  data: { tenantFilter: tenant, ...dateApiData },
+                  data: { ...tenantScope(tenant), ...dateApiData },
                   dataKey: "Results",
                 }}
                 simple={false}
@@ -524,7 +525,7 @@ const Page = () => {
 };
 
 Page.getLayout = (page) => (
-  <DashboardLayout>
+  <DashboardLayout tenantGroupSupport={true}>
     <TabbedLayout tabOptions={tabOptions}>{page}</TabbedLayout>
   </DashboardLayout>
 );

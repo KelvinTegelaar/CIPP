@@ -18,7 +18,7 @@ const Page = () => {
         Enabled: true,
       },
       confirmText: "Are you sure you want to enable this feature?",
-      relatedQueryKeys: ["Features", "featureFlags", "authmecipp"],
+      relatedQueryKeys: ["Features", "featureFlags", "authmecipp", "TenantSelectorGroups"],
       condition: (item) => item.AllowUserToggle && !item.Enabled,
       icon: <CippIcons.CheckCircle />,
     },
@@ -32,7 +32,7 @@ const Page = () => {
         Enabled: false,
       },
       confirmText: "Are you sure you want to disable this feature?",
-      relatedQueryKeys: ["Features", "featureFlags", "authmecipp"],
+      relatedQueryKeys: ["Features", "featureFlags", "authmecipp", "TenantSelectorGroups"],
       condition: (item) => item.AllowUserToggle && item.Enabled,
       icon: <CippIcons.Cancel />,
     },
@@ -67,7 +67,7 @@ const Page = () => {
 };
 
 Page.getLayout = (page) => (
-  <DashboardLayout>
+  <DashboardLayout usesTenant={false}>
     <TabbedLayout tabOptions={tabOptions}>{page}</TabbedLayout>
   </DashboardLayout>
 );

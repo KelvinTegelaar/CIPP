@@ -17,6 +17,7 @@ import { CippBecRemediationHistory } from '../../../../components/CippComponents
 import { CippApiResults } from '../../../../components/CippComponents/CippApiResults'
 import CippButtonCard from '../../../../components/CippCards/CippButtonCard'
 import { becGroupFlagged, BEC_GROUPS } from '../../../../utils/bec-objectives'
+import { isMultiTenant } from '../../../../utils/tenant-selection'
 
 // The purpose-built case/remediation workspace. Data contract is unchanged: it polls execBECCheck
 // by GUID, shows the async run progress while it runs, and renders the completed results grouped by
@@ -50,7 +51,7 @@ const Page = () => {
       tenantFilter: tenant,
     },
     queryKey: `BECCaseUser-${tenant}-${userId}`,
-    waiting: ready && tenant !== 'AllTenants',
+    waiting: ready && !isMultiTenant(tenant),
   })
 
   const runsCall = ApiGetCall({
@@ -133,7 +134,9 @@ const Page = () => {
   const startRunCall = ApiPostCall({
     relatedQueryKeys: [`ListBECReports-${tenant}-${userId}`],
   })
-  const startRun = () => {
+  // How far back the next run looks (days, '' = automatic); picked on the card before starting.
+  const [nextWindowDays, setNextWindowDays] = useState('')
+  const startRun = (days = nextWindowDays) => {
     startRunCall.mutate(
       {
         url: '/api/execBECCheck',
@@ -141,6 +144,7 @@ const Page = () => {
           tenantFilter: tenant,
           userid: userId,
           userName: userRequest.data?.Results?.[0]?.userPrincipalName,
+          ...(Number(days) ? { windowDays: Number(days) } : {}),
         },
       },
       {
@@ -164,8 +168,11 @@ const Page = () => {
       !startRunCall.isPending
     ) {
       autoStartedRef.current = true
-      startRun()
-      const { start, ...rest } = router.query
+      // the hub's drawer passes the window it was given along with the user
+      const chosen = Number(router.query.windowDays) || ''
+      setNextWindowDays(chosen)
+      startRun(chosen)
+      const { start, windowDays: _windowDays, ...rest } = router.query
       router.replace({ pathname: router.pathname, query: rest }, undefined, {
         shallow: true,
       })
@@ -281,10 +288,8 @@ const Page = () => {
         <Stack
           direction="row"
           spacing={1}
-          alignItems="center"
-          justifyContent="space-between"
-          flexWrap="wrap"
           useFlexGap
+          sx={{ alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap' }}
         >
           <Link
             component={NextLink}
@@ -307,8 +312,10 @@ const Page = () => {
             becData={becData}
             tenantFilter={tenant}
             caseId={becData?.CaseId || activeCaseId}
-            onStartNew={startRun}
+            onStartNew={() => startRun()}
             startPending={startRunCall.isPending}
+            windowDays={nextWindowDays}
+            onWindowDaysChange={setNextWindowDays}
             onJumpToGroup={jumpToGroup}
             caseSelector={caseSelector}
             relatedQueryKeys={[`ListBECReports-${tenant}-${userId}`]}
@@ -322,8 +329,10 @@ const Page = () => {
             caseId={activeCaseId}
             poll={poll}
             becData={becData}
-            onStart={startRun}
+            onStart={() => startRun()}
             startPending={startRunCall.isPending}
+            windowDays={nextWindowDays}
+            onWindowDaysChange={setNextWindowDays}
           />
         )}
         <CippApiResults apiObject={startRunCall} errorsOnly={true} />
@@ -387,6 +396,6 @@ const Page = () => {
   )
 }
 
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>
+Page.getLayout = (page) => <DashboardLayout usesTenant={false}>{page}</DashboardLayout>
 
 export default Page

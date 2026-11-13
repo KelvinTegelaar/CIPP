@@ -1,3 +1,5 @@
+import { isMultiTenant } from './tenant-selection'
+
 const STORAGE_PREFIX = 'cipp:sp-browser:recents:'
 const CHANGE_EVENT = 'cipp:sp-browser-recents'
 const MAX_RECENT = 8
@@ -18,7 +20,7 @@ function storageKey(tenantFilter) {
  * @returns {SharePointRecentSite[]}
  */
 function readList(tenantFilter) {
-  if (typeof window === 'undefined' || !tenantFilter || tenantFilter === 'AllTenants') {
+  if (typeof window === 'undefined' || !tenantFilter || isMultiTenant(tenantFilter)) {
     return []
   }
   try {
@@ -39,7 +41,7 @@ function readList(tenantFilter) {
  * @param {SharePointRecentSite[]} list
  */
 function writeList(tenantFilter, list) {
-  if (typeof window === 'undefined' || !tenantFilter || tenantFilter === 'AllTenants') {
+  if (typeof window === 'undefined' || !tenantFilter || isMultiTenant(tenantFilter)) {
     return
   }
   try {

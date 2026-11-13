@@ -1,0 +1,17 @@
+[
+  {
+    "label": "Application Roles",
+    "path": "/email/administration/app-mailbox-access/roles",
+    "icon": "AdminPanelSettings"
+  },
+  {
+    "label": "Access Policies",
+    "path": "/email/administration/app-mailbox-access/policies",
+    "icon": "Policy"
+  },
+  {
+    "label": "Management Scopes",
+    "path": "/email/administration/app-mailbox-access/scopes",
+    "icon": "Tune"
+  }
+]

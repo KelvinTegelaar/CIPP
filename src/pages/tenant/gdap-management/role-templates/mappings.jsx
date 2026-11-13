@@ -15,7 +15,7 @@ import { buildGdapRepairPlan } from "../../../../utils/gdap-role-options";
 
 const pageTitle = "GDAP Group Mappings";
 
-const repairQueryKeys = ["ListGDAPRoles", "ListGDAPRolesValidated", "ListGDAPRoleTemplates"];
+const repairQueryKeys = ["ListGDAPRoles", "ListGDAPRolesValidated", "ListGDAPRoleTemplates*"];
 
 const actions = [
   {
@@ -32,7 +32,7 @@ const actions = [
   },
 ];
 
-const simpleColumns = ["RoleName", "GroupName", "GroupStatus", "UsedInTemplates"];
+const simpleColumns = ["RoleName", "GroupName", "partnerDisplayName", "GroupStatus", "UsedInTemplates"];
 
 const offCanvas = {
   extendedInfoFields: ["RoleName", "GroupName", "GroupStatus", "GroupStatusMessage"],
@@ -244,7 +244,7 @@ const Page = () => {
 };
 
 Page.getLayout = (page) => (
-  <DashboardLayout>
+  <DashboardLayout usesTenant={false}>
     <TabbedLayout tabOptions={tabOptions} activePath="/tenant/gdap-management/role-templates">
       {page}
     </TabbedLayout>

@@ -19,15 +19,16 @@ import { PropertyList } from '../../../../../components/property-list'
 import { PropertyListItem } from '../../../../../components/property-list-item'
 import { CippHead } from '../../../../../components/CippComponents/CippHead'
 import { usePermissions } from '../../../../../hooks/use-permissions.js'
-import { getEnterpriseAppDetailHeaderActions } from '../../../../../components/CippComponents/EnterpriseAppActions.jsx'
+import { getEnterpriseAppDetailHeaderActions, getAppRoleName } from '../../../../../components/CippComponents/EnterpriseAppActions.jsx'
 import Link from 'next/link'
 import { getListGraphBulkRequestRows } from '../../../../../utils/getListGraphBulkRequestRows.js'
 import { CippCredentialExpandList } from '../../../../../components/CippComponents/CippCredentialExpandList.jsx'
 import { CippAppPermissionExposureDetail } from '../../../../../components/CippComponents/CippAppPermissionExposureDetail.jsx'
 import { getCippError } from '../../../../../utils/get-cipp-error'
+import { isMultiTenant } from '../../../../../utils/tenant-selection'
 
 const spSelect =
-  'id,appId,displayName,createdDateTime,accountEnabled,homepage,publisherName,signInAudience,replyUrls,verifiedPublisher,info,api,appOwnerOrganizationId,tags,passwordCredentials,keyCredentials,preferredSingleSignOnMode,preferredTokenSigningKeyThumbprint,loginUrl,logoutUrl,notificationEmailAddresses,samlSingleSignOnSettings,servicePrincipalNames'
+  'id,appId,displayName,createdDateTime,accountEnabled,homepage,publisherName,signInAudience,replyUrls,verifiedPublisher,info,api,appOwnerOrganizationId,tags,passwordCredentials,keyCredentials,preferredSingleSignOnMode,preferredTokenSigningKeyThumbprint,loginUrl,logoutUrl,notificationEmailAddresses,samlSingleSignOnSettings,servicePrincipalNames,appRoles,appRoleAssignmentRequired'
 
 const getLatestCredentialExpiry = (credentials = []) => {
   if (!Array.isArray(credentials) || credentials.length === 0) return 'N/A'
@@ -110,6 +111,11 @@ const Page = () => {
             url: `/servicePrincipals/${spObjectId}/owners`,
             method: 'GET',
           },
+          {
+            id: 'assignments',
+            url: `/servicePrincipals/${spObjectId}/appRoleAssignedTo?$top=999`,
+            method: 'GET',
+          },
         ],
       },
     })
@@ -135,6 +141,14 @@ const Page = () => {
   const bulkData = getListGraphBulkRequestRows(spBulkRequest)
   const ownersData = bulkData.find((item) => item.id === 'owners')
   const owners = ownersData?.body?.value ?? []
+  const assignmentsData = bulkData.find((item) => item.id === 'assignments')
+  // Service principal holders are application permissions on this app, shown elsewhere.
+  const assignments = (assignmentsData?.body?.value ?? [])
+    .filter((assignment) => assignment.principalType !== 'ServicePrincipal')
+    .map((assignment) => ({
+      ...assignment,
+      role: getAppRoleName(spData?.appRoles, assignment.appRoleId),
+    }))
 
   // Without a spId nothing is ever fetched, so falling back to the loading label here
   // would leave it stuck forever.
@@ -186,8 +200,11 @@ const Page = () => {
         ]
       : []
 
+  const refreshRef = useRef(refreshFunction)
+  refreshRef.current = refreshFunction
+
   const appActions = useMemo(
-    () => getEnterpriseAppDetailHeaderActions(canWriteApplication),
+    () => getEnterpriseAppDetailHeaderActions(canWriteApplication, () => refreshRef.current()),
     [canWriteApplication]
   )
 
@@ -255,8 +272,58 @@ const Page = () => {
 
   const tenantForApi = router.query.tenantFilter ?? userSettingsDefaults.currentTenant
 
+  const assignmentRequiredText = spData?.appRoleAssignmentRequired
+    ? 'Assignment required: only these users and groups can sign in'
+    : 'Assignment not required: everyone in the tenant can sign in'
+  const assignmentItems =
+    assignmentsData != null &&
+    typeof assignmentsData.status === 'number' &&
+    assignmentsData.status !== 200
+      ? [
+          {
+            id: 1,
+            cardLabelBox: '!',
+            text: 'Error loading assignments',
+            subtext: assignmentsData?.body?.error?.message || 'Unknown error',
+            statusColor: 'error.main',
+            statusText: 'Error',
+            propertyItems: [],
+          },
+        ]
+      : [
+          {
+            id: 1,
+            cardLabelBox:
+              assignments.length > 0 ? { cardLabelBoxHeader: <CippIcons.Group /> } : '-',
+            text: 'Users and groups',
+            subtext: assignmentRequiredText,
+            statusText: `${assignments.length} Assignment(s)`,
+            statusColor: assignments.length > 0 ? 'info.main' : 'warning.main',
+            ...(assignments.length > 0
+              ? {
+                  table: {
+                    title: 'Users and groups',
+                    hideTitle: true,
+                    data: assignments,
+                    refreshFunction: refreshFunction,
+                    simpleColumns: ['principalDisplayName', 'principalType', 'role', 'createdDateTime'],
+                    actions: [
+                      {
+                        icon: <CippIcons.EyeIcon />,
+                        label: 'View User',
+                        link: `/identity/administration/users/user?userId=[principalId]&tenantFilter=${userSettingsDefaults.currentTenant}`,
+                        pinned: true,
+                        condition: (row) => row?.principalType === 'User',
+                      },
+                    ],
+                  },
+                }
+              : { propertyItems: [] }),
+          },
+        ]
+
   // Exposure context from the report: cached first, live when the tenant was never cached.
-  const canLoadExposure = !!spObjectId && !!spData?.id && tenantForApi !== 'AllTenants'
+  const canLoadExposure = !!spObjectId && !!spData?.id && !isMultiTenant(tenantForApi)
   const exposureCached = ApiGetCall({
     url: '/api/ListAppPermissionExposure',
     data: { tenantFilter: tenantForApi, ServicePrincipalId: spObjectId, UseReportDB: true },
@@ -596,6 +663,12 @@ const Page = () => {
                   items={credentialsItems}
                   isCollapsible={true}
                 />
+                <Typography variant="h6">Users and groups</Typography>
+                <CippBannerListCard
+                  isFetching={spBulkRequest.isPending}
+                  items={assignmentItems}
+                  isCollapsible={true}
+                />
                 <Typography variant="h6">Owners</Typography>
                 <CippBannerListCard
                   isFetching={spBulkRequest.isPending}
@@ -611,6 +684,6 @@ const Page = () => {
   );
 }
 
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>
+Page.getLayout = (page) => <DashboardLayout usesTenant={false}>{page}</DashboardLayout>
 
 export default Page

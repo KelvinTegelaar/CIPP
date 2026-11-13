@@ -1,6 +1,8 @@
 import { useMemo } from 'react'
 import { ApiGetCall } from '../../api/ApiCall.jsx'
 import { usePermissions } from '../../hooks/use-permissions'
+import { useMultiTenantScope } from '../../hooks/use-multi-tenant-scope'
+import { isTenantGroup, tenantScope } from '../../utils/tenant-selection'
 
 // Some CIPP endpoints return a bare array, others wrap in { Results: [...] }. Normalise both.
 export const asArray = (payload) => {
@@ -106,23 +108,6 @@ const SCALE_TYPES = [
   { type: 'ManagedDevices', label: 'Managed devices' },
 ]
 
-// Collections the nightly orchestrator deliberately never runs. Start-CIPPDBCacheOrchestrator only
-// executes the license groups in Invoke-CIPPDBCacheCollection plus the standalone Mailboxes and
-// MFAState tasks; these enumerate every site, library and drive in the estate, so they are populated
-// on demand instead (their own report pages, or Settings > Tenants > Refresh CIPPDB Cache).
-//
-// Their count rows therefore age forever by design. Freshness is the OLDEST collection a tenant has,
-// so leaving them in meant one ad-hoc run months ago pinned an otherwise healthy tenant to "stale"
-// permanently — on estates that had ever run them, it was all this card reported.
-const ADHOC_CACHE_TYPES = new Set([
-  'SharePointSharingLinks',
-  'SharePointPermissions',
-  'OneDriveRootPermissions',
-])
-
-// Collections that are no longer cached. Their old rows stay in the table and never refresh.
-const RETIRED_CACHE_TYPES = new Set(['CredentialUserRegistrationDetails', 'DeviceSettings'])
-
 // The nightly orchestrator runs at 03:00, so a tenant that collected yesterday is still healthy;
 // past 48 hours it has missed two runs, and past 72 it has missed three.
 const STALE_HOURS = 48
@@ -140,21 +125,14 @@ export const deriveCacheSummary = (rows, tenants) => {
   const tenantCount = tenants.length
   const totals = new Map()
   const collectionsByTenant = new Map()
-  // Domains whose only rows are ad-hoc collections. They have nothing scheduled to judge, so they
-  // read as never cached — but saying that flatly would be wrong when a manual sync plainly ran.
-  const adhocOnly = new Set()
 
   rows.forEach((row) => {
     const type = row?.Type
-    if (RETIRED_CACHE_TYPES.has(type)) return
     const count = Number(row?.Count ?? 0)
     // Scale totals still count every collection — only the age judgement is scoped.
     if (type) totals.set(type, (totals.get(type) ?? 0) + count)
-    if (!row?.Tenant) return
-    if (ADHOC_CACHE_TYPES.has(type)) {
-      adhocOnly.add(row.Tenant)
-      return
-    }
+    // On-demand, baseline-only and retired types never refresh nightly, so their age means nothing.
+    if (!row?.Tenant || row.Scheduled === false) return
 
     const ageHours = hoursSince(row?.LastRefresh)
     if (ageHours === null) return
@@ -163,9 +141,8 @@ export const deriveCacheSummary = (rows, tenants) => {
     collectionsByTenant.set(row.Tenant, collections)
   })
 
-  collectionsByTenant.forEach((collections, domain) => {
+  collectionsByTenant.forEach((collections) => {
     collections.sort((a, b) => b.ageHours - a.ageHours)
-    adhocOnly.delete(domain)
   })
 
   const scale = SCALE_TYPES.map(({ type, label }) => ({
@@ -192,9 +169,7 @@ export const deriveCacheSummary = (rows, tenants) => {
       staleTenants.push({
         name,
         domain,
-        detail: adhocOnly.has(domain)
-          ? 'Only on-demand collections cached'
-          : 'No cached collections found',
+        detail: 'No cached collections found',
         severity: 'critical',
         ageHours: null,
         collections: [],
@@ -248,9 +223,13 @@ export const deriveCacheSummary = (rows, tenants) => {
  */
 
 export const useAllTenantsDashboard = () => {
+  // Every tenant, or the selected tenant group. Calls that take no tenant today get a tenantGroup only for a group.
+  const scope = useMultiTenantScope()
+  const groupOnly = isTenantGroup(scope) ? tenantScope(scope) : {}
   const tenantsApi = ApiGetCall({
     url: '/api/ListTenants',
-    queryKey: 'AllTenantsDashboard-Tenants',
+    data: groupOnly,
+    queryKey: `AllTenantsDashboard-Tenants-${scope}`,
     waiting: true,
   })
 
@@ -258,8 +237,8 @@ export const useAllTenantsDashboard = () => {
   // this card renders four bucket counts, an average, four low scorers and two pending totals.
   const alignmentApi = ApiGetCall({
     url: '/api/ListTenantAlignment',
-    data: { summary: true },
-    queryKey: 'AllTenantsDashboard-Alignment',
+    data: { summary: true, ...groupOnly },
+    queryKey: `AllTenantsDashboard-Alignment-${scope}`,
     waiting: true,
   })
 
@@ -274,15 +253,15 @@ export const useAllTenantsDashboard = () => {
   // failed-test set over the wire, growing linearly with tenant count.
   const failedTestsApi = ApiGetCall({
     url: '/api/ListTestResultsTenants',
-    data: { status: 'Failed', countsOnly: 'true' },
-    queryKey: 'AllTenantsDashboard-FailedTests',
+    data: { status: 'Failed', countsOnly: 'true', ...groupOnly },
+    queryKey: `AllTenantsDashboard-FailedTests-${scope}`,
     waiting: true,
   })
 
   const domainsApi = ApiGetCall({
     url: '/api/ListDomainAnalyser',
-    data: { tenantFilter: 'AllTenants' },
-    queryKey: 'AllTenantsDashboard-Domains',
+    data: { ...tenantScope(scope) },
+    queryKey: `AllTenantsDashboard-Domains-${scope}`,
     waiting: true,
   })
 
@@ -290,8 +269,8 @@ export const useAllTenantsDashboard = () => {
   // regardless of how many tenants exist.
   const countsApi = ApiGetCall({
     url: '/api/ListDBCache',
-    data: { tenantFilter: 'AllTenants', countsOnly: 'true' },
-    queryKey: 'AllTenantsDashboard-Counts',
+    data: { ...tenantScope(scope), countsOnly: 'true' },
+    queryKey: `AllTenantsDashboard-Counts-${scope}`,
     waiting: true,
   })
 
@@ -303,8 +282,8 @@ export const useAllTenantsDashboard = () => {
   // ListLogs defaults to today's partition when no date is supplied; the first page is enough here.
   const logsApi = ApiGetCall({
     url: '/api/ListLogs',
-    data: { Filter: 'True', Severity: 'Error,Critical' },
-    queryKey: 'AllTenantsDashboard-Logs',
+    data: { Filter: 'True', Severity: 'Error,Critical', ...groupOnly },
+    queryKey: `AllTenantsDashboard-Logs-${scope}`,
     waiting: canReadLogs,
   })
 
@@ -313,8 +292,8 @@ export const useAllTenantsDashboard = () => {
   // find the latest anyway, so the only cost is three more numbers per day per tenant.
   const secureScoreApi = ApiGetCall({
     url: '/api/ListSecureScoreReport',
-    data: { tenantFilter: 'AllTenants', includeHistory: 'true' },
-    queryKey: 'AllTenantsDashboard-SecureScore',
+    data: { ...tenantScope(scope), includeHistory: 'true' },
+    queryKey: `AllTenantsDashboard-SecureScore-${scope}`,
     waiting: true,
   })
 

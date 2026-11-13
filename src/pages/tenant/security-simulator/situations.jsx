@@ -22,8 +22,10 @@ import CippFormSkeleton from '../../../components/CippFormPages/CippFormSkeleton
 import CippFormComponent from '../../../components/CippComponents/CippFormComponent'
 import { CippFormUserSelector } from '../../../components/CippComponents/CippFormUserSelector'
 import { ApiGetCall } from '../../../api/ApiCall'
+import { exportRowsToCsv } from '../../../components/csvExportButton'
 import { useSettings } from '../../../hooks/use-settings'
 import countryList from '../../../data/countryList.json'
+import { isMultiTenant } from '../../../utils/tenant-selection'
 
 const asArray = (value) =>
   (Array.isArray(value) ? value : value ? [value] : []).filter(
@@ -61,7 +63,7 @@ const Page = () => {
   const pageTitle = 'Sign-in Situations'
   const router = useRouter()
   const tenant = useSettings().currentTenant
-  const tenantSelected = Boolean(tenant) && tenant !== 'AllTenants'
+  const tenantSelected = Boolean(tenant) && !isMultiTenant(tenant)
 
   const formControl = useForm({
     mode: 'onChange',
@@ -181,6 +183,20 @@ const Page = () => {
             <Card>
               <CardHeader
                 title="Sign in as"
+                action={
+                  <Button
+                    size="small"
+                    disabled={situations.length === 0}
+                    onClick={() =>
+                      exportRowsToCsv({
+                        rows: situations,
+                        reportName: `Sign-in situations - ${tenant}`,
+                      })
+                    }
+                  >
+                    Export CSV
+                  </Button>
+                }
                 subheader="Every situation below is evaluated live through the What If API as these accounts. Nothing signs in and nothing changes. Pick other accounts or another country to re-evaluate."
                 slotProps={{ subheader: { variant: 'caption' } }}
               />
@@ -426,7 +442,7 @@ const Page = () => {
 }
 
 Page.getLayout = (page) => (
-  <DashboardLayout>
+  <DashboardLayout usesTenant={false}>
     <TabbedLayout tabOptions={tabOptions}>{page}</TabbedLayout>
   </DashboardLayout>
 )

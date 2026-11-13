@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback, useEffect, memo } from 'react'
+import { useState, useMemo, useCallback, useEffect, useRef, memo } from 'react'
 import { CippIcons } from '../../utils/icon-registry'
 import {
   Alert,
@@ -417,6 +417,9 @@ export const CippTemplateCatalog = ({
   const [viewMode, setViewMode] = useState('card')
   const [selected, setSelected] = useState({})
   const [forceImport, setForceImport] = useState(false)
+  // Cards are memoised without their handlers, so the import handler reads the switch through a ref.
+  const forceImportRef = useRef(forceImport)
+  forceImportRef.current = forceImport
   const [previewItem, setPreviewItem] = useState(null)
   const [internalSources, setInternalSources] = useState([])
 
@@ -566,12 +569,12 @@ export const CippTemplateCatalog = ({
                 FullName: item.Repository,
                 Path: item.Path,
                 Branch: item.Branch,
-                Force: forceImport,
+                Force: forceImportRef.current,
               }
         ),
       })
     },
-    [importMutation, forceImport]
+    [importMutation]
   )
 
   const handleImportSingle = useCallback(

@@ -103,7 +103,21 @@ export const useIntunePolicyEditor = ({ policy, setPolicy, formControl }) => {
   // A setting already in the policy is only revisited to reach something beneath it (`wanted`).
   const addSetting = useCallback(
     (definition, childDefinitionsById = {}, wanted = new Set()) => {
-      const setting = buildSetting(definition, childDefinitionsById, wanted)
+      const folded = foldValuesIntoPolicy()
+      const settings = folded.settings ?? []
+      const index = settings.findIndex(
+        (entry) => entry?.settingInstance?.settingDefinitionId === definition.id
+      )
+      if (index !== -1 && wanted.size === 0) return false
+
+      // Options already chosen beneath this setting are kept when they also lead to what was asked for.
+      const chosen = new Set(wanted)
+      JSON.stringify(settings[index] ?? null, (key, value) => {
+        if (key === 'choiceSettingValue' && value?.value)
+          chosen.add(value.value)
+        return value
+      })
+      const setting = buildSetting(definition, childDefinitionsById, chosen)
       if (!setting) return false
 
       const template = templateSettings?.get(definition.id)
@@ -121,13 +135,6 @@ export const useIntunePolicyEditor = ({ policy, setPolicy, formControl }) => {
             }
         }
       }
-
-      const folded = foldValuesIntoPolicy()
-      const settings = folded.settings ?? []
-      const index = settings.findIndex(
-        (entry) => entry?.settingInstance?.settingDefinitionId === definition.id
-      )
-      if (index !== -1 && wanted.size === 0) return false
 
       setPolicy({
         ...folded,
@@ -170,10 +177,26 @@ export const useIntunePolicyEditor = ({ policy, setPolicy, formControl }) => {
         return
 
       const pinned = { ...definition, defaultOptionId: optionId }
-      fetchIntuneDescendants(pinned).then((byId) => {
+      // Optional settings already set beneath the old option stay when the new one offers them too.
+      const offered = new Set(
+        (
+          definition.options.find((option) => option.id === optionId)
+            ?.dependedOnBy ?? []
+        ).map((link) => link?.dependedOnBy)
+      )
+      const instance = leaf.path
+        .slice(0, -2)
+        .reduce((node, key) => node?.[key], policy)
+      const wanted = new Set([
+        optionId,
+        ...(instance?.choiceSettingValue?.children ?? [])
+          .map((child) => child?.settingDefinitionId)
+          .filter((id) => offered.has(id)),
+      ])
+      fetchIntuneDescendants(pinned, wanted).then((byId) => {
         // The policy moved on while the definitions loaded; this leaf's position may no longer be its own.
         if (leavesRef.current !== leaves) return
-        const built = buildSettingInstance(pinned, byId)
+        const built = buildSettingInstance(pinned, byId, wanted)
         if (!built) return
         const folded = foldValuesIntoPolicy()
         const path = leaf.path.slice(0, -2)
@@ -201,6 +224,7 @@ export const useIntunePolicyEditor = ({ policy, setPolicy, formControl }) => {
     supportsStructuralEdits,
     formControl,
     leaves,
+    policy,
     getDefinition,
     foldValuesIntoPolicy,
     setPolicy,

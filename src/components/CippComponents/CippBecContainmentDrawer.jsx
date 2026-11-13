@@ -373,7 +373,11 @@ export const CippBecContainmentDrawer = ({
         footer={
           <Stack spacing={2}>
             <CippApiResults apiObject={runCall} jobProgress={jobProgress} />
-            <Stack direction="row" spacing={1} justifyContent="flex-end">
+            <Stack
+              direction="row"
+              spacing={1}
+              sx={{ justifyContent: 'flex-end' }}
+            >
               <Button
                 variant="contained"
                 color="error"
@@ -412,8 +416,7 @@ export const CippBecContainmentDrawer = ({
                 <Stack
                   direction="row"
                   spacing={1}
-                  alignItems="center"
-                  sx={{ mb: 1 }}
+                  sx={{ alignItems: 'center', mb: 1 }}
                 >
                   <Typography variant="subtitle1">{impact}</Typography>
                   <Chip

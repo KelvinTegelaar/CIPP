@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback, cloneElement } from "react";
 import { CippIcons } from "../../utils/icon-registry";
-import { Button, Divider, Typography, Alert, Box } from "@mui/material";
+import { Button, Divider, Typography, Alert, Box, Stack } from "@mui/material";
 import { Grid } from "@mui/system";
 import { useForm, useWatch } from "react-hook-form";
 import { CippOffCanvas } from "./CippOffCanvas";
@@ -1487,22 +1487,26 @@ export const CippTransportRuleDrawer = ({
         onClose={handleCloseDrawer}
         size="xl"
         footer={
-          <div style={{ display: "flex", gap: "8px", justifyContent: "flex-start" }}>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleSubmit}
-            >
-              {submitRule.isLoading
-                ? isEditMode ? "Updating..." : "Creating..."
-                : templateMode
-                  ? isEditMode ? "Update Template" : "Create Template"
-                  : isEditMode ? "Update Rule" : "Create Rule"}
-            </Button>
-            <Button variant="outlined" onClick={handleCloseDrawer}>
-              Cancel
-            </Button>
-          </div>
+          <Stack spacing={2}>
+            <CippApiResults apiObject={submitRule} />
+            <div style={{ display: "flex", gap: "8px", justifyContent: "flex-start" }}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleSubmit}
+                disabled={submitRule.isPending}
+              >
+                {submitRule.isPending
+                  ? isEditMode ? "Updating..." : "Creating..."
+                  : templateMode
+                    ? isEditMode ? "Update Template" : "Create Template"
+                    : isEditMode ? "Update Rule" : "Create Rule"}
+              </Button>
+              <Button variant="outlined" onClick={handleCloseDrawer}>
+                Cancel
+              </Button>
+            </div>
+          </Stack>
         }
       >
           <Grid container spacing={2}>
@@ -1762,8 +1766,6 @@ export const CippTransportRuleDrawer = ({
                 formControl={formControl}
               />
             </Grid>
-
-            <CippApiResults apiObject={submitRule} />
           </Grid>
       </CippOffCanvas>
     </>

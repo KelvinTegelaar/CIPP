@@ -80,7 +80,7 @@ export const CippBecRemediationHistory = ({
       component="accordion"
       accordionExpanded={true}
       title={
-        <Stack direction="row" spacing={1} alignItems="center">
+        <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
           <Box>Remediation taken</Box>
           <Chip
             size="small"
@@ -93,9 +93,7 @@ export const CippBecRemediationHistory = ({
       <Stack
         direction="row"
         spacing={2}
-        alignItems="center"
-        justifyContent="space-between"
-        sx={{ mb: 2 }}
+        sx={{ alignItems: 'center', justifyContent: 'space-between', mb: 2 }}
       >
         <Typography variant="body2" color="text.secondary">
           Containment actions run for this case and their results, newest first.
@@ -150,7 +148,11 @@ export const CippBecRemediationHistory = ({
           footer={
             <Stack spacing={2}>
               <CippApiResults apiObject={releaseCall} />
-              <Stack direction="row" spacing={1} justifyContent="flex-end">
+              <Stack
+                direction="row"
+                spacing={1}
+                sx={{ justifyContent: 'flex-end' }}
+              >
                 <Button
                   variant="contained"
                   startIcon={<CippIcons.LockOpen />}

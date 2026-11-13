@@ -19,6 +19,7 @@ const Page = () => {
     "UserPrincipalName",
     "displayName",
     "accountEnabled",
+    "lastSuccessfulSignInDateTime",
     "assignedLicenses",
     "onPremisesSyncEnabled",
     ...reportDB.cacheColumns.filter((c) => c !== "Tenant"),
@@ -49,6 +50,7 @@ const Page = () => {
             "UserPrincipalName",
             "displayName",
             "accountEnabled",
+            "lastSuccessfulSignInDateTime",
             "assignedLicenses",
             "onPremisesSyncEnabled",
           ],
@@ -66,7 +68,7 @@ const Page = () => {
   );
 };
 
-Page.getLayout = (page) => <DashboardLayout allTenantsSupport={true}>{page}</DashboardLayout>;
+Page.getLayout = (page) => <DashboardLayout tenantGroupSupport={true} allTenantsSupport={true}>{page}</DashboardLayout>;
 
 export default Page;
 

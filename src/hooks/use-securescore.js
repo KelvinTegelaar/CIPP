@@ -2,10 +2,11 @@ import { useEffect, useState } from 'react'
 import { ApiGetCall } from '../api/ApiCall'
 import { useSettings } from './use-settings'
 import { getStandards } from '../utils/standards-data'
+import { isMultiTenant } from '../utils/tenant-selection'
 
 export function useSecureScore({ waiting = true } = {}) {
   const currentTenant = useSettings().currentTenant
-  const isAllTenants = currentTenant === 'AllTenants'
+  const isAllTenants = isMultiTenant(currentTenant)
 
   const [translatedData, setTranslatedData] = useState([])
   const [isSuccess, setIsSuccess] = useState(false)

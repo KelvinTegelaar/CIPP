@@ -9,6 +9,7 @@ import { useSettings } from '../hooks/use-settings'
 import { useIsMobileLayout } from '../hooks/use-breakpoint'
 import { TabNavigationContext, useTabNavigationValue } from './tab-navigation-context'
 import { CippTabPicker } from '../components/CippComponents/CippTabPicker'
+import { isMultiTenant } from '../utils/tenant-selection'
 
 export const TabbedLayout = (props) => {
   // `activePath` lets a page reached from a tab (rather than being one) keep its parent tab
@@ -30,6 +31,10 @@ export const TabbedLayout = (props) => {
     // Per-user gate: tabs marked { advanced: true } are hidden unless the user enabled Advanced
     // Views in preferences (Developer Options). Keeps diagnostic pages out of day-to-day use.
     let tabs = showAdvanced ? tabOptions : tabOptions.filter((option) => !option.advanced)
+    // Tabs marked { allTenantsOnly: true } compare tenants and have nothing to show for one.
+    if (!isMultiTenant(settings?.currentTenant)) {
+      tabs = tabs.filter((option) => !option.allTenantsOnly)
+    }
 
     if (!featureFlags.isSuccess || !Array.isArray(featureFlags.data)) return tabs
 
@@ -40,7 +45,7 @@ export const TabbedLayout = (props) => {
     if (hiddenPages.length === 0) return tabs
 
     return tabs.filter((option) => !hiddenPages.includes(option.path))
-  }, [tabOptions, featureFlags.isSuccess, featureFlags.data, showAdvanced])
+  }, [tabOptions, featureFlags.isSuccess, featureFlags.data, showAdvanced, settings?.currentTenant])
 
   const navigateToTab = useCallback(
     (value) => {

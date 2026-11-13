@@ -633,6 +633,6 @@ const PoliciesDeployedPage = () => {
   );
 }
 
-PoliciesDeployedPage.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>
+PoliciesDeployedPage.getLayout = (page) => <DashboardLayout usesTenant={false}>{page}</DashboardLayout>
 
 export default PoliciesDeployedPage

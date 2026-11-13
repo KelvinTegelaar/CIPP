@@ -390,6 +390,11 @@
           "Property": { "value": "String", "label": "CIPPAddedKeyTypes" },
           "Operator": { "value": "like", "label": "Like" },
           "Input": { "value": "*Password*" }
+        },
+        {
+          "Property": { "value": "String", "label": "CIPPMicrosoftAppToMicrosoftApp" },
+          "Operator": { "value": "ne", "label": "Not Equals to" },
+          "Input": { "value": "true" }
         }
       ]
     }
@@ -421,6 +426,11 @@
           "Property": { "value": "String", "label": "CIPPAddedKeyTypes" },
           "Operator": { "value": "like", "label": "Like" },
           "Input": { "value": "*AsymmetricX509Cert*" }
+        },
+        {
+          "Property": { "value": "String", "label": "CIPPMicrosoftAppToMicrosoftApp" },
+          "Operator": { "value": "ne", "label": "Not Equals to" },
+          "Input": { "value": "true" }
         }
       ]
     }
@@ -503,6 +513,11 @@
           "Property": { "value": "String", "label": "UserId" },
           "Operator": { "value": "like", "label": "Like" },
           "Input": { "value": "ServicePrincipal_*" }
+        },
+        {
+          "Property": { "value": "String", "label": "CIPPMicrosoftAppToMicrosoftApp" },
+          "Operator": { "value": "ne", "label": "Not Equals to" },
+          "Input": { "value": "true" }
         }
       ]
     }
@@ -529,6 +544,11 @@
           "Property": { "value": "String", "label": "UserId" },
           "Operator": { "value": "like", "label": "Like" },
           "Input": { "value": "ServicePrincipal_*" }
+        },
+        {
+          "Property": { "value": "String", "label": "CIPPMicrosoftAppToMicrosoftApp" },
+          "Operator": { "value": "ne", "label": "Not Equals to" },
+          "Input": { "value": "true" }
         }
       ]
     }
@@ -555,6 +575,11 @@
           "Property": { "value": "String", "label": "UserId" },
           "Operator": { "value": "like", "label": "Like" },
           "Input": { "value": "ServicePrincipal_*" }
+        },
+        {
+          "Property": { "value": "String", "label": "CIPPMicrosoftAppToMicrosoftApp" },
+          "Operator": { "value": "ne", "label": "Not Equals to" },
+          "Input": { "value": "true" }
         }
       ]
     }
@@ -586,6 +611,11 @@
           "Property": { "value": "String", "label": "CIPPActor" },
           "Operator": { "value": "notlike", "label": "Not like" },
           "Input": { "value": "*MS-PIM*" }
+        },
+        {
+          "Property": { "value": "String", "label": "CIPPMicrosoftAppToMicrosoftApp" },
+          "Operator": { "value": "ne", "label": "Not Equals to" },
+          "Input": { "value": "true" }
         }
       ]
     }

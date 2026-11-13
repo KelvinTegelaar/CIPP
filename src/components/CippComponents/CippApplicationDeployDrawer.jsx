@@ -1,6 +1,6 @@
 import React, { useEffect, useCallback, useState } from 'react'
 import { CippIcons } from '../../utils/icon-registry'
-import { Divider, Button, Alert, CircularProgress } from '@mui/material'
+import { Divider, Button, Alert, CircularProgress, InputAdornment, Stack } from '@mui/material'
 import { Grid } from '@mui/system'
 import { useForm, useWatch } from 'react-hook-form'
 import { CippOffCanvas } from './CippOffCanvas'
@@ -14,6 +14,7 @@ import {
 import { CippFormCondition } from './CippFormCondition'
 import { CippApiResults } from './CippApiResults'
 import languageList from '../../data/languageList.json'
+import edgeLanguageList from '../../data/edgeLanguageList.json'
 import { ApiPostCall } from '../../api/ApiCall'
 
 export const CippApplicationDeployDrawer = ({
@@ -112,6 +113,39 @@ export const CippApplicationDeployDrawer = ({
     }
   }
 
+  // Search box with the button inside it; Enter triggers the same search.
+  const renderSearchField = (type, results) => (
+    <CippFormComponent
+      type="textField"
+      label="Search Packages"
+      name="searchQuery"
+      formControl={formControl}
+      disableVariables
+      onKeyDown={(e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault()
+          searchApp(formControl.getValues('searchQuery'), type)
+        }
+      }}
+      slotProps={{
+        input: {
+          endAdornment: (
+            <InputAdornment position="end">
+              <Button
+                variant="contained"
+                size="small"
+                onClick={() => searchApp(formControl.getValues('searchQuery'), type)}
+                disabled={results.isPending}
+              >
+                Search
+              </Button>
+            </InputAdornment>
+          ),
+        },
+      }}
+    />
+  )
+
   const handleSubmit = () => {
     const formData = formControl.getValues()
     const formattedData = singleTenant ? applyPickedGroups(formData) : { ...formData }
@@ -148,23 +182,26 @@ export const CippApplicationDeployDrawer = ({
         onClose={handleCloseDrawer}
         size="xl"
         footer={
-          <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-start' }}>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleSubmit}
-              disabled={deployApplication.isLoading}
-            >
-              {deployApplication.isLoading
-                ? 'Deploying...'
-                : deployApplication.isSuccess
-                  ? 'Deploy Another'
-                  : 'Deploy Application'}
-            </Button>
-            <Button variant="outlined" onClick={handleCloseDrawer}>
-              Close
-            </Button>
-          </div>
+          <Stack spacing={2}>
+            <CippApiResults apiObject={deployApplication} />
+            <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-start' }}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleSubmit}
+                disabled={deployApplication.isPending}
+              >
+                {deployApplication.isPending
+                  ? 'Deploying...'
+                  : deployApplication.isSuccess
+                    ? 'Deploy Another'
+                    : 'Deploy Application'}
+              </Button>
+              <Button variant="outlined" onClick={handleCloseDrawer}>
+                Close
+              </Button>
+            </div>
+          </Stack>
         }
       >
         <Grid container spacing={2}>
@@ -423,24 +460,7 @@ export const CippApplicationDeployDrawer = ({
             compareType="is"
             compareValue="StoreApp"
           >
-            <Grid size={{ md: 6, xs: 12 }}>
-              <CippFormComponent
-                type="textField"
-                label="Search Packages"
-                name="searchQuery"
-                formControl={formControl}
-              />
-            </Grid>
-            <Grid size={{ xs: 12 }}>
-              <Button
-                onClick={() => {
-                  searchApp(formControl.getValues('searchQuery'), 'StoreApp')
-                }}
-                disabled={winGetSearchResults.isPending}
-              >
-                Search
-              </Button>
-            </Grid>
+            <Grid size={{ xs: 12 }}>{renderSearchField('StoreApp', winGetSearchResults)}</Grid>
 
             <Grid size={{ xs: 12 }}>
               <CippFormComponent
@@ -513,24 +533,7 @@ export const CippApplicationDeployDrawer = ({
             compareType="is"
             compareValue="chocolateyApp"
           >
-            <Grid size={{ md: 6, xs: 12 }}>
-              <CippFormComponent
-                type="textField"
-                label="Search Packages"
-                name="searchQuery"
-                formControl={formControl}
-              />
-            </Grid>
-            <Grid size={{ xs: 12 }}>
-              <Button
-                onClick={() => {
-                  searchApp(formControl.getValues('searchQuery'), 'choco')
-                }}
-                disabled={ChocosearchResults.isPending}
-              >
-                Search
-              </Button>
-            </Grid>
+            <Grid size={{ xs: 12 }}>{renderSearchField('choco', ChocosearchResults)}</Grid>
 
             <Grid size={{ xs: 12 }}>
               <CippFormComponent
@@ -776,7 +779,7 @@ export const CippApplicationDeployDrawer = ({
                 type="autoComplete"
                 label="Display Language (optional)"
                 name="displayLanguageLocale"
-                options={languageList.map(({ language, tag }) => ({
+                options={edgeLanguageList.map(({ language, tag }) => ({
                   value: tag,
                   label: `${language} (${tag})`,
                 }))}
@@ -995,8 +998,6 @@ export const CippApplicationDeployDrawer = ({
               </Grid>
             </CippFormCondition>
           </CippFormCondition>
-
-          <CippApiResults apiObject={deployApplication} />
         </Grid>
       </CippOffCanvas>
     </>

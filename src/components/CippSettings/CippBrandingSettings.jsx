@@ -33,7 +33,12 @@ import {
   normalizeLogoImageIds,
   normalizeLogoUploads,
 } from "../CippPdf/resolveCoverImage";
-import { FOOTER_MAX_LENGTH, REPORT_COLOUR_ROLES, WATERMARK_MAX_LENGTH } from "../CippPdf/reportTheme";
+import {
+  FOOTER_MAX_LENGTH,
+  REPORT_COLOUR_ROLES,
+  REPORT_VARIABLES,
+  WATERMARK_MAX_LENGTH,
+} from "../CippPdf/reportTheme";
 import { BRANDING_GALLERY_QUERY_KEY } from "../CippPdf/useBrandingSettings";
 import { useForm } from "react-hook-form";
 
@@ -102,7 +107,7 @@ const PREVIEW_TOOLTIP =
 // ListBrandingSettings, and base64 adds about a third on top.
 const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
 
-// The formats the report engine draws, stored exactly as picked; Add-CIPPImage enforces the same
+// The formats the report engine draws; Add-CIPPImage enforces the same
 // list. TIFF is left out only because browsers cannot show it in the gallery.
 const SUPPORTED_IMAGE_TYPES = [
   "image/png",
@@ -1586,6 +1591,7 @@ const CippBrandingSettings = () => {
                     placeholder="%tenantname% — prepared by Contoso IT — %reportdate%"
                     helperText={`Type % for variables. Reports add %reportname% and %reportdate%. After substitution, text is capped at ${FOOTER_MAX_LENGTH} characters.`}
                     includeSystemVariables={true}
+                    extraAutocompleteOptions={REPORT_VARIABLES}
                     validators={{
                       maxLength: {
                         value: FOOTER_MAX_LENGTH,
@@ -1600,6 +1606,7 @@ const CippBrandingSettings = () => {
                     placeholder="Blank = each report's own wording"
                     helperText={`Replaces the confidentiality note on cover pages. After substitution, text is capped at ${FOOTER_MAX_LENGTH} characters.`}
                     includeSystemVariables={true}
+                    extraAutocompleteOptions={REPORT_VARIABLES}
                     formControl={formControl}
                     validators={{
                       maxLength: {
@@ -1653,6 +1660,7 @@ const CippBrandingSettings = () => {
                     placeholder="%tenantname%"
                     helperText={`Type % for variables. After substitution, the mark is capped at ${WATERMARK_MAX_LENGTH} characters.`}
                     includeSystemVariables={true}
+                    extraAutocompleteOptions={REPORT_VARIABLES}
                     validators={{
                       maxLength: {
                         value: WATERMARK_MAX_LENGTH,

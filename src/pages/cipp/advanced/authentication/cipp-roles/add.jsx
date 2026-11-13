@@ -18,6 +18,6 @@ const AddRolePage = () => {
   );
 };
 
-AddRolePage.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+AddRolePage.getLayout = (page) => <DashboardLayout usesTenant={false}>{page}</DashboardLayout>;
 
 export default AddRolePage;

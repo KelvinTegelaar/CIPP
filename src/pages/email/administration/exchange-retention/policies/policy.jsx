@@ -146,6 +146,6 @@ const RetentionPolicy = () => {
   );
 };
 
-RetentionPolicy.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+RetentionPolicy.getLayout = (page) => <DashboardLayout usesTenant={false}>{page}</DashboardLayout>;
 
 export default RetentionPolicy;

@@ -35,6 +35,7 @@ import CippInfoTooltip from '../../../../../components/CippComponents/CippInfoTo
 import { CippOffCanvas } from '../../../../../components/CippComponents/CippOffCanvas'
 import { CippDataTable } from '../../../../../components/CippTable/CippDataTable'
 import { useCippRoleAssignmentActions } from '../../../../../components/CippComponents/CippRoleAssignmentActions'
+import { isMultiTenant } from '../../../../../utils/tenant-selection'
 import {
   POLICY_BELOW_FLOOR_TOOLTIP,
   PRIVILEGED_ROLE_TOOLTIP,
@@ -79,7 +80,7 @@ const Page = () => {
   const { roleTemplateId } = router.query
   const tenantFilter =
     router.query.tenantFilter ?? userSettingsDefaults.currentTenant
-  const needsTenant = !tenantFilter || tenantFilter === 'AllTenants'
+  const needsTenant = !tenantFilter || isMultiTenant(tenantFilter)
   const [assignmentDrawer, setAssignmentDrawer] = useState(null)
 
   const roleRequest = ApiGetCall({
@@ -536,6 +537,6 @@ const Page = () => {
   )
 }
 
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>
+Page.getLayout = (page) => <DashboardLayout usesTenant={false}>{page}</DashboardLayout>
 
 export default Page

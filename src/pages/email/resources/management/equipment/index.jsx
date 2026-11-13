@@ -2,6 +2,7 @@ import { Layout as DashboardLayout } from "../../../../../layouts/index";
 import { CippIcons } from "../../../../../utils/icon-registry"
 import { CippTablePage } from "../../../../../components/CippComponents/CippTablePage.jsx";
 import { CippAddEquipmentDrawer } from "../../../../../components/CippComponents/CippAddEquipmentDrawer";
+import { CippBulkEquipmentDrawer } from "../../../../../components/CippComponents/CippBulkEquipmentDrawer";
 
 const Page = () => {
   const pageTitle = "Equipment";
@@ -69,7 +70,12 @@ const Page = () => {
       apiUrl="/api/ListEquipment"
       actions={actions}
       simpleColumns={simpleColumns}
-      cardButton={<CippAddEquipmentDrawer requiredPermissions={cardButtonPermissions} />}
+      cardButton={
+        <>
+          <CippAddEquipmentDrawer requiredPermissions={cardButtonPermissions} />
+          <CippBulkEquipmentDrawer requiredPermissions={cardButtonPermissions} />
+        </>
+      }
     />
   );
 };

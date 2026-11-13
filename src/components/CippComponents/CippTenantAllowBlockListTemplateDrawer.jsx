@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { CippIcons } from '../../utils/icon-registry'
-import { Button, Divider } from '@mui/material'
+import { Button, Divider, Stack } from '@mui/material'
 import { Grid } from '@mui/system'
 import { useForm, useFormState, useWatch } from 'react-hook-form'
 import { CippOffCanvas } from './CippOffCanvas'
@@ -266,27 +266,30 @@ export const CippTenantAllowBlockListTemplateDrawer = ({
         onClose={handleCloseDrawer}
         size="lg"
         footer={
-          <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-start' }}>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleSubmit}
-              disabled={saveTemplate.isLoading || !isValid}
-            >
-              {saveTemplate.isLoading
-                ? 'Saving...'
-                : saveTemplate.isSuccess
-                  ? isEditMode
-                    ? 'Saved'
-                    : 'Save Another'
-                  : isEditMode
-                    ? 'Update Template'
-                    : 'Save Template'}
-            </Button>
-            <Button variant="outlined" onClick={handleCloseDrawer}>
-              Close
-            </Button>
-          </div>
+          <Stack spacing={2}>
+            <CippApiResults apiObject={saveTemplate} />
+            <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-start' }}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleSubmit}
+                disabled={saveTemplate.isPending || !isValid}
+              >
+                {saveTemplate.isPending
+                  ? 'Saving...'
+                  : saveTemplate.isSuccess
+                    ? isEditMode
+                      ? 'Saved'
+                      : 'Save Another'
+                    : isEditMode
+                      ? 'Update Template'
+                      : 'Save Template'}
+              </Button>
+              <Button variant="outlined" onClick={handleCloseDrawer}>
+                Close
+              </Button>
+            </div>
+          </Stack>
         }
       >
         <Grid container spacing={2}>
@@ -410,8 +413,6 @@ export const CippTenantAllowBlockListTemplateDrawer = ({
               }
             />
           </Grid>
-
-          <CippApiResults apiObject={saveTemplate} />
         </Grid>
       </CippOffCanvas>
     </>

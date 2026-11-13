@@ -1,16 +1,17 @@
 import { resolveRowTemplates, getRowTenant, withRowTenant } from '../../utils/resolve-row-templates'
+import { isMultiTenant } from '../../utils/tenant-selection'
 
 const UNRESOLVED = /\[([^\]]+)\]/
 
 const resolveEffectiveTenant = (row, { fallbackTenant, currentTenant } = {}) => {
-  if (fallbackTenant && fallbackTenant !== 'AllTenants') {
+  if (fallbackTenant && !isMultiTenant(fallbackTenant)) {
     return fallbackTenant
   }
   const fromRow = getRowTenant(row, currentTenant ?? 'AllTenants')
-  if (fromRow && fromRow !== 'AllTenants') {
+  if (fromRow && !isMultiTenant(fromRow)) {
     return fromRow
   }
-  if (currentTenant && currentTenant !== 'AllTenants') {
+  if (currentTenant && !isMultiTenant(currentTenant)) {
     return currentTenant
   }
   return null

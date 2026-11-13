@@ -299,6 +299,6 @@ const EditContact = () => {
   );
 };
 
-EditContact.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+EditContact.getLayout = (page) => <DashboardLayout usesTenant={false}>{page}</DashboardLayout>;
 
 export default EditContact;

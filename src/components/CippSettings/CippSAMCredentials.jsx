@@ -42,6 +42,7 @@ const ownerLabels = {
 const secretStateLabels = {
   valid: { label: "Valid", color: "success" },
   propagating: { label: "Activating", color: "warning" },
+  removed: { label: "Removed from app", color: "error" },
   error: { label: "Error", color: "error" },
   notConfigured: { label: "Not configured", color: "default" },
 };

@@ -146,6 +146,6 @@ const EditCAPolicy = () => {
   );
 };
 
-EditCAPolicy.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+EditCAPolicy.getLayout = (page) => <DashboardLayout usesTenant={false}>{page}</DashboardLayout>;
 
 export default EditCAPolicy;

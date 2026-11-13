@@ -82,7 +82,7 @@ describe('CippContainerManagement branch-build flagging', () => {
     expect(screen.getByText('Dev')).toBeInTheDocument()
     // wait for the seed effect so the alert-absence check runs against the settled form
     await waitFor(() => {
-      expect(screen.getByRole('combobox', { name: 'Release Channel' })).toHaveValue('Dev')
+      expect(screen.getByRole('combobox', { name: 'Release Channel' })).toHaveValue('dev · Development')
     })
     expect(screen.queryByText(ALERT_RE)).not.toBeInTheDocument()
   })
@@ -105,7 +105,7 @@ describe('CippContainerManagement branch-build flagging', () => {
     renderWithProviders(<CippContainerManagement />)
 
     await waitFor(() => {
-      expect(screen.getByRole('combobox', { name: 'Release Channel' })).toHaveValue('Latest (Stable)')
+      expect(screen.getByRole('combobox', { name: 'Release Channel' })).toHaveValue('latest · Stable')
     })
     expect(screen.queryByText(ALERT_RE)).not.toBeInTheDocument()
 
@@ -121,9 +121,173 @@ describe('CippContainerManagement branch-build flagging', () => {
 
     // selection remounts the keyed autocomplete, re-query
     await user.click(screen.getByRole('combobox', { name: 'Release Channel' }))
-    await user.click(await screen.findByRole('option', { name: 'Dev' }))
+    await user.click(await screen.findByRole('option', { name: 'dev · Development' }))
     await waitFor(() => {
       expect(screen.queryByText(ALERT_RE)).not.toBeInTheDocument()
     })
+  })
+})
+
+describe('CippContainerManagement provenance state', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+    api.paginated.data = { pages: [{ Results: [] }] }
+    const results = statusResults('dev')
+    statusGet.data = {
+      Results: {
+        ...results,
+        UpdateSettings: {
+          ...results.UpdateSettings,
+          LastCheck: 1793600000,
+          UpdateAvailable: true,
+          RemoteVersion: '8.0.1',
+          AttestationState: 'Failed',
+          AttestationReason: 'No Sigstore attestation is published for this image',
+        },
+      },
+    }
+  })
+
+  it('labels a failed-provenance update as unverified on the status tile', () => {
+    renderWithProviders(<CippContainerManagement />)
+    expect(screen.getByText('Update unverified')).toBeInTheDocument()
+    expect(screen.queryByText('Update available')).not.toBeInTheDocument()
+  })
+
+  it('raises the provenance warning instead of the plain update notice', () => {
+    renderWithProviders(<CippContainerManagement />)
+    expect(screen.getByText(/did not pass provenance verification/)).toBeInTheDocument()
+    expect(screen.queryByText(/Restart the container to pull the latest image/)).not.toBeInTheDocument()
+  })
+
+  it('flags an up-to-date instance whose channel image failed provenance', () => {
+    statusGet.data.Results.UpdateSettings.UpdateAvailable = false
+    renderWithProviders(<CippContainerManagement />)
+    expect(screen.getByText('Up to date, unverified')).toBeInTheDocument()
+    expect(screen.getByText(/did not pass provenance verification/)).toBeInTheDocument()
+    expect(screen.queryByText(/will not be applied automatically/)).not.toBeInTheDocument()
+  })
+})
+
+describe('CippContainerManagement running image provenance', () => {
+  const PINNED = 'sha256:b463b2a33198ba15d07246002cf59860da3a5ecddb2c73c47fb24a881b25b1e2'
+  const withRunning = (running) => {
+    const results = statusResults('dev')
+    statusGet.data = {
+      Results: {
+        ...results,
+        UpdateSettings: { ...results.UpdateSettings, LastCheck: 1793600000, ...running },
+      },
+    }
+  }
+  const openBuildDetails = async (user) => {
+    await user.click(screen.getByText('8.0.0 @abc1234'))
+    return screen.findAllByText('Build Details')
+  }
+
+  beforeEach(() => {
+    vi.clearAllMocks()
+    api.paginated.data = { pages: [{ Results: [] }] }
+  })
+
+  it('shows Unpinned with its reason and leaves the update tile alone', async () => {
+    withRunning({
+      PinnedDigest: '',
+      RunningAttestationState: 'Unpinned',
+      RunningAttestationReason: 'The site configuration names a tag, not a digest',
+    })
+    const user = userEvent.setup()
+    renderWithProviders(<CippContainerManagement />)
+    expect(screen.getByText('Up to date')).toBeInTheDocument()
+    await openBuildDetails(user)
+    expect(await screen.findByText('Unpinned')).toBeInTheDocument()
+    expect(screen.getByText(/names a tag, not a digest/)).toBeInTheDocument()
+    expect(screen.queryByText('Pinned Digest')).not.toBeInTheDocument()
+  })
+
+  it('shows the truncated pinned digest and Verified for a verified pin', async () => {
+    withRunning({ PinnedDigest: PINNED, RunningAttestationState: 'Verified', RunningDigest: PINNED })
+    statusGet.data.Results.CurrentImage = `ghcr.io/cyberdrain/cipp:dev@${PINNED}`
+    const user = userEvent.setup()
+    renderWithProviders(<CippContainerManagement />)
+    expect(screen.getByText('Up to date')).toBeInTheDocument()
+    // the channel picker shows the tag, never digest text
+    await waitFor(() => {
+      expect(screen.getByRole('combobox', { name: 'Release Channel' })).toHaveValue('dev · Development')
+    })
+    await openBuildDetails(user)
+    expect(await screen.findByText('sha256:b463b2a33198…')).toBeInTheDocument()
+    expect(screen.getByText('Verified · Dev')).toBeInTheDocument()
+  })
+
+  it('raises the update tile to an error when the pinned running image fails', () => {
+    withRunning({
+      PinnedDigest: PINNED,
+      RunningAttestationState: 'Failed',
+      RunningAttestationReason: 'attested commit does not match the running build',
+      RunningDigest: PINNED,
+    })
+    renderWithProviders(<CippContainerManagement />)
+    expect(screen.getByText('Running image unverified')).toBeInTheDocument()
+    expect(screen.queryByText('Up to date')).not.toBeInTheDocument()
+  })
+})
+
+describe('CippContainerManagement channel trust wording', () => {
+  const TRUST_ALERT_RE = /before release review/
+  const withChannel = (channel, attestation = {}) => {
+    const results = statusResults(channel)
+    statusGet.data = {
+      Results: {
+        ...results,
+        UpdateSettings: {
+          ...results.UpdateSettings,
+          LastCheck: 1793600000,
+          AttestationState: 'Verified',
+          AttestationReason: 'Built by the workflow',
+          ...attestation,
+        },
+      },
+    }
+  }
+
+  beforeEach(() => {
+    vi.clearAllMocks()
+    api.paginated.data = { pages: [{ Results: channelListResults }] }
+  })
+
+  it('warns on dev and nightly, stays quiet on latest', async () => {
+    withChannel('latest')
+    const user = userEvent.setup()
+    renderWithProviders(<CippContainerManagement />)
+    await waitFor(() => {
+      expect(screen.getByRole('combobox', { name: 'Release Channel' })).toHaveValue('latest · Stable')
+    })
+    expect(screen.queryByText(TRUST_ALERT_RE)).not.toBeInTheDocument()
+
+    await user.click(screen.getByRole('combobox', { name: 'Release Channel' }))
+    await user.click(await screen.findByRole('option', { name: 'nightly · Development' }))
+    expect(await screen.findByText(TRUST_ALERT_RE)).toBeInTheDocument()
+    expect(screen.getByText('nightly')).toBeInTheDocument()
+    expect(screen.queryByText(ALERT_RE)).not.toBeInTheDocument()
+  })
+
+  it('suffixes Verified with the channel trust level on the channel image', async () => {
+    withChannel('dev')
+    const user = userEvent.setup()
+    renderWithProviders(<CippContainerManagement />)
+    await user.click(screen.getByText('Up to date'))
+    await screen.findAllByText('Latest on this channel')
+    expect(await screen.findByText('Verified · Dev')).toBeInTheDocument()
+  })
+
+  it('keeps plain Verified on the stable channel', async () => {
+    withChannel('latest')
+    const user = userEvent.setup()
+    renderWithProviders(<CippContainerManagement />)
+    await user.click(screen.getByText('Up to date'))
+    await screen.findAllByText('Latest on this channel')
+    expect(await screen.findByText('Verified')).toBeInTheDocument()
+    expect(screen.queryByText(/Verified · /)).not.toBeInTheDocument()
   })
 })

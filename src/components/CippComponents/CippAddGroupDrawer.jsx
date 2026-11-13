@@ -8,6 +8,7 @@ import { CippApiResults } from "./CippApiResults";
 import { useSettings } from "../../hooks/use-settings";
 import { ApiPostCall } from "../../api/ApiCall";
 import CippAddGroupForm from "../CippFormPages/CippAddGroupForm";
+import { isMultiTenant } from "../../utils/tenant-selection";
 
 export const CippAddGroupDrawer = ({
   buttonText = "Add Group",
@@ -22,7 +23,7 @@ export const CippAddGroupDrawer = ({
 
   // Group creation targets a single tenant; under "All Tenants" the submit would post
   // tenantFilter=AllTenants, so it is blocked.
-  const isAllTenants = !currentTenant || currentTenant === "AllTenants";
+  const isAllTenants = !currentTenant || isMultiTenant(currentTenant);
 
   const formControl = useForm({
     mode: "onChange",

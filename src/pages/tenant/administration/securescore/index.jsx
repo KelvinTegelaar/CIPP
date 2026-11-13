@@ -23,9 +23,13 @@ import { useDialog } from '../../../../hooks/use-dialog'
 import { useState } from 'react'
 import { CippTableDialog } from '../../../../components/CippComponents/CippTableDialog'
 import { Menu, MenuItem, ListItemIcon, ListItemText } from '@mui/material'
-import { AllTenantsSecureScoreSummary } from '../../../../components/CippAllTenants/AllTenantsSecureScore'
+import {
+  AllTenantsSecureScoreSummary,
+  AllTenantsSecureScoreTable,
+} from '../../../../components/CippAllTenants/AllTenantsSecureScore'
 import { useSettings } from '../../../../hooks/use-settings'
 import { useRouter } from 'next/navigation'
+import { isMultiTenant } from '../../../../utils/tenant-selection'
 
 const Page = () => {
   const currentTenant = useSettings().currentTenant
@@ -113,12 +117,17 @@ const Page = () => {
       maxWidth={false}
     >
       <Grid container spacing={2}>
-        {currentTenant === 'AllTenants' && (
+        {isMultiTenant(currentTenant) && (
           <Grid size={{ xs: 12 }}>
             <AllTenantsSecureScoreSummary />
           </Grid>
         )}
-        {currentTenant !== 'AllTenants' && (
+        {isMultiTenant(currentTenant) && (
+          <Grid size={{ xs: 12 }}>
+            <AllTenantsSecureScoreTable />
+          </Grid>
+        )}
+        {!isMultiTenant(currentTenant) && (
           <>
             <Grid
               size={{ md: 12, xs: 12 }}
@@ -232,7 +241,7 @@ const Page = () => {
               />
             </Grid>
 
-            {currentTenant !== 'AllTenants' &&
+            {!isMultiTenant(currentTenant) &&
               secureScore.isSuccess &&
               getFilteredControlScores().map((secureScoreControl) => (
                 <Grid size={{ md: 3, xs: 12 }} key={secureScoreControl.controlName}>
@@ -412,6 +421,9 @@ const Page = () => {
                 {
                   type: 'autoComplete',
                   name: 'resolutionType',
+                  multiple: false,
+                  creatable: false,
+                  validators: { required: 'Please select a resolution type' },
                   options: [
                     {
                       value: 'ThirdParty',
@@ -432,6 +444,7 @@ const Page = () => {
                   type: 'textField',
                   name: 'reason',
                   label: 'Reason for change (Mandatory)',
+                  validators: { required: 'Please enter a reason for the change' },
                 },
               ]}
               api={{
@@ -452,7 +465,7 @@ const Page = () => {
 }
 
 Page.getLayout = (page) => (
-  <DashboardLayout>
+  <DashboardLayout tenantGroupSupport={true}>
     <TabbedLayout tabOptions={tabOptions}>{page}</TabbedLayout>
   </DashboardLayout>
 )

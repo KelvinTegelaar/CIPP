@@ -9,6 +9,7 @@ import { BECRemediationReportButton } from '../BECRemediationReportButton'
 import { CippBecContainmentDrawer } from '../CippComponents/CippBecContainmentDrawer'
 import { CippBecIPReviewDrawer } from '../CippComponents/CippBecIPReviewDrawer'
 import { CippBecEvidenceExportButton } from '../CippComponents/CippBecEvidenceExportButton'
+import { CippBecWindowSelect } from '../CippComponents/CippBecWindowSelect'
 import {
   becLevelColor,
   becFindingFlags,
@@ -26,6 +27,8 @@ export const CippBecTriageHeader = ({
   caseId,
   onStartNew,
   startPending = false,
+  windowDays,
+  onWindowDaysChange,
   onJumpToGroup,
   // When the user has more than one run, the case page passes the case switcher here so it takes the
   // header's title spot (in place of the static name/case); otherwise the name and case id show.
@@ -151,6 +154,13 @@ export const CippBecTriageHeader = ({
           useFlexGap
           alignItems="center"
         >
+          {onWindowDaysChange && (
+            <CippBecWindowSelect
+              value={windowDays}
+              onChange={onWindowDaysChange}
+              disabled={startPending}
+            />
+          )}
           <Button
             size="small"
             variant="contained"
@@ -218,7 +228,7 @@ export const CippBecTriageHeader = ({
             <Typography
               variant="h3"
               color={`${lvlColor}.main`}
-              lineHeight={1.1}
+              sx={{ lineHeight: 1.1 }}
             >
               {score?.Value ?? '—'}
             </Typography>
@@ -228,7 +238,7 @@ export const CippBecTriageHeader = ({
             <Typography
               variant="caption"
               color="text.secondary"
-              display="block"
+              sx={{ display: 'block' }}
             >
               High ≥ {score?.Thresholds?.High} · Medium ≥{' '}
               {score?.Thresholds?.Medium}

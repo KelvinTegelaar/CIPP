@@ -87,6 +87,7 @@ import {
   BLOCK_CATEGORIES,
   StructuredBlockCard,
   TEST_RESULTS_SHAPE,
+  SECURITY_SIMULATION_SHAPES,
   blockTypesFor,
   createStructuredBlock,
   createPresetBlocks,
@@ -105,6 +106,7 @@ import {
   toReportSettings,
 } from '../../../../components/ReportBuilder/reportSettings'
 import { useRouter } from 'next/router'
+import { useTenantLabel } from '../../../../hooks/use-tenant-label'
 
 /* ── Markdown styles (matches CippTestDetailOffCanvas) ── */
 const markdownStyles = {
@@ -997,6 +999,7 @@ const Page = () => {
   const router = useRouter()
   const settings = useSettings()
   const { currentTenant } = settings
+  const tenantLabel = useTenantLabel(currentTenant)
   const brandingSettings = useBrandingSettings()
 
   /* ── Deeplink: load template by ID from URL ── */
@@ -1104,7 +1107,7 @@ const Page = () => {
     }))
     // The in-app compliance test results are offered as a data source alongside the reporting
     // collections, so charts/tables/flows can be driven by test data too.
-    return [TEST_RESULTS_SHAPE, ...reporting]
+    return [TEST_RESULTS_SHAPE, ...SECURITY_SIMULATION_SHAPES, ...reporting]
   }, [dataShapeApi.data])
 
   const availableCacheTypes = useMemo(() => {
@@ -1819,7 +1822,7 @@ const Page = () => {
                 </Typography>
                 {currentTenant && (
                   <Chip
-                    label={currentTenant}
+                    label={tenantLabel}
                     size="small"
                     variant="outlined"
                     sx={{ maxWidth: '100%' }}
@@ -1850,7 +1853,7 @@ const Page = () => {
                       saveForm.getValues('templateName') || 'Report'
                     scheduleForm.setValue(
                       'scheduleName',
-                      `Scheduled ${tplName} - ${currentTenant}`
+                      `Scheduled ${tplName} - ${tenantLabel}`
                     )
                     setScheduleOpen(true)
                   }}
@@ -2310,14 +2313,14 @@ const Page = () => {
               <Alert severity="info">
                 {linkScheduleToTemplate ? (
                   <>
-                    Report will be generated for <strong>{currentTenant}</strong> from the saved
+                    Report will be generated for <strong>{tenantLabel}</strong> from the saved
                     template <strong>{saveForm.getValues('templateName')}</strong>. Each run uses
                     the template as it exists at that time, so later edits to the template apply
                     automatically. Changes not yet saved to the template are not included.
                   </>
                 ) : (
                   <>
-                    Report will be generated for <strong>{currentTenant}</strong> using a copy of
+                    Report will be generated for <strong>{tenantLabel}</strong> using a copy of
                     the current block configuration. Later changes to the template will not affect
                     this schedule.
                   </>
@@ -2342,6 +2345,6 @@ const Page = () => {
   )
 }
 
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>
+Page.getLayout = (page) => <DashboardLayout usesTenant={false}>{page}</DashboardLayout>
 
 export default Page

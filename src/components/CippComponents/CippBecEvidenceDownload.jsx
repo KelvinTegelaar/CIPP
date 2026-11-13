@@ -16,15 +16,19 @@ const safe = (value) =>
 
 const caseOf = (row) => row?.CaseId ?? row?.caseId
 const tenantOf = (row) => row?.Tenant ?? row?.tenantFilter
-const upnOf = (row) => row?.UserPrincipalName ?? row?.userPrincipalName
+const nameOf = (row) =>
+  row?.UserPrincipalName ?? row?.userPrincipalName ?? row?.DisplayName
 
 /**
  * Downloads a case's evidence package. The export endpoint (ExecBECEvidenceExport) renders the report
  * PDFs (the full report and the C-suite summary) server-side and collates the ZIP; the browser just
  * requests it by case id and saves it. One hook serves the runs hub (per row) and the case page's
- * export button.
+ * export button. An NHI (app) case passes its own endpoint and file prefix.
  */
-export const useBecEvidenceDownload = () => {
+export const useBecEvidenceDownload = ({
+  url = '/api/ExecBECEvidenceExport',
+  prefix = 'BEC',
+} = {}) => {
   const [pendingCaseId, setPendingCaseId] = useState(null)
   const [lastError, setLastError] = useState(null)
   const exportCall = ApiPostCall({})
@@ -39,7 +43,7 @@ export const useBecEvidenceDownload = () => {
       await new Promise((resolve) => {
         exportCall.mutate(
           {
-            url: '/api/ExecBECEvidenceExport',
+            url,
             data: { tenantFilter, caseId },
           },
           {
@@ -51,7 +55,7 @@ export const useBecEvidenceDownload = () => {
                 )
                 const link = document.createElement('a')
                 link.href = url
-                link.download = `BEC_Evidence_${safe(upnOf(row) || row?.UserId || caseId)}_${safe(caseId)}.zip`
+                link.download = `${prefix}_Evidence_${safe(nameOf(row) || row?.UserId || caseId)}_${safe(caseId)}.zip`
                 document.body.appendChild(link)
                 link.click()
                 document.body.removeChild(link)

@@ -51,6 +51,19 @@ const Page = () => {
       color: 'info',
     },
     {
+      label: 'Unassign User',
+      icon: <CippIcons.PersonRemove />,
+      type: 'POST',
+      url: '/api/ExecUnassignAPDevice',
+      data: {
+        device: 'id',
+        serialNumber: 'serialNumber',
+      },
+      hideCondition: (row) => !row.userPrincipalName,
+      confirmText: 'Are you sure you want to unassign [userPrincipalName] from [serialNumber]?',
+      color: 'warning',
+    },
+    {
       label: 'Rename Device',
       icon: <CippIcons.Edit />,
       type: 'POST',
@@ -139,6 +152,7 @@ const Page = () => {
     'Tenant',
     'displayName',
     'serialNumber',
+    'userPrincipalName',
     'model',
     'manufacturer',
     'groupTag',
@@ -184,5 +198,5 @@ const Page = () => {
   )
 }
 
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>
+Page.getLayout = (page) => <DashboardLayout tenantGroupSupport={true}>{page}</DashboardLayout>
 export default Page
