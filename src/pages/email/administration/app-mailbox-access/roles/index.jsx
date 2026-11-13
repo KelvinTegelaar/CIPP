@@ -139,7 +139,9 @@ const Page = () => {
   const simpleColumns = useMemo(
     () => [
       'appDisplayName',
+      'roleAssignee',
       'role',
+      'delegating',
       'impact',
       'suspicion',
       'scope',
