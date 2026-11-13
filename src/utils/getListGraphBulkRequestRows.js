@@ -11,5 +11,7 @@ export function getListGraphBulkRequestRows(mutation) {
   if (Array.isArray(payload.data)) return payload.data;
   if (Array.isArray(payload.Data)) return payload.Data;
   if (Array.isArray(payload.Results)) return payload.Results;
+  // A one-request batch comes back as the bare row rather than an array of rows.
+  if (typeof payload === "object" && "id" in payload && "status" in payload) return [payload];
   return [];
 }
