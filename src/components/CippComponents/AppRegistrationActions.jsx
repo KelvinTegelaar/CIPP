@@ -48,6 +48,8 @@ const editInEntraAction = {
 
 // Shared client-secret fields (actions menu + inline card). "Custom date" reveals a date picker
 // sent as a Unix ExpiryDate; otherwise the ExpiryMonths preset is used.
+export const ADD_CLIENT_SECRET_DEFAULTS = { ExpiryMonths: { label: '12 months', value: 12 } }
+
 export const ADD_CLIENT_SECRET_FIELDS = [
   {
     type: 'textField',
@@ -61,7 +63,6 @@ export const ADD_CLIENT_SECRET_FIELDS = [
     label: 'Expires In',
     multiple: false,
     creatable: false,
-    defaultValue: { label: '12 months', value: 12 },
     options: [
       { label: '3 months', value: 3 },
       { label: '6 months', value: 6 },
@@ -452,6 +453,7 @@ export const getAppRegistrationPostAndDestructiveActions = (canWriteApplication,
       CredentialType: 'password',
     },
     fields: ADD_CLIENT_SECRET_FIELDS,
+    defaultvalues: ADD_CLIENT_SECRET_DEFAULTS,
     confirmText:
       "Add a new client secret to '[displayName]'? The secret value is shown only once after creation.",
     condition: () => canWriteApplication,

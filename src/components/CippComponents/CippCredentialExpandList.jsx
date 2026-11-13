@@ -20,7 +20,7 @@ import { getCippError } from "../../utils/get-cipp-error";
 import { ConfirmationDialog } from "../confirmation-dialog";
 import { CippApiDialog } from "./CippApiDialog";
 import { useDialog } from "../../hooks/use-dialog";
-import { ADD_CLIENT_SECRET_FIELDS } from "./AppRegistrationActions.jsx";
+import { ADD_CLIENT_SECRET_DEFAULTS, ADD_CLIENT_SECRET_FIELDS } from "./AppRegistrationActions.jsx";
 
 const credentialPrimaryLabel = (cred, credentialType) => {
   if (credentialType === "password") {
@@ -181,6 +181,7 @@ export const CippCredentialExpandList = ({
       }}
       row={{ id: graphObjectId, Tenant: tenantFilter }}
       fields={ADD_CLIENT_SECRET_FIELDS}
+      defaultvalues={ADD_CLIENT_SECRET_DEFAULTS}
       api={{
         type: "POST",
         url: "/api/ExecManageAppCredentials",
