@@ -53,6 +53,11 @@ export const nativeMenuItems = [
             scope: 'global',
           },
           {
+            title: 'Administrative Units',
+            path: '/identity/administration/administrative-units',
+            permissions: ['Identity.Role.*'],
+          },
+          {
             title: 'Devices',
             path: '/identity/administration/devices',
             permissions: ['Identity.Device.*'],

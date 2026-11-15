@@ -24,7 +24,7 @@ const globalAdminPhrase = (rowOrRows) => {
   return isGlobalAdmin(rowOrRows) ? principalLabel(rowOrRows) : null
 }
 
-const justificationField = {
+export const justificationField = {
   type: 'textField',
   name: 'Justification',
   label: 'Justification (recorded on the PIM request and in the logbook)',
@@ -47,7 +47,7 @@ const eligibilityDurationField = {
   validators: { required: 'Select how long the eligibility lasts' },
 }
 
-const activeDurationField = {
+export const activeDurationField = {
   type: 'autoComplete',
   name: 'Duration',
   label: 'Active for',
@@ -66,7 +66,7 @@ const activeDurationField = {
   validators: { required: 'Select how long the assignment stays active' },
 }
 
-const customEndField = {
+export const customEndField = {
   type: 'datePicker',
   name: 'EndDateTime',
   label: 'Active until',
