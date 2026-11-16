@@ -567,6 +567,14 @@ export const useCippUserActions = () => {
       condition: () => canWriteUser,
     },
     {
+      label: 'Edit Mailbox',
+      link: '/identity/administration/users/user/exchange?userId=[id]',
+      pinned: true,
+      icon: <CippIcons.Mail />,
+      color: 'success',
+      target: '_self',
+    },
+    {
       label: 'View in Entra',
       link: 'https://entra.microsoft.com/[Tenant]/#view/Microsoft_AAD_UsersAndTenants/UserProfileMenuBlade/~/overview/userId/[id]',
       pinned: true,
