@@ -2095,6 +2095,9 @@ const Page = () => {
                         {runModeLabels[run.mode] ?? run.mode}, triggered by{' '}
                         {run.triggeredBy}
                         {run.remediated ? ', remediated' : ''}
+                        {run.runCount > 1
+                          ? `. Same result for ${run.runCount} runs, last ${parseCippDate(run.lastRunAt).toLocaleString()}`
+                          : ''}
                       </Typography>
                       {run.detail && (
                         <Typography
@@ -3413,6 +3416,16 @@ const Page = () => {
                                     sx={{ fontSize: '0.7rem', height: 20 }}
                                   />
                                 </Tooltip>
+                                {event.runCount > 1 && (
+                                  <Tooltip title={`Last run ${event.lastRunId}`}>
+                                    <Chip
+                                      label={`Same result for ${event.runCount} runs · last ${parseCippDate(event.lastRunAt).toLocaleString()}`}
+                                      size="small"
+                                      variant="outlined"
+                                      sx={{ fontSize: '0.7rem', height: 20 }}
+                                    />
+                                  </Tooltip>
+                                )}
                                 {event.alerted && (
                                   <Chip
                                     label="Alert sent"
