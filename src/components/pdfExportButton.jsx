@@ -3,6 +3,7 @@ import { CippIcons } from '../utils/icon-registry'
 import { useQueryClient } from '@tanstack/react-query'
 import { getCippFormatting } from '../utils/get-cipp-formatting'
 import { isTenantColumn } from '../utils/tenant-display-names'
+import { sortColumnsByScreenOrder } from '../utils/table-column-order'
 import { SKIP_RECURSION_KEYS } from '../utils/skip-recursion-keys'
 import { fetchBrandingSettings } from './CippPdf/useBrandingSettings'
 import { applyFooterText, createReportTheme } from './CippPdf/reportTheme'
@@ -153,7 +154,7 @@ export const exportRowsToPdf = async ({
   const doc = new jsPDF(orientation, unit, size)
   const tableData = rows.map((row) => flattenObject(row.original ?? row))
 
-  const exportColumns = columns
+  const exportColumns = sortColumnsByScreenOrder(rows, columns)
     .filter((c) => columnVisibility[c.id])
     .map((c) => ({ header: c.header, dataKey: c.id }))
 
@@ -284,6 +285,7 @@ export const exportRowsToPdf = async ({
       left: MARGIN,
     },
     tableWidth: 'auto',
+    rowPageBreak: 'avoid',
     styles: {
       overflow: 'linebreak',
       cellWidth: 'wrap',

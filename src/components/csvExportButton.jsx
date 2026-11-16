@@ -4,6 +4,7 @@ import { mkConfig, generateCsv, download } from 'export-to-csv'
 import { getCippFormatting } from '../utils/get-cipp-formatting'
 import { SKIP_RECURSION_KEYS } from '../utils/skip-recursion-keys'
 import { isTenantColumn } from '../utils/tenant-display-names'
+import { sortColumnsByScreenOrder } from '../utils/table-column-order'
 const csvConfig = mkConfig({
   fieldSeparator: ',',
   decimalSeparator: '.',
@@ -65,7 +66,9 @@ export const exportRowsToCsv = ({
   const rowData = rows.map((row) => flattenObject(row.original ?? row))
   // Without table columns (a page that is not a table), every field is exported
   const columnKeys = columns.length
-    ? columns.filter((c) => columnVisibility[c.id]).map((c) => c.id)
+    ? sortColumnsByScreenOrder(rows, columns)
+        .filter((c) => columnVisibility[c.id])
+        .map((c) => c.id)
     : [...new Set(rowData.flatMap((row) => Object.keys(row)))]
 
   const filterRowData = (row, allowedKeys) => {

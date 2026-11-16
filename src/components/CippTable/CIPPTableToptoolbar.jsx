@@ -184,12 +184,26 @@ export const CIPPTableToptoolbar = React.memo(
     const customBulkActions = getBulkActions(actions, selectedRows)
     const showBulkActionsButton = hasSelection && customBulkActions.length > 0
 
+    // Selected rows in the order the table shows them; selected rows the current filter hides go last
+    const getSelectedRowsInScreenOrder = () => {
+      const position = new Map(
+        table
+          .getPrePaginationRowModel()
+          .rows.map((row, index) => [row.id, index])
+      )
+      return [...table.getSelectedRowModel().rows].sort(
+        (a, b) =>
+          (position.get(a.id) ?? position.size) -
+          (position.get(b.id) ?? position.size)
+      )
+    }
+
     const handleExportSelectedToCsv = () => {
       if (!selectedRows.length) {
         return
       }
       exportRowsToCsv({
-        rows: selectedRows,
+        rows: getSelectedRowsInScreenOrder(),
         columns: usedColumns,
         reportName: `${title}`,
         columnVisibility,
@@ -201,7 +215,7 @@ export const CIPPTableToptoolbar = React.memo(
         return
       }
       exportRowsToPdf({
-        rows: selectedRows,
+        rows: getSelectedRowsInScreenOrder(),
         columns: usedColumns,
         reportName: `${title}`,
         columnVisibility,
@@ -1661,7 +1675,7 @@ export const CIPPTableToptoolbar = React.memo(
             mobile filter sheet's export items can click them too */}
         <Box sx={{ display: 'none' }}>
           <PDFExportButton
-            rows={table.getFilteredRowModel().rows}
+            rows={table.getPrePaginationRowModel().rows}
             columns={usedColumns}
             reportName={title}
             columnVisibility={columnVisibility}
@@ -1670,7 +1684,7 @@ export const CIPPTableToptoolbar = React.memo(
           <CSVExportButton
             reportName={title}
             columnVisibility={columnVisibility}
-            rows={table.getFilteredRowModel().rows}
+            rows={table.getPrePaginationRowModel().rows}
             columns={usedColumns}
             data-csv-export={title}
           />
