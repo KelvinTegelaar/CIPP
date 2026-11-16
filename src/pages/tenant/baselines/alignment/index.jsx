@@ -1017,11 +1017,10 @@ const Page = () => {
         'Fix [standardLabel] on [tenantFilter] now? CIPP immediately applies the configured expected value.',
       multiPost: false,
       relatedQueryKeys,
-      // Running remediation by hand is always possible - the engine deploys the expected
-      // value regardless of the current state, and a license bought after the last run
-      // should not block trying. Manual tasks have nothing to deploy; a Conflict has no
-      // unambiguous expected value to deploy.
-      condition: (row) => !isManualTaskRow(row) && row.status !== 'Conflict',
+      // Triaged rows are held: remediating would overwrite the accepted values.
+      condition: (row) =>
+        !isManualTaskRow(row) &&
+        !['Conflict', 'Accepted', 'Partially Accepted', 'Denied - Delete Pending'].includes(row.status),
       hideCondition: (row) => isManualTaskRow(row),
     },
     {
