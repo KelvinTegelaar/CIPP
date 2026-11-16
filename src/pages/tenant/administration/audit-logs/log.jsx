@@ -25,7 +25,8 @@ import { ArrowLeftIcon } from "@mui/x-date-pickers";
 
 const Page = () => {
   const router = useRouter();
-  const { id } = router.query;
+  // Alert emails link with ?logId=, the Saved Logs table with ?id=
+  const id = router.query.id ?? router.query.logId;
   const [logData, setLogData] = useState(null);
   const [lookupIp, setLookupIp] = useState(null);
 
