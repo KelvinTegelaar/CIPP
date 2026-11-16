@@ -723,15 +723,26 @@ const jsonBox = (value, isCompliant) => (
   </Box>
 )
 
+const VIEW_MODES = ['tenant', 'standard', 'template', 'history']
+
 const Page = () => {
   const pageTitle = 'Baseline Alignment'
   const router = useRouter()
   const currentTenant = useSettings().currentTenant
   const [viewMode, setViewMode] = useState('tenant')
-  // Deep link: ?view=standard opens the by-standard view (query is empty until the router is ready).
+  // Deep link: ?view= selects the view (query is empty until the router is ready).
   useEffect(() => {
-    if (router.isReady && router.query.view === 'standard') setViewMode('standard')
+    if (router.isReady && VIEW_MODES.includes(router.query.view)) setViewMode(router.query.view)
   }, [router.isReady, router.query.view])
+  // Keeps ?view= in step so a refresh or shared link lands on the same view.
+  const changeView = (newViewMode, extraQuery = {}) => {
+    setViewMode(newViewMode)
+    router.replace(
+      { pathname: router.pathname, query: { ...router.query, ...extraQuery, view: newViewMode } },
+      undefined,
+      { shallow: true }
+    )
+  }
   const [baselineIdPick, setBaselineIdPick] = useState(undefined)
   const [stagePick, setStagePick] = useState(undefined)
   const [advanceTarget, setAdvanceTarget] = useState(null)
@@ -2119,17 +2130,6 @@ const Page = () => {
               startIcon={<CippIcons.EyeIcon />}
               sx={{ alignSelf: 'flex-start' }}
               onClick={() => {
-                // The tenant selector follows ?tenantFilter=, so switch through the URL.
-                if (row.tenantFilter !== currentTenant) {
-                  router.replace(
-                    {
-                      pathname: router.pathname,
-                      query: { ...router.query, tenantFilter: row.tenantFilter },
-                    },
-                    undefined,
-                    { shallow: true }
-                  )
-                }
                 setHistoryFilters({
                   standard: row.standardName ? [row.standardName] : [],
                   outcome: [],
@@ -2137,7 +2137,11 @@ const Page = () => {
                   search: '',
                   days: 0,
                 })
-                setViewMode('history')
+                // The tenant selector follows ?tenantFilter=, so switch through the URL.
+                changeView(
+                  'history',
+                  row.tenantFilter !== currentTenant ? { tenantFilter: row.tenantFilter } : {}
+                )
               }}
             >
               View full history
@@ -2517,7 +2521,7 @@ const Page = () => {
       exclusive
       size="small"
       onChange={(event, newViewMode) => {
-        if (newViewMode !== null) setViewMode(newViewMode)
+        if (newViewMode !== null) changeView(newViewMode)
       }}
       sx={{
         // Four options do not fit a phone viewport on one line, so wrap below md.
