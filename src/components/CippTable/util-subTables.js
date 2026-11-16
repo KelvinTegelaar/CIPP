@@ -100,6 +100,19 @@ export const columnOrderHasStaleIds = (columnOrder, displayColumnIds) => {
   )
 }
 
+// A saved column order applied over the current one; MRT's own columns keep their ends
+export const applyColumnOrder = (columnOrder, savedIds) => {
+  const isMrt = (id) => String(id).startsWith('mrt-')
+  const current = columnOrder ?? []
+  const saved = savedIds.filter((id) => !isMrt(id) && current.includes(id))
+  return [
+    ...current.filter((id) => isMrt(id) && String(id).includes('select')),
+    ...saved,
+    ...current.filter((id) => !isMrt(id) && !saved.includes(id)),
+    ...current.filter((id) => isMrt(id) && !String(id).includes('select')),
+  ]
+}
+
 /**
  * Rebuild columnOrder so every non-MRT id exists on the current display column set.
  * MRT (with column virtualization) throws during render if order references removed

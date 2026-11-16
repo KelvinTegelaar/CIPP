@@ -27,6 +27,7 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  TextField,
 } from '@mui/material'
 import { PDFExportButton, exportRowsToPdf } from '../pdfExportButton'
 import { CSVExportButton, exportRowsToCsv } from '../csvExportButton'
@@ -51,6 +52,7 @@ import { CippMobileTableControls } from './CippMobileTableControls'
 import { CippTableFilterSheet } from './CippTableFilterSheet'
 import { useSheetHandoff } from '../../hooks/use-sheet-handoff'
 import { getShowTenantNames, isTenantColumn } from '../../utils/tenant-display-names'
+import { applyColumnOrder } from './util-subTables'
 import {
   ModernSearchContainer,
   ModernSearchInput,
@@ -145,6 +147,7 @@ export const CIPPTableToptoolbar = React.memo(
     const presetKey = (filter) => filter?.id ?? filter?.filterName
     const pageName = persistenceKey ?? (isInDialog ? '' : router.pathname.split('/').slice(1).join('/'))
     const showTenantNames = getShowTenantNames(settings, pageName)
+    const [columnSearch, setColumnSearch] = useState('')
     const [useCompactMode, setUseCompactMode] = useState(false)
     const toolbarRef = useRef(null)
     const leftContainerRef = useRef(null)
@@ -553,11 +556,18 @@ export const CIPPTableToptoolbar = React.memo(
         }
         return updatedVisibility
       })
+      if (Array.isArray(originalSimpleColumns)) {
+        table.setColumnOrder(applyColumnOrder(table.getState().columnOrder, originalSimpleColumns))
+      }
       if (pageName) {
         settings.handleUpdate({
           columnDefaults: {
             ...settings?.columnDefaults,
             [pageName]: {},
+          },
+          columnOrderDefaults: {
+            ...settings?.columnOrderDefaults,
+            [pageName]: [],
           },
         })
       }
@@ -565,6 +575,10 @@ export const CIPPTableToptoolbar = React.memo(
     }
 
     const resetToPreferedVisibility = () => {
+      const savedOrder = settings?.columnOrderDefaults?.[pageName]
+      if (savedOrder?.length) {
+        table.setColumnOrder(applyColumnOrder(table.getState().columnOrder, savedOrder))
+      }
       const preferred = settings?.columnDefaults?.[pageName]
       if (preferred && Object.keys(preferred).length > 0) {
         // Layer the saved selection over the current map. Replacing it would leave every
@@ -591,6 +605,12 @@ export const CIPPTableToptoolbar = React.memo(
           columnDefaults: {
             ...settings?.columnDefaults,
             [pageName]: columnVisibility,
+          },
+          columnOrderDefaults: {
+            ...settings?.columnOrderDefaults,
+            [pageName]: table
+              .getState()
+              .columnOrder.filter((id) => !String(id).startsWith('mrt-')),
           },
         })
       }
@@ -1410,7 +1430,10 @@ export const CIPPTableToptoolbar = React.memo(
             <Menu
               anchorEl={columnsAnchor}
               open={Boolean(columnsAnchor)}
-              onClose={() => setColumnsAnchor(null)}
+              onClose={() => {
+                setColumnsAnchor(null)
+                setColumnSearch('')
+              }}
               slotProps={{
                 paper: { sx: {
                   mt: 1,
@@ -1445,9 +1468,26 @@ export const CIPPTableToptoolbar = React.memo(
                 </MenuItem>
               )}
               <Divider />
+              {/* stopPropagation keeps MUI's menu type-ahead from taking the keystrokes */}
+              <Box sx={{ px: 1.5, py: 1 }} onKeyDown={(event) => event.stopPropagation()}>
+                <TextField
+                  size="small"
+                  fullWidth
+                  autoFocus
+                  placeholder="Search columns"
+                  value={columnSearch}
+                  onChange={(event) => setColumnSearch(event.target.value)}
+                />
+              </Box>
               {table
                 .getAllColumns()
-                .filter((column) => !column.id.startsWith('mrt-'))
+                .filter(
+                  (column) =>
+                    !column.id.startsWith('mrt-') &&
+                    getCippTranslation(column.id)
+                      .toLowerCase()
+                      .includes(columnSearch.trim().toLowerCase())
+                )
                 .map((column) => (
                   <MenuItem
                     key={column.id}

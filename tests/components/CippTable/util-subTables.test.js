@@ -7,6 +7,7 @@ import {
   getInactiveSubTableColumnIds,
   columnOrderHasStaleIds,
   sanitizeColumnOrder,
+  applyColumnOrder,
 } from '../../../src/components/CippTable/util-subTables'
 
 const membersSub = {
@@ -89,5 +90,19 @@ describe('util-subTables', () => {
     expect(sanitizeColumnOrder(order, ['displayName', 'membersCsv'], ['displayName', 'membersCsv'])).toBe(
       order
     )
+  })
+})
+
+describe('applyColumnOrder', () => {
+  it('puts saved columns first, keeps new ones after them and MRT columns at the ends', () => {
+    const current = ['mrt-row-select', 'a', 'b', 'c', 'new', 'mrt-row-actions']
+    expect(applyColumnOrder(current, ['c', 'gone', 'a', 'mrt-row-actions'])).toEqual([
+      'mrt-row-select',
+      'c',
+      'a',
+      'b',
+      'new',
+      'mrt-row-actions',
+    ])
   })
 })

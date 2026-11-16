@@ -391,6 +391,30 @@ const resolveColumnFilterFnName = (col) => {
 
 const MUI_TABLE_HEAD_CELL_PROPS = {
   sx: {
+    // Header controls take no width until hovered (sorting shows while a column is sorted) and labels stay on one
+    // line, so hovering never resizes the header or moves the table
+    '& .Mui-TableHeadCell-Content-Wrapper': {
+      whiteSpace: 'nowrap',
+    },
+    '& .Mui-TableHeadCell-Content-Actions, &[aria-sort="none"] .MuiTableSortLabel-root': {
+      width: 0,
+      minWidth: 0,
+      overflow: 'hidden',
+      opacity: 0,
+    },
+    '&:hover .Mui-TableHeadCell-Content-Actions, &:focus-within .Mui-TableHeadCell-Content-Actions': {
+      width: 'auto',
+      minWidth: 'auto',
+      overflow: 'visible',
+      opacity: 1,
+    },
+    // MRT's own unsorted sort label: flex 0 0 at 3ch, dimmed
+    '&[aria-sort="none"]:hover .MuiTableSortLabel-root, &[aria-sort="none"]:focus-within .MuiTableSortLabel-root': {
+      width: '3ch',
+      minWidth: 'auto',
+      overflow: 'visible',
+      opacity: 0.3,
+    },
     '& .MuiTableCell-root': {
       padding: '8px 16px',
     },
@@ -798,6 +822,7 @@ export const CippDataTable = (props) => {
   const preferredColumnVisibility = pageName
     ? settings?.columnDefaults?.[pageName]
     : undefined
+  const savedColumnOrder = pageName ? settings?.columnOrderDefaults?.[pageName] : undefined
   const tenantNames = useTenantNames(getShowTenantNames(settings, pageName))
 
   // 'cards' below the md breakpoint (or when forced via settings/prop), 'table' otherwise.
@@ -1102,7 +1127,11 @@ export const CippDataTable = (props) => {
             ...subTableIds,
           ]),
         ]
-        setColumnOrder(orderColumnsBySelection(allIds, finalResolvedColumns))
+        setColumnOrder(
+          orderColumnsBySelection(allIds, [
+            ...new Set([...(savedColumnOrder ?? []), ...finalResolvedColumns]),
+          ])
+        )
       }
     } else {
       const providedColumnKeys = new Set(
@@ -1127,6 +1156,14 @@ export const CippDataTable = (props) => {
           newVisibility['Tenant'] = true
         }
       }
+    }
+    if (configuredSimpleColumns.length === 0 && savedColumnOrder?.length) {
+      setColumnOrder(
+        orderColumnsBySelection(
+          finalColumns.map((col) => col.id).filter(Boolean),
+          savedColumnOrder
+        )
+      )
     }
     // Saved preferred columns win over the defaults above. Fields the preference never
     // saw (a different tenant's schema) keep the default computed for this table.
@@ -1991,6 +2028,7 @@ export const CippDataTable = (props) => {
     enableRowVirtualization: true,
     enableColumnVirtualization: true,
     enableColumnResizing: true,
+    enableColumnOrdering: true,
     columnResizeMode: 'onChange',
     rowVirtualizerOptions: {
       overscan: 5,
