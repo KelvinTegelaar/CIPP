@@ -55,6 +55,11 @@
     "description": "Authentication methods policy configuration"
   },
   {
+    "type": "DirectoryRecommendationConfiguration",
+    "friendlyName": "Recommendation Settings",
+    "description": "Whether Entra emails admins about new recommendations"
+  },
+  {
     "type": "DirectoryRecommendations",
     "friendlyName": "Directory Recommendations",
     "description": "Azure AD directory recommendations"
