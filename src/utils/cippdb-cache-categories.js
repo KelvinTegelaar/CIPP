@@ -56,6 +56,7 @@ const CACHE_TYPE_COLLECTIONS = {
     "ExoTransportRules",
     "ExoDkimSigningConfig",
     "ExoOrganizationConfig",
+    "ExoActiveSyncOrganizationSettings",
     "ExoAcceptedDomains",
     "ExoHostedContentFilterPolicy",
     "ExoHostedOutboundSpamFilterPolicy",
@@ -94,6 +95,7 @@ const CACHE_TYPE_COLLECTIONS = {
     "MailboxUsage",
     "OfficeActivations",
     "HVEAccounts",
+    "MobileDevices",
     "Mailboxes",
   ],
   ConditionalAccess: [

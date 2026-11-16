@@ -50,6 +50,7 @@ import { Stack } from '@mui/system'
 import { CippMobileTableControls } from './CippMobileTableControls'
 import { CippTableFilterSheet } from './CippTableFilterSheet'
 import { useSheetHandoff } from '../../hooks/use-sheet-handoff'
+import { getShowTenantNames, isTenantColumn } from '../../utils/tenant-display-names'
 import {
   ModernSearchContainer,
   ModernSearchInput,
@@ -143,6 +144,7 @@ export const CIPPTableToptoolbar = React.memo(
     const [filterCanvasVisible, setFilterCanvasVisible] = useState(false)
     const presetKey = (filter) => filter?.id ?? filter?.filterName
     const pageName = persistenceKey ?? (isInDialog ? '' : router.pathname.split('/').slice(1).join('/'))
+    const showTenantNames = getShowTenantNames(settings, pageName)
     const [useCompactMode, setUseCompactMode] = useState(false)
     const toolbarRef = useRef(null)
     const leftContainerRef = useRef(null)
@@ -1213,50 +1215,6 @@ export const CIPPTableToptoolbar = React.memo(
                 >
                   Columns
                 </ModernButton>
-                <Menu
-                  anchorEl={columnsAnchor}
-                  open={Boolean(columnsAnchor)}
-                  onClose={() => setColumnsAnchor(null)}
-                  slotProps={{
-                    paper: { sx: {
-                      mt: 1,
-                      borderRadius: 2,
-                      minWidth: 250,
-                      maxHeight: 400,
-                    } },
-                  }}
-                >
-                  <MenuItem onClick={resetToPreferedVisibility}>
-                    <ListItemText primary="Reset to preferred columns" />
-                  </MenuItem>
-                  <MenuItem onClick={saveAsPreferedColumns}>
-                    <ListItemText primary="Save as preferred columns" />
-                  </MenuItem>
-                  <MenuItem onClick={resetToDefaultVisibility}>
-                    <ListItemText primary="Delete preferred columns" />
-                  </MenuItem>
-                  <Divider />
-                  {table
-                    .getAllColumns()
-                    .filter((column) => !column.id.startsWith('mrt-'))
-                    .map((column) => (
-                      <MenuItem
-                        key={column.id}
-                        onClick={() =>
-                          setColumnVisibility({
-                            ...columnVisibility,
-                            [column.id]: !column.getIsVisible(),
-                          })
-                        }
-                      >
-                        <Checkbox
-                          checked={Boolean(column.getIsVisible())}
-                          size="small"
-                        />
-                        <ListItemText primary={getCippTranslation(column.id)} />
-                      </MenuItem>
-                    ))}
-                </Menu>
 
                 {/* Export Button */}
                 {exportEnabled && (
@@ -1471,6 +1429,21 @@ export const CIPPTableToptoolbar = React.memo(
               <MenuItem onClick={resetToDefaultVisibility}>
                 <ListItemText primary="Delete preferred columns" />
               </MenuItem>
+              {pageName && usedColumns.some((column) => isTenantColumn(column.id)) && (
+                <MenuItem
+                  onClick={() =>
+                    settings.handleUpdate({
+                      tenantNamePages: {
+                        ...settings?.tenantNamePages,
+                        [pageName]: !showTenantNames,
+                      },
+                    })
+                  }
+                >
+                  <Checkbox checked={showTenantNames} size="small" />
+                  <ListItemText primary="Show tenant names instead of domains" />
+                </MenuItem>
+              )}
               <Divider />
               {table
                 .getAllColumns()

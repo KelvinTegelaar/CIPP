@@ -3,6 +3,7 @@ import { CippIcons } from '../utils/icon-registry'
 import { mkConfig, generateCsv, download } from 'export-to-csv'
 import { getCippFormatting } from '../utils/get-cipp-formatting'
 import { SKIP_RECURSION_KEYS } from '../utils/skip-recursion-keys'
+import { isTenantColumn } from '../utils/tenant-display-names'
 const csvConfig = mkConfig({
   fieldSeparator: ',',
   decimalSeparator: '.',
@@ -78,9 +79,14 @@ export const exportRowsToCsv = ({
   const filteredData = rowData.map((row) => filterRowData(row, columnKeys))
 
   // Apply standard CIPP formatting so CSV values match on-screen representations.
-  const formattedData = filteredData.map((row) => {
+  const formattedData = filteredData.map((row, index) => {
     const formattedRow = {}
     columnKeys.forEach((key) => {
+      // A table row resolves tenant columns to names when the table shows them
+      if (isTenantColumn(key) && typeof rows[index].getValue === 'function') {
+        formattedRow[key] = rows[index].getValue(key)
+        return
+      }
       const value = row[key]
       if (typeof value === 'string') {
         formattedRow[key] = value

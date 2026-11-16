@@ -246,6 +246,11 @@
     "description": "Exchange Online DKIM signing configuration"
   },
   {
+    "type": "ExoActiveSyncOrganizationSettings",
+    "friendlyName": "ActiveSync Organization Settings",
+    "description": "Default access level for new mobile devices (Allow, Block or Quarantine)"
+  },
+  {
     "type": "ExoOrganizationConfig",
     "friendlyName": "Exchange Organization Config",
     "description": "Exchange Online organization configuration"
@@ -319,6 +324,11 @@
     "type": "HVEAccounts",
     "friendlyName": "HVE Accounts",
     "description": "High Volume Email accounts"
+  },
+  {
+    "type": "MobileDevices",
+    "friendlyName": "Mobile Devices",
+    "description": "Exchange ActiveSync and Outlook mobile devices with their access state"
   },
   {
     "type": "CASMailboxes",

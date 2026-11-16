@@ -10,6 +10,8 @@ const Page = () => {
       apiUrl="/api/ListDefenderState"
       simpleColumns={[
         "deviceName",
+        "operatingSystem",
+        "osVersion",
         "windowsProtectionState.malwareProtectionEnabled",
         "windowsProtectionState.realTimeProtectionEnabled",
         "windowsProtectionState.networkInspectionSystemEnabled",

@@ -4,6 +4,7 @@ import { formatCellText } from './CippCellText'
 import { getCippTranslation } from '../../utils/get-cipp-translation'
 import { getCippColumnSize } from '../../utils/get-cipp-column-size'
 import { SKIP_RECURSION_KEYS as skipRecursion } from '../../utils/skip-recursion-keys'
+import { isTenantColumn, toTenantName } from '../../utils/tenant-display-names'
 
 // Number of rows to sample when measuring column content width.
 const MAX_SIZE_SAMPLE = 30
@@ -217,7 +218,7 @@ const mergeKeys = (dataArray) => {
 // Scanning the full dataset is O(n * columns) and dominates render time on large tables.
 const MAX_FILTER_SAMPLE = 50
 
-export const utilColumnsFromAPI = (dataArray) => {
+export const utilColumnsFromAPI = (dataArray, tenantNames = null) => {
   // Add safety check for dataArray
   if (!dataArray || !Array.isArray(dataArray) || dataArray.length === 0) {
     return []
@@ -244,8 +245,12 @@ export const utilColumnsFromAPI = (dataArray) => {
         }
 
         // Build a value resolver usable by both accessorFn/Cell and the filter util
-        const resolveValue = (rowLike) =>
+        const readValue = (rowLike) =>
           accessorKey.includes('@odata') ? rowLike?.[accessorKey] : getAtPath(rowLike, accessorKey)
+        const resolveValue =
+          tenantNames && isTenantColumn(accessorKey)
+            ? (rowLike) => toTenantName(readValue(rowLike), tenantNames)
+            : readValue
 
         // Sample a small subset for filter heuristics instead of the full dataset.
         const valuesForColumn = filterSample

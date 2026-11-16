@@ -61,6 +61,7 @@ import {
 } from './util-subTables'
 import { attachParentRow, getRowTenant } from '../../utils/resolve-row-templates'
 import { isMultiTenant, isMultiTenantScope } from '../../utils/tenant-selection'
+import { getShowTenantNames, useTenantNames } from '../../utils/tenant-display-names'
 import {
   dispatchRowOpen,
   partitionRowMenuActions,
@@ -797,6 +798,7 @@ export const CippDataTable = (props) => {
   const preferredColumnVisibility = pageName
     ? settings?.columnDefaults?.[pageName]
     : undefined
+  const tenantNames = useTenantNames(getShowTenantNames(settings, pageName))
 
   // 'cards' below the md breakpoint (or when forced via settings/prop), 'table' otherwise.
   // simple tables always resolve to 'table'.
@@ -1024,7 +1026,7 @@ export const CippDataTable = (props) => {
       return
     }
 
-    const schemaKey = computeSchemaKey(usedData)
+    const schemaKey = `${computeSchemaKey(usedData)}|${tenantNames ? 'names' : ''}`
     // Skip expensive column generation if the schema hasn't changed.
     if (schemaKey === prevSchemaKeyRef.current && usedColumns.length > 0) {
       return
@@ -1032,7 +1034,7 @@ export const CippDataTable = (props) => {
     prevSchemaKeyRef.current = schemaKey
 
     // Inlined, the column closures would keep this render's scope and, through usedColumns, every earlier one.
-    const apiColumns = /*#__NOINLINE__*/ utilColumnsFromAPI(usedData)
+    const apiColumns = /*#__NOINLINE__*/ utilColumnsFromAPI(usedData, tenantNames)
 
     // Apply custom filterFn to columns that have filterType === 'equal'
     const enhancedApiColumns = apiColumns.map((col) => {
@@ -1147,6 +1149,7 @@ export const CippDataTable = (props) => {
     filterTypeMap,
     subTables,
     preferredColumnVisibility,
+    tenantNames,
   ])
 
   // Previous-value refs for the guards below: CippDataTable is the single owner of this

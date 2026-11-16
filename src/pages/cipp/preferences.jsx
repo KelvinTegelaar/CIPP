@@ -442,6 +442,16 @@ const Page = () => {
                             />
                           ),
                         },
+                        {
+                          label: "Show tenant names instead of domains in tables",
+                          value: (
+                            <CippFormComponent
+                              type="switch"
+                              name="showTenantNames"
+                              formControl={formcontrol}
+                            />
+                          ),
+                        },
                       ]}
                     />
                     <CippPropertyListCard

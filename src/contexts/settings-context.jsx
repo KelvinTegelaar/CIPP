@@ -116,6 +116,7 @@ const initialSettings = {
   showDevtools: false,
   showAdvancedTools: false,
   persistFilters: false,
+  showTenantNames: false,
   lastUsedFilters: {},
   breadcrumbMode: "hierarchical",
   bookmarkSidebar: true,

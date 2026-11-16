@@ -77,6 +77,23 @@ describe('utilColumnsFromAPI', () => {
     expect(ids).toContain('info.state')
   })
 
+  it('shows tenant names in tenant columns only when a name map is given', () => {
+    const data = [
+      { Tenant: 'Contoso.onmicrosoft.com', Tenants: ['contoso.onmicrosoft.com', 'unknown.com'], mail: 'contoso.onmicrosoft.com' },
+    ]
+    const names = new Map([['contoso.onmicrosoft.com', 'Contoso Billing']])
+    const value = (columns, id) => columns.find((c) => c.id === id).accessorFn(data[0])
+
+    const named = utilColumnsFromAPI(data, names)
+    expect(value(named, 'Tenant')).toBe('Contoso Billing')
+    expect(value(named, 'Tenants')).toBe('Contoso Billing, unknown.com')
+    expect(value(named, 'mail')).toBe('contoso.onmicrosoft.com')
+    expect(value(utilColumnsFromAPI(data), 'Tenant')).toBe('Contoso.onmicrosoft.com')
+
+    const picked = [{ Tenant: { label: 'contoso.onmicrosoft.com', value: 'contoso.onmicrosoft.com', type: 'Tenant' } }]
+    expect(utilColumnsFromAPI(picked, names)[0].accessorFn(picked[0])).toBe('Contoso Billing')
+  })
+
   it('returns empty array for empty data', () => {
     const columns = utilColumnsFromAPI([])
     expect(columns).toEqual([])
