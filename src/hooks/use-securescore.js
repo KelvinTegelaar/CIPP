@@ -1,25 +1,41 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { ApiGetCall } from '../api/ApiCall'
 import { useSettings } from './use-settings'
 import { getStandards } from '../utils/standards-data'
 import { isMultiTenant } from '../utils/tenant-selection'
+import { useCippReportDB } from '../components/CippComponents/CippReportDBControls'
 
 export function useSecureScore({ waiting = true } = {}) {
   const currentTenant = useSettings().currentTenant
   const isAllTenants = isMultiTenant(currentTenant)
 
+  // Live/Cached chip + Sync. Cached reads the raw Graph records the nightly SecureScore cache
+  // stores, through ListDBCache, which answers in the same { Results } envelope as the live call.
+  const reportDB = useCippReportDB({
+    apiUrl: '/api/ListDBCache',
+    queryKey: 'secureScore',
+    cacheName: 'SecureScore',
+    syncTitle: 'Sync Secure Score',
+    defaultCached: false,
+  })
+  const cached = reportDB.useReportDB
+
   const [translatedData, setTranslatedData] = useState([])
   const [isSuccess, setIsSuccess] = useState(false)
   const [isFetching, setIsFetching] = useState(false)
   const controlScore = ApiGetCall({
-    url: '/api/ListGraphRequest',
-    data: {
-      Endpoint: 'security/secureScoreControlProfiles',
-      tenantFilter: currentTenant,
-      $count: true,
-      $top: 999,
-    },
-    queryKey: `controlScore-${currentTenant}`,
+    url: cached ? '/api/ListDBCache' : '/api/ListGraphRequest',
+    data: cached
+      ? { tenantFilter: currentTenant, type: 'SecureScoreControlProfiles' }
+      : {
+          Endpoint: 'security/secureScoreControlProfiles',
+          tenantFilter: currentTenant,
+          $count: true,
+          $top: 999,
+        },
+    // ponytail: a Sync only invalidates the scores query below (the one key the queue tracker
+    // knows); cached profiles refresh on their 5 min staleTime. Give both one key if that bites.
+    queryKey: `controlScore-${currentTenant}-${cached}`,
     // Never fetch under AllTenants: these are live per-tenant Graph reads whose results the
     // effects below discard in that mode — the AllTenants view reads the nightly cache instead.
     waiting: waiting && !isAllTenants,
@@ -39,19 +55,33 @@ export function useSecureScore({ waiting = true } = {}) {
   const standardsPath = baselinesEnabled ? '/tenant/baselines' : '/tenant/standards/templates'
 
   const secureScore = ApiGetCall({
-    url: '/api/ListGraphRequest',
-    data: {
-      Endpoint: 'security/secureScores',
-      tenantFilter: currentTenant,
-      $count: true,
-      noPagination: true,
-      $top: 7,
-    },
-    queryKey: `secureScore-${currentTenant}`,
+    url: cached ? '/api/ListDBCache' : '/api/ListGraphRequest',
+    data: cached
+      ? { tenantFilter: currentTenant, type: 'SecureScore' }
+      : {
+          Endpoint: 'security/secureScores',
+          tenantFilter: currentTenant,
+          $count: true,
+          noPagination: true,
+          $top: 7,
+        },
+    // The key the Sync queue tracker invalidates when the cache job finishes.
+    queryKey: reportDB.resolvedQueryKey,
     // Never fetch under AllTenants: these are live per-tenant Graph reads whose results the
     // effects below discard in that mode — the AllTenants view reads the nightly cache instead.
     waiting: waiting && !isAllTenants,
   })
+
+  // Newest first, 7 days: what the live call returns. The cache keeps 14 days oldest-first.
+  const scores = useMemo(
+    () =>
+      [...(secureScore.data?.Results ?? [])]
+        .sort((a, b) => new Date(b.createdDateTime) - new Date(a.createdDateTime))
+        .slice(0, 7),
+    [secureScore.data]
+  )
+  // A tenant with no score records (or a cache that never synced) is a success with nothing in it.
+  const noData = secureScore.isSuccess && scores.length === 0
 
   useEffect(() => {
     if (isAllTenants) {
@@ -69,8 +99,8 @@ export function useSecureScore({ waiting = true } = {}) {
 
   useEffect(() => {
     if (isAllTenants) return
-    if (controlScore.isSuccess && secureScore.isSuccess) {
-      const secureScoreData = secureScore.data.Results[0]
+    if (controlScore.isSuccess && secureScore.isSuccess && scores.length > 0) {
+      const secureScoreData = scores[0]
       const updatedControlScores = secureScoreData.controlScores.map((control) => {
         const translation = controlScore.data.Results?.find(
           (controlTranslation) => controlTranslation.id === control.controlName
@@ -129,7 +159,7 @@ export function useSecureScore({ waiting = true } = {}) {
     controlScore.isSuccess,
     secureScore.isSuccess,
     controlScore.data,
-    secureScore.data,
+    scores,
     isAllTenants,
     standardsPath,
   ])
@@ -140,5 +170,26 @@ export function useSecureScore({ waiting = true } = {}) {
     translatedData,
     isFetching,
     isSuccess,
+    // A failed query never reaches the success effect above, so pages need this to tell
+    // "failed" from "not loaded yet".
+    isError: !isAllTenants && (controlScore.isError || secureScore.isError || noData),
+    error:
+      controlScore.error ??
+      secureScore.error ??
+      (noData
+        ? {
+            message: cached
+              ? 'No cached data for this tenant yet. Run a Sync or switch to Live.'
+              : 'Microsoft returned no Secure Score data for this tenant.',
+          }
+        : null),
+    refetch: () => {
+      if (controlScore.isError) controlScore.refetch()
+      if (secureScore.isError || noData) secureScore.refetch()
+    },
+    scores,
+    cached,
+    controls: reportDB.controls,
+    syncDialog: reportDB.syncDialog,
   }
 }

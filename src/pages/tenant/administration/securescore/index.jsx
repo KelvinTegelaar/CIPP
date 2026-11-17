@@ -5,6 +5,7 @@ import tabOptions from './tabOptions'
 import { useSecureScore } from '../../../../hooks/use-securescore'
 import { CippInfoBar } from '../../../../components/CippCards/CippInfoBar'
 import {
+  Alert,
   Box,
   Button,
   Chip,
@@ -30,6 +31,7 @@ import {
 import { useSettings } from '../../../../hooks/use-settings'
 import { useRouter } from 'next/navigation'
 import { isMultiTenant } from '../../../../utils/tenant-selection'
+import { getCippError } from '../../../../utils/get-cipp-error'
 
 const Page = () => {
   const currentTenant = useSettings().currentTenant
@@ -131,8 +133,15 @@ const Page = () => {
           <>
             <Grid
               size={{ md: 12, xs: 12 }}
-              sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1, mb: 2 }}
+              sx={{
+                display: 'flex',
+                justifyContent: 'flex-end',
+                alignItems: 'center',
+                gap: 1,
+                mb: 2,
+              }}
             >
+              {secureScore.controls}
               <Button
                 variant="outlined"
                 startIcon={<CippIcons.Sort />}
@@ -177,71 +186,91 @@ const Page = () => {
                 ))}
               </Menu>
             </Grid>
-            <Grid size={{ md: 12, xs: 12 }}>
-              <CippInfoBar
-                isFetching={secureScore.isFetching}
-                data={[
-                  {
-                    icon: <CippIcons.CheckCircleIcon />,
-                    data: secureScore.translatedData.percentageCurrent + '%',
-                    name: 'Current Score',
-                    color: 'secondary',
-                  },
-                  {
-                    icon: <CippIcons.GlobeAltIcon />,
-                    data: secureScore.translatedData.percentageVsAllTenants + '%',
-                    name: 'Compared score (All Tenants)',
-                    color: 'green',
-                  },
-                  {
-                    icon: <CippIcons.Map />,
-                    data: secureScore.translatedData.percentageVsSimilar + '%',
-                    name: 'Compared score (Similar Tenants)',
-                  },
-                  {
-                    icon: <CippIcons.Score />,
-                    data: `${secureScore.translatedData.currentScore} of ${secureScore.translatedData.maxScore}`,
-                    name: 'Score in points',
-                  },
-                ]}
-              />
-            </Grid>
-            <Grid size={{ md: 3, xs: 12 }}>
-              <CippChartCard
-                isFetching={secureScore.isFetching}
-                title={'Secure Score'}
-                headerAction={
-                  <ToggleButtonGroup
-                    size="small"
-                    exclusive
-                    value={chartMode}
-                    onChange={(_, mode) => mode && setChartMode(mode)}
-                  >
-                    <ToggleButton value="percent">%</ToggleButton>
-                    <ToggleButton value="points">Points</ToggleButton>
-                  </ToggleButtonGroup>
-                }
-                chartSeries={
-                  secureScore.secureScore.isSuccess
-                    ? [
-                        {
-                          name: chartMode === 'percent' ? 'Secure Score %' : 'Secure Score',
-                          data: secureScore.secureScore.data.Results.map((data) => ({
-                            x: timeAgo.format(new Date(data.createdDateTime)),
-                            y:
-                              chartMode === 'percent'
-                                ? Math.round((data.currentScore / data.maxScore) * 10000) / 100
-                                : data.currentScore,
-                          })).reverse(),
-                        },
-                      ]
-                    : []
-                }
-                chartType="area"
-              />
-            </Grid>
+            {secureScore.isError && (
+              <Grid size={{ xs: 12 }}>
+                <Alert
+                  severity="error"
+                  action={
+                    <Button color="inherit" size="small" onClick={secureScore.refetch}>
+                      Retry
+                    </Button>
+                  }
+                >
+                  Could not load Secure Score: {getCippError(secureScore.error)}
+                  {!secureScore.cached && ' Switch to Cached to see the last synced data.'}
+                </Alert>
+              </Grid>
+            )}
+            {!secureScore.isError && (
+              <>
+                <Grid size={{ md: 12, xs: 12 }}>
+                  <CippInfoBar
+                    isFetching={secureScore.isFetching}
+                    data={[
+                      {
+                        icon: <CippIcons.CheckCircleIcon />,
+                        data: secureScore.translatedData.percentageCurrent + '%',
+                        name: 'Current Score',
+                        color: 'secondary',
+                      },
+                      {
+                        icon: <CippIcons.GlobeAltIcon />,
+                        data: secureScore.translatedData.percentageVsAllTenants + '%',
+                        name: 'Compared score (All Tenants)',
+                        color: 'green',
+                      },
+                      {
+                        icon: <CippIcons.Map />,
+                        data: secureScore.translatedData.percentageVsSimilar + '%',
+                        name: 'Compared score (Similar Tenants)',
+                      },
+                      {
+                        icon: <CippIcons.Score />,
+                        data: `${secureScore.translatedData.currentScore} of ${secureScore.translatedData.maxScore}`,
+                        name: 'Score in points',
+                      },
+                    ]}
+                  />
+                </Grid>
+                <Grid size={{ md: 3, xs: 12 }}>
+                  <CippChartCard
+                    isFetching={secureScore.isFetching}
+                    title={'Secure Score'}
+                    headerAction={
+                      <ToggleButtonGroup
+                        size="small"
+                        exclusive
+                        value={chartMode}
+                        onChange={(_, mode) => mode && setChartMode(mode)}
+                      >
+                        <ToggleButton value="percent">%</ToggleButton>
+                        <ToggleButton value="points">Points</ToggleButton>
+                      </ToggleButtonGroup>
+                    }
+                    chartSeries={
+                      secureScore.secureScore.isSuccess
+                        ? [
+                            {
+                              name: chartMode === 'percent' ? 'Secure Score %' : 'Secure Score',
+                              data: secureScore.scores.map((data) => ({
+                                x: timeAgo.format(new Date(data.createdDateTime)),
+                                y:
+                                  chartMode === 'percent'
+                                    ? Math.round((data.currentScore / data.maxScore) * 10000) / 100
+                                    : data.currentScore,
+                              })).reverse(),
+                            },
+                          ]
+                        : []
+                    }
+                    chartType="area"
+                  />
+                </Grid>
+              </>
+            )}
 
             {!isMultiTenant(currentTenant) &&
+              !secureScore.isError &&
               secureScore.isSuccess &&
               getFilteredControlScores().map((secureScoreControl) => (
                 <Grid size={{ md: 3, xs: 12 }} key={secureScoreControl.controlName}>
@@ -414,6 +443,7 @@ const Page = () => {
                 simpleColumns={['state', 'assignedTo', 'comment', 'updatedBy', 'updatedDateTime']}
               />
             )}
+            {secureScore.syncDialog}
             <CippApiDialog
               createDialog={createDialog}
               title="Confirmation"
