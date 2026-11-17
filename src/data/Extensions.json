@@ -31,6 +31,10 @@
       {
         "name": "Sherweb CIPP Integration",
         "url": "https://info.sherweb.com/sherweb-cipp-integration"
+      },
+      {
+        "name": "Sherweb Cumulus Portal",
+        "url": "https://cumulus.sherweb.com/"
       }
     ],
     "SettingOptions": [
@@ -1382,6 +1386,194 @@
       }
     ],
     "mappingRequired": false
+  },
+  {
+    "name": "External CSP",
+    "id": "ExternalCSP",
+    "type": "ExternalCSP",
+    "cat": "CSP",
+    "featureFlag": "ExternalCSP",
+    "beta": true,
+    "logo": "/assets/integrations/external-csp.svg",
+    "logoDark": "/assets/integrations/external-csp_dark.svg",
+    "description": "Connect any CSP distributor that implements the CIPP External CSP API to manage licensing from CIPP.",
+    "helpText": "This integration lets you buy, change and cancel CSP licences from CIPP through any distributor that implements the CIPP External CSP API. Your distributor provides the URLs and API key below. CIPP authenticates with an API key header, bearer token, basic auth or custom headers, whichever your distributor requires, and identifies each customer by their Microsoft tenant ID. External CSP cannot be enabled at the same time as Sherweb. CyberDrain does not support an individual distributor's integration unless that distributor holds a support contract with CyberDrain, so contact your distributor first if something does not work.",
+    "mappingRequired": false,
+    "links": [
+      {
+        "name": "External CSP API specification",
+        "url": "https://docs.cipp.app/user-documentation/cipp/integrations/external-csp"
+      }
+    ],
+    "SettingOptions": [
+      {
+        "type": "switch",
+        "name": "ExternalCSP.Enabled",
+        "label": "Enable Integration"
+      },
+      {
+        "type": "autoComplete",
+        "name": "ExternalCSP.AuthType",
+        "label": "Authentication",
+        "multiple": false,
+        "required": true,
+        "options": [
+          {
+            "label": "API Key Header",
+            "value": "ApiKey"
+          },
+          {
+            "label": "Bearer Token",
+            "value": "Bearer"
+          },
+          {
+            "label": "Basic Auth",
+            "value": "Basic"
+          },
+          {
+            "label": "Custom Headers (JSON)",
+            "value": "CustomHeaders"
+          }
+        ],
+        "condition": {
+          "field": "ExternalCSP.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
+      },
+      {
+        "type": "textField",
+        "name": "ExternalCSP.AuthHeaderName",
+        "label": "API Key Header Name",
+        "placeholder": "x-api-key",
+        "condition": {
+          "field": "ExternalCSP.AuthType.value",
+          "compareType": "is",
+          "compareValue": "ApiKey"
+        }
+      },
+      {
+        "type": "textField",
+        "name": "ExternalCSP.AuthUsername",
+        "label": "Basic Auth Username",
+        "placeholder": "Enter the username issued by your CSP provider",
+        "condition": {
+          "field": "ExternalCSP.AuthType.value",
+          "compareType": "is",
+          "compareValue": "Basic"
+        }
+      },
+      {
+        "type": "password",
+        "name": "ExternalCSP.APIKey",
+        "label": "Authentication Secret",
+        "placeholder": "API key value, bearer token, basic auth password, or custom headers JSON such as {\"x-api-key\":\"value\"}",
+        "required": true,
+        "condition": {
+          "field": "ExternalCSP.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
+      },
+      {
+        "type": "textField",
+        "name": "ExternalCSP.TestUrl",
+        "label": "Test URL (GET)",
+        "placeholder": "https://",
+        "required": true,
+        "condition": {
+          "field": "ExternalCSP.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
+      },
+      {
+        "type": "textField",
+        "name": "ExternalCSP.CatalogUrl",
+        "label": "Catalog URL (GET)",
+        "placeholder": "https://",
+        "required": true,
+        "condition": {
+          "field": "ExternalCSP.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
+      },
+      {
+        "type": "textField",
+        "name": "ExternalCSP.SubscriptionsUrl",
+        "label": "Subscriptions URL (GET)",
+        "placeholder": "https://",
+        "required": true,
+        "condition": {
+          "field": "ExternalCSP.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
+      },
+      {
+        "type": "textField",
+        "name": "ExternalCSP.OrderUrl",
+        "label": "New Order URL (POST)",
+        "placeholder": "https://",
+        "required": true,
+        "condition": {
+          "field": "ExternalCSP.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
+      },
+      {
+        "type": "textField",
+        "name": "ExternalCSP.QuantityUrl",
+        "label": "Quantity Change URL (POST)",
+        "placeholder": "https://",
+        "required": true,
+        "condition": {
+          "field": "ExternalCSP.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
+      },
+      {
+        "type": "textField",
+        "name": "ExternalCSP.CancelUrl",
+        "label": "Cancel URL (POST)",
+        "placeholder": "https://",
+        "required": true,
+        "condition": {
+          "field": "ExternalCSP.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
+      },
+      {
+        "type": "autoComplete",
+        "name": "ExternalCSP.AllowedCustomRoles",
+        "label": "Select CIPP roles that are allowed to purchase licenses",
+        "api": {
+          "url": "/api/ListCustomRole",
+          "queryKey": "CustomRoles",
+          "labelField": "RoleName",
+          "valueField": "RoleName"
+        },
+        "multiple": true,
+        "condition": {
+          "field": "ExternalCSP.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
+      }
+    ]
   },
   {
     "name": "ConnectWise PSA",

@@ -155,7 +155,8 @@ export const nativeMenuItems = [
     items: [
       {
         title: 'Administration',
-        permissions: ['Tenant.Administration.*'],
+        // Tenant.Directory keeps CSP License Management visible to roles that could open it under Reports.
+        permissions: ['Tenant.Administration.*', 'Tenant.Directory.*'],
         items: [
           {
             title: 'Tenants',
@@ -208,6 +209,11 @@ export const nativeMenuItems = [
             title: 'Domains',
             path: '/tenant/administration/domains',
             permissions: ['Tenant.Administration.*'],
+          },
+          {
+            title: 'CSP License Management',
+            path: '/tenant/administration/csp-license-management',
+            permissions: ['Tenant.Directory.*'],
           },
           {
             title: "Service Health",
@@ -305,11 +311,6 @@ export const nativeMenuItems = [
             title: 'Licence Report',
             path: '/tenant/reports/list-licenses',
             permissions: ['Tenant.Administration.*'],
-          },
-          {
-            title: 'Sherweb Licence Report',
-            path: '/tenant/reports/list-csp-licenses',
-            permissions: ['Tenant.Directory.*'],
           },
           {
             title: 'Consented Applications',

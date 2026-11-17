@@ -14,6 +14,10 @@ import { ApiGetCall } from '../../api/ApiCall'
 import { useSettings } from '../../hooks/use-settings'
 import { useQueryClient } from '@tanstack/react-query'
 import { useWatch } from 'react-hook-form'
+import {
+  filterCspSubscriptionsByLicence,
+  getSingleCspLicenceMatch,
+} from '../../utils/filter-csp-subscriptions'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useRouter } from 'next/router'
 
@@ -84,6 +88,19 @@ const CippAddEditUser = (props) => {
     refetchOnMount: false,
     refetchOnReconnect: false,
   })
+  // One CSP provider is active at a time; External CSP posts its SKU as cspLicense.
+  const isExternalCsp =
+    integrationSettings?.data?.ExternalCSP?.Enabled === true
+  const cspLicenceLabel = isExternalCsp ? 'CSP' : 'Sherweb'
+  const cspTermsParty = isExternalCsp ? 'your CSP provider' : 'Sherweb'
+  // The Microsoft licences being bought: selected with no seats left.
+  const selectedLicences = useWatch({
+    control: formControl.control,
+    name: 'licenses',
+  })
+  const licencesToBuy = (Array.isArray(selectedLicences) ? selectedLicences : [])
+    .filter((licence) => licence?.label?.includes('(0 available)'))
+    .map((licence) => licence.value)
 
   // Get all groups the is the user is a member of
   const userGroups = ApiGetCall({
@@ -835,7 +852,8 @@ const CippAddEditUser = (props) => {
           showRefresh={true}
         />
       </Grid>
-      {integrationSettings?.data?.Sherweb?.Enabled === true && (
+      {(integrationSettings?.data?.Sherweb?.Enabled === true ||
+        isExternalCsp) && (
         <>
           <CippFormCondition
             formControl={formControl}
@@ -860,8 +878,9 @@ const CippAddEditUser = (props) => {
             >
               <Grid size={{ xs: 12 }}>
                 <Alert severity="info">
-                  This will Purchase a new Sherweb License for the user,
-                  according to the terms and conditions with Sherweb. When the
+                  This will Purchase a new {cspLicenceLabel} License for the
+                  user, according to the terms and conditions with{' '}
+                  {cspTermsParty}. When the
                   license becomes available, CIPP will assign the license to
                   this user.
                 </Alert>
@@ -869,16 +888,34 @@ const CippAddEditUser = (props) => {
               <Grid size={{ xs: 12 }}>
                 <CippFormComponent
                   type="autoComplete"
+                  // Options are filtered when they load, so remount when the licences change.
+                  key={`csp-${licencesToBuy.join(',')}`}
                   api={{
                     queryKey: `SKU-${tenantDomain}`,
                     url: '/api/ListCSPsku',
                     data: { currentSkuOnly: true },
                     labelField: (option) =>
-                      `${option?.productName} (${option?.sku})`,
+                      `${option?.productName ?? option?.name} (${option?.sku})`,
                     valueField: 'sku',
+                    // External CSP providers can tag subscriptions with the Microsoft skuId.
+                    ...(isExternalCsp && {
+                      dataFilter: (options) => {
+                        const match = getSingleCspLicenceMatch(
+                          options,
+                          licencesToBuy
+                        )
+                        if (match) {
+                          formControl.setValue('cspLicense', match)
+                        }
+                        return filterCspSubscriptionsByLicence(
+                          options,
+                          licencesToBuy
+                        )
+                      },
+                    }),
                   }}
-                  label="Sherweb License"
-                  name="sherwebLicense"
+                  label={`${cspLicenceLabel} License`}
+                  name={isExternalCsp ? 'cspLicense' : 'sherwebLicense'}
                   formControl={formControl}
                 />
               </Grid>

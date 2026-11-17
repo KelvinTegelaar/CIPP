@@ -8,10 +8,20 @@ import { Grid, darken, lighten, styled } from "@mui/system";
 import { CippPropertyListCard } from "../../../../components/CippCards/CippPropertyListCard";
 import { getCippFormatting } from "../../../../utils/get-cipp-formatting";
 import { getCippTranslation } from "../../../../utils/get-cipp-translation";
+import { ApiGetCall } from "../../../../api/ApiCall";
 
 const Page = () => {
   const userSettingsDefaults = useSettings();
   const tenantDomain = userSettingsDefaults?.currentTenant;
+
+  const integrationSettings = ApiGetCall({
+    url: "/api/ListExtensionsConfig",
+    queryKey: "ListExtensionsConfig",
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+  });
+  const providerName =
+    integrationSettings?.data?.ExternalCSP?.Enabled === true ? "your CSP provider" : "Sherweb";
 
   const formControl = useForm({
     mode: "onChange",
@@ -48,7 +58,7 @@ const Page = () => {
         queryKey={"CippFormPage"}
         formControl={formControl}
         title="Subscription"
-        backButtonTitle="CSP Licenses"
+        backButtonTitle="CSP License Management"
         postUrl="/api/ExecCSPLicense"
       >
         <Box sx={{ my: 2 }}>
@@ -63,7 +73,9 @@ const Page = () => {
                 api={{
                   queryKey: `SKU-${tenantDomain}`,
                   url: "/api/ListCSPsku",
-                  labelField: (option) => `${option?.name[0]?.value} (${option?.sku})`,
+                  // Sherweb returns localised arrays ([{ value }]); External CSP returns plain strings.
+                  labelField: (option) =>
+                    `${option?.name?.[0]?.value ?? option?.name} (${option?.sku})`,
                   valueField: "sku",
 
                   addedField: {
@@ -118,7 +130,8 @@ const Page = () => {
                     {
                       label: "Description",
                       value: getCippFormatting(
-                        selectedSku?.addedFields?.description?.[0]?.value,
+                        selectedSku?.addedFields?.description?.[0]?.value ??
+                          selectedSku?.addedFields?.description,
                         "htmlDescription"
                       ),
                     },
@@ -129,7 +142,7 @@ const Page = () => {
             <Grid size={{ xs: 12 }}>
               <CippFormComponent
                 type="checkbox"
-                label="I understand that buy pressing submit this license will be purchased according to the terms and conditions for this SKU with Sherweb."
+                label={`I understand that buy pressing submit this license will be purchased according to the terms and conditions for this SKU with ${providerName}.`}
                 name="iagree"
                 formControl={formControl}
                 validators={{
@@ -144,6 +157,7 @@ const Page = () => {
   );
 };
 
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+// An order is placed for one customer; there is no cross-tenant purchase.
+Page.getLayout = (page) => <DashboardLayout allTenantsSupport={false}>{page}</DashboardLayout>;
 
 export default Page;

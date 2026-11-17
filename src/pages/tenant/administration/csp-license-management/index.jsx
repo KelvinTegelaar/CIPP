@@ -1,14 +1,30 @@
 import { Layout as DashboardLayout } from "../../../../layouts/index";
 import { CippIcons } from "../../../../utils/icon-registry"
 import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
-import { Button } from "@mui/material";
+import { Box, Button, Stack } from "@mui/material";
 import Link from "next/link";
+import { ApiGetCall } from "../../../../api/ApiCall";
+import { useSettings } from "../../../../hooks/use-settings";
 
 const Page = () => {
-  const pageTitle = "CSP Licences Report";
+  const pageTitle = "CSP License Management";
   const apiUrl = "/api/listCSPLicenses";
 
-  const actions = [
+  const integrationSettings = ApiGetCall({
+    url: "/api/ListExtensionsConfig",
+    queryKey: "ListExtensionsConfig",
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+  });
+  const isExternalCsp = integrationSettings?.data?.ExternalCSP?.Enabled === true;
+  // Changes here are purchases, so show when they go to Sherweb. External CSP has no vendor mark.
+  const showSherwebLogo = !isExternalCsp && integrationSettings?.data?.Sherweb?.Enabled === true;
+  const sherwebLogo =
+    useSettings().currentTheme?.value === "dark"
+      ? "/assets/integrations/sherweb_dark.png"
+      : "/assets/integrations/sherweb.png";
+
+  const allActions = [
     {
       label: "Increase licence count by 1",
       type: "POST",
@@ -63,6 +79,7 @@ const Page = () => {
     },
     {
       label: "Schedule decrease of 1 at next renewal",
+      sherwebOnly: true,
       type: "POST",
       icon: <CippIcons.EventRepeat />,
       url: "/api/ExecCSPLicense",
@@ -84,22 +101,25 @@ const Page = () => {
       type: "POST",
       icon: <CippIcons.DeleteForever />,
       url: "/api/ExecCSPLicense",
-      data: { Action: "!Cancel", SubscriptionIds: "id" },
+      data: { Action: "!Cancel", SubscriptionIds: isExternalCsp ? "subscriptionId" : "id" },
       confirmText: "Are you sure you want to cancel this entire subscription?",
       multiPost: false,
     },
-  ]; // No actions specified, setting to empty array
+  ];
+  const actions = allActions.filter((action) => !(isExternalCsp && action.sherwebOnly));
 
   const offCanvas = null; // No off-canvas details provided
 
-  const simpleColumns = [
-    "productName",
-    "sku",
-    "purchaseDate",
-    "quantity",
-    "commitmentTerm.renewalConfiguration.renewalDate",
-    "TermInfo",
-  ];
+  const simpleColumns = isExternalCsp
+    ? ["name", "sku", "purchaseDate", "quantity", "renewalDate", "billingCycle", "commitmentTerm"]
+    : [
+        "productName",
+        "sku",
+        "purchaseDate",
+        "quantity",
+        "commitmentTerm.renewalConfiguration.renewalDate",
+        "TermInfo",
+      ];
 
   return (
     <CippTablePage
@@ -109,16 +129,31 @@ const Page = () => {
       offCanvas={offCanvas}
       simpleColumns={simpleColumns}
       cardButton={
-        <>
+        <Stack direction="row" spacing={1} useFlexGap sx={{ alignItems: "center", flexWrap: "wrap" }}>
+          {showSherwebLogo && (
+            <>
+              <Box component="img" src={sherwebLogo} alt="Sherweb" sx={{ height: 22, mr: 1 }} />
+              <Button
+                component="a"
+                href="https://cumulus.sherweb.com/"
+                target="_blank"
+                rel="noreferrer"
+                startIcon={<CippIcons.OpenInNew />}
+              >
+                Cumulus Portal
+              </Button>
+            </>
+          )}
           <Button component={Link} href="/tenant/administration/add-subscription" startIcon={<CippIcons.ShoppingCart />}>
             Add Subscription
           </Button>
-        </>
+        </Stack>
       }
     />
   );
 };
 
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+// CSP subscriptions belong to one customer; there is no cross-tenant view.
+Page.getLayout = (page) => <DashboardLayout allTenantsSupport={false}>{page}</DashboardLayout>;
 
 export default Page;
