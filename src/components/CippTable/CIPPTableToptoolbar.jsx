@@ -419,6 +419,14 @@ export const CIPPTableToptoolbar = React.memo(
       usedColumns?.length,
     ])
 
+    // A search the page was opened with (?search=) filters the rows as if it had been typed.
+    useEffect(() => {
+      if (searchValue && !table.getState().globalFilter) {
+        table.setGlobalFilter(searchValue)
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [table])
+
     // Restore last used filter on mount if persistFilters is enabled (non-graph filters).
     // Once-per-page like the graph slot above: keying this on isFetching used to re-arm the
     // 100ms timer on every fetch settle (once per page of an auto-paginated load), clobbering
@@ -433,7 +441,9 @@ export const CIPPTableToptoolbar = React.memo(
         settings.lastUsedFilters[pageName] &&
         table &&
         usedColumns.length > 0 &&
-        !restoredFiltersRef.current.has(restorationKey)
+        !restoredFiltersRef.current.has(restorationKey) &&
+        // A search the page was opened with wins over the saved filter
+        !searchValue
       ) {
         // Use setTimeout to ensure the table is fully rendered
         const timeoutId = setTimeout(() => {

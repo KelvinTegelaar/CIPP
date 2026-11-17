@@ -5,6 +5,7 @@ import userEvent from '@testing-library/user-event'
 import { renderWithProviders, settingsWith } from '../../test-utils'
 import { CippDataTable } from '../../../src/components/CippTable/CippDataTable'
 import { SettingsContext } from '../../../src/contexts/settings-context'
+import router from '../../mocks/next-router'
 
 // save-preset invalidation refetches presetList in the background (data swap, no
 // isSuccess transition), the Filters dropdown must rebuild from the refetched list
@@ -571,5 +572,46 @@ describe('CIPPTableToptoolbar - tenant switch', () => {
     } finally {
       api.paginated = routePaginated
     }
+  }, 30000)
+})
+
+describe('CIPPTableToptoolbar - opened from a link with ?search=', () => {
+  afterEach(() => {
+    router.query = {}
+  })
+
+  it('starts with the linked search applied', async () => {
+    router.query = { search: 'carol' }
+    renderGraphTable()
+
+    await screen.findByText('1-1 of 1')
+    expect(screen.getByPlaceholderText('Search...')).toHaveValue('carol')
+  }, 30000)
+
+  it('keeps the linked search instead of restoring a saved filter', async () => {
+    router.query = { search: 'carol' }
+    renderGraphTable({ persistenceKey: 'SlotsTest' }, {
+      settings: settingsWith({
+        persistFilters: true,
+        setLastUsedFilter: vi.fn(),
+        lastUsedFilters: {
+          SlotsTest: { type: 'column', value: [{ id: 'department', value: 'Sales' }], name: 'Sales only' },
+        },
+      }),
+    })
+    await screen.findByText('1-1 of 1')
+    // past the restore effect's setTimeout(100): Sales only would leave Carol filtered out
+    await new Promise((resolve) => setTimeout(resolve, 250))
+
+    expect(screen.getByText('1-1 of 1')).toBeInTheDocument()
+    expect(screen.getByPlaceholderText('Search...')).toHaveValue('carol')
+  }, 30000)
+
+  it('ignores the link for a table inside a dialog', async () => {
+    router.query = { search: 'carol' }
+    renderGraphTable({ isInDialog: true })
+
+    await screen.findByText('1-3 of 3')
+    expect(screen.getByPlaceholderText('Search...')).toHaveValue('')
   }, 30000)
 })

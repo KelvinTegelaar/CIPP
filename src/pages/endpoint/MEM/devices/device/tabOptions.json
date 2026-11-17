@@ -8,5 +8,10 @@
     "label": "Remediations",
     "path": "/endpoint/MEM/devices/device/remediations",
     "icon": "Healing"
+  },
+  {
+    "label": "Intune Assignments",
+    "path": "/endpoint/MEM/devices/device/intune-assignments",
+    "icon": "Assignment"
   }
 ]
