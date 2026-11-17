@@ -308,6 +308,7 @@ export const AppleADEEnrollmentProfiles = () => {
         <Card>
           <CippDataTable
             title={`Apple ADE Profiles - ${tenantLabel}`}
+            deepLink
             queryKey={`AppleEnrollmentProfilesTable-${currentTenant}`}
             data={profiles}
             isFetching={appleProfiles.isFetching}
@@ -390,6 +391,7 @@ export const AndroidEnterpriseEnrollmentProfiles = () => {
       <Card>
         <CippDataTable
           title={`Android Enterprise Enrollment Profiles - ${tenantLabel}`}
+          deepLink
           queryKey={`AndroidEnrollmentProfiles-${currentTenant}`}
           api={{
             url: '/api/ListAndroidEnrollmentProfiles',
@@ -572,6 +574,7 @@ export const WindowsAutopilotEnrollmentProfiles = () => {
       <Card>
         <CippDataTable
           title={`Windows Autopilot Profiles - ${tenantLabel}`}
+          deepLink
           queryKey={`AutopilotProfiles-${currentTenant}`}
           api={{
             url: '/api/ListAutopilotConfig',

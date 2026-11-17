@@ -65,6 +65,7 @@ export const CippTablePage = (props) => {
       offCanvas={offCanvas}
       filters={activeFilters}
       onChange={onChange}
+      deepLink
       {...other}
     />
   );

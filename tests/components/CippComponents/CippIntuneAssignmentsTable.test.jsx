@@ -155,8 +155,12 @@ describe('CippIntuneAssignmentsTable', () => {
     await user.click(screen.getByRole('button', { name: 'Teams & Outlook' }))
 
     expect(push.mock.calls).toEqual([
-      ['/endpoint/MEM/list-policies?tenantFilter=contoso.com&search=p-1'],
-      ['/endpoint/applications/list?tenantFilter=contoso.com&search=app%2F2'],
+      [
+        '/endpoint/MEM/list-policies?tenantFilter=contoso.com&search=p-1&open=p-1',
+      ],
+      [
+        '/endpoint/applications/list?tenantFilter=contoso.com&search=app%2F2&open=app%2F2',
+      ],
     ])
     expect(
       screen.queryByRole('button', { name: 'iPhone enrolment' })

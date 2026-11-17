@@ -575,14 +575,14 @@ describe('CIPPTableToptoolbar - tenant switch', () => {
   }, 30000)
 })
 
-describe('CIPPTableToptoolbar - opened from a link with ?search=', () => {
+describe('CippDataTable - deep links from the URL', () => {
   afterEach(() => {
     router.query = {}
   })
 
-  it('starts with the linked search applied', async () => {
+  it('starts the page table with the linked search applied', async () => {
     router.query = { search: 'carol' }
-    renderGraphTable()
+    renderGraphTable({ deepLink: true })
 
     await screen.findByText('1-1 of 1')
     expect(screen.getByPlaceholderText('Search...')).toHaveValue('carol')
@@ -590,7 +590,7 @@ describe('CIPPTableToptoolbar - opened from a link with ?search=', () => {
 
   it('keeps the linked search instead of restoring a saved filter', async () => {
     router.query = { search: 'carol' }
-    renderGraphTable({ persistenceKey: 'SlotsTest' }, {
+    renderGraphTable({ persistenceKey: 'SlotsTest', deepLink: true }, {
       settings: settingsWith({
         persistFilters: true,
         setLastUsedFilter: vi.fn(),
@@ -607,11 +607,32 @@ describe('CIPPTableToptoolbar - opened from a link with ?search=', () => {
     expect(screen.getByPlaceholderText('Search...')).toHaveValue('carol')
   }, 30000)
 
-  it('ignores the link for a table inside a dialog', async () => {
+  it('leaves tables that are not the page table alone, such as one in a drawer', async () => {
     router.query = { search: 'carol' }
-    renderGraphTable({ isInDialog: true })
+    renderGraphTable()
 
     await screen.findByText('1-3 of 3')
     expect(screen.getByPlaceholderText('Search...')).toHaveValue('')
+  }, 30000)
+
+  it('opens the linked row in its drawer', async () => {
+    router.query = { open: 'u-2' }
+    renderWithProviders(
+      <CippDataTable
+        queryKey="StaticDataDeepLink"
+        data={[
+          { id: 'u-1', displayName: 'Alice Smith', mail: 'alice@contoso.com' },
+          { id: 'u-2', displayName: 'Bob Johnson', mail: 'bob@contoso.com' },
+        ]}
+        simpleColumns={['displayName']}
+        offCanvas={{ extendedInfoFields: ['displayName', 'mail'] }}
+        maxHeightOffset="100px"
+        deepLink
+      />
+    )
+
+    // the row body is virtualized away in jsdom, so the address can only come from the drawer
+    expect(await screen.findByText('bob@contoso.com')).toBeInTheDocument()
+    expect(screen.queryByText('alice@contoso.com')).not.toBeInTheDocument()
   }, 30000)
 })

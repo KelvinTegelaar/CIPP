@@ -103,7 +103,7 @@ export const CippIntuneAssignmentsTable = ({
         return {
           ...row,
           policyLink: page
-            ? `${page}?tenantFilter=${encodeURIComponent(tenantFilter)}&search=${encodeURIComponent(row.policyId)}`
+            ? `${page}?tenantFilter=${encodeURIComponent(tenantFilter)}&search=${encodeURIComponent(row.policyId)}&open=${encodeURIComponent(row.policyId)}`
             : null,
         }
       }),

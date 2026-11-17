@@ -746,6 +746,9 @@ export const CippDataTable = (props) => {
     cellRenderers,
     persistenceKey,
     parentRow,
+    // The page's main table: it follows ?search= and ?open=<row id> in the URL. Tables in
+    // drawers and dialogs leave it off so a link does not leak into them.
+    deepLink = false,
   } = props
 
   // Create a map of column IDs to their filterType for quick lookup.
@@ -807,11 +810,13 @@ export const CippDataTable = (props) => {
   const waitingBool = api?.url ? true : false
 
   const router = useRouter()
-  // A page can be opened already searched (?search=), e.g. from a link to one policy.
   const linkedSearch =
-    !isInDialog && !parentRow && typeof router.query?.search === 'string'
+    deepLink && typeof router.query?.search === 'string'
       ? router.query.search
       : ''
+  const linkedRowId =
+    deepLink && typeof router.query?.open === 'string' ? router.query.open : ''
+  const linkedRowOpened = useRef(false)
   const [activeFilters, setActiveFilters] = useState({ graph: null, table: null })
   const [searchValue, setSearchValue] = useState(linkedSearch)
   const restoredFiltersRef = useRef(new Set())
@@ -1592,6 +1597,23 @@ export const CippDataTable = (props) => {
     setOffcanvasVisible(false)
     setContextRow(null)
   }, [])
+
+  // ?open=<row id> opens that row's drawer once the row has loaded, once per visit.
+  useEffect(() => {
+    if (
+      !linkedRowId ||
+      linkedRowOpened.current ||
+      !offCanvas ||
+      !Array.isArray(memoizedData)
+    ) {
+      return
+    }
+    const match = memoizedData.find((row) => String(row?.id) === linkedRowId)
+    if (match) {
+      linkedRowOpened.current = true
+      openRowOffCanvas(match)
+    }
+  }, [linkedRowId, memoizedData, offCanvas, openRowOffCanvas])
 
   const handleRowOpenNewTab = useCallback(
     (rowOriginal) => {
