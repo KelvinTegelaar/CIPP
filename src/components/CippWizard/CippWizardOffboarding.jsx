@@ -32,6 +32,8 @@ export const CippWizardOffboarding = (props) => {
   const disableForwarding = useWatch({ control: formControl.control, name: 'disableForwarding' })
   const deleteUser = useWatch({ control: formControl.control, name: 'DeleteUser' })
   const convertToShared = useWatch({ control: formControl.control, name: 'ConvertToShared' })
+  const oneDriveCopyTo = useWatch({ control: formControl.control, name: 'OneDriveCopyTo' })
+  const oneDriveCopySelected = Array.isArray(oneDriveCopyTo) ? oneDriveCopyTo.length > 0 : !!oneDriveCopyTo
 
   // The HaloPSA ticket box is only meaningful when that integration is configured.
   const integrationSettings = ApiGetCall({
@@ -125,6 +127,13 @@ export const CippWizardOffboarding = (props) => {
     }
   }, [disableForwarding, formControl])
 
+  // The OneDrive copy only runs for a blocked account, so it turns Disable sign in on and keeps it on
+  useEffect(() => {
+    if (oneDriveCopySelected) {
+      formControl.setValue('DisableSignIn', true)
+    }
+  }, [oneDriveCopySelected, formControl])
+
   // Clear every field the UI disables when deleting the user, so submitted values match what is shown
   useEffect(() => {
     if (deleteUser) {
@@ -154,6 +163,7 @@ export const CippWizardOffboarding = (props) => {
       formControl.setValue('AccessAutomap', null)
       formControl.setValue('AccessSendAs', null)
       formControl.setValue('AccessSendOnBehalf', null)
+      formControl.setValue('OneDriveCopyTo', null)
       formControl.setValue('forward', null)
       formControl.setValue('OOO', '')
     }
@@ -337,7 +347,7 @@ export const CippWizardOffboarding = (props) => {
                 label="Disable Sign in"
                 type="switch"
                 formControl={formControl}
-                disabled={!!deleteUser}
+                disabled={!!deleteUser || oneDriveCopySelected}
               />
               <CippFormComponent
                 name="ClearImmutableId"
@@ -517,6 +527,33 @@ export const CippWizardOffboarding = (props) => {
                 label="Grant OneDrive Full Access"
                 type="autoComplete"
                 placeholder="Leave blank if not needed"
+                formControl={formControl}
+                multi
+                api={{
+                  tenantFilter: currentTenant ? currentTenant.value : undefined,
+                  labelField: (option) => `${option.displayName} (${option.userPrincipalName})`,
+                  valueField: 'id',
+                  url: '/api/ListGraphRequest',
+                  dataKey: 'Results',
+                  queryKey: `Offboarding-Users-${currentTenant ? currentTenant.value : 'default'}`,
+                  data: {
+                    Endpoint: 'users',
+                    manualPagination: true,
+                    $select: 'id,userPrincipalName,displayName',
+                    $count: true,
+                    $orderby: 'displayName',
+                    $top: 999,
+                  },
+                }}
+              />
+              <CippFormComponent
+                sx={{ m: 1 }}
+                name="OneDriveCopyTo"
+                label="Copy OneDrive to user(s)"
+                disabled={!!deleteUser}
+                type="autoComplete"
+                placeholder="Leave blank if not needed"
+                helperText="Copies the user's OneDrive into a folder named after their UPN in each selected user's OneDrive. Existing files are kept. Turns on Disable Sign in, which the copy needs. If Remove Licenses is on, licences are only removed once the copy completes."
                 formControl={formControl}
                 multi
                 api={{
