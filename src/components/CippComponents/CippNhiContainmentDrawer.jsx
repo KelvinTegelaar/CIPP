@@ -41,6 +41,9 @@ export const CippNhiContainmentDrawer = ({
   )
   const appName = caseData?.DisplayName || ''
   const appId = caseData?.AppId || ''
+  const isCippApp = !!(
+    caseData?.Subject?.IsCippApp || caseData?.Exposure?.IsCippApp
+  )
   const flagged = useMemo(
     () => new Set(caseData?.FlaggedKeyIds || []),
     [caseData]
@@ -124,7 +127,7 @@ export const CippNhiContainmentDrawer = ({
     catalog.forEach((action) => {
       actions[action.Id] = !!action.DefaultSelected
     })
-    if (caseData?.Subject?.IsManagedIdentity)
+    if (caseData?.Subject?.IsManagedIdentity || isCippApp)
       actions.DisableServicePrincipal = false
     formControl.reset({
       actions,
@@ -149,7 +152,7 @@ export const CippNhiContainmentDrawer = ({
           o.label.endsWith('in the window)')
         ),
     })
-  }, [catalog, caseData, options, flagged, visible, formControl])
+  }, [catalog, caseData, options, flagged, visible, formControl, isCippApp])
 
   const selected = catalog.filter((a) => watched?.actions?.[a.Id])
   const critical = selected.filter((a) => a.Impact === 'Critical')
@@ -216,6 +219,16 @@ export const CippNhiContainmentDrawer = ({
         }
       >
         <Stack spacing={2}>
+          {isCippApp && (
+            <Alert severity="error">
+              This is your own CIPP-SAM app. Disabling it, removing its
+              credentials or revoking its permissions or roles cuts CIPP off
+              from this tenant, including from releasing this containment.
+              Disabling it is not selected by default. If its credentials are
+              compromised, rotate them under CIPP &gt; Advanced &gt;
+              Authentication &gt; Credentials instead.
+            </Alert>
+          )}
           <Alert severity="info">
             Targets default to what the case flagged. Nothing the app may depend
             on is removed unless you pick it. Disabling stops new tokens; tokens
