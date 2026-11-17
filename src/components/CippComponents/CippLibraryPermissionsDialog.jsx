@@ -151,14 +151,15 @@ export const CippLibraryPermissionsDialog = ({
         />
       ),
       customDataformatter: (actionRow, action, formData) => {
-        const assignment = Array.isArray(actionRow) ? actionRow[0] : actionRow
-        return {
+        // An array result is sent as one request per selected row.
+        const rows = Array.isArray(actionRow) ? actionRow : [actionRow]
+        return rows.map((assignment) => ({
           ...scopePayload,
           PrincipalId: assignment.PrincipalId,
           PrincipalName: assignment.Title,
           RoleDefinitionId: optionValue(formData.RoleDefinitionId),
           Mode: 'Replace',
-        }
+        }))
       },
       multiPost: false,
       allowResubmit: true,
@@ -173,13 +174,13 @@ export const CippLibraryPermissionsDialog = ({
       condition: (assignment) => canWrite && !assignment.IsSystemManaged,
       relatedQueryKeys: [permissionsQueryKey],
       customDataformatter: (actionRow) => {
-        const assignment = Array.isArray(actionRow) ? actionRow[0] : actionRow
-        return {
+        const rows = Array.isArray(actionRow) ? actionRow : [actionRow]
+        return rows.map((assignment) => ({
           ...scopePayload,
           PrincipalId: assignment.PrincipalId,
           PrincipalName: assignment.Title,
           RoleDefinitionId: assignment.RoleDefinitionId,
-        }
+        }))
       },
       multiPost: false,
     },
