@@ -27,7 +27,11 @@ export function useCustomVariableOptions({ enabled = true } = {}) {
   return useMemo(() => {
     const results = variables.data?.Results
     if (!Array.isArray(results))
-      return { options: EMPTY, isLoading: variables.isLoading }
+      return {
+        options: EMPTY,
+        isLoading: variables.isLoading,
+        isError: variables.isError,
+      }
 
     const options = results
       .filter((variable) => variable?.Variable)
@@ -53,6 +57,6 @@ export function useCustomVariableOptions({ enabled = true } = {}) {
         return a.label.localeCompare(b.label)
       })
 
-    return { options, isLoading: variables.isLoading }
-  }, [variables.data, variables.isLoading])
+    return { options, isLoading: variables.isLoading, isError: false }
+  }, [variables.data, variables.isLoading, variables.isError])
 }

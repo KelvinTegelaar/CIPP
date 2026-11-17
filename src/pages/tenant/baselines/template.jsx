@@ -36,6 +36,8 @@ import { useDialog } from '../../../hooks/use-dialog'
 import { CippFormTenantSelector } from '../../../components/CippComponents/CippFormTenantSelector'
 import CippBaselineStandardItem from '../../../components/CippBaselines/CippBaselineStandardItem'
 import CippBaselineStandardDialog from '../../../components/CippBaselines/CippBaselineStandardDialog'
+import { switchVariableProblem } from '../../../components/CippBaselines/CippBaselineStandardSettings'
+import { useCustomVariableOptions } from '../../../hooks/use-custom-variables'
 import { PermissionButton } from '../../../utils/permissions'
 import { ApiGetCall, ApiPostCall } from '../../../api/ApiCall'
 import { parseCippDate } from '../../../utils/parse-cipp-date'
@@ -770,6 +772,8 @@ const Page = () => {
   // outcome) shows there; lastSavedId drives the post-save prompt once it is closed.
   const saveDialog = useDialog()
   const [lastSavedId, setLastSavedId] = useState(null)
+  const [saveProblems, setSaveProblems] = useState([])
+  const allCustomVariables = useCustomVariableOptions()
   const onBaselineSaved = (result) => {
     const savedId = result?.Metadata?.id
     if (!savedId) return
@@ -1155,7 +1159,31 @@ const Page = () => {
           : {}),
     }
   }
-  const handleSave = () => saveDialog.handleOpen()
+  // Save reads the stage forms without validating them, and collapsed standards never mount their
+  // fields, so a switch bound to a missing or non-boolean variable is caught here instead.
+  const handleSave = () => {
+    const problems =
+      allCustomVariables.isLoading || allCustomVariables.isError
+        ? []
+        : buildBaselinePayload().stages.flatMap((stage, stageIndex) =>
+            stage.standards.flatMap((entry) => {
+              const definition = catalogByName[entry.standard]
+              return Object.entries(entry.variables).flatMap(([key, value]) => {
+                const variable = definition?.variables?.[key]
+                if (variable?.type !== 'switch' || variable.locked) return []
+                const problem = switchVariableProblem(
+                  value,
+                  allCustomVariables.options
+                )
+                return problem
+                  ? [`Stage ${stageIndex + 1}, ${definition.label ?? entry.standard}, ${variable.label}: ${problem}`]
+                  : []
+              })
+            })
+          )
+    setSaveProblems(problems)
+    if (problems.length === 0) saveDialog.handleOpen()
+  }
 
   const pageTitle = template ? 'Edit Baseline' : 'Add Baseline'
 
@@ -1270,6 +1298,16 @@ const Page = () => {
           </Box>
         )}
 
+        {saveProblems.length > 0 && (
+          <Alert severity="error" onClose={() => setSaveProblems([])}>
+            Fix these settings before saving:
+            <ul style={{ margin: 0 }}>
+              {saveProblems.map((problem) => (
+                <li key={problem}>{problem}</li>
+              ))}
+            </ul>
+          </Alert>
+        )}
         {lastSavedId && !saveDialog.open && !runAfterSave.isSuccess && (
           <Alert
             severity="success"

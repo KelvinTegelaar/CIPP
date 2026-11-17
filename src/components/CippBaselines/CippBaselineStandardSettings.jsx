@@ -1,9 +1,10 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { CippIcons } from '../../utils/icon-registry'
-import { Stack, Typography } from '@mui/material'
+import { IconButton, Stack, Tooltip, Typography } from '@mui/material'
 import { Grid } from '@mui/system'
 import CippFormComponent from '../CippComponents/CippFormComponent'
 import { CippFormCondition } from '../CippComponents/CippFormCondition'
+import { useCustomVariableOptions } from '../../hooks/use-custom-variables'
 
 // Map an effective expected value back onto the standard's variables, so forms can be
 // pre-filled with what is currently applied (e.g. when creating a tenant override).
@@ -18,6 +19,102 @@ export const variableValuesFromExpected = (standard, expectedValue) => {
     }
   })
   return values
+}
+
+// Why a switch's value cannot run, or null when it can. A custom variable (%name%) must exist
+// and be typed boolean; null is variable mode with nothing picked.
+export const switchVariableProblem = (value, variableOptions) => {
+  const text = value?.value ?? value
+  if (text === null)
+    return 'no custom variable is picked. Pick one, or switch back to a fixed value'
+  if (typeof text !== 'string' || text === '') return null
+  const known = variableOptions.find((option) => option.value === text)
+  if (!known) return `${text} is not a custom variable`
+  if (known.variableType !== 'boolean')
+    return `${text} is a ${known.variableType} variable, but a switch needs a boolean one`
+  return null
+}
+
+// A switch can hold a custom variable (%name%) instead of true/false, so each tenant can resolve
+// it to its own value. The engine turns the tenant's value into a bool at run time.
+const CippBaselineSwitchField = ({
+  name,
+  definition,
+  formControl,
+  defaultValue,
+}) => {
+  const seedText = defaultValue?.value ?? defaultValue
+  const [bound, setBound] = useState(
+    typeof seedText === 'string' && seedText.startsWith('%')
+  )
+  const {
+    options: variableOptions,
+    isLoading,
+    isError,
+  } = useCustomVariableOptions({ enabled: bound })
+  const booleanOptions = variableOptions
+    .filter((option) => option.variableType === 'boolean')
+    .map(({ label, value, description }) => ({ label, value, description }))
+  const toggle = () => {
+    formControl.setValue(name, bound ? (definition.default ?? false) : null, {
+      shouldDirty: true,
+    })
+    setBound(!bound)
+  }
+  return (
+    <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+      <Stack sx={{ flex: 1 }}>
+        {bound ? (
+          <CippFormComponent
+            type="autoComplete"
+            name={name}
+            label={definition.label}
+            formControl={formControl}
+            defaultValue={
+              typeof seedText === 'string'
+                ? { label: seedText, value: seedText }
+                : undefined
+            }
+            options={booleanOptions}
+            multiple={false}
+            creatable={false}
+            isFetching={isLoading}
+            helperText={
+              !isLoading && booleanOptions.length === 0
+                ? 'No boolean custom variables yet. Add one with the Boolean type under Global Variables or on a tenant.'
+                : 'Only boolean custom variables are listed. Each tenant uses its own value, or the all-tenants one.'
+            }
+            validators={{
+              required: 'Pick a custom variable',
+              validate: (value) =>
+                isLoading ||
+                isError ||
+                switchVariableProblem(value, variableOptions) ||
+                true,
+            }}
+          />
+        ) : (
+          <CippFormComponent
+            type="switch"
+            name={name}
+            label={definition.label}
+            helperText={definition.helperText}
+            formControl={formControl}
+            defaultValue={defaultValue}
+          />
+        )}
+      </Stack>
+      <Tooltip title={bound ? 'Use a fixed value' : 'Use a custom variable'}>
+        <IconButton
+          size="small"
+          aria-label={bound ? 'Use a fixed value' : 'Use a custom variable'}
+          onClick={toggle}
+        >
+          {bound ? <CippIcons.ToggleOn /> : <CippIcons.DataObject />}
+        </IconButton>
+      </Tooltip>
+    </Stack>
+  )
 }
 
 // The configurable settings of a baseline standard, rendered as real form fields from the
@@ -140,32 +237,41 @@ export const CippBaselineStandardSettings = ({
       {variableEntries.map(([key, definition]) => {
         const field = (
           <Grid key={key} size={{ xs: 12, md: 6 }}>
-            <CippFormComponent
-              type={definition.type}
-              name={`${namePrefix}.${key}`}
-              label={definition.label}
-              // Per-field guidance from the definition (e.g. an example version format).
-              // Renders below the field for text/number/select inputs.
-              helperText={definition.helperText}
-              formControl={formControl}
-              // Saved/recommended value rides the Controller's own defaultValue so a
-              // lazily-mounted field initializes correctly regardless of effect order.
-              defaultValue={resolveSeed(key, definition)}
-              options={definition.options}
-              // Definitions may source options from an API instead of a static list
-              // (e.g. the CA template picker) - CippFormComponent handles the fetch.
-              api={definition.api}
-              // Identity pickers are always single-select (the catalog tests enforce it);
-              // list-shaped variables (allowed domains, IP ranges) declare multiple:true.
-              multiple={definition.multiple === true}
-              creatable={definition.creatable === true}
-              disabled={definition.locked === true}
-              // Required-ness plus the definition's declared API constraints. A required
-              // variable has no safe fallback: saving without it leaves the raw %token% in
-              // the baseline, which the engine refuses to compare or apply - and a value
-              // outside the API's real bounds saves fine but fails at remediation time.
-              validators={resolveValidators(definition)}
-            />
+            {definition.type === 'switch' && !definition.locked ? (
+              <CippBaselineSwitchField
+                name={`${namePrefix}.${key}`}
+                definition={definition}
+                formControl={formControl}
+                defaultValue={resolveSeed(key, definition)}
+              />
+            ) : (
+              <CippFormComponent
+                type={definition.type}
+                name={`${namePrefix}.${key}`}
+                label={definition.label}
+                // Per-field guidance from the definition (e.g. an example version format).
+                // Renders below the field for text/number/select inputs.
+                helperText={definition.helperText}
+                formControl={formControl}
+                // Saved/recommended value rides the Controller's own defaultValue so a
+                // lazily-mounted field initializes correctly regardless of effect order.
+                defaultValue={resolveSeed(key, definition)}
+                options={definition.options}
+                // Definitions may source options from an API instead of a static list
+                // (e.g. the CA template picker) - CippFormComponent handles the fetch.
+                api={definition.api}
+                // Identity pickers are always single-select (the catalog tests enforce it);
+                // list-shaped variables (allowed domains, IP ranges) declare multiple:true.
+                multiple={definition.multiple === true}
+                creatable={definition.creatable === true}
+                disabled={definition.locked === true}
+                // Required-ness plus the definition's declared API constraints. A required
+                // variable has no safe fallback: saving without it leaves the raw %token% in
+                // the baseline, which the engine refuses to compare or apply - and a value
+                // outside the API's real bounds saves fine but fails at remediation time.
+                validators={resolveValidators(definition)}
+              />
+            )}
             {definition.locked && (
               <Stack direction="row" spacing={0.5} sx={{
                 alignItems: "center"
