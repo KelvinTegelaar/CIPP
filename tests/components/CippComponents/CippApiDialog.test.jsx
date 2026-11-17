@@ -159,4 +159,24 @@ describe('CippApiDialog', () => {
       },
     })
   })
+
+  it('keeps placeholders shared by every selected row in bulk confirm text', () => {
+    renderDialog({
+      row: [
+        { id: 'm1', displayName: 'Jane', parent: { displayName: 'Finance' } },
+        { id: 'm2', displayName: 'Bob', parent: { displayName: 'Finance' } },
+      ],
+      api: { ...baseApi, confirmText: 'Remove [displayName] from [parent.displayName]?' },
+    })
+
+    expect(screen.getByText('Remove the 2 selected rows from Finance?')).toBeInTheDocument()
+  })
+
+  it('interpolates a confirmText function result', () => {
+    const confirmText = vi.fn((r) => (Array.isArray(r) ? 'bulk' : 'Disable [userPrincipalName]?'))
+    renderDialog({ api: { ...baseApi, confirmText } })
+
+    expect(confirmText).toHaveBeenCalledWith(row)
+    expect(screen.getByText('Disable john@contoso.com?')).toBeInTheDocument()
+  })
 })

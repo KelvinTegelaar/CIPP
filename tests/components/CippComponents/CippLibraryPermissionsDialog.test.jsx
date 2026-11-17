@@ -40,6 +40,9 @@ describe('CippLibraryPermissionsDialog bulk actions', () => {
       const payload = action.customDataformatter(rows, action, { RoleDefinitionId: 5 })
       expect(Array.isArray(payload)).toBe(true)
       expect(payload.map((p) => p.PrincipalId)).toEqual(['a', 'b', 'c'])
+      expect(action.confirmText(rows)).toContain('3 selected')
+      expect(action.confirmText(rows)).not.toContain('[')
+      expect(action.confirmText(rows[0])).toContain('[Title]')
     }
   )
 })

@@ -129,13 +129,18 @@ export const CippLibraryPermissionsDialog = ({
       ? ` ${libraryName} currently inherits its permissions from the site, so this will stop it inheriting and copy the current permissions across first.`
       : ''
 
+  const isBulk = (rows) => Array.isArray(rows) && rows.length > 1
+
   const actions = [
     {
       label: 'Change Permission Level',
       type: 'POST',
       icon: <CippIcons.Tune />,
       url: '/api/ExecSetLibraryPermission',
-      confirmText: `Set the permission level [Title] holds on ${scopeLabel}. Any other level they hold here is removed.${inheritanceWarning}`,
+      confirmText: (rows) =>
+        isBulk(rows)
+          ? `Set the permission level of the ${rows.length} selected users and groups on ${scopeLabel}. Any other level they hold here is removed.${inheritanceWarning}`
+          : `Set the permission level [Title] holds on ${scopeLabel}. Any other level they hold here is removed.${inheritanceWarning}`,
       condition: (assignment) => canWrite && !assignment.IsSystemManaged,
       relatedQueryKeys: [permissionsQueryKey],
       children: ({ formHook }) => (
@@ -169,7 +174,10 @@ export const CippLibraryPermissionsDialog = ({
       type: 'POST',
       icon: <CippIcons.Delete />,
       url: '/api/ExecRemoveLibraryPermission',
-      confirmText: `Remove [PermissionLevel] from [Title] on ${scopeLabel}?${inheritanceWarning}`,
+      confirmText: (rows) =>
+        isBulk(rows)
+          ? `Remove the ${rows.length} selected permissions on ${scopeLabel}?${inheritanceWarning}`
+          : `Remove [PermissionLevel] from [Title] on ${scopeLabel}?${inheritanceWarning}`,
       color: 'error',
       condition: (assignment) => canWrite && !assignment.IsSystemManaged,
       relatedQueryKeys: [permissionsQueryKey],

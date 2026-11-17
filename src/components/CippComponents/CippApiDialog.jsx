@@ -348,17 +348,35 @@ export const CippApiDialog = (props) => {
     setPartialResults([])
   }
 
+  // Bulk: a placeholder shared by every selected row keeps its value, unless that would leave
+  // no placeholder showing the selection count.
+  const bulkReplace = (text) => {
+    const countPhrase = `the ${row.length} selected rows`
+    const sharedValue = (key) => {
+      const values = new Set(row.map((r) => getNestedValue(r, key)))
+      const [value] = values
+      return values.size === 1 ? value : undefined
+    }
+    const keys = [...text.matchAll(/\[([^\]]+)\]/g)].map((m) => m[1])
+    if (keys.every((key) => sharedValue(key))) return text.replace(/\[([^\]]+)\]/g, countPhrase)
+    return text.replace(/\[([^\]]+)\]/g, (_, key) => sharedValue(key) || countPhrase)
+  }
+
+  // confirmText may be a function of the row / selected rows; its result is interpolated as usual.
+  const rawConfirmText =
+    typeof api?.confirmText === 'function' ? api.confirmText(row) : api?.confirmText
+
   let confirmText
-  if (typeof api?.confirmText === 'string') {
+  if (typeof rawConfirmText === 'string') {
     if (!Array.isArray(row)) {
-      confirmText = api.confirmText.replace(
+      confirmText = rawConfirmText.replace(
         /\[([^\]]+)\]/g,
         (_, key) => getNestedValue(row, key) || `[${key}]`
       )
     } else if (row.length > 1) {
-      confirmText = api.confirmText.replace(/\[([^\]]+)\]/g, `the ${row.length} selected rows`)
+      confirmText = bulkReplace(rawConfirmText)
     } else if (row.length === 1) {
-      confirmText = api.confirmText.replace(
+      confirmText = rawConfirmText.replace(
         /\[([^\]]+)\]/g,
         (_, key) => getNestedValue(row[0], key) || `[${key}]`
       )
@@ -369,7 +387,7 @@ export const CippApiDialog = (props) => {
       if (typeof element === 'string') {
         if (Array.isArray(row)) {
           return row.length > 1
-            ? element.replace(/\[([^\]]+)\]/g, `the ${row.length} selected rows`)
+            ? bulkReplace(element)
             : element.replace(
                 /\[([^\]]+)\]/g,
                 (_, key) => getNestedValue(row[0], key) || `[${key}]`
@@ -383,7 +401,7 @@ export const CippApiDialog = (props) => {
       }
       return element
     }
-    confirmText = replaceTextInElement(api?.confirmText)
+    confirmText = replaceTextInElement(rawConfirmText)
   }
 
   // Optional typed confirmation: api.confirmPhrase is a string (with [field] interpolation from
