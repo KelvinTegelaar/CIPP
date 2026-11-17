@@ -527,12 +527,16 @@ export const CippFormComponent = (props) => {
               name={convertedName}
               control={formControl.control}
               defaultValue={defaultValue || false}
+              rules={validators}
               render={({ field }) =>
                 renderSwitchWithLabel(
                   <Switch
-                    checked={Boolean(field.value)}
                     {...omitFullWidth(other)}
-                    {...formControl.register(convertedName, { ...validators })}
+                    name={field.name}
+                    inputRef={field.ref}
+                    checked={Boolean(field.value)}
+                    onChange={(event) => field.onChange(event.target.checked)}
+                    onBlur={field.onBlur}
                   />,
                 )
               }
