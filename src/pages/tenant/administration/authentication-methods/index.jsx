@@ -184,12 +184,27 @@ const Page = () => {
         rowDefaultPath: "includeTargets.0.isUsableForSignIn",
       },
     ],
+    // Password (preview, MC1437671): the only setting CIPP writes on this method
+    Password: [
+      {
+        type: "switch",
+        name: "PasswordAllowChangeAfterSecureSignIn",
+        label: "Allow password change after secure sign-in (Preview)",
+        rowDefaultPath: "allowPasswordChangeAfterSecureSignIn",
+      },
+    ],
   };
+
+  // Password is the base credential: its state and targeting are never changed from CIPP
+  const isNotPassword = (row) => !isId(row, "Password");
 
   // Look up the field set for whichever method this row is
   const getMethodFields = (row) => {
     const methodId = Object.keys(methodFieldDefs).find((id) => isId(row, id));
-    return [...(methodId ? methodFieldDefs[methodId] : []), excludeGroupsField];
+    return [
+      ...(methodId ? methodFieldDefs[methodId] : []),
+      ...(isNotPassword(row) ? [excludeGroupsField] : []),
+    ];
   };
 
   const getNested = (obj, path) =>
@@ -229,6 +244,7 @@ const Page = () => {
       icon: <CippIcons.Check />,
       url: "/api/SetAuthMethod",
       data: { state: "!enabled", id: "id" },
+      condition: isNotPassword,
       confirmText: "Are you sure you want to enable this policy?",
       multiPost: false,
     },
@@ -238,6 +254,7 @@ const Page = () => {
       icon: <CippIcons.Block />,
       url: "/api/SetAuthMethod",
       data: { state: "!disabled", id: "id" },
+      condition: isNotPassword,
       confirmText: "Are you sure you want to disable this policy?",
       multiPost: false,
     },
@@ -246,6 +263,7 @@ const Page = () => {
       type: "POST",
       icon: <CippIcons.UserGroupIcon />,
       url: "/api/SetAuthMethod",
+      condition: isNotPassword,
       confirmText: 'Select one or more groups for "[id]".',
       fields: [
         {
@@ -276,6 +294,7 @@ const Page = () => {
       icon: <CippIcons.Public />,
       url: "/api/SetAuthMethod",
       hideBulk: true,
+      condition: isNotPassword,
       confirmText: 'Are you sure you want to scope "[id]" to all users?',
       customDataformatter: (row) => ({
         tenantFilter: isMultiTenant(tenant) && row?.Tenant ? row.Tenant : tenant,
