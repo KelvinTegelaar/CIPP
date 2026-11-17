@@ -769,12 +769,18 @@ export const nativeMenuItems = [
       'Teams.Group.*',
       'Teams.Activity.*',
       'Teams.Voice.*',
+      'Identity.OneDrive.*',
     ],
     items: [
       {
         title: 'OneDrive',
         path: '/teams-share/onedrive',
         permissions: ['Sharepoint.Site.*'],
+      },
+      {
+        title: 'OneDrive Copies',
+        path: '/teams-share/onedrive-copies',
+        permissions: ['Identity.OneDrive.*'],
       },
       {
         title: 'SharePoint',

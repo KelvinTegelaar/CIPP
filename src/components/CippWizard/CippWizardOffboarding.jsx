@@ -21,6 +21,10 @@ import {
   getSharedMailboxLicenseReasons,
   useSharedMailboxLicenseData,
 } from '../CippComponents/CippSharedMailboxLicenseAlert'
+import {
+  CippOneDriveCopyAlert,
+  CippOneDriveCopyLibraryPicker,
+} from '../CippComponents/CippOneDriveCopyLibraryPicker'
 
 export const CippWizardOffboarding = (props) => {
   const { postUrl, formControl, onPreviousStep, onNextStep, currentStep } = props
@@ -33,7 +37,10 @@ export const CippWizardOffboarding = (props) => {
   const deleteUser = useWatch({ control: formControl.control, name: 'DeleteUser' })
   const convertToShared = useWatch({ control: formControl.control, name: 'ConvertToShared' })
   const oneDriveCopyTo = useWatch({ control: formControl.control, name: 'OneDriveCopyTo' })
-  const oneDriveCopySelected = Array.isArray(oneDriveCopyTo) ? oneDriveCopyTo.length > 0 : !!oneDriveCopyTo
+  const oneDriveCopyLibrary = useWatch({ control: formControl.control, name: 'OneDriveCopyLibrary' })
+  const oneDriveCopySelected =
+    (Array.isArray(oneDriveCopyTo) ? oneDriveCopyTo.length > 0 : !!oneDriveCopyTo) ||
+    !!oneDriveCopyLibrary?.library?.value
 
   // The HaloPSA ticket box is only meaningful when that integration is configured.
   const integrationSettings = ApiGetCall({
@@ -115,6 +122,9 @@ export const CippWizardOffboarding = (props) => {
         formControl.setValue('HIDDEN_defaultsSource', 'user')
       }
 
+      // A library default belongs to one tenant, so never carry it over to another
+      formControl.setValue('OneDriveCopyLibrary', tenantDefaults?.OneDriveCopyLibrary ?? null)
+
       // Mark that we've applied defaults for this tenant
       formControl.setValue('HIDDEN_appliedDefaultsForTenant', currentTenantId)
     }
@@ -164,6 +174,7 @@ export const CippWizardOffboarding = (props) => {
       formControl.setValue('AccessSendAs', null)
       formControl.setValue('AccessSendOnBehalf', null)
       formControl.setValue('OneDriveCopyTo', null)
+      formControl.setValue('OneDriveCopyLibrary', null)
       formControl.setValue('forward', null)
       formControl.setValue('OOO', '')
     }
@@ -553,7 +564,6 @@ export const CippWizardOffboarding = (props) => {
                 disabled={!!deleteUser}
                 type="autoComplete"
                 placeholder="Leave blank if not needed"
-                helperText="Copies the user's OneDrive into a folder named after their UPN in each selected user's OneDrive. Existing files are kept. Turns on Disable Sign in, which the copy needs. If Remove Licenses is on, licences are only removed once the copy completes."
                 formControl={formControl}
                 multi
                 api={{
@@ -573,6 +583,15 @@ export const CippWizardOffboarding = (props) => {
                   },
                 }}
               />
+              <Box sx={{ m: 1 }}>
+                <CippOneDriveCopyLibraryPicker
+                  name="OneDriveCopyLibrary"
+                  formControl={formControl}
+                  tenantFilter={currentTenant ? currentTenant.value : undefined}
+                  disabled={!!deleteUser}
+                />
+                {oneDriveCopySelected && <CippOneDriveCopyAlert />}
+              </Box>
               <Typography variant="subtitle2" sx={{ mt: 3 }} gutterBottom>
                 Email Forwarding
               </Typography>

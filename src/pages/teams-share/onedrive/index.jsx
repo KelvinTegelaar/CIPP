@@ -5,13 +5,15 @@ import { useCippReportDB } from '../../../components/CippComponents/CippReportDB
 import { useSettings } from '../../../hooks/use-settings'
 import { usePermissions } from '../../../hooks/use-permissions'
 import { CippEditSitePropertiesForm } from '../../../components/CippComponents/CippEditSitePropertiesForm'
-import { tenantScope } from '../../../utils/tenant-selection'
+import { isMultiTenant, tenantScope } from '../../../utils/tenant-selection'
+import { oneDriveCopyConfirmText, oneDriveCopyFields } from '../../../utils/onedrive-copy-fields'
 
 const Page = () => {
   const pageTitle = 'OneDrive'
   const tenantFilter = useSettings().currentTenant
   const { checkPermissions } = usePermissions()
   const canWriteSite = checkPermissions(['Sharepoint.Site.ReadWrite'])
+  const canCopyOneDrive = checkPermissions(['Identity.OneDrive.ReadWrite'])
   const reportDB = useCippReportDB({
     apiUrl: '/api/ListSites?type=OneDriveUsageAccount',
     queryKey: 'ListSites-OneDriveUsageAccount',
@@ -162,6 +164,18 @@ const Page = () => {
       },
       multiPost: false,
       allowResubmit: true,
+    },
+    {
+      label: 'Copy OneDrive',
+      type: 'POST',
+      icon: <CippIcons.FileCopy />,
+      url: '/api/ExecOneDriveCopyToUser',
+      data: { leaver: 'ownerPrincipalName' },
+      fields: oneDriveCopyFields,
+      confirmText: oneDriveCopyConfirmText,
+      condition: () => canCopyOneDrive && !isMultiTenant(tenantFilter),
+      relatedQueryKeys: ['ListOneDriveCopyToUser*'],
+      multiPost: false,
     },
     {
       label: 'Reactivate Archived OneDrive',

@@ -227,4 +227,34 @@ describe('CippWizardOffboarding', () => {
       expect(screen.queryByText(/needs a license/)).not.toBeInTheDocument()
     })
   })
+
+  describe('OneDrive copy warning', () => {
+    const library = {
+      site: { label: 'HR', value: 'https://contoso.sharepoint.com/sites/HR' },
+      library: { label: 'Documents', value: '11111111-2222-3333-4444-555555555555' },
+      folder: '',
+    }
+    const render = () =>
+      renderWithProviders(
+        <Harness defaultValues={{ tenantFilter: { value: 'contoso.com' }, user: [{ value: 'user-guid-2' }] }} />
+      )
+
+    it('is hidden while no copy is chosen', async () => {
+      render()
+      await waitFor(() => expect(formApi).not.toBeNull())
+      expect(screen.queryByText('Copying the OneDrive')).toBeNull()
+    })
+
+    it.each([
+      ['users', { OneDriveCopyTo: [{ value: 'bob-id' }] }],
+      ['a document library', { OneDriveCopyLibrary: library }],
+      ['users and a document library', { OneDriveCopyTo: [{ value: 'bob-id' }], OneDriveCopyLibrary: library }],
+    ])('shows once when copying to %s', async (_, values) => {
+      render()
+      await waitFor(() => expect(formApi).not.toBeNull())
+      for (const [name, value] of Object.entries(values)) await setField(name, value)
+      await waitFor(() => expect(screen.getAllByText('Copying the OneDrive')).toHaveLength(1))
+      expect(screen.getByText(/outside CIPP's control/)).toBeInTheDocument()
+    })
+  })
 })

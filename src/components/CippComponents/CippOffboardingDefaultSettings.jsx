@@ -1,10 +1,17 @@
 import { CippPropertyListCard } from '../../components/CippCards/CippPropertyListCard'
 import CippFormComponent from '../../components/CippComponents/CippFormComponent'
 import { Box, Chip, Typography } from '@mui/material'
+import { useWatch } from 'react-hook-form'
 import { Grid } from '@mui/system'
+import { CippOneDriveCopyAlert, CippOneDriveCopyLibraryPicker } from './CippOneDriveCopyLibraryPicker'
 
 export const CippOffboardingDefaultSettings = (props) => {
-  const { formControl, defaultsSource = null, title = 'Offboarding Default Settings' } = props
+  // tenantFilter is only passed by the tenant editors: a document library belongs to one tenant.
+  const { formControl, defaultsSource = null, title = 'Offboarding Default Settings', tenantFilter } = props
+  const defaultLibrary = useWatch({
+    control: formControl.control,
+    name: 'offboardingDefaults.OneDriveCopyLibrary.library',
+  })
 
   const getSourceChip = () => {
     // Only show the chip if defaultsSource is explicitly provided (for wizard/preferences, not tenant config)
@@ -272,6 +279,22 @@ export const CippOffboardingDefaultSettings = (props) => {
               fullWidth
               formControl={formControl}
             />
+            {tenantFilter && (
+              <>
+                <Typography variant="subtitle2" sx={{ mt: 2, mb: 1 }}>
+                  Copy leavers' OneDrive to a document library
+                </Typography>
+                <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block', mb: 1.5 }}>
+                  Pre-selects this library in the offboarding wizard.
+                </Typography>
+                <CippOneDriveCopyLibraryPicker
+                  name="offboardingDefaults.OneDriveCopyLibrary"
+                  formControl={formControl}
+                  tenantFilter={tenantFilter}
+                />
+                {defaultLibrary?.value && <CippOneDriveCopyAlert />}
+              </>
+            )}
             <Typography variant="subtitle2" sx={{ mt: 2, mb: 1.5 }}>
               Send results to
             </Typography>

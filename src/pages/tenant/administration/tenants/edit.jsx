@@ -275,6 +275,7 @@ const Page = () => {
                   <CippOffboardingDefaultSettings
                     formControl={offboardingFormControl}
                     title="Tenant Offboarding Defaults"
+                    tenantFilter={id}
                   />
 
                   <Box sx={{ mt: 2 }}>

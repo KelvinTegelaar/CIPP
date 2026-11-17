@@ -489,6 +489,7 @@ const Page = () => {
                 <CippOffboardingDefaultSettings
                   formControl={offboardingFormControl}
                   title="Tenant Offboarding Defaults"
+                  tenantFilter={currentTenant}
                 />
 
                 <Box>
