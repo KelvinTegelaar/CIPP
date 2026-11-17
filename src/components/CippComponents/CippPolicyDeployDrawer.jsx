@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { get } from 'lodash'
 import { CippIcons } from '../../utils/icon-registry'
 import { Button, Stack, IconButton } from '@mui/material'
 import { useForm, useWatch, useFormState } from 'react-hook-form'
@@ -122,11 +123,18 @@ export const CippPolicyDeployDrawer = ({
     const assignmentFilterType = assignmentFilterName
       ? formData?.assignmentFilterType || 'include'
       : null
+    // Field names nest on every dot, so each tenant domain arrives split into parts.
+    const replacemap = Object.fromEntries(
+      selectedTenants
+        .map((tenant) => [tenant.value, get(formData.replacemap, tenant.value)])
+        .filter(([, values]) => values)
+    )
     console.log('Submitting form data:', formData)
     deployPolicy.mutate({
       url: '/api/AddPolicy',
       data: {
         ...formData,
+        replacemap,
         AssignmentFilterName: assignmentFilterName,
         AssignmentFilterType: assignmentFilterType,
       },
