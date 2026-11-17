@@ -23,11 +23,15 @@ vi.mock('../../../src/components/CippTable/CippDataTable', () => ({
     <ul>
       {data.map((row) => (
         <li key={row.displayName}>
-          <button
-            onClick={() => actions[0].customFunction(row, actions[0], {})}
-          >
-            {row.displayName}
-          </button>{' '}
+          {actions[0].condition(row) ? (
+            <button
+              onClick={() => actions[0].customFunction(row, actions[0], {})}
+            >
+              {row.displayName}
+            </button>
+          ) : (
+            row.displayName
+          )}{' '}
           {cellRenderers.status(row)}
         </li>
       ))}
@@ -42,6 +46,7 @@ const rowsResult = getResult({
     {
       category: 'Intune Settings Catalog Policy',
       displayName: 'Block USB',
+      policyId: 'p-1',
       status: 'Excluded',
       assignedVia: 'All users',
       excludedVia: 'Sales',
@@ -50,6 +55,13 @@ const rowsResult = getResult({
     {
       category: 'Intune Application',
       displayName: 'Teams & Outlook',
+      policyId: 'app/2',
+      status: 'Applies',
+    },
+    {
+      category: 'Apple Enrollment Profile',
+      displayName: 'iPhone enrolment',
+      policyId: 'p-3',
       status: 'Applies',
     },
   ],
@@ -127,7 +139,7 @@ describe('CippIntuneAssignmentsTable', () => {
     )
   })
 
-  it('opens each policy in its list in the same tab, searched to that policy', async () => {
+  it('opens each policy in its list in the same tab, searched by its id', async () => {
     const user = userEvent.setup()
     const push = vi.spyOn(router, 'push')
     api.get = answer(rowsResult)
@@ -143,13 +155,12 @@ describe('CippIntuneAssignmentsTable', () => {
     await user.click(screen.getByRole('button', { name: 'Teams & Outlook' }))
 
     expect(push.mock.calls).toEqual([
-      [
-        '/endpoint/MEM/list-policies?tenantFilter=contoso.com&search=Block%20USB',
-      ],
-      [
-        '/endpoint/applications/list?tenantFilter=contoso.com&search=Teams%20%26%20Outlook',
-      ],
+      ['/endpoint/MEM/list-policies?tenantFilter=contoso.com&search=p-1'],
+      ['/endpoint/applications/list?tenantFilter=contoso.com&search=app%2F2'],
     ])
+    expect(
+      screen.queryByRole('button', { name: 'iPhone enrolment' })
+    ).not.toBeInTheDocument()
     push.mockRestore()
   })
 })

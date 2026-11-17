@@ -40,12 +40,16 @@ export const VARIABLE_TYPE_FIELD = {
   ],
 }
 
-const typeValue = (type) => (type && typeof type === 'object' ? type.value : type)
+const typeValue = (type) =>
+  type && typeof type === 'object' ? type.value : type
 
 // A list is typed one value per line; every other type keeps the single-line box.
 export const CippVariableValueField = ({ formControl, ...props }) => {
   // The edit dialog seeds the type before this subscribes, so useWatch alone misses it.
-  const watched = useWatch({ control: formControl.control, name: 'VariableType' })
+  const watched = useWatch({
+    control: formControl.control,
+    name: 'VariableType',
+  })
   const type = typeValue(watched ?? formControl.getValues('VariableType'))
   const isList = type === 'list'
 
@@ -56,7 +60,10 @@ export const CippVariableValueField = ({ formControl, ...props }) => {
     if (typeof value === 'string' && value.trim().startsWith('[')) {
       try {
         const items = JSON.parse(value)
-        if (Array.isArray(items) && items.every((item) => typeof item === 'string')) {
+        if (
+          Array.isArray(items) &&
+          items.every((item) => typeof item === 'string')
+        ) {
           formControl.setValue('Value', items.join('\n'))
         }
       } catch {
@@ -99,18 +106,27 @@ const CippVariableUsage = ({ usage }) => {
 
   if (!usage) {
     return (
-      <Typography variant="body2" sx={{
-        color: "text.secondary"
-      }}>This variable is not defined anywhere else yet.
-              </Typography>
-    );
+      <Typography
+        variant="body2"
+        sx={{
+          color: 'text.secondary',
+        }}
+      >
+        This variable is not defined anywhere else yet.
+      </Typography>
+    )
   }
 
   return (
     <Stack spacing={2}>
-      <Stack direction="row" spacing={1} useFlexGap sx={{
-        flexWrap: "wrap"
-      }}>
+      <Stack
+        direction="row"
+        spacing={1}
+        useFlexGap
+        sx={{
+          flexWrap: 'wrap',
+        }}
+      >
         <Chip size="small" label={`Type: ${usage.SuggestedType}`} />
         <Chip
           size="small"
@@ -150,11 +166,13 @@ const CippVariableUsage = ({ usage }) => {
         </TableBody>
       </Table>
     </Stack>
-  );
+  )
 }
 
 const CippCustomVariables = ({ id }) => {
   const [openAddDialog, setOpenAddDialog] = useState(false)
+  const [openPreviewDialog, setOpenPreviewDialog] = useState(false)
+  const previewFormHook = useForm()
   const [usageVariable, setUsageVariable] = useState(null)
 
   const isTenantView = id !== 'AllTenants'
@@ -487,19 +505,30 @@ const CippCustomVariables = ({ id }) => {
             : ['RowKey', 'Value', 'VariableType', 'Description']
         }
         cardButton={
-          <Button
-            variant="contained"
-            color="primary"
-            size="small"
-            onClick={handleAddVariable}
-            startIcon={
-              <SvgIcon fontSize="small">
-                <CippIcons.PlusIcon />
-              </SvgIcon>
-            }
-          >
-            Add Variable
-          </Button>
+          <Stack direction="row" spacing={1}>
+            {isTenantView && (
+              <Button
+                variant="outlined"
+                size="small"
+                onClick={() => setOpenPreviewDialog(true)}
+              >
+                Test Variables
+              </Button>
+            )}
+            <Button
+              variant="contained"
+              color="primary"
+              size="small"
+              onClick={handleAddVariable}
+              startIcon={
+                <SvgIcon fontSize="small">
+                  <CippIcons.PlusIcon />
+                </SvgIcon>
+              }
+            >
+              Add Variable
+            </Button>
+          </Stack>
         }
       />
 
@@ -515,6 +544,37 @@ const CippCustomVariables = ({ id }) => {
       </CippOffCanvas>
 
       <CippApiResults apiObject={updateCustomVariablesApi} />
+      {isTenantView && (
+        <CippApiDialog
+          createDialog={{
+            open: openPreviewDialog,
+            handleClose: () => setOpenPreviewDialog(false),
+          }}
+          title="Test Variables"
+          formHook={previewFormHook}
+          allowResubmit={true}
+          fields={[
+            {
+              type: 'textField',
+              name: 'Text',
+              label: 'Text',
+              placeholder: 'mail+%initialdomainprefix%@example.com',
+              helperText:
+                'JSON is escaped the way templates are. Unknown variables are left as typed.',
+              multiline: true,
+              minRows: 3,
+              required: true,
+            },
+          ]}
+          api={{
+            type: 'POST',
+            url: '/api/ExecCippReplacemap',
+            data: { Action: 'Preview', tenantId: id },
+            confirmText:
+              'Enter text containing %variables% to see how it resolves for this tenant.',
+          }}
+        />
+      )}
       <CippApiDialog
         createDialog={{
           open: openAddDialog,

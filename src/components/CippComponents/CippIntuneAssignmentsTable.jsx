@@ -41,7 +41,7 @@ const columns = [
   'type',
 ]
 
-// The CIPP list each kind of Intune object is managed from.
+// The CIPP list each kind of Intune object is managed from, or null when CIPP does not list it.
 const policyPage = (row) => {
   switch (row.category) {
     case 'Intune Compliance Policy':
@@ -57,11 +57,13 @@ const policyPage = (row) => {
     case 'Autopilot Deployment Profile':
       return '/endpoint/autopilot/enrollment-profiles'
     case 'Apple Enrollment Profile':
-      return '/endpoint/autopilot/enrollment-profiles/apple-ade'
+      return null
     case 'Intune Enrollment Configuration':
-      return row.type === 'windows10EnrollmentCompletionPageConfiguration'
-        ? '/endpoint/autopilot/list-status-pages'
-        : '/endpoint/autopilot/enrollment-restrictions'
+      if (row.type === 'windows10EnrollmentCompletionPageConfiguration')
+        return '/endpoint/autopilot/list-status-pages'
+      return /PlatformRestriction/.test(row.type ?? '')
+        ? '/endpoint/autopilot/enrollment-restrictions'
+        : null
     default:
       return '/endpoint/MEM/list-policies'
   }
@@ -82,6 +84,7 @@ export const CippIntuneAssignmentsTable = ({
         label: 'View policy',
         icon: <CippIcons.Visibility />,
         noConfirm: true,
+        condition: (row) => Boolean(row.policyLink),
         customFunction: (row) => router.push(row.policyLink),
       },
     ],
@@ -95,10 +98,15 @@ export const CippIntuneAssignmentsTable = ({
   })
   const rows = useMemo(
     () =>
-      (Array.isArray(request.data) ? request.data : []).map((row) => ({
-        ...row,
-        policyLink: `${policyPage(row)}?tenantFilter=${encodeURIComponent(tenantFilter)}&search=${encodeURIComponent(row.displayName ?? '')}`,
-      })),
+      (Array.isArray(request.data) ? request.data : []).map((row) => {
+        const page = policyPage(row)
+        return {
+          ...row,
+          policyLink: page
+            ? `${page}?tenantFilter=${encodeURIComponent(tenantFilter)}&search=${encodeURIComponent(row.policyId)}`
+            : null,
+        }
+      }),
     [request.data, tenantFilter]
   )
   const cachedAt = rows[0]?.CacheTimestamp
