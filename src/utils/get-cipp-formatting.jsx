@@ -586,15 +586,17 @@ export const getCippFormatting = (
     )
   }
 
-  if (cellName === 'ScoreExplanation') {
+  // Findings are {Check, Finding} objects and fall through to the table button; older results are one string.
+  if (cellName === 'ScoreExplanation' && (typeof data === 'string' || (Array.isArray(data) && !data.length))) {
+    const label = typeof data === 'string' ? data : 'No issues'
     return isText ? (
-      data
+      label
     ) : (
-      <Chip variant="outlined" label={data} size="small" color="info" />
+      <Chip variant="outlined" label={label} size="small" color="info" />
     )
   }
 
-  if (cellName === 'DMARCActionPolicy') {
+  if (cellName === 'DMARCActionPolicy' || cellName === 'DMARCSubdomainPolicy') {
     if (data === '') {
       data = 'No DMARC Action'
     }

@@ -116,11 +116,13 @@ const Page = () => {
         simpleColumns={[
           'Domain',
           'ScorePercentage',
+          'ScoreExplanation',
           'MailProvider',
           'SPFPassAll',
           'MXPassTest',
           'DMARCPresent',
           'DMARCActionPolicy',
+          'DMARCSubdomainPolicy',
           'DMARCPercentagePass',
           'DNSSECPresent',
           'DKIMEnabled',
