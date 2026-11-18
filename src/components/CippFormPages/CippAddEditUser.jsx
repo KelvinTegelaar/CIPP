@@ -581,6 +581,10 @@ const CippAddEditUser = (props) => {
       toAutoCompleteOptions(template.sharePointSiteRole, sharePointSiteRoleOptions)[0] ?? null,
       null
     )
+    applyField('setManager', toAutoCompleteOptions(template.setManager)[0] ?? null, null)
+    if (userSettingsDefaults?.userAttributes?.some((attribute) => attribute.value === 'sponsor')) {
+      applyField('setSponsor', toAutoCompleteOptions(template.setSponsor)[0] ?? null, null)
+    }
 
     // Custom user attributes. On a switch, clear every known attribute field
     // first so attributes the new template doesn't define don't linger, then

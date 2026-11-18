@@ -8,11 +8,24 @@ import { CippApiDialog } from '../../../../components/CippComponents/CippApiDial
 import countryList from '../../../../data/countryList.json'
 import tabOptions from './tabOptions.json'
 import { useSettings } from '../../../../hooks/use-settings'
+import { useCustomVariableOptions } from '../../../../hooks/use-custom-variables'
+import { isMultiTenant } from '../../../../utils/tenant-selection'
 
 const Page = () => {
   const pageTitle = 'User Templates'
   const createDialog = useDialog()
   const userSettings = useSettings()
+  const { options: variableOptions } = useCustomVariableOptions()
+  const sponsorEnabled = userSettings?.userAttributes?.some(
+    (attribute) => attribute.value === 'sponsor'
+  )
+  const sharedTemplateValidator = (example) => ({
+    validate: (value) =>
+      !value ||
+      !isMultiTenant(userSettings.currentTenant) ||
+      /%[^%]+%/.test(value) ||
+      `Templates shared across tenants need a variable, for example ${example}`,
+  })
 
   const templateFields = [
     {
@@ -318,6 +331,28 @@ const Page = () => {
         name: `defaultAttributes.${attribute.label}.Value`,
         type: 'textField',
       })) || []),
+    {
+      label: 'Manager',
+      name: 'setManager',
+      type: 'textField',
+      autocompleteOptions: variableOptions,
+      validators: sharedTemplateValidator('%salesmanager%'),
+      helperText:
+        "Use a custom variable such as %salesmanager% so each tenant uses its own manager. A user principal name only works in that user's tenant.",
+    },
+    ...(sponsorEnabled
+      ? [
+          {
+            label: 'Sponsor',
+            name: 'setSponsor',
+            type: 'textField',
+            autocompleteOptions: variableOptions,
+            validators: sharedTemplateValidator('%salessponsor%'),
+            helperText:
+              "Use a custom variable such as %salessponsor% so each tenant uses its own sponsor. A user principal name only works in that user's tenant.",
+          },
+        ]
+      : []),
   ]
 
   // The Add User form caches this list under its own per-tenant key, and AllTenants templates
@@ -381,6 +416,8 @@ const Page = () => {
       ...(userSettings?.userAttributes
         ?.filter((attribute) => attribute.value !== 'sponsor')
         .map((attribute) => `defaultAttributes.${attribute.label}.Value`) || []),
+      'setManager',
+      ...(sponsorEnabled ? ['setSponsor'] : []),
     ],
     actions: actions,
   }
