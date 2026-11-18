@@ -384,7 +384,16 @@ const Page = () => {
       formControl.setValue('forwarding.KeepCopy', forwardAndDeliver === true)
 
       if (forwardingType === 'internalAddress') {
-        formControl.setValue('forwarding.ForwardInternal', cleanAddress)
+        const forwardingContact = currentSettings.ForwardingContact
+        formControl.setValue(
+          'forwarding.ForwardInternal',
+          forwardingContact?.id
+            ? {
+                label: `${forwardingContact.displayName} (${forwardingContact.mail}) - Contact`,
+                value: forwardingContact.id,
+              }
+            : cleanAddress
+        )
         formControl.setValue('forwarding.ForwardExternal', '')
       } else if (forwardingType === 'ExternalAddress') {
         formControl.setValue('forwarding.ForwardExternal', cleanAddress)

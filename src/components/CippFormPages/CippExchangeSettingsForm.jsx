@@ -64,7 +64,7 @@ const CippExchangeSettingsForm = (props) => {
     data: {
       Endpoint: `contacts`,
       tenantFilter: userSettingsDefaults.currentTenant,
-      $select: "displayName,mail,mailNickname",
+      $select: "id,displayName,mail,mailNickname",
       $top: 999,
     },
     queryKey: `TenantContacts-${userSettingsDefaults.currentTenant}`,

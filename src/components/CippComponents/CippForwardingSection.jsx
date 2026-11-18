@@ -15,7 +15,7 @@ const CippForwardingSection = ({ formControl, usersList, contactsList, postReque
     })) || []),
     // Add contacts
     ...(contactsList?.data?.Results?.map((contact) => ({
-      value: contact.mail || contact.emailAddress,
+      value: contact.id || contact.mail || contact.emailAddress,
       label: `${contact.displayName} (${contact.mail || contact.emailAddress}) - Contact`,
     })) || [])
   ];

@@ -100,7 +100,7 @@ export const CippWizardVacationActions = (props) => {
     data: {
       Endpoint: 'contacts',
       tenantFilter: tenantDomain,
-      $select: 'displayName,mail,mailNickname',
+      $select: 'id,displayName,mail,mailNickname',
       $top: 999,
     },
     queryKey: `VacationForwardingContacts-${tenantDomain}`,
@@ -113,7 +113,7 @@ export const CippWizardVacationActions = (props) => {
       label: `${user.displayName} (${user.userPrincipalName}) - User`,
     })) || []),
     ...((forwardingContacts.data?.Results || []).map((contact) => ({
-      value: contact.mail || contact.emailAddress,
+      value: contact.id || contact.mail || contact.emailAddress,
       label: `${contact.displayName} (${contact.mail || contact.emailAddress}) - Contact`,
     })) || []),
   ]
