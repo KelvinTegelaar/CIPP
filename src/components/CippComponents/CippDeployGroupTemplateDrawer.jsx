@@ -36,15 +36,20 @@ export const CippDeployGroupTemplateDrawer = ({
   // Matches the live groups table key `groups-${tenant}`; the ReportDB cache only changes on sync.
   const deployTemplate = ApiPostCall({ relatedQueryKeys: ["groups-*"] });
 
-  const resetForm = () => {
+  const resetForm = (keepTenants = false) => {
     clearTimeout(fillTimer.current);
     lastAppliedTemplate.current = null;
-    formControl.reset(defaultValues);
+    formControl.reset(
+      keepTenants
+        ? { ...defaultValues, tenantFilter: formControl.getValues("tenantFilter") }
+        : defaultValues,
+    );
   };
 
   useEffect(() => {
     if (deployTemplate.isSuccess) {
-      resetForm();
+      // Keep the tenant selection so the next template can go to the same tenants
+      resetForm(true);
     }
   }, [deployTemplate.isSuccess]);
 
