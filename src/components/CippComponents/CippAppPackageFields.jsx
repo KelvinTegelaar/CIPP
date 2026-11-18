@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Alert, Typography } from '@mui/material'
+import { Alert, LinearProgress, Typography } from '@mui/material'
 import { Grid } from '@mui/system'
 import CippFormComponent from './CippFormComponent'
 import { CippFormCondition } from './CippFormCondition'
@@ -7,7 +7,10 @@ import { LinearProgressWithLabel } from '../linearProgressWithLabel'
 import { ApiPostCall } from '../../api/ApiCall'
 import {
   blobToBase64,
+  msiInfoFromProperties,
+  packageInstaller,
   readIntuneWinPackage,
+  readMsiProperties,
   uploadIntuneWinPayload,
 } from '../../utils/intunewin-package'
 
@@ -44,8 +47,12 @@ const installCommandFor = (setupFile, msiInfo) => {
 const uninstallCommandFor = (msiInfo) =>
   msiInfo ? `msiexec /x "${msiInfo.MsiProductCode}" /qn` : null
 
-export const CippAppPackageFields = ({ formControl }) => {
-  const [upload, setUpload] = useState({ progress: null, error: null })
+export const CippAppPackageFields = ({ formControl, onBusyChange }) => {
+  const [upload, setUpload] = useState({
+    progress: null,
+    packaging: false,
+    error: null,
+  })
   const uploadCall = ApiPostCall({})
   const packageInfo = formControl.watch('packageInfo')
 
@@ -57,9 +64,21 @@ export const CippAppPackageFields = ({ formControl }) => {
   const handlePackage = async (file) => {
     formControl.setValue('packageFile', null)
     if (!file) return
-    setUpload({ progress: 0, error: null })
+    setUpload({ progress: 0, packaging: false, error: null })
+    onBusyChange?.(true)
     try {
-      const { metadata, payload } = await readIntuneWinPackage(file)
+      const isInstaller = /\.(exe|msi)$/i.test(file.name)
+      const { metadata, payload } = isInstaller
+        ? {
+            metadata: {
+              Name: file.name,
+              SetupFile: file.name,
+              MsiInfo: /\.msi$/i.test(file.name)
+                ? msiInfoFromProperties(await readMsiProperties(file))
+                : null,
+            },
+          }
+        : await readIntuneWinPackage(file)
       const msi = metadata.MsiInfo?.MsiProductCode ? metadata.MsiInfo : null
       fillIfEmpty(
         'applicationName',
@@ -97,13 +116,24 @@ export const CippAppPackageFields = ({ formControl }) => {
           formControl.setValue('runAsAccount', 'user')
       }
       const post = (url, data) => uploadCall.mutateAsync({ url, data })
-      const { packageId, blockCount } = await uploadIntuneWinPayload({
-        payload,
-        post,
-        onProgress: (progress) => setUpload({ progress, error: null }),
-      })
+      const onProgress = (progress) =>
+        setUpload({ progress, packaging: false, error: null })
+      const { packageId, blockCount, ...packaged } = isInstaller
+        ? await packageInstaller({
+            file,
+            post,
+            onProgress,
+            onPackaging: () =>
+              setUpload({ progress: null, packaging: true, error: null }),
+          })
+        : await uploadIntuneWinPayload({ payload, post, onProgress })
       formControl.setValue('packageId', packageId, { shouldDirty: true })
-      formControl.setValue('packageUpload', { blockCount, metadata })
+      formControl.setValue('packageUpload', {
+        blockCount,
+        metadata: isInstaller
+          ? { ...packaged.metadata, MsiInfo: metadata.MsiInfo }
+          : metadata,
+      })
       formControl.setValue('packageInfo', {
         fileName: file.name,
         size: file.size,
@@ -111,11 +141,13 @@ export const CippAppPackageFields = ({ formControl }) => {
         toolVersion: metadata.ToolVersion,
         msiProductCode: msi?.MsiProductCode ?? null,
       })
-      setUpload({ progress: null, error: null })
+      setUpload({ progress: null, packaging: false, error: null })
     } catch (error) {
       const message =
         error?.response?.data?.Results ?? error?.message ?? 'Upload failed'
-      setUpload({ progress: null, error: String(message) })
+      setUpload({ progress: null, packaging: false, error: String(message) })
+    } finally {
+      onBusyChange?.(false)
     }
   }
 
@@ -133,18 +165,27 @@ export const CippAppPackageFields = ({ formControl }) => {
       <Grid size={{ xs: 12 }}>
         <CippFormComponent
           type="file"
-          label="Win32 package (.intunewin, created with the Microsoft Win32 Content Prep Tool)"
+          label="Installer (.exe or .msi, packaged by CIPP) or a .intunewin package"
           name="packageFile"
-          accept=".intunewin"
+          accept=".exe,.msi,.intunewin"
           onChange={handlePackage}
           formControl={formControl}
-          disabled={upload.progress !== null}
+          disabled={upload.progress !== null || upload.packaging}
         />
       </Grid>
       {upload.progress !== null && (
         <Grid size={{ xs: 12 }}>
-          <Typography variant="body2">Uploading the package to CIPP</Typography>
+          <Typography variant="body2">Uploading to CIPP</Typography>
           <LinearProgressWithLabel value={upload.progress} />
+        </Grid>
+      )}
+      {upload.packaging && (
+        <Grid size={{ xs: 12 }}>
+          <Typography variant="body2">
+            Packaging the installer for Intune. You can fill in the details
+            below meanwhile.
+          </Typography>
+          <LinearProgress />
         </Grid>
       )}
       {upload.error && (
@@ -152,7 +193,7 @@ export const CippAppPackageFields = ({ formControl }) => {
           <Alert severity="error">{upload.error}</Alert>
         </Grid>
       )}
-      {packageInfo && upload.progress === null && (
+      {packageInfo && upload.progress === null && !upload.packaging && (
         <Grid size={{ xs: 12 }}>
           <Alert severity="success">
             {packageInfo.fileName} ({(packageInfo.size / 1048576).toFixed(1)}{' '}

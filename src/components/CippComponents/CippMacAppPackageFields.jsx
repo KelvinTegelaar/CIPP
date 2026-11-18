@@ -21,7 +21,7 @@ const macOSReleases = [
   ['v26_0', 'macOS 26 Tahoe'],
 ].map(([value, label]) => ({ value, label }))
 
-export const CippMacAppPackageFields = ({ formControl }) => {
+export const CippMacAppPackageFields = ({ formControl, onBusyChange }) => {
   const [upload, setUpload] = useState({ progress: null, error: null })
   const uploadCall = ApiPostCall({})
   const packageInfo = formControl.watch('packageInfo')
@@ -35,6 +35,7 @@ export const CippMacAppPackageFields = ({ formControl }) => {
     formControl.setValue('packageFile', null)
     if (!file) return
     setUpload({ progress: 0, error: null })
+    onBusyChange?.(true)
     try {
       const { kind, title, bundles } = await readMacPackage(file)
       const [primary] = bundles
@@ -80,6 +81,8 @@ export const CippMacAppPackageFields = ({ formControl }) => {
           error?.response?.data?.Results ?? error?.message ?? 'Upload failed'
         ),
       })
+    } finally {
+      onBusyChange?.(false)
     }
   }
 

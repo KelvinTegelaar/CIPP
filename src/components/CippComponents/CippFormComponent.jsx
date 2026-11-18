@@ -930,7 +930,7 @@ export const CippFormComponent = (props) => {
                     id={`file-input-${convertedName}`}
                     type="file"
                     sx={{ display: "none" }}
-                    slotProps={{ input: { ...other } }}
+                    slotProps={{ input: { ...other, onChange: undefined } }}
                     onChange={(e) => {
                       const file = e.target.files[0];
                       field.onChange(file);

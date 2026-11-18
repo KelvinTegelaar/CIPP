@@ -32,7 +32,7 @@ const appTypeLabels = {
   officeApp: 'Microsoft Office',
   edgeApp: 'Microsoft Edge',
   win32ScriptApp: 'Custom Application',
-  win32PackageApp: 'Win32 Package (.intunewin)',
+  win32PackageApp: 'Win32 App (.exe, .msi or .intunewin)',
   macOSPackageApp: 'macOS Package (.pkg/.dmg)',
 }
 
@@ -100,6 +100,9 @@ export const CippAppTemplateDrawer = ({
     control: formControl.control,
     name: 'appType',
   })
+
+  // True while a package upload or packaging is running
+  const [packageBusy, setPackageBusy] = useState(false)
 
   const searchQuerySelection = useWatch({
     control: formControl.control,
@@ -396,7 +399,7 @@ export const CippAppTemplateDrawer = ({
                 { label: 'Microsoft Office', value: 'officeApp' },
                 { label: 'Microsoft Edge', value: 'edgeApp' },
                 { label: 'Custom Application', value: 'win32ScriptApp' },
-                { label: 'Win32 Package (.intunewin)', value: 'win32PackageApp' },
+                { label: 'Win32 App (.exe, .msi or .intunewin)', value: 'win32PackageApp' },
                 { label: 'macOS Package (.pkg/.dmg)', value: 'macOSPackageApp' },
               ]}
               multiple={false}
@@ -1069,7 +1072,7 @@ export const CippAppTemplateDrawer = ({
             compareType="is"
             compareValue="win32PackageApp"
           >
-            <CippAppPackageFields formControl={formControl} />
+            <CippAppPackageFields formControl={formControl} onBusyChange={setPackageBusy} />
           </CippFormCondition>
           <CippFormCondition
             formControl={formControl}
@@ -1077,7 +1080,7 @@ export const CippAppTemplateDrawer = ({
             compareType="is"
             compareValue="macOSPackageApp"
           >
-            <CippMacAppPackageFields formControl={formControl} />
+            <CippMacAppPackageFields formControl={formControl} onBusyChange={setPackageBusy} />
           </CippFormCondition>
 
           {/* Assignment (shared across all types) */}
@@ -1133,7 +1136,12 @@ export const CippAppTemplateDrawer = ({
           {/* Add App Button */}
           {applicationType?.value && (
             <Grid size={{ xs: 12 }}>
-              <Button variant="outlined" onClick={handleAddApp} startIcon={<CippIcons.Add />}>
+              <Button
+                variant="outlined"
+                onClick={handleAddApp}
+                startIcon={<CippIcons.Add />}
+                disabled={packageBusy}
+              >
                 Add App to Template
               </Button>
             </Grid>
