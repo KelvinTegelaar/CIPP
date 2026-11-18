@@ -25,8 +25,33 @@ import { CippApiResults } from '../../../../components/CippComponents/CippApiRes
 import { CippDataTable } from '../../../../components/CippTable/CippDataTable'
 import { CippFormDomainSelector } from '../../../../components/CippComponents/CippFormDomainSelector'
 import { CippFormUserSelector } from '../../../../components/CippComponents/CippFormUserSelector'
+import { CippTextFieldWithVariables } from '../../../../components/CippComponents/CippTextFieldWithVariables'
 import { useSettings } from '../../../../hooks/use-settings'
 import { isMultiTenant } from '../../../../utils/tenant-selection'
+
+// Filled per user by PatchUser from the user's own Graph properties.
+const USER_PROPERTY_VARIABLES = [
+  ['givenName', 'First name'],
+  ['surname', 'Last name'],
+  ['displayName', 'Current display name'],
+  ['userPrincipalName', 'User principal name'],
+  ['mail', 'Primary email address'],
+  ['mailNickname', 'Mail alias'],
+  ['jobTitle', 'Job title'],
+  ['department', 'Department'],
+  ['companyName', 'Company name'],
+  ['officeLocation', 'Office location'],
+  ['employeeId', 'Employee ID'],
+].map(([name, description]) => ({
+  name,
+  variable: `%${name}%`,
+  description: `The user's ${description.toLowerCase()}`,
+  type: 'user',
+  category: 'user',
+}))
+
+// Local admin SIDs for Intune device policies; meaningless in a user property.
+const INTUNE_ONLY_VARIABLES = ['globaladminsid', 'deviceadminsid']
 
 // User properties that can be patched
 const PATCHABLE_PROPERTIES = [
@@ -53,6 +78,11 @@ const PATCHABLE_PROPERTIES = [
   {
     property: 'department',
     label: 'Department',
+    type: 'string',
+  },
+  {
+    property: 'displayName',
+    label: 'Display Name',
     type: 'string',
   },
   {
@@ -445,10 +475,12 @@ const PropertySelectionStep = (props) => {
       )
     }
 
-    // Default to text input for string types with consistent styling
+    // Default to text input for string types; typing % offers tenant, custom and user-property variables
     return (
-      <TextField
+      <CippTextFieldWithVariables
         key={propertyName}
+        extraAutocompleteOptions={USER_PROPERTY_VARIABLES}
+        excludeAutocompleteOptions={INTUNE_ONLY_VARIABLES}
         label={property?.label || propertyName}
         fullWidth
         value={currentValue || ''}
@@ -478,7 +510,9 @@ const PropertySelectionStep = (props) => {
         <Typography variant="body2" sx={{
           color: "text.secondary"
         }}>
-          Choose which user properties you want to modify and provide the new values.
+          Choose which user properties you want to modify and provide the new values. Type % in a
+          text value for variables: tenant and custom variables, or the user&apos;s own properties,
+          for example %givenName% %surname% (%tenantname%).
           {customDataProperties.length > 0 && (
             <> Custom data fields are available based on your tenant's manual entry mappings.</>
           )}

@@ -14,6 +14,7 @@ export const CippTextFieldWithVariables = ({
   autocompleteTrigger = "%",
   autocompleteOptions = null,
   extraAutocompleteOptions = null,
+  excludeAutocompleteOptions = null,
   ...textFieldProps
 }) => {
   const [showAutocomplete, setShowAutocomplete] = useState(false);
@@ -257,6 +258,7 @@ export const CippTextFieldWithVariables = ({
         position={getCursorPosition()}
         customVariables={autocompleteOptions}
         extraVariables={extraAutocompleteOptions}
+        excludeVariables={excludeAutocompleteOptions}
       />
     </>
   );

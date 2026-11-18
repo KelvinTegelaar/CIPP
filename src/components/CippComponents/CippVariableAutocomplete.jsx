@@ -42,6 +42,7 @@ export const CippVariableAutocomplete = React.memo(
     position = { top: 0, left: 0 }, // Cursor position for floating box
     customVariables = null,
     extraVariables = null,
+    excludeVariables = null, // variable names (without %) to leave out of the list
   }) => {
     const theme = useTheme();
     const settings = useSettings();
@@ -69,13 +70,14 @@ export const CippVariableAutocomplete = React.memo(
       setVariables(customVariables.map(normaliseVariable));
     }, [customVariables, hasCustomVariables]);
 
-    const offeredVariables = useMemo(
-      () =>
-        Array.isArray(extraVariables)
-          ? [...extraVariables.map(normaliseVariable), ...variables]
-          : variables,
-      [extraVariables, variables]
-    );
+    const offeredVariables = useMemo(() => {
+      const offered = Array.isArray(extraVariables)
+        ? [...extraVariables.map(normaliseVariable), ...variables]
+        : variables;
+      if (!excludeVariables?.length) return offered;
+      const excluded = new Set(excludeVariables.map((name) => name.toLowerCase()));
+      return offered.filter((variable) => !excluded.has(String(variable.name).toLowerCase()));
+    }, [extraVariables, variables, excludeVariables]);
 
     // Setup API request when component mounts or tenant changes
     useEffect(() => {

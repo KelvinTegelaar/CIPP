@@ -76,4 +76,13 @@ describe('CippTextFieldWithVariables', () => {
 
     expect(field).toHaveValue('%reportdate%')
   })
+
+  it('leaves excluded variables out of the list', async () => {
+    const user = userEvent.setup()
+    renderWithProviders(<Harness excludeAutocompleteOptions={['CIPPURL']} />)
+
+    await user.type(screen.getByRole('textbox', { name: 'Footer Text' }), '%')
+    expect(await screen.findByText('%tenantname%')).toBeInTheDocument()
+    expect(screen.queryByText('%cippurl%')).not.toBeInTheDocument()
+  })
 })

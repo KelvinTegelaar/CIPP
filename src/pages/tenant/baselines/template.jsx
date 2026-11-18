@@ -2,16 +2,19 @@ import {
   Alert,
   Box,
   Button,
+  ButtonGroup,
   Card,
   CardContent,
   Chip,
   Divider,
   IconButton,
+  InputAdornment,
   ListItemIcon,
   ListItemText,
   Menu,
   MenuItem,
   Stack,
+  SvgIcon,
   Tab,
   Tabs,
   TextField,
@@ -291,6 +294,36 @@ const StagePanel = ({
       standard: catalogByName[instanceKey.split('#')[0]],
     }))
     .filter((entry) => Boolean(entry.standard))
+
+  // Search and posture filter. Watch only the remediate flags: a whole-form watch re-renders
+  // every standard item on each keystroke.
+  const [searchQuery, setSearchQuery] = useState('')
+  const [postureFilter, setPostureFilter] = useState('all')
+  const remediateNames = stageStandards.map(
+    ({ instanceKey }) => `${instanceKey}.remediateEnabled`
+  )
+  const remediateValues = useWatch({
+    control: formControl.control,
+    name: remediateNames,
+    disabled: remediateNames.length === 0,
+  })
+  const searchLower = searchQuery.trim().toLowerCase()
+  const visibleStandards = stageStandards.map(({ instanceKey, standard }, index) => {
+    const remediate = Boolean(remediateValues?.[index])
+    const matchesSearch =
+      !searchLower ||
+      [standard.label, standard.helpText, standard.cat, ...(standard.tag ?? []), ...(standard.appliesToTest ?? [])]
+        .some((text) => typeof text === 'string' && text.toLowerCase().includes(searchLower))
+    const matchesPosture =
+      postureFilter === 'all' || (postureFilter === 'remediate') === remediate
+    return { instanceKey, remediate, visible: instanceKey === expandedStandard || (matchesSearch && matchesPosture) }
+  })
+  const remediateCount = visibleStandards.filter((entry) => entry.remediate).length
+  const postureButtons = [
+    { value: 'all', label: `All (${stageStandards.length})` },
+    { value: 'remediate', label: `Auto-remediate (${remediateCount})` },
+    { value: 'report', label: `Report only (${stageStandards.length - remediateCount})` },
+  ]
 
   // Registered every render so the save handler always serializes the latest form values.
   useEffect(() => {
@@ -715,23 +748,85 @@ const StagePanel = ({
             catalog.
           </Typography>
         )}
-        <Stack spacing={1.5}>
-          {stageStandards.map(({ instanceKey, standard }) => (
-            <CippBaselineStandardItem
-              key={instanceKey}
-              standard={standard}
-              instanceId={instanceKey}
-              savedConfig={stage.standardConfigs?.[instanceKey]}
-              formControl={formControl}
-              expanded={expandedStandard === instanceKey}
-              onToggle={() =>
-                setExpandedStandard((prev) =>
-                  prev === instanceKey ? null : instanceKey
-                )
-              }
-              onRemove={handleRemoveStandard}
-              onAddInstance={handleAddStandardInstance}
+        {stageStandards.length > 0 && (
+          <Stack
+            direction={{ xs: 'column', sm: 'row' }}
+            spacing={2}
+            useFlexGap
+            sx={{ alignItems: { xs: 'stretch', sm: 'center' } }}
+          >
+            <TextField
+              size="small"
+              variant="filled"
+              sx={{ width: { xs: '100%', sm: 350 } }}
+              placeholder="Search..."
+              value={searchQuery}
+              onChange={(event) => setSearchQuery(event.target.value)}
+              slotProps={{
+                input: {
+                  startAdornment: (
+                    <InputAdornment position="start" sx={{ margin: '0 !important' }}>
+                      <CippIcons.Search />
+                    </InputAdornment>
+                  ),
+                  endAdornment: searchQuery && (
+                    <InputAdornment position="end">
+                      <Tooltip title="Clear search">
+                        <IconButton
+                          size="small"
+                          onClick={() => setSearchQuery('')}
+                          aria-label="Clear search"
+                        >
+                          <CippIcons.Close />
+                        </IconButton>
+                      </Tooltip>
+                    </InputAdornment>
+                  ),
+                },
+              }}
             />
+            <ButtonGroup variant="outlined" color="primary" size="small" sx={{ ml: { sm: 'auto' } }}>
+              <Button disabled color="primary">
+                <SvgIcon fontSize="small">
+                  <CippIcons.FilterAlt />
+                </SvgIcon>
+              </Button>
+              {postureButtons.map((option) => (
+                <Button
+                  key={option.value}
+                  variant={postureFilter === option.value ? 'contained' : 'outlined'}
+                  onClick={() => setPostureFilter(option.value)}
+                >
+                  {option.label}
+                </Button>
+              ))}
+            </ButtonGroup>
+          </Stack>
+        )}
+        {stageStandards.length > 0 && !visibleStandards.some((entry) => entry.visible) && (
+          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+            No standards in this stage match the search or filter.
+          </Typography>
+        )}
+        <Stack spacing={1.5}>
+          {stageStandards.map(({ instanceKey, standard }, index) => (
+            // Hidden rather than unmounted, so filtered-out standards keep their unsaved settings.
+            <Box key={instanceKey} hidden={!visibleStandards[index].visible}>
+              <CippBaselineStandardItem
+                standard={standard}
+                instanceId={instanceKey}
+                savedConfig={stage.standardConfigs?.[instanceKey]}
+                formControl={formControl}
+                expanded={expandedStandard === instanceKey}
+                onToggle={() =>
+                  setExpandedStandard((prev) =>
+                    prev === instanceKey ? null : instanceKey
+                  )
+                }
+                onRemove={handleRemoveStandard}
+                onAddInstance={handleAddStandardInstance}
+              />
+            </Box>
           ))}
         </Stack>
       </Stack>
