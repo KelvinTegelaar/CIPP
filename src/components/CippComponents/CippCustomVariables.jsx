@@ -99,11 +99,10 @@ export const VALUE_FIELD = {
 
 // Every place a variable name is defined, so an operator adding it somewhere new can see what the
 // other tenants already use - and spot a name that has drifted into two different types.
-const CippVariableUsage = ({ usage }) => {
-  // PowerShell serializes a single-element array as a bare object, so normalize before iterating.
-  const asArray = (value) =>
-    Array.isArray(value) ? value : value ? [value] : []
+// PowerShell serializes a single-element array as a bare object, so normalize before iterating.
+const asArray = (value) => (Array.isArray(value) ? value : value ? [value] : [])
 
+const CippVariableUsage = ({ usage }) => {
   if (!usage) {
     return (
       <Typography
@@ -132,6 +131,12 @@ const CippVariableUsage = ({ usage }) => {
           size="small"
           label={`${usage.TenantCount} tenant${usage.TenantCount === 1 ? '' : 's'}`}
         />
+        {usage.GroupCount > 0 && (
+          <Chip
+            size="small"
+            label={`${usage.GroupCount} tenant group${usage.GroupCount === 1 ? '' : 's'}`}
+          />
+        )}
         {usage.HasGlobal && (
           <Chip size="small" color="info" label="Defined globally" />
         )}
@@ -175,7 +180,15 @@ const CippCustomVariables = ({ id }) => {
   const previewFormHook = useForm()
   const [usageVariable, setUsageVariable] = useState(null)
 
-  const isTenantView = id !== 'AllTenants'
+  const isGroupView = String(id).startsWith('group:')
+  const isTenantView = id !== 'AllTenants' && !isGroupView
+  // The tenant view also lists inherited rows, which are edited where they are defined.
+  const isOwnRow = (row) =>
+    !isTenantView || row.Scope === 'Tenant' || row.Scope === 'Overridden'
+  // Group variables belong to the group, so they go through the endpoint gated by the tenant group permission.
+  const variablesApi = isGroupView
+    ? '/api/ExecCippGroupReplacemap'
+    : '/api/ExecCippReplacemap'
 
   // Every definition of every variable name, across all tenants. A variable name is the thing an
   // operator manages - the same %wallpaperpath% deployed in many places - but it is stored one row
@@ -198,7 +211,7 @@ const CippCustomVariables = ({ id }) => {
   // distinct from the table's so the two cannot collide, and still matches the CustomVariables*
   // wildcard used for invalidation.
   const ownNamesQuery = ApiGetCall({
-    url: `/api/ExecCippReplacemap?Action=List&tenantId=${id}`,
+    url: `${variablesApi}?Action=List&tenantId=${id}`,
     queryKey: `CustomVariables-Names-${id}`,
   })
 
@@ -243,6 +256,12 @@ const CippCustomVariables = ({ id }) => {
   const alreadyDefinedHere = Boolean(
     enteredName && ownVariableNames.has(String(enteredName).toLowerCase())
   )
+  const otherGroups = isGroupView
+    ? asArray(existingUsage?.Definitions).filter(
+        (definition) =>
+          definition.Scope === 'Group' && definition.TenantId !== id
+      )
+    : []
 
   useEffect(() => {
     // The name picker hands back {label, value}. RowKey has always been a plain string on the wire,
@@ -335,7 +354,9 @@ const CippCustomVariables = ({ id }) => {
     if (ownVariableNames.has(String(value).toLowerCase())) {
       return isTenantView
         ? 'This tenant already has a variable with this name. Edit that one instead, or pick another name.'
-        : 'A global variable with this name already exists. Edit that one instead, or pick another name.'
+        : isGroupView
+          ? 'This group already has a variable with this name. Edit that one instead, or pick another name.'
+          : 'A global variable with this name already exists. Edit that one instead, or pick another name.'
     }
     return true
   }
@@ -351,7 +372,7 @@ const CippCustomVariables = ({ id }) => {
       confirmText: "Update the custom variable '[RowKey]'?",
       hideBulk: true,
       setDefaultValues: true,
-      condition: (row) => row.Scope !== 'Global' || id === 'AllTenants',
+      condition: isOwnRow,
       fields: [
         {
           type: 'textField',
@@ -374,7 +395,7 @@ const CippCustomVariables = ({ id }) => {
         },
       ],
       type: 'POST',
-      url: '/api/ExecCippReplacemap',
+      url: variablesApi,
       data: {
         Action: '!AddEdit',
         tenantId: id,
@@ -390,9 +411,10 @@ const CippCustomVariables = ({ id }) => {
       ),
       hideBulk: true,
       setDefaultValues: true,
-      // The row being acted on is the global variable itself, so the name never has to be typed and
+      // The row being acted on is the inherited variable itself, so the name never has to be typed and
       // the type is inherited rather than guessed.
-      condition: (row) => isTenantView && row.Scope === 'Global',
+      condition: (row) =>
+        isTenantView && ['Global', 'Group', 'Conflict'].includes(row.Scope),
       confirmText: "Give '[RowKey]' a value that applies only to this tenant?",
       fields: [
         {
@@ -425,18 +447,18 @@ const CippCustomVariables = ({ id }) => {
       relatedQueryKeys: allRelatedKeys,
     },
     {
-      label: 'Revert to global',
+      label: 'Revert to inherited value',
       icon: (
         <SvgIcon>
           <CippIcons.ArrowUturnLeftIcon />
         </SvgIcon>
       ),
       hideBulk: true,
-      // Named for the outcome. It is the same delete call, but on a row that shadows a global one
-      // the result is that the global value applies again rather than the variable disappearing.
+      // Named for the outcome. It is the same delete call, but on a row that shadows an inherited one
+      // the result is that the group or global value applies again rather than the variable disappearing.
       condition: (row) => row.Scope === 'Overridden',
       confirmText:
-        "Remove this tenant's own value for '[RowKey]'? The global value will apply again.",
+        "Remove this tenant's own value for '[RowKey]'? The tenant group or global value will apply again.",
       type: 'POST',
       url: '/api/ExecCippReplacemap',
       data: {
@@ -462,12 +484,10 @@ const CippCustomVariables = ({ id }) => {
       label: 'Delete',
       icon: <CippIcons.Delete />,
       confirmText: 'Are you sure you want to delete [RowKey]?',
-      // An overridden row gets 'Revert to global' instead, which says what actually happens.
-      condition: (row) =>
-        (row.Scope !== 'Global' || id === 'AllTenants') &&
-        row.Scope !== 'Overridden',
+      // An overridden row gets 'Revert to inherited value' instead, which says what actually happens.
+      condition: (row) => isOwnRow(row) && row.Scope !== 'Overridden',
       type: 'POST',
-      url: '/api/ExecCippReplacemap',
+      url: variablesApi,
       data: {
         Action: 'Delete',
         RowKey: 'RowKey',
@@ -486,22 +506,37 @@ const CippCustomVariables = ({ id }) => {
     <CardContent>
       <Alert severity="info" sx={{ mb: 2 }}>
         {id === 'AllTenants'
-          ? "Global variables are key-value pairs that can be used to store additional information for All Tenants. These are applied to templates in standards using the format %variablename%. If a tenant has a custom variable with the same name, the tenant's variable will take precedence."
-          : 'Custom variables are key-value pairs that can be used to store additional information about a tenant. These are applied to templates in standards using the format %variablename%.'}
+          ? 'Global variables are key-value pairs that can be used to store additional information for All Tenants. These are applied to templates in standards using the format %variablename%. A tenant group or tenant variable with the same name takes precedence.'
+          : isGroupView
+            ? 'Group variables apply to every tenant in this group, using the format %variablename%. They take precedence over global variables, and a variable set on a tenant takes precedence over them. If a tenant is in more than one group that sets the same variable to different values, the global value is used for that tenant and a warning is logged.'
+            : 'Custom variables are key-value pairs that can be used to store additional information about a tenant. These are applied to templates in standards using the format %variablename%. A value set here takes precedence over tenant group and global values.'}
       </Alert>
       <CippDataTable
         queryKey={`CustomVariables-${id}`}
-        title={id === 'AllTenants' ? 'Global Variables' : 'Custom Variables'}
+        title={
+          id === 'AllTenants'
+            ? 'Global Variables'
+            : isGroupView
+              ? 'Group Variables'
+              : 'Custom Variables'
+        }
         actions={actions}
         api={{
           url: isTenantView
             ? `/api/ExecCippReplacemap?Action=List&tenantId=${id}&includeGlobal=true`
-            : `/api/ExecCippReplacemap?Action=List&tenantId=${id}`,
+            : `${variablesApi}?Action=List&tenantId=${id}`,
           dataKey: 'Results',
         }}
         simpleColumns={
           isTenantView
-            ? ['RowKey', 'Value', 'Scope', 'VariableType', 'Description']
+            ? [
+                'RowKey',
+                'Value',
+                'Scope',
+                'Groups',
+                'VariableType',
+                'Description',
+              ]
             : ['RowKey', 'Value', 'VariableType', 'Description']
         }
         cardButton={
@@ -610,9 +645,27 @@ const CippCustomVariables = ({ id }) => {
                   severity: 'info',
                   label: `${existingUsage.Variable} already exists in ${existingUsage.TenantCount} tenant${
                     existingUsage.TenantCount === 1 ? '' : 's'
+                  }${
+                    existingUsage.GroupCount
+                      ? `, ${existingUsage.GroupCount} tenant group${existingUsage.GroupCount === 1 ? '' : 's'}`
+                      : ''
                   }${existingUsage.HasGlobal ? ' and globally' : ''}. The type has been set to ${
                     existingUsage.SuggestedType
                   } to match.`,
+                },
+              ]
+            : []),
+          ...(otherGroups.length > 0
+            ? [
+                {
+                  type: 'alert',
+                  name: 'otherGroupsNotice',
+                  severity: 'warning',
+                  label: `Also set by ${otherGroups
+                    .map((definition) => definition.TenantName)
+                    .join(
+                      ', '
+                    )}. A tenant in more than one of these groups gets the global value if the values differ, so check these groups do not overlap.`,
                 },
               ]
             : []),
@@ -629,7 +682,7 @@ const CippCustomVariables = ({ id }) => {
         ]}
         api={{
           type: 'POST',
-          url: '/api/ExecCippReplacemap',
+          url: variablesApi,
           data: { Action: 'AddEdit', tenantId: id },
           relatedQueryKeys: allRelatedKeys,
         }}

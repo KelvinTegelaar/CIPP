@@ -3,9 +3,10 @@ import { useForm } from "react-hook-form";
 import { ApiGetCall } from "../../../../../api/ApiCall";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
-import { Box } from "@mui/material";
+import { Box, Card, Container } from "@mui/material";
 import CippFormPage from "../../../../../components/CippFormPages/CippFormPage";
 import CippAddEditTenantGroups from "../../../../../components/CippComponents/CippAddEditTenantGroups";
+import CippCustomVariables from "../../../../../components/CippComponents/CippCustomVariables";
 
 const Page = () => {
   const router = useRouter();
@@ -190,28 +191,38 @@ const Page = () => {
   };
 
   return (
-    <CippFormPage
-      title={`Tenant Group${
-        groupDetails.isSuccess && groupDetails?.data?.Results?.[0]?.Name
-          ? ` - ${groupDetails.data.Results[0].Name}`
-          : ""
-      }`}
-      backButtonTitle="Tenant Groups"
-      formControl={formControl}
-      postUrl="/api/ExecTenantGroup"
-      queryKey={[`TenantGroupProperties_${id}`, "TenantGroupListPage"]}
-      customDataformatter={customDataFormatter}
-      formPageType="Edit"
-    >
-      <Box sx={{ width: "100%" }}>
-        <CippAddEditTenantGroups
-          formControl={formControl}
-          title="Tenant Group"
-          backButtonTitle="Tenant Groups"
-          hideSubmitButton={true}
-        />
-      </Box>
-    </CippFormPage>
+    <>
+      <CippFormPage
+        title={`Tenant Group${
+          groupDetails.isSuccess && groupDetails?.data?.Results?.[0]?.Name
+            ? ` - ${groupDetails.data.Results[0].Name}`
+            : ""
+        }`}
+        backButtonTitle="Tenant Groups"
+        formControl={formControl}
+        postUrl="/api/ExecTenantGroup"
+        queryKey={[`TenantGroupProperties_${id}`, "TenantGroupListPage"]}
+        customDataformatter={customDataFormatter}
+        formPageType="Edit"
+      >
+        <Box sx={{ width: "100%" }}>
+          <CippAddEditTenantGroups
+            formControl={formControl}
+            title="Tenant Group"
+            backButtonTitle="Tenant Groups"
+            hideSubmitButton={true}
+          />
+        </Box>
+      </CippFormPage>
+      {/* Outside the form page: the variable dialogs submit their own forms. */}
+      {id && (
+        <Container maxWidth="lg" sx={{ pb: 4 }}>
+          <Card>
+            <CippCustomVariables id={`group:${id}`} />
+          </Card>
+        </Container>
+      )}
+    </>
   );
 };
 

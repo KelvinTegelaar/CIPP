@@ -263,7 +263,11 @@ export function ApiPostCall({ relatedQueryKeys, onResult }) {
         }
         return results;
       } else {
-        const response = await axios.post(url, data, { headers: await buildVersionedHeaders() });
+        // A Blob body (raw file block) is sent as its own type, not the JSON default.
+        const headers = await buildVersionedHeaders(
+          data instanceof Blob ? { "Content-Type": data.type || "application/octet-stream" } : {},
+        );
+        const response = await axios.post(url, data, { headers });
         if (onResult) {
           onResult(response.data); // Emit each result as it arrives
         }

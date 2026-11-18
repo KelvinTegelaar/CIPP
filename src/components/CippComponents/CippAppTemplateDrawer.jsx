@@ -20,6 +20,8 @@ import CippFormComponent from './CippFormComponent'
 import { CippFormCondition } from './CippFormCondition'
 import { CippApiResults } from './CippApiResults'
 import { ApiGetCall, ApiPostCall } from '../../api/ApiCall'
+import { CippAppPackageFields } from './CippAppPackageFields'
+import { CippMacAppPackageFields } from './CippMacAppPackageFields'
 import languageList from '../../data/languageList.json'
 import edgeLanguageList from '../../data/edgeLanguageList.json'
 
@@ -30,6 +32,8 @@ const appTypeLabels = {
   officeApp: 'Microsoft Office',
   edgeApp: 'Microsoft Edge',
   win32ScriptApp: 'Custom Application',
+  win32PackageApp: 'Win32 Package (.intunewin)',
+  macOSPackageApp: 'macOS Package (.pkg/.dmg)',
 }
 
 export const CippAppTemplateDrawer = ({
@@ -392,6 +396,8 @@ export const CippAppTemplateDrawer = ({
                 { label: 'Microsoft Office', value: 'officeApp' },
                 { label: 'Microsoft Edge', value: 'edgeApp' },
                 { label: 'Custom Application', value: 'win32ScriptApp' },
+                { label: 'Win32 Package (.intunewin)', value: 'win32PackageApp' },
+                { label: 'macOS Package (.pkg/.dmg)', value: 'macOSPackageApp' },
               ]}
               multiple={false}
               formControl={formControl}
@@ -1055,6 +1061,23 @@ export const CippAppTemplateDrawer = ({
                 formControl={formControl}
               />
             </Grid>
+          </CippFormCondition>
+
+          <CippFormCondition
+            formControl={formControl}
+            field="appType.value"
+            compareType="is"
+            compareValue="win32PackageApp"
+          >
+            <CippAppPackageFields formControl={formControl} />
+          </CippFormCondition>
+          <CippFormCondition
+            formControl={formControl}
+            field="appType.value"
+            compareType="is"
+            compareValue="macOSPackageApp"
+          >
+            <CippMacAppPackageFields formControl={formControl} />
           </CippFormCondition>
 
           {/* Assignment (shared across all types) */}
