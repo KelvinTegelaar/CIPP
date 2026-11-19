@@ -1,14 +1,19 @@
 import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
   Box,
   Button,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
+  Typography,
   useMediaQuery,
 } from '@mui/material'
 import { Stack } from '@mui/system'
 import { CippApiResults } from './CippApiResults'
+import { CippIcons } from '../../utils/icon-registry'
 import { ApiGetCall, ApiPostCall } from '../../api/ApiCall'
 import React, { useEffect, useState, useRef } from 'react'
 import { useRouter } from 'next/router'
@@ -28,6 +33,24 @@ import {
   normalizeAutoCompleteValues,
 } from '../../utils/csv-field-values'
 
+const BULK_LABEL_KEYS = [
+  'displayName',
+  'DisplayName',
+  'Displayname',
+  'userPrincipalName',
+  'UPN',
+  'name',
+  'Name',
+  'templateName',
+  'TemplateName',
+  'title',
+  'Title',
+  'applicationName',
+  'productName',
+  'RoleName',
+  'mail',
+]
+
 export const CippApiDialog = (props) => {
   const {
     createDialog,
@@ -44,6 +67,8 @@ export const CippApiDialog = (props) => {
     // open - the custom variables page uses it to default a variable's type from how the same name
     // is typed elsewhere. Omitted, the dialog owns its form exactly as before.
     formHook: externalFormHook,
+    // Selected rows the table's current search or filter hides; listed first in a bulk confirmation.
+    hiddenRows,
     ...other
   } = props
   const router = useRouter()
@@ -51,6 +76,8 @@ export const CippApiDialog = (props) => {
   const [addedFieldData, setAddedFieldData] = useState({})
   const [partialResults, setPartialResults] = useState([])
   const [isFormSubmitted, setIsFormSubmitted] = useState(false)
+  // null until toggled, so the list follows whether any selected row is hidden
+  const [bulkListOpen, setBulkListOpen] = useState(null)
   const mdDown = useMediaQuery((theme) => theme.breakpoints.down('md'))
 
   if (mdDown) {
@@ -346,6 +373,7 @@ export const CippApiDialog = (props) => {
   const handleClose = () => {
     createDialog.handleClose()
     setPartialResults([])
+    setBulkListOpen(null)
   }
 
   // Bulk: a placeholder shared by every selected row keeps its value, unless that would leave
@@ -425,6 +453,82 @@ export const CippApiDialog = (props) => {
     if (typeof confirmPhrase !== 'string' || confirmPhrase.trim() === '') confirmPhrase = null
   }
 
+  // Bulk confirmations name every selected row so nothing is acted on unseen.
+  let bulkRowList = null
+  if (Array.isArray(row) && row.length > 1) {
+    const usable = (value) =>
+      value !== undefined && value !== null && value !== '' && typeof value !== 'object'
+    // The confirm text's placeholders describe the row best, so their values are joined first.
+    const placeholderKeys =
+      typeof rawConfirmText === 'string'
+        ? [...new Set([...rawConfirmText.matchAll(/\[([^\]]+)\]/g)].map((m) => m[1]))]
+        : []
+    const fallbackKeys = [
+      ...BULK_LABEL_KEYS,
+      // then the fields the action posts, which identify the row it acts on
+      ...Object.values(api?.data ?? {}).filter((v) => typeof v === 'string' && !v.startsWith('!')),
+      'id',
+    ]
+    const placeholderLabel = (r) => {
+      const parts = placeholderKeys.map((key) => getNestedValue(r, key)).filter(usable)
+      return parts.length ? [...new Set(parts.map(String))].join(' · ') : null
+    }
+    const fallbackLabel = (r) => {
+      const value = fallbackKeys.map((key) => getNestedValue(r, key)).find(usable)
+      return value === undefined ? null : String(value)
+    }
+    const isHidden = (r) => Boolean(hiddenRows?.has(r))
+    const ordered = [...row.filter(isHidden), ...row.filter((r) => !isHidden(r))]
+    const hiddenCount = ordered.filter(isHidden).length
+    const byPlaceholder = ordered.map(placeholderLabel)
+    // Placeholders that leave a row unnamed or two rows alike can't tell rows apart.
+    const labels =
+      byPlaceholder.every(Boolean) && new Set(byPlaceholder).size === byPlaceholder.length
+        ? byPlaceholder
+        : ordered.map(fallbackLabel)
+    // Without a name for every row a partial list misleads, so only the counts show.
+    const canName = labels.every(Boolean)
+    const listOpen = bulkListOpen ?? hiddenCount > 0
+    const summary = (
+      <Typography variant="body2" sx={{ fontWeight: 500 }}>
+        {row.length} selected
+        {hiddenCount > 0 && (
+          <Box component="span" sx={{ color: 'warning.main' }}>
+            , {hiddenCount} hidden by the current search or filter
+          </Box>
+        )}
+      </Typography>
+    )
+    bulkRowList = canName ? (
+      <Accordion
+        disableGutters
+        variant="outlined"
+        expanded={listOpen}
+        onChange={(_, expanded) => setBulkListOpen(expanded)}
+        slotProps={{ transition: { unmountOnExit: true } }}
+      >
+        <AccordionSummary expandIcon={<CippIcons.ExpandMore />}>{summary}</AccordionSummary>
+        <AccordionDetails sx={{ pt: 0 }}>
+          <Box component="ul" sx={{ m: 0, pl: 2.5, maxHeight: 240, overflowY: 'auto' }}>
+            {ordered.map((r, index) => (
+              <Typography component="li" variant="body2" key={index}>
+                {labels[index]}
+                {isHidden(r) && (
+                  <Box component="span" sx={{ color: 'warning.main' }}>
+                    {' '}
+                    (hidden)
+                  </Box>
+                )}
+              </Typography>
+            ))}
+          </Box>
+        </AccordionDetails>
+      </Accordion>
+    ) : (
+      summary
+    )
+  }
+
   return (
     <>
       {!api?.link && (
@@ -432,7 +536,11 @@ export const CippApiDialog = (props) => {
           <form onSubmit={formHook.handleSubmit(onSubmit)}>
             <DialogTitle>{title}</DialogTitle>
             <DialogContent>
-              <Stack spacing={2}>{confirmText}</Stack>
+              <Stack spacing={2}>
+                {/* wrapped so Stack spacing applies: it styles element children, not bare text */}
+                {confirmText && <Box>{confirmText}</Box>}
+                {bulkRowList}
+              </Stack>
             </DialogContent>
             <DialogContent>
               <Stack spacing={2}>

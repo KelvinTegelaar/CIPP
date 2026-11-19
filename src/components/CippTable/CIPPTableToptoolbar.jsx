@@ -176,8 +176,18 @@ export const CIPPTableToptoolbar = React.memo(
     }
 
     const selectedRows = table.getSelectedRowModel().rows
-    const hasSelection =
-      table.getIsSomeRowsSelected() || table.getIsAllRowsSelected()
+    // Selection survives search and filter changes, so bulk actions can include rows that are off screen.
+    const visibleRowIds = new Set(table.getPrePaginationRowModel().rows.map((row) => row.id))
+    const hiddenSelectedRows = selectedRows.filter((row) => !visibleRowIds.has(row.id))
+    const clearHiddenSelection = () =>
+      table.setRowSelection((prev) => {
+        const next = { ...prev }
+        for (const row of hiddenSelectedRows) delete next[row.id]
+        return next
+      })
+    // TanStack's some/all-selected helpers compare against the filtered rows, so they read false
+    // when hidden selections make the count reach the visible row count.
+    const hasSelection = selectedRows.length > 0
     // Built-in export actions should only appear when the page opts in and rows are selected.
     const builtInBulkExportAvailable =
       showBulkExportAction && exportEnabled && selectedRows.length > 0
@@ -298,6 +308,9 @@ export const CIPPTableToptoolbar = React.memo(
       setActionData({
         data: selectedData,
         action: action,
+        hiddenRows: new Set(
+          selectedData.filter((_, index) => !visibleRowIds.has(eligibleRows[index].id))
+        ),
         ready: true,
       })
       createDialog.handleOpen()
@@ -1017,7 +1030,7 @@ export const CIPPTableToptoolbar = React.memo(
     // count + button share this gate whether rendered inline or portaled into the header
     const bulkActionsContent = (
       <>
-        {(table.getIsAllRowsSelected() || table.getIsSomeRowsSelected()) && (
+        {hasSelection && (
           <Typography
             variant="body2"
             sx={{
@@ -1028,7 +1041,36 @@ export const CIPPTableToptoolbar = React.memo(
             }}
           >
             {table.getSelectedRowModel().rows.length} rows selected
+            {hiddenSelectedRows.length > 0 && (
+              <>
+                ,{' '}
+                <Tooltip title="Selected but hidden by the current search or filter. Bulk actions still include them.">
+                  <Box component="span" sx={{ color: 'warning.main', fontWeight: 500 }}>
+                    {hiddenSelectedRows.length} hidden
+                  </Box>
+                </Tooltip>
+              </>
+            )}
           </Typography>
+        )}
+
+        {hiddenSelectedRows.length > 0 && (
+          <Button
+            onClick={clearHiddenSelection}
+            variant="outlined"
+            color="warning"
+            size="small"
+            sx={{
+              flexShrink: 0,
+              whiteSpace: 'nowrap',
+              minWidth: 'auto',
+              height: '32px',
+              fontSize: { xs: '12px', md: '14px' },
+              mr: 1,
+            }}
+          >
+            Clear hidden
+          </Button>
         )}
 
         {showBulkActionsButton && (
@@ -1766,6 +1808,7 @@ export const CIPPTableToptoolbar = React.memo(
             api={actionData.action}
             row={actionData.data}
             {...actionData.action}
+            hiddenRows={actionData.hiddenRows}
             relatedQueryKeys={[
               ...(queryKeys
                 ? Array.isArray(queryKeys)

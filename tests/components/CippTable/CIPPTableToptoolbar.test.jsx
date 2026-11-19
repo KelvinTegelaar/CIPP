@@ -636,3 +636,76 @@ describe('CippDataTable - deep links from the URL', () => {
     expect(screen.queryByText('alice@contoso.com')).not.toBeInTheDocument()
   }, 30000)
 })
+
+describe('CIPPTableToptoolbar - selection hidden by a filter', () => {
+  it('counts selected rows the filter hides and clears only those', async () => {
+    const user = userEvent.setup()
+    // rows only render as cards in jsdom, so select there and read the desktop toolbar after
+    const Harness = () => {
+      const [viewMode, setViewMode] = React.useState('cards')
+      return (
+        <>
+          <button onClick={() => setViewMode('table')}>Show table</button>
+          <CippDataTable
+            viewMode={viewMode}
+            queryKey="StaticDataHiddenSelection"
+            data={rows}
+            simpleColumns={['displayName', 'mail', 'department']}
+            filters={tablePresets}
+            title="Users"
+            maxHeightOffset="100px"
+            actions={[{ label: 'Delete', url: '/api/Test', data: { ID: 'mail' } }]}
+          />
+        </>
+      )
+    }
+    renderWithProviders(<Harness />)
+    await user.click(await screen.findByRole('button', { name: 'Select' }))
+    await user.click(await screen.findByRole('checkbox', { name: 'Select Alice Smith' }))
+    await user.click(screen.getByRole('checkbox', { name: 'Select Bob Johnson' }))
+    await user.click(screen.getByRole('button', { name: 'Show table' }))
+
+    await screen.findByText(/2 rows selected/)
+    expect(screen.queryByText(/hidden$/)).toBeNull()
+
+    await user.type(screen.getByPlaceholderText('Search...'), 'alice')
+    await screen.findByText('1 hidden')
+
+    await user.click(screen.getByRole('button', { name: 'Clear hidden' }))
+    await screen.findByText(/1 rows selected/)
+    expect(screen.queryByText(/hidden$/)).toBeNull()
+  }, 30000)
+
+  it('keeps the count and Bulk Actions when the selection count reaches the visible row count', async () => {
+    const user = userEvent.setup()
+    const Harness = () => {
+      const [viewMode, setViewMode] = React.useState('cards')
+      return (
+        <>
+          <button onClick={() => setViewMode('table')}>Show table</button>
+          <CippDataTable
+            viewMode={viewMode}
+            queryKey="StaticDataHiddenSelection"
+            data={rows}
+            simpleColumns={['displayName', 'mail', 'department']}
+            filters={tablePresets}
+            title="Users"
+            maxHeightOffset="100px"
+            actions={[{ label: 'Delete', url: '/api/Test', data: { ID: 'mail' } }]}
+          />
+        </>
+      )
+    }
+    renderWithProviders(<Harness />)
+    await user.click(await screen.findByRole('button', { name: 'Select' }))
+    await user.click(await screen.findByRole('checkbox', { name: 'Select Alice Smith' }))
+    await user.click(screen.getByRole('checkbox', { name: 'Select Bob Johnson' }))
+    await user.click(screen.getByRole('button', { name: 'Show table' }))
+    // shows Alice (selected) and Carol (not): 2 selected, 2 visible, not all visible selected
+    await user.type(screen.getByPlaceholderText('Search...'), 'li')
+
+    await screen.findByText('1 hidden')
+    expect(screen.getByText(/2 rows selected/)).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Bulk Actions' })).toBeInTheDocument()
+  }, 30000)
+})
