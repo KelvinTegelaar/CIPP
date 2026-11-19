@@ -1214,6 +1214,7 @@ export const CippTransportRuleDrawer = ({
               label={actionLabel}
               name={actionValue}
               formControl={formControl}
+              multiple={false}
               options={[
                 { value: "-1", label: "-1 (Bypass spam filtering)" },
                 ...Array.from({ length: 10 }, (_, i) => ({
