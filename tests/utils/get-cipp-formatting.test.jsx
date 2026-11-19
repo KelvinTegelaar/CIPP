@@ -134,6 +134,19 @@ describe('getCippFormatting (component mode)', () => {
     expect(getCippFormatting('Stale', 'GroupStatus').props.label).toBe('Stale')
     expect(getCippFormatting('Stale', 'GroupStatus', 'text')).toBe('Stale')
   })
+
+  it('shows domain analyser findings as a table, with older string results as a chip', () => {
+    const findings = [{ Check: 'DKIM', Finding: 'DKIM Not Configured', Points: 20 }]
+    const table = getCippFormatting(findings, 'ScoreExplanation')
+    expect(table.props.data).toEqual(findings)
+    expect(getCippFormatting('No SPF Record Found', 'ScoreExplanation').props.label).toBe('No SPF Record Found')
+    expect(getCippFormatting([], 'ScoreExplanation', 'text')).toBe('No issues')
+  })
+
+  it('shows the DMARC subdomain policy like the action policy', () => {
+    expect(getCippFormatting('Reject', 'DMARCSubdomainPolicy').props.label).toBe('Reject')
+    expect(getCippFormatting('', 'DMARCSubdomainPolicy', 'text')).toBe('No DMARC Action')
+  })
 })
 
 // Role members exported as raw JSON instead of a name list.
