@@ -98,6 +98,11 @@ const expectedVariableTypeForLeaf = (leaf) => {
   return 'string'
 }
 
+// A collection variable repeats the entry it sits in, which only fits a free-text string list.
+const acceptsCollectionVariable = (leaf) =>
+  (leaf.kind === 'simpleCollection' || leaf.kind === 'primitiveArray') &&
+  expectedVariableTypeForLeaf(leaf) === 'string'
+
 const variablesInValue = (value) =>
   (Array.isArray(value) ? value : [value])
     .map((entry) => unwrap(entry))
@@ -116,7 +121,12 @@ const mismatchedVariables = (value, leaf, variableOptions) => {
     variablesInValue(value)
       .map((name) => ({ name, actual: byName.get(name) }))
       // An unknown variable is not a mismatch: it may be defined for a tenant this list cannot see.
-      .filter((entry) => entry.actual && entry.actual !== expected)
+      .filter(
+        (entry) =>
+          entry.actual &&
+          entry.actual !== expected &&
+          !(entry.actual === 'collection' && acceptsCollectionVariable(leaf))
+      )
       .map((entry) => ({ ...entry, expected }))
   )
 }
@@ -477,9 +487,13 @@ const CippIntuneSettingsEditor = ({
   // A json or list variable stands for an object or an array, so it cannot fill any of the scalar settings
   // these selectors edit. Left out of the lists rather than offered and then flagged as a mismatch;
   // it is still reachable from the text fields through the %-triggered picker.
-  const variableOptions = useMemo(
+  const collectionVariableOptions = useMemo(
     () => allVariableOptions.filter((option) => !['json', 'list'].includes(option.variableType)),
     [allVariableOptions]
+  )
+  const variableOptions = useMemo(
+    () => collectionVariableOptions.filter((option) => option.variableType !== 'collection'),
+    [collectionVariableOptions]
   )
 
   // Descriptive only, so it is fetched without gating anything: a section that has not resolved its
@@ -619,7 +633,11 @@ const CippIntuneSettingsEditor = ({
                       leaf={leaf}
                       fieldPrefix={fieldPrefix}
                       formControl={formControl}
-                      variableOptions={variableOptions}
+                      variableOptions={
+                        acceptsCollectionVariable(leaf)
+                          ? collectionVariableOptions
+                          : variableOptions
+                      }
                     />
                   </Grid>
                 ))}

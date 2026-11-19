@@ -1,8 +1,10 @@
 import { screen, waitFor } from '@testing-library/react'
 import { useForm } from 'react-hook-form'
 import { renderWithProviders } from '../../test-utils'
+import { api, postResult } from '../../mocks/api-call'
 import { CippApiDialog } from '../../../src/components/CippComponents/CippApiDialog'
 import {
+  CippVariablePreview,
   CippVariableValueField,
   VALUE_FIELD,
   VARIABLE_TYPE_FIELD,
@@ -45,9 +47,13 @@ describe('CippVariableValueField', () => {
     expect(valueBox().tagName).toBe('INPUT')
     unmount()
 
-    renderWithProviders(
+    const list = renderWithProviders(
       <Harness VariableType={{ label: 'List', value: 'list' }} />
     )
+    expect(valueBox().tagName).toBe('TEXTAREA')
+    list.unmount()
+
+    renderWithProviders(<Harness VariableType="collection" />)
     expect(valueBox().tagName).toBe('TEXTAREA')
   })
 
@@ -91,5 +97,74 @@ describe('CippVariableValueField', () => {
 
     await waitFor(() => expect(valueBox()).toHaveValue('LocalAdmin'))
     expect(valueBox().tagName).toBe('INPUT')
+  })
+})
+
+describe('CippVariablePreview', () => {
+  const PreviewHarness = ({ tenantId = 'AllTenants' }) => {
+    const formControl = useForm({
+      defaultValues: {
+        RowKey: 'partners',
+        Value: 'a\nb',
+        VariableType: { label: 'Collection', value: 'collection' },
+      },
+    })
+    return (
+      <CippVariablePreview
+        formControl={formControl}
+        previewUrl="/api/ExecCippReplacemap"
+        tenantId={tenantId}
+      />
+    )
+  }
+
+  it('asks the server to resolve the unsaved value and shows each usage', async () => {
+    const mutate = vi.fn()
+    api.post = postResult({
+      mutate,
+      data: {
+        data: {
+          Results: [
+            {
+              Usage: 'An Intune list entry',
+              Template: '[{"value":"%partners%"}]',
+              Result: '[{"value":"a"},{"value":"b"}]',
+            },
+          ],
+        },
+      },
+    })
+    renderWithProviders(<PreviewHarness />)
+
+    await waitFor(() =>
+      expect(mutate).toHaveBeenCalledWith({
+        url: '/api/ExecCippReplacemap',
+        data: {
+          Action: 'PreviewValue',
+          tenantId: 'AllTenants',
+          RowKey: 'partners',
+          Value: 'a\nb',
+          VariableType: 'collection',
+        },
+      })
+    )
+    expect(
+      screen.getByText('[{"value":"a"},{"value":"b"}]')
+    ).toBeInTheDocument()
+  })
+
+  it('shows why the server rejected the value', () => {
+    api.post = postResult({
+      error: {
+        response: {
+          data: { Results: "Variable 'partners' is typed as integer" },
+        },
+      },
+    })
+    renderWithProviders(<PreviewHarness tenantId="contoso.onmicrosoft.com" />)
+
+    expect(
+      screen.getByText("Variable 'partners' is typed as integer")
+    ).toBeInTheDocument()
   })
 })

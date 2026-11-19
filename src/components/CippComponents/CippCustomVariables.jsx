@@ -37,6 +37,7 @@ export const VARIABLE_TYPE_FIELD = {
     { label: 'Boolean', value: 'boolean' },
     { label: 'JSON', value: 'json' },
     { label: 'List', value: 'list' },
+    { label: 'Collection (repeats the entry it is in)', value: 'collection' },
   ],
 }
 
@@ -51,7 +52,7 @@ export const CippVariableValueField = ({ formControl, ...props }) => {
     name: 'VariableType',
   })
   const type = typeValue(watched ?? formControl.getValues('VariableType'))
-  const isList = type === 'list'
+  const isList = type === 'list' || type === 'collection'
 
   useEffect(() => {
     if (!isList) return
@@ -95,6 +96,78 @@ export const VALUE_FIELD = {
   label: 'Value',
   placeholder: 'Enter the value for the custom variable.',
   required: true,
+}
+
+const previewCellSx = { fontFamily: 'monospace', wordBreak: 'break-all' }
+
+// The unsaved variable resolved by the server exactly as a deployment would, in each place it can sit.
+export const CippVariablePreview = ({ formControl, previewUrl, tenantId }) => {
+  const [name, value, variableType] = useWatch({
+    control: formControl.control,
+    name: ['RowKey', 'Value', 'VariableType'],
+  })
+  const preview = ApiPostCall({})
+  const { mutate } = preview
+  const hasValue = String(value ?? '').trim() !== ''
+
+  useEffect(() => {
+    if (!hasValue) return
+    const timer = setTimeout(
+      () =>
+        mutate({
+          url: previewUrl,
+          data: {
+            Action: 'PreviewValue',
+            tenantId,
+            RowKey: typeValue(name),
+            Value: value,
+            VariableType: typeValue(variableType),
+          },
+        }),
+      400
+    )
+    return () => clearTimeout(timer)
+  }, [hasValue, name, value, variableType, previewUrl, tenantId, mutate])
+
+  if (!hasValue) return null
+  const error = preview.error?.response?.data?.Results
+  const rows = preview.data?.data?.Results
+
+  return (
+    <Stack spacing={1}>
+      <Typography variant="subtitle2">Preview</Typography>
+      {error ? (
+        <Alert severity="warning">{String(error)}</Alert>
+      ) : (
+        Array.isArray(rows) && (
+          <Table size="small">
+            <TableHead>
+              <TableRow>
+                <TableCell>Used as</TableCell>
+                <TableCell>In the template</TableCell>
+                <TableCell>Becomes</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {rows.map((row) => (
+                <TableRow key={row.Usage}>
+                  <TableCell>{row.Usage}</TableCell>
+                  <TableCell sx={previewCellSx}>{row.Template}</TableCell>
+                  <TableCell sx={previewCellSx}>{row.Result}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        )
+      )}
+      {tenantId === 'AllTenants' || String(tenantId).startsWith('group:') ? (
+        <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+          Tenant variables such as %tenantid% are filled in for each tenant when
+          deployed.
+        </Typography>
+      ) : null}
+    </Stack>
+  )
 }
 
 // Every place a variable name is defined, so an operator adding it somewhere new can see what the
@@ -189,6 +262,12 @@ const CippCustomVariables = ({ id }) => {
   const variablesApi = isGroupView
     ? '/api/ExecCippGroupReplacemap'
     : '/api/ExecCippReplacemap'
+  const previewField = {
+    name: 'VariablePreview',
+    component: CippVariablePreview,
+    previewUrl: variablesApi,
+    tenantId: id,
+  }
 
   // Every definition of every variable name, across all tenants. A variable name is the thing an
   // operator manages - the same %wallpaperpath% deployed in many places - but it is stored one row
@@ -385,6 +464,7 @@ const CippCustomVariables = ({ id }) => {
         },
         VALUE_FIELD,
         VARIABLE_TYPE_FIELD,
+        previewField,
         {
           type: 'textField',
           name: 'Description',
@@ -430,6 +510,7 @@ const CippCustomVariables = ({ id }) => {
           placeholder: 'Enter the value that should apply to this tenant.',
         },
         VARIABLE_TYPE_FIELD,
+        previewField,
         {
           type: 'textField',
           name: 'Description',
@@ -671,6 +752,7 @@ const CippCustomVariables = ({ id }) => {
             : []),
           VALUE_FIELD,
           VARIABLE_TYPE_FIELD,
+          previewField,
           {
             type: 'textField',
             name: 'Description',
