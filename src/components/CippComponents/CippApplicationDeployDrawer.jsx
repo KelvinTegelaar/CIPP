@@ -15,7 +15,7 @@ import { CippFormCondition } from './CippFormCondition'
 import { CippApiResults } from './CippApiResults'
 import languageList from '../../data/languageList.json'
 import edgeLanguageList from '../../data/edgeLanguageList.json'
-import { ApiPostCall } from '../../api/ApiCall'
+import { ApiGetCall, ApiPostCall } from '../../api/ApiCall'
 
 export const CippApplicationDeployDrawer = ({
   buttonText = 'Add Application',
@@ -81,6 +81,23 @@ export const CippApplicationDeployDrawer = ({
     edgeApp: '/api/AddEdgeApp',
     win32ScriptApp: '/api/AddWin32ScriptApp',
   }
+
+  // Package apps carry an uploaded installer, so they are deployed from the application template that holds it.
+  const isPackageApp = ['win32PackageApp', 'macOSPackageApp'].includes(applicationType?.value)
+  const appTemplates = ApiGetCall({
+    url: '/api/ListAppTemplates',
+    queryKey: 'ListAppTemplates',
+    waiting: isPackageApp,
+  })
+  const templateAppOptions = (Array.isArray(appTemplates.data) ? appTemplates.data : []).flatMap(
+    (template) =>
+      (template.Apps ?? [])
+        .filter((app) => app.appType === applicationType?.value)
+        .map((app) => ({
+          label: `${app.appName} (${template.displayName})`,
+          value: `${template.GUID}::${app.appName}`,
+        }))
+  )
 
   const ChocosearchResults = ApiPostCall({
     urlFromData: true,
@@ -148,6 +165,10 @@ export const CippApplicationDeployDrawer = ({
 
   const handleSubmit = () => {
     const formData = formControl.getValues()
+    if (isPackageApp && !formData.templateApp?.value) {
+      formControl.trigger('templateApp')
+      return
+    }
     const formattedData = singleTenant ? applyPickedGroups(formData) : { ...formData }
     formattedData.tenantFilter = 'allTenants' //added to prevent issues with location check. temp fix
     formattedData.selectedTenants = selectedTenants.map((tenant) => ({
@@ -155,8 +176,12 @@ export const CippApplicationDeployDrawer = ({
       customerId: tenant.addedFields.customerId,
     }))
 
+    if (isPackageApp) {
+      const [templateId, appName] = formData.templateApp.value.split('::')
+      Object.assign(formattedData, { templateId, appName })
+    }
     deployApplication.mutate({
-      url: postUrl[applicationType?.value],
+      url: isPackageApp ? '/api/ExecDeployAppTemplate' : postUrl[applicationType?.value],
       data: formattedData,
       relatedQueryKeys: ['Queued Applications'],
     })
@@ -218,6 +243,8 @@ export const CippApplicationDeployDrawer = ({
                 { label: 'Microsoft Office', value: 'officeApp' },
                 { label: 'Microsoft Edge', value: 'edgeApp' },
                 { label: 'Custom Application', value: 'win32ScriptApp' },
+                { label: 'Win32 App (from an application template)', value: 'win32PackageApp' },
+                { label: 'macOS Package (from an application template)', value: 'macOSPackageApp' },
               ]}
               multiple={false}
               formControl={formControl}
@@ -236,6 +263,21 @@ export const CippApplicationDeployDrawer = ({
               validators={{ required: 'At least one tenant must be selected' }}
             />
           </Grid>
+          {isPackageApp && (
+            <Grid size={{ xs: 12 }}>
+              <CippFormComponent
+                type="autoComplete"
+                label="Application from a template"
+                name="templateApp"
+                options={templateAppOptions}
+                isFetching={appTemplates.isFetching}
+                multiple={false}
+                formControl={formControl}
+                validators={{ required: 'Select an application' }}
+                helperText="Installers are uploaded in Application Templates. The assignment below replaces the template's when set."
+              />
+            </Grid>
+          )}
           <Grid size={{ xs: 12 }}>
             <Divider sx={{ my: 2 }} />
           </Grid>

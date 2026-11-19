@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { Alert, LinearProgress, Typography } from '@mui/material'
 import { Grid } from '@mui/system'
 import CippFormComponent from './CippFormComponent'
@@ -47,6 +47,20 @@ const installCommandFor = (setupFile, msiInfo) => {
 const uninstallCommandFor = (msiInfo) =>
   msiInfo ? `msiexec /x "${msiInfo.MsiProductCode}" /qn` : null
 
+// The form values a package fills in, from its Detection.xml or installer metadata
+const filledFrom = (metadata) => {
+  const msi = metadata.MsiInfo?.MsiProductCode ? metadata.MsiInfo : null
+  return {
+    applicationName:
+      metadata.Name?.replace(/\.(exe|msi|ps1|cmd|bat)$/i, '') ?? null,
+    publisher: msi?.MsiPublisher ?? null,
+    displayVersion: msi?.MsiProductVersion ?? null,
+    installCommandLine: installCommandFor(metadata.SetupFile, msi),
+    uninstallCommandLine: uninstallCommandFor(msi),
+    msiProductCode: msi?.MsiProductCode ?? null,
+  }
+}
+
 export const CippAppPackageFields = ({ formControl, onBusyChange }) => {
   const [upload, setUpload] = useState({
     progress: null,
@@ -55,11 +69,8 @@ export const CippAppPackageFields = ({ formControl, onBusyChange }) => {
   })
   const uploadCall = ApiPostCall({})
   const packageInfo = formControl.watch('packageInfo')
-
-  const fillIfEmpty = (name, value) => {
-    if (value && !formControl.getValues(name))
-      formControl.setValue(name, value, { shouldDirty: true })
-  }
+  // What the last file filled in, so a replacement file can tell untouched values from edited ones
+  const lastFilled = useRef(null)
 
   const handlePackage = async (file) => {
     formControl.setValue('packageFile', null)
@@ -80,40 +91,35 @@ export const CippAppPackageFields = ({ formControl, onBusyChange }) => {
           }
         : await readIntuneWinPackage(file)
       const msi = metadata.MsiInfo?.MsiProductCode ? metadata.MsiInfo : null
-      fillIfEmpty(
-        'applicationName',
-        metadata.Name?.replace(/\.(exe|msi|ps1|cmd|bat)$/i, '')
-      )
-      fillIfEmpty('publisher', msi?.MsiPublisher)
-      // A replacement package must bring its own setup file and product code into the commands. Commands
-      // still exactly as generated for the previous package follow the new one; edited commands are kept.
+      // Values still exactly as filled in from the previous file follow the new one; edited values are kept.
       const previous = formControl.getValues('packageInfo')
-      const previousMsi = previous?.msiProductCode
-        ? { MsiProductCode: previous.msiProductCode }
-        : null
-      const refreshCommand = (name, previousGenerated, next) => {
+      const previousFilled =
+        lastFilled.current ??
+        previous?.filled ??
+        (previous &&
+          filledFrom({
+            Name: previous.setupFile,
+            SetupFile: previous.setupFile,
+            MsiInfo: previous.msiProductCode
+              ? { MsiProductCode: previous.msiProductCode }
+              : null,
+          }))
+      const filled = filledFrom(metadata)
+      for (const [name, value] of Object.entries(filled)) {
         const current = formControl.getValues(name)
-        if (next && (!current || current === previousGenerated))
-          formControl.setValue(name, next, { shouldDirty: true })
+        if (current && current !== previousFilled?.[name]) continue
+        formControl.setValue(name, value ?? '', { shouldDirty: true })
       }
-      refreshCommand(
-        'installCommandLine',
-        previous && installCommandFor(previous.setupFile, previousMsi),
-        installCommandFor(metadata.SetupFile, msi)
-      )
-      refreshCommand(
-        'uninstallCommandLine',
-        uninstallCommandFor(previousMsi),
-        uninstallCommandFor(msi)
-      )
+      lastFilled.current = filled
       if (msi) {
-        formControl.setValue('displayVersion', msi.MsiProductVersion, {
-          shouldDirty: true,
-        })
         formControl.setValue('detectionType', 'msi')
-        formControl.setValue('msiProductCode', msi.MsiProductCode)
         if (msi.MsiExecutionContext === 'User')
           formControl.setValue('runAsAccount', 'user')
+      } else if (
+        formControl.getValues('detectionType') === 'msi' &&
+        !formControl.getValues('msiProductCode')
+      ) {
+        formControl.setValue('detectionType', 'file')
       }
       const post = (url, data) => uploadCall.mutateAsync({ url, data })
       const onProgress = (progress) =>
@@ -140,6 +146,7 @@ export const CippAppPackageFields = ({ formControl, onBusyChange }) => {
         setupFile: metadata.SetupFile,
         toolVersion: metadata.ToolVersion,
         msiProductCode: msi?.MsiProductCode ?? null,
+        filled,
       })
       setUpload({ progress: null, packaging: false, error: null })
     } catch (error) {

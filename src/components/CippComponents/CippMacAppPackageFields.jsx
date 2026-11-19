@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { Alert, Typography } from '@mui/material'
 import { Grid } from '@mui/system'
 import CippFormComponent from './CippFormComponent'
@@ -25,11 +25,8 @@ export const CippMacAppPackageFields = ({ formControl, onBusyChange }) => {
   const [upload, setUpload] = useState({ progress: null, error: null })
   const uploadCall = ApiPostCall({})
   const packageInfo = formControl.watch('packageInfo')
-
-  const fillIfEmpty = (name, value) => {
-    if (value && !formControl.getValues(name))
-      formControl.setValue(name, value, { shouldDirty: true })
-  }
+  // The name the last package filled in, so a replacement package can tell it from an edited name
+  const lastName = useRef(null)
 
   const handlePackage = async (file) => {
     formControl.setValue('packageFile', null)
@@ -39,10 +36,19 @@ export const CippMacAppPackageFields = ({ formControl, onBusyChange }) => {
     try {
       const { kind, title, bundles } = await readMacPackage(file)
       const [primary] = bundles
-      fillIfEmpty(
-        'applicationName',
-        title ?? file.name.replace(/\.(pkg|dmg)$/i, '')
+      // A name still as filled in from the previous package follows the new one; an edited name is kept.
+      const applicationName = title ?? file.name.replace(/\.(pkg|dmg)$/i, '')
+      const currentName = formControl.getValues('applicationName')
+      if (
+        !currentName ||
+        currentName ===
+          (lastName.current ??
+            formControl.getValues('packageInfo')?.applicationName)
       )
+        formControl.setValue('applicationName', applicationName, {
+          shouldDirty: true,
+        })
+      lastName.current = applicationName
       // Detection uses the bundle ID and version, so a package's own values replace earlier ones.
       if (primary) {
         formControl.setValue('primaryBundleId', primary.bundleId, {
@@ -72,6 +78,7 @@ export const CippMacAppPackageFields = ({ formControl, onBusyChange }) => {
         fileName: file.name,
         size: file.size,
         kind,
+        applicationName,
       })
       setUpload({ progress: null, error: null })
     } catch (error) {
