@@ -111,48 +111,37 @@ export const CippWizardDevicePrepImport = (props) => {
       reader.onload = (e) => {
         const text = e.target.result
         const lines = text.split('\n')
-        const firstLine = lines[0].split(',').map((header) => header.trim())
+        // An unrecognised header row would be imported as a device
 
-        // Check if this is a headerless CSV (no recognizable headers). The Intune
-        // portal's corporate identifier CSV has no header row.
-        const hasHeaders = firstLine.some((header) => {
-          return fields.some(
-            (field) =>
-              header === field.propertyName ||
-              header === field.friendlyName ||
-              (field.alternativePropertyNames &&
-                field.alternativePropertyNames.includes(header))
-          )
+        const normalize = (header) =>
+          header.toLowerCase().replace(/[^a-z0-9]/g, '')
+        const headerMapping = {}
+        fields.forEach((field) => {
+          ;[
+            field.propertyName,
+            field.friendlyName,
+            ...(field.alternativePropertyNames || []),
+          ].forEach((header) => {
+            headerMapping[normalize(header)] = field.propertyName
+          })
         })
+        const firstLine = lines[0].split(',').map(normalize)
 
-        let headers, headerMapping
+        // The Intune portal's corporate identifier CSV has no header row.
+        const hasHeaders = firstLine.some((header) => headerMapping[header])
+
+        let headers
 
         if (hasHeaders) {
           headers = firstLine
 
-          // Create mapping for property names and alternative property names
-          headerMapping = {}
-          fields.forEach((field) => {
-            headerMapping[field.propertyName] = field.propertyName
-            headerMapping[field.friendlyName] = field.propertyName
-            if (field.alternativePropertyNames) {
-              field.alternativePropertyNames.forEach((altName) => {
-                headerMapping[altName] = field.propertyName
-              })
-            }
-          })
-
           // All three columns are required for corporate identifiers
-          const missingColumns = fields.filter((field) => {
-            const hasPropertyName = headers.includes(field.propertyName)
-            const hasFriendlyName = headers.includes(field.friendlyName)
-            const hasAlternativeName = field.alternativePropertyNames
-              ? field.alternativePropertyNames.some((altName) =>
-                  headers.includes(altName)
-                )
-              : false
-            return !hasPropertyName && !hasFriendlyName && !hasAlternativeName
-          })
+          const missingColumns = fields.filter(
+            (field) =>
+              !headers.some(
+                (header) => headerMapping[header] === field.propertyName
+              )
+          )
 
           if (missingColumns.length > 0) {
             const missingFormats = missingColumns
@@ -171,11 +160,7 @@ export const CippWizardDevicePrepImport = (props) => {
           }
         } else {
           // Headerless CSV - assume the Intune portal order: manufacturer, model, serial number
-          headers = fields.map((field) => field.propertyName)
-          headerMapping = {}
-          headers.forEach((header) => {
-            headerMapping[header] = header
-          })
+          headers = fields.map((field) => normalize(field.propertyName))
 
           if (firstLine.length < fields.length) {
             setImportErrors([
@@ -199,7 +184,11 @@ export const CippWizardDevicePrepImport = (props) => {
             headers.forEach((header, i) => {
               const propertyName = headerMapping[header]
               if (propertyName) {
-                row[propertyName] = values[i]?.trim() || ''
+                row[propertyName] =
+                  values[i]
+                    ?.trim()
+                    .replace(/^"(.*)"$/, '$1')
+                    .trim() || ''
               }
             })
             return row
@@ -491,9 +480,10 @@ export const CippWizardDevicePrepImport = (props) => {
                       spacing={1}
                       useFlexGap
                       sx={{
-                        alignItems: "center",
-                        mb: 2
-                      }}>
+                        alignItems: 'center',
+                        mb: 2,
+                      }}
+                    >
                       {rowNumber}
                       <Typography
                         variant="subtitle2"
@@ -513,7 +503,7 @@ export const CippWizardDevicePrepImport = (props) => {
                     </Stack>
                     <Stack spacing={2}>{fieldInputs}</Stack>
                   </Paper>
-                );
+                )
               }
 
               return (
@@ -616,5 +606,5 @@ export const CippWizardDevicePrepImport = (props) => {
         formControl={formControl}
       />
     </Stack>
-  );
+  )
 }

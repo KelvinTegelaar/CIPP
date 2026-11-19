@@ -87,6 +87,7 @@ const Page = () => {
             alternativePropertyNames: [
               'Manufacturer name',
               'oemManufacturerName',
+              'DeviceMake',
             ],
           },
           {

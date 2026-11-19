@@ -21,9 +21,21 @@ vi.mock('../../../src/api/ApiCall', () => ({
 
 // The three the device prep wizard passes — a corporate identifier is exactly this triplet.
 const fields = [
-  { friendlyName: 'Manufacturer', propertyName: 'manufacturer' },
-  { friendlyName: 'Model', propertyName: 'model' },
-  { friendlyName: 'Serial Number', propertyName: 'serialNumber' },
+  {
+    friendlyName: 'Manufacturer',
+    propertyName: 'manufacturer',
+    alternativePropertyNames: ['Manufacturer name', 'oemManufacturerName', 'DeviceMake'],
+  },
+  {
+    friendlyName: 'Model',
+    propertyName: 'model',
+    alternativePropertyNames: ['Device model', 'modelName'],
+  },
+  {
+    friendlyName: 'Serial Number',
+    propertyName: 'serialNumber',
+    alternativePropertyNames: ['Serial number', 'Device Serial Number', 'SerialNumber'],
+  },
 ]
 
 const Harness = () => {
@@ -103,6 +115,16 @@ describe('CippWizardDevicePrepImport CSV import', () => {
 
   it('imports a CSV with headers', async () => {
     await uploadCsv('manufacturer,model,serialNumber\nDell,XPS 13,SN001\n')
+
+    expect(await screen.findByText('1-1 of 1', {}, { timeout: 10000 })).toBeInTheDocument()
+  }, 30000)
+
+  it.each([
+    ['quoted', '"Manufacturer","Model","Serial Number"\r\n"Dell","XPS 13","SN001"\r\n'],
+    ['differently cased', 'MANUFACTURER,MODEL,SERIALNUMBER\nDell,XPS 13,SN001\n'],
+    ['device make/model', 'DeviceMake,DeviceModel,SerialNumber\nDell,XPS 13,SN001\n'],
+  ])('recognises %s headers instead of importing them as a device', async (_, csv) => {
+    await uploadCsv(csv)
 
     expect(await screen.findByText('1-1 of 1', {}, { timeout: 10000 })).toBeInTheDocument()
   }, 30000)
