@@ -29,13 +29,13 @@ const Page = () => {
     refetch,
   } = ApiGetCall({
     url: template ? `/api/ExecAppPermissionTemplate?TemplateId=${template}` : null,
-    queryKey: template ? ["execAppPermissionTemplate", template, refetchKey] : null,
+    queryKey: template ? `execAppPermissionTemplate-${template}` : null,
     enabled: !!template,
   });
 
   const updatePermissions = ApiPostCall({
     urlFromData: true,
-    relatedQueryKeys: ["ExecAppPermissionTemplate", "execAppPermissionTemplate"],
+    relatedQueryKeys: ["ExecAppPermissionTemplate", "execAppPermissionTemplate*"],
   });
 
   useEffect(() => {

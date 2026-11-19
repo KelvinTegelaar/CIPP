@@ -16,7 +16,6 @@ const NO_DOCS_YET = new Set([
   '/identity/reports/group-usage',
   '/email/reports/mail-flow-statistics',
   '/email/administration/app-mailbox-access/roles',
-  '/endpoint/MEM/non-compliant-devices',
   '/endpoint/MEM/policy-failures',
   '/tenant/administration/nhi',
 ])
@@ -79,6 +78,24 @@ describe('getHelpLinks documentation link', () => {
     const docs = links.find((link) => link.id === 'documentation')
     expect(docs.href).toBe(
       'https://docs.cipp.app/user-documentation/tools/tenant-tools/graph-explorer'
+    )
+  })
+
+  it.each([
+    [
+      '/tenant/administration/applications/enterprise-app/exchange',
+      'enterprise-apps/spid',
+    ],
+    [
+      '/tenant/administration/applications/app-registration/permissions',
+      'app-registrations/appid',
+    ],
+  ])('points the %s detail page at its docs page', (pathname, target) => {
+    const docs = getHelpLinks(pathname).find(
+      (link) => link.id === 'documentation'
+    )
+    expect(docs.href).toBe(
+      `https://docs.cipp.app/user-documentation/tenant/administration/applications/${target}`
     )
   })
 })

@@ -1,5 +1,9 @@
 import { describe, it, expect } from 'vitest'
-import { booleanEqualsFilterFn, getCippFilterVariant } from '../../src/utils/get-cipp-filter-variant'
+import {
+  booleanEqualsFilterFn,
+  getCippFilterVariant,
+  licenseExcludesFilterFn,
+} from '../../src/utils/get-cipp-filter-variant'
 
 describe('getCippFilterVariant array columns', () => {
   it('sorts arrays of objects (rendered as the items button) by item count', () => {
@@ -38,6 +42,15 @@ describe('getCippFilterVariant array columns', () => {
     })
     expect(result.sortingFn).toBe('alphanumeric')
     expect(result.filterFn).toBe('licenseIncludes')
+    expect(result.columnFilterModeOptions).toEqual(['licenseIncludes', 'licenseExcludes'])
+  })
+
+  it('licenseExcludes keeps rows without any of the selected licenses', () => {
+    const row = (skuIds) => ({ original: { assignedLicenses: skuIds.map((skuId) => ({ skuId })) } })
+    expect(licenseExcludesFilterFn(row(['a']), 'assignedLicenses', ['b'])).toBe(true)
+    expect(licenseExcludesFilterFn(row(['a', 'b']), 'assignedLicenses', ['b'])).toBe(false)
+    expect(licenseExcludesFilterFn(row([]), 'assignedLicenses', ['__no_license__'])).toBe(false)
+    expect(licenseExcludesFilterFn(row(['a']), 'assignedLicenses', [])).toBe(true)
   })
 
   it('still returns nothing for an all-empty array column', () => {

@@ -104,6 +104,21 @@ describe("useActionsDispatch", () => {
     await waitFor(() => expect(customFunction).toHaveBeenCalledTimes(2));
   });
 
+  it("hides actions whose hideCondition matches the page data", () => {
+    renderWithProviders(
+      <Harness
+        data={{ id: "1", operatingSystem: "iOS" }}
+        actions={[
+          { label: "Windows only", hideCondition: (row) => row.operatingSystem !== "Windows" },
+          { label: "Everyone" },
+        ]}
+      />
+    );
+
+    expect(screen.queryByRole("button", { name: "Windows only" })).toBeNull();
+    expect(screen.getByRole("button", { name: "Everyone" })).toBeTruthy();
+  });
+
   it("passes the caller's queryKeys through to the dialog", async () => {
     const user = userEvent.setup();
     renderWithProviders(

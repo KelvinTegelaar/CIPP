@@ -1,4 +1,5 @@
 export const CippTranslations = {
+  PspdpuLastModifiedTimeUtc: 'Last Reported',
   // Baselines
   status: 'Status',
   sourceTemplate: 'Configured By',

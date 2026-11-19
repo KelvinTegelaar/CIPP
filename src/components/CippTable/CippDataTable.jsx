@@ -45,7 +45,11 @@ import { useSettings } from '../../hooks/use-settings'
 import { parseCippDate } from '../../utils/parse-cipp-date'
 import { isEqual } from 'lodash' // Import lodash for deep comparison
 import { useLicenseBackfill } from '../../hooks/use-license-backfill'
-import { booleanEqualsFilterFn, licenseIncludesFilterFn } from '../../utils/get-cipp-filter-variant'
+import {
+  booleanEqualsFilterFn,
+  licenseExcludesFilterFn,
+  licenseIncludesFilterFn,
+} from '../../utils/get-cipp-filter-variant'
 import { useTableViewMode, useIsNarrowForTables } from '../../hooks/use-breakpoint'
 import { CippMobileCardList } from './CippMobileCardList'
 import { CippPageActionsFab } from '../CippComponents/CippPageActionsFab'
@@ -270,6 +274,7 @@ const FILTER_FNS = {
     return String(rowValue).toLowerCase().includes(String(value).toLowerCase())
   },
   licenseIncludes: licenseIncludesFilterFn,
+  licenseExcludes: licenseExcludesFilterFn,
   booleanEquals: booleanEqualsFilterFn,
   notContains: (row, columnId, value) => {
     const rowValue = row.getValue(columnId)
@@ -280,7 +285,7 @@ const FILTER_FNS = {
     const stringValue = String(rowValue)
     if (
       stringValue.includes('[object Object]') ||
-      !stringValue.toLowerCase().includes(value.toLowerCase())
+      !stringValue.toLowerCase().includes(String(value).toLowerCase())
     ) {
       return true
     } else {
@@ -313,6 +318,7 @@ const MRT_LOCALIZATION_OVERRIDES = {
   filterNotContains: 'Does Not Contain',
   filterRegex: 'Regex',
   filterLicenseIncludes: 'Includes',
+  filterLicenseExcludes: 'Does Not Include',
   filterBooleanEquals: 'Equals',
   filterCustom: 'Custom',
 }
@@ -658,21 +664,34 @@ function renderGlobalFilterModeMenuItemsFn({
 }
 
 function renderColumnFilterModeMenuItemsFn({
+  column,
   internalFilterOptions,
   onSelectFilterMode,
 }) {
-  const customFilterOptions = [
-    {
-      option: 'notContains',
-      label: 'Not Contains',
-      symbol: '!*',
-    },
-    {
-      option: 'regex',
-      label: 'Regex',
-      symbol: '(.*)',
-    },
-  ]
+  // A column that lists its own modes (e.g. Assigned Licenses) only gets those; the text modes
+  // below throw on its array filter value.
+  const columnModes = column?.columnDef?.columnFilterModeOptions
+  const customFilterOptions = columnModes
+    ? columnModes
+        .filter((mode) => !internalFilterOptions.some(({ option }) => option === mode))
+        .map((mode) => ({
+          option: mode,
+          label:
+            MRT_LOCALIZATION_OVERRIDES[`filter${mode[0].toUpperCase()}${mode.slice(1)}`] ?? mode,
+          symbol: '',
+        }))
+    : [
+        {
+          option: 'notContains',
+          label: 'Not Contains',
+          symbol: '!*',
+        },
+        {
+          option: 'regex',
+          label: 'Regex',
+          symbol: '(.*)',
+        },
+      ]
 
   const combinedFilterOptions = [
     ...internalFilterOptions,

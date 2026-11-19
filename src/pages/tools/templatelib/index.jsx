@@ -232,48 +232,46 @@ const TemplateLibrary = () => {
             />
           </Grid>
         )}
-        <CippFormCondition
-          formControl={formControl}
-          field="templateRepo"
-          compareType="doesNotContain"
-          compareValue={"CIPP"}
-        >
-          <Grid size={12}>
-            <Typography variant="h6" sx={{ mb: 1 }}>
-              Conditional Access
-            </Typography>
-            <CippFormComponent
-              type="switch"
-              name="ca"
-              label="Create Conditional Access Templates"
-              formControl={formControl}
-            />
-          </Grid>
+        {/* These only apply to a tenant template library, not a repository */}
+        {!templateRepo?.value && (
+          <>
+            <Grid size={12}>
+              <Typography variant="h6" sx={{ mb: 1 }}>
+                Conditional Access
+              </Typography>
+              <CippFormComponent
+                type="switch"
+                name="ca"
+                label="Create Conditional Access Templates"
+                formControl={formControl}
+              />
+            </Grid>
 
-          <Grid size={12}>
-            <Typography variant="h6" sx={{ mb: 1 }}>
-              Intune
-            </Typography>
-            <CippFormComponent
-              type="switch"
-              name="intuneconfig"
-              label="Create Intune Configuration Templates"
-              formControl={formControl}
-            />
-            <CippFormComponent
-              type="switch"
-              name="intunecompliance"
-              label="Create Intune Compliance Templates"
-              formControl={formControl}
-            />
-            <CippFormComponent
-              type="switch"
-              name="intuneprotection"
-              label="Create Intune Protection Templates"
-              formControl={formControl}
-            />
-          </Grid>
-        </CippFormCondition>
+            <Grid size={12}>
+              <Typography variant="h6" sx={{ mb: 1 }}>
+                Intune
+              </Typography>
+              <CippFormComponent
+                type="switch"
+                name="intuneconfig"
+                label="Create Intune Configuration Templates"
+                formControl={formControl}
+              />
+              <CippFormComponent
+                type="switch"
+                name="intunecompliance"
+                label="Create Intune Compliance Templates"
+                formControl={formControl}
+              />
+              <CippFormComponent
+                type="switch"
+                name="intuneprotection"
+                label="Create Intune Protection Templates"
+                formControl={formControl}
+              />
+            </Grid>
+          </>
+        )}
         <CippFormCondition
           formControl={formControl}
           field="templateRepo"

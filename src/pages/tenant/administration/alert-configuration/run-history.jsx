@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { useForm } from 'react-hook-form'
-import { Button } from '@mui/material'
+import NextLink from 'next/link'
+import { Alert, Button, Link } from '@mui/material'
 import { Grid } from '@mui/system'
 import { CippTablePage } from '../../../../components/CippComponents/CippTablePage.jsx'
 import { CippFormComponent } from '../../../../components/CippComponents/CippFormComponent.jsx'
@@ -48,47 +49,57 @@ const Page = () => {
   if (!router.isReady) return null
 
   const tableFilter = (
-    <CippButtonCard
-      title="Filter Options"
-      component="accordion"
-      accordionExpanded={filterExpanded}
-      onAccordionChange={setFilterExpanded}
-    >
-      <Grid container spacing={2}>
-        <Grid size={{ sm: 6, xs: 12 }}>
-          <CippFormComponent
-            type="number"
-            label="Days"
-            name="Days"
-            formControl={formControl}
-            fullWidth
-            helperText={`Days of run history to show, up to ${MAX_DAYS}`}
-          />
+    <>
+      <Alert severity="info">
+        This page lists scheduled alerts only. Audit log alerts are not shown
+        here: find them under{' '}
+        <Link component={NextLink} href="/tenant/administration/audit-logs">
+          Audit Logs
+        </Link>
+        .
+      </Alert>
+      <CippButtonCard
+        title="Filter Options"
+        component="accordion"
+        accordionExpanded={filterExpanded}
+        onAccordionChange={setFilterExpanded}
+      >
+        <Grid container spacing={2}>
+          <Grid size={{ sm: 6, xs: 12 }}>
+            <CippFormComponent
+              type="number"
+              label="Days"
+              name="Days"
+              formControl={formControl}
+              fullWidth
+              helperText={`Days of run history to show, up to ${MAX_DAYS}`}
+            />
+          </Grid>
+          <Grid size={{ sm: 6, xs: 12 }}>
+            <CippFormComponent
+              type="autoComplete"
+              label="Outcome"
+              name="Outcome"
+              formControl={formControl}
+              options={OUTCOME_OPTIONS}
+              multiple={true}
+              creatable={false}
+              helperText="Only runs with these outcomes. Leave empty to include all."
+            />
+          </Grid>
+          <Grid size={{ xs: 12 }}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleFilterSubmit}
+              startIcon={<CippIcons.FilterList />}
+            >
+              Apply Filter
+            </Button>
+          </Grid>
         </Grid>
-        <Grid size={{ sm: 6, xs: 12 }}>
-          <CippFormComponent
-            type="autoComplete"
-            label="Outcome"
-            name="Outcome"
-            formControl={formControl}
-            options={OUTCOME_OPTIONS}
-            multiple={true}
-            creatable={false}
-            helperText="Only runs with these outcomes. Leave empty to include all."
-          />
-        </Grid>
-        <Grid size={{ xs: 12 }}>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleFilterSubmit}
-            startIcon={<CippIcons.FilterList />}
-          >
-            Apply Filter
-          </Button>
-        </Grid>
-      </Grid>
-    </CippButtonCard>
+      </CippButtonCard>
+    </>
   )
 
   return (

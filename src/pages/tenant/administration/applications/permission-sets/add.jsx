@@ -26,7 +26,7 @@ const Page = () => {
   // Get the specified template if template ID is provided
   const { data: templateData, isFetching: templateFetching } = ApiGetCall({
     url: template ? `/api/ExecAppPermissionTemplate?TemplateId=${template}` : null,
-    queryKey: template ? ["execAppPermissionTemplateDetails", template, refetchKey] : null,
+    queryKey: template ? `execAppPermissionTemplateDetails-${template}` : null,
     enabled: !!template,
   });
 
@@ -75,7 +75,7 @@ const Page = () => {
 
   const updatePermissions = ApiPostCall({
     urlFromData: true,
-    relatedQueryKeys: ["ExecAppPermissionTemplate", "execAppPermissionTemplate"],
+    relatedQueryKeys: ["ExecAppPermissionTemplate", "execAppPermissionTemplate*"],
   });
 
   const handleUpdatePermissions = (data) => {

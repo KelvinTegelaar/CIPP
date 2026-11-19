@@ -1,3 +1,5 @@
+import NextLink from 'next/link'
+import { Alert, Link } from '@mui/material'
 import { CippTablePage } from '../../../../components/CippComponents/CippTablePage.jsx'
 import { CippIcons } from '../../../../utils/icon-registry'
 import { Layout as DashboardLayout } from '../../../../layouts/index'
@@ -30,6 +32,16 @@ const Page = () => {
   return (
     <CippTablePage
       title="Alert History"
+      tableFilter={
+        <Alert severity="info">
+          This page lists scheduled alerts only. Audit log alerts are not shown
+          here: find them under{' '}
+          <Link component={NextLink} href="/tenant/administration/audit-logs">
+            Audit Logs
+          </Link>
+          .
+        </Alert>
+      }
       apiUrl="/api/ListAlertResults"
       apiData={{
         tenantFilter: 'AllTenants',

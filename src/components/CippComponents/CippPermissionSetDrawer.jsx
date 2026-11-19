@@ -34,7 +34,7 @@ export const CippPermissionSetDrawer = ({
   // Fetch existing template data in edit mode
   const templateInfo = ApiGetCall({
     url: templateId ? `/api/ExecAppPermissionTemplate?TemplateId=${templateId}` : null,
-    queryKey: templateId ? ["execAppPermissionTemplate", templateId, refetchKey] : null,
+    queryKey: templateId ? `execAppPermissionTemplate-${templateId}` : null,
     waiting: !!drawerVisible && !!isEditMode && !!templateId,
   });
 
@@ -54,7 +54,7 @@ export const CippPermissionSetDrawer = ({
   // API call for submit
   const updatePermissions = ApiPostCall({
     urlFromData: true,
-    relatedQueryKeys: ["ExecAppPermissionTemplate", "execAppPermissionTemplate"],
+    relatedQueryKeys: ["ExecAppPermissionTemplate", "execAppPermissionTemplate*"],
   });
 
   // Process template data for editing

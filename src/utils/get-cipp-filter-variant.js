@@ -31,6 +31,11 @@ export const licenseIncludesFilterFn = (row, columnId, filterValue) => {
   return otherFilters.some((selectedSkuId) => userSkuIds.includes(selectedSkuId));
 };
 
+export const licenseExcludesFilterFn = (row, columnId, filterValue) =>
+  !Array.isArray(filterValue) ||
+  filterValue.length === 0 ||
+  !licenseIncludesFilterFn(row, columnId, filterValue);
+
 // Compares the raw value, so the result never depends on how the cell text is formatted.
 export const booleanEqualsFilterFn = (row, columnId, filterValue) => {
   const toBool = (value) => {
@@ -110,6 +115,8 @@ export const getCippFilterVariant = (providedColumnKeys, arg) => {
         // string name (registered in CippDataTable's FILTER_FNS) so MRT can resolve a
         // "Filter Mode" label — an inline function here can't be looked up by name.
         filterFn: "licenseIncludes",
+        // the value is an array of SKU ids, which the text filter modes cannot handle
+        columnFilterModeOptions: ["licenseIncludes", "licenseExcludes"],
         filterSelectOptions: filterSelectOptions,
       };
     case "accountEnabled":

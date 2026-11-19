@@ -26,7 +26,10 @@ export const useActionsDispatch = ({ actions = [], data, queryKeys }) => {
     return false;
   };
 
-  const visibleActions = actions?.filter((action) => !action.link || action.showInActionsMenu) ?? [];
+  const visibleActions =
+    actions?.filter(
+      (action) => (!action.link || action.showInActionsMenu) && !(data && action.hideCondition?.(data))
+    ) ?? [];
 
   // CippApiDialog posts an AllTenants row under the row's own tenant (getRowTenant), so the
   // selected tenant is left alone here.

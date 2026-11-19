@@ -219,8 +219,6 @@ export const nativeMenuItems = [
             title: "Service Health",
             path: "/tenant/administration/service-health",
             permissions: ["Tenant.Administration.*"],
-            // No docs page yet; the help link lands on the section until one is written.
-            docsPath: "tenant/administration",
           },
         ],
       },
@@ -645,6 +643,7 @@ export const nativeMenuItems = [
           {
             title: 'Non-Compliant Devices',
             path: '/endpoint/MEM/non-compliant-devices',
+            docsPath: 'endpoint/mem/non-compliant-devices',
             permissions: ['Endpoint.MEM.*'],
           },
           {

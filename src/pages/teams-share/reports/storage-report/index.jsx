@@ -303,8 +303,8 @@ const Page = () => {
   const [topSitesMetric, setTopSitesMetric] = useState('percent')
 
   const waiting = !!currentTenant && !isMultiTenant(currentTenant)
-  const spQueryKey = `ListSites-SharePointSiteUsage-${currentTenant}-true`
-  const odQueryKey = `ListSites-OneDriveUsageAccount-${currentTenant}-true`
+  const spQueryKey = `StorageReport-SharePointSiteUsage-${currentTenant}`
+  const odQueryKey = `StorageReport-OneDriveUsageAccount-${currentTenant}`
   const cleanupQueryKey = `ListStorageCleanupScan-${currentTenant}`
 
   const spUsage = ApiGetCall({

@@ -10,6 +10,18 @@ import { nativeMenuItems } from "../layouts/config";
 // doesn't change at runtime.
 let docsPathByRoute;
 
+// Detail pages that are not nav items.
+const ENTERPRISE_APP_DOCS = "tenant/administration/applications/enterprise-apps/spid";
+const APP_REGISTRATION_DOCS = "tenant/administration/applications/app-registrations/appid";
+const DETAIL_DOCS_PATHS = [
+  ["/tenant/administration/applications/enterprise-app", ENTERPRISE_APP_DOCS],
+  ["/tenant/administration/applications/enterprise-app/permissions", ENTERPRISE_APP_DOCS],
+  ["/tenant/administration/applications/enterprise-app/roles", ENTERPRISE_APP_DOCS],
+  ["/tenant/administration/applications/enterprise-app/exchange", ENTERPRISE_APP_DOCS],
+  ["/tenant/administration/applications/app-registration", APP_REGISTRATION_DOCS],
+  ["/tenant/administration/applications/app-registration/permissions", APP_REGISTRATION_DOCS],
+];
+
 const buildDocsPathMap = (items = [], map = new Map()) => {
   items.forEach((item) => {
     if (item?.path && typeof item.docsPath === "string") {
@@ -24,7 +36,7 @@ const buildDocsPathMap = (items = [], map = new Map()) => {
 
 const getDocsHref = (pathname) => {
   if (!docsPathByRoute) {
-    docsPathByRoute = buildDocsPathMap(nativeMenuItems);
+    docsPathByRoute = buildDocsPathMap(nativeMenuItems, new Map(DETAIL_DOCS_PATHS));
   }
   const docsPath = docsPathByRoute.get(pathname);
   return docsPath

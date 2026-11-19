@@ -347,12 +347,12 @@ export const CippTransportRuleDrawer = ({
     if (rule.SetHeaderName) formData.SetHeaderName = rule.SetHeaderName;
     if (rule.SetHeaderValue) formData.SetHeaderValue = rule.SetHeaderValue;
     if (rule.ApplyHtmlDisclaimerText) formData.ApplyHtmlDisclaimerText = rule.ApplyHtmlDisclaimerText;
-    if (rule.ApplyHtmlDisclaimerLocation) {
-      formData.ApplyHtmlDisclaimerLocation = { value: rule.ApplyHtmlDisclaimerLocation, label: rule.ApplyHtmlDisclaimerLocation };
-    }
-    if (rule.ApplyHtmlDisclaimerFallbackAction) {
-      formData.ApplyHtmlDisclaimerFallbackAction = { value: rule.ApplyHtmlDisclaimerFallbackAction, label: rule.ApplyHtmlDisclaimerFallbackAction };
-    }
+    // Older templates saved these single-value fields as a list.
+    ["ApplyHtmlDisclaimerLocation", "ApplyHtmlDisclaimerFallbackAction"].forEach((field) => {
+      const stored = Array.isArray(rule[field]) ? rule[field][0] : rule[field];
+      const value = stored?.value ?? stored;
+      if (value) formData[field] = { value, label: value };
+    });
     if (rule.IncidentReportContent) {
       const incidentReportContentValues = Array.isArray(rule.IncidentReportContent)
         ? rule.IncidentReportContent
@@ -1314,6 +1314,7 @@ export const CippTransportRuleDrawer = ({
                   label="Disclaimer location"
                   name="ApplyHtmlDisclaimerLocation"
                   formControl={formControl}
+                  multiple={false}
                   options={[
                     { value: "Append", label: "Append (bottom)" },
                     { value: "Prepend", label: "Prepend (top)" },
@@ -1326,6 +1327,7 @@ export const CippTransportRuleDrawer = ({
                   label="Fallback action"
                   name="ApplyHtmlDisclaimerFallbackAction"
                   formControl={formControl}
+                  multiple={false}
                   options={[
                     { value: "Wrap", label: "Wrap message" },
                     { value: "Ignore", label: "Ignore and send" },
