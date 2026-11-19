@@ -1198,9 +1198,12 @@ All UPNs: {{join(Result[*].UserPrincipalName, ", ")}}`,
                     }}
                   >
                     Read-only via <code>Get-CIPPTestData</code> with{' '}
-                    <code>-Type</code>. Tenant is auto-locked — do not pass{' '}
-                    <code>-TenantFilter</code>. Use <code>%variable%</code>{' '}
-                    syntax for replacement variables.
+                    <code>-Type</code>. Each type returns a default set of
+                    fields; add{' '}
+                    <code>-Fields &apos;id&apos;, &apos;members&apos;</code> to
+                    get exactly the fields you need. Tenant is auto-locked — do
+                    not pass <code>-TenantFilter</code>. Use{' '}
+                    <code>%variable%</code> syntax for replacement variables.
                   </Typography>
                   <Button
                     size="small"
@@ -1258,13 +1261,14 @@ All UPNs: {{join(Result[*].UserPrincipalName, ", ")}}`,
                   Lists all users with licenses, resolves SKU IDs to friendly
                   names using the license cache, and returns a markdown table
                   with an explicit Passed status. Demonstrates{' '}
-                  <code>CIPPStatus</code>, <code>CIPPResults</code>, and{' '}
-                  <code>CIPPResultMarkdown</code>.
+                  <code>-Fields</code>, <code>CIPPStatus</code>,{' '}
+                  <code>CIPPResults</code>, and <code>CIPPResultMarkdown</code>.
                 </Typography>
                 <CippCodeBlock
                   code={`# List all users and their licenses with friendly SKU names
 $Users = Get-CIPPTestData -Type 'Users'
-$Licenses = Get-CIPPTestData -Type 'LicenseOverview'
+# skuId is not in the default LicenseOverview fields, so ask for it with -Fields
+$Licenses = Get-CIPPTestData -Type 'LicenseOverview' -Fields 'skuId', 'License'
 
 # Build a SKU ID -> display name lookup hashtable
 $SkuLookup = @{}
@@ -1376,7 +1380,7 @@ $Users | Where-Object {
                 </Typography>
                 <CippCodeBlock
                   code={`# Find users without any MFA method registered
-$RegDetails = Get-CIPPTestData -Type 'UserRegistrationDetails'
+$RegDetails = Get-CIPPTestData -Type 'UserRegistrationDetails' -Fields 'userPrincipalName', 'userDisplayName', 'userType', 'isAdmin', 'methodsRegistered'
 
 $noMfa = $RegDetails | Where-Object {
     $_.methodsRegistered.Count -eq 0 -and
