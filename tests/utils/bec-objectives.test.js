@@ -87,6 +87,29 @@ describe('bec-objectives inbox rules', () => {
       ChangedFrom: '',
     })
   })
+
+  it('does not flag a disabled rule, but still flags the enabled equivalent', () => {
+    const flags = becFindingFlags(
+      {
+        NewRules: [
+          {
+            Name: 'old forwarder',
+            Enabled: false,
+            Suspicious: true,
+            RiskReasons: ['Forwards or redirects mail to an external address'],
+          },
+          {
+            Name: 'active forwarder',
+            Enabled: true,
+            Suspicious: true,
+            RiskReasons: ['Forwards or redirects mail to an external address'],
+          },
+        ],
+      },
+      7
+    )
+    expect(flags.NewRules.count).toBe(1)
+  })
 })
 
 describe('becPartnerActions', () => {
