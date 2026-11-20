@@ -1157,7 +1157,10 @@ All UPNs: {{join(Result[*].UserPrincipalName, ", ")}}`,
                     <code>{'Select-Object @{Name;Expression}'}</code> and return
                     a plain <code>{'@{}'}</code> hashtable. Data access is
                     tenant-locked — do not pass <code>-TenantFilter</code>. Type{' '}
-                    <code>%</code> for replacement variables.
+                    <code>%</code> for replacement variables. Scripts are
+                    stopped after <strong>60 seconds</strong>: build hashtable
+                    lookups once instead of searching a list inside a loop, and
+                    never grow arrays or strings with <code>+=</code>.
                   </Typography>
                 </Box>
               </Grid>
