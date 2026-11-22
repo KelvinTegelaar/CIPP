@@ -753,6 +753,7 @@ const Page = () => {
   const denyPathDialog = useDialog()
   const [removeOverrideTarget, setRemoveOverrideTarget] = useState(null)
   const removeOverrideDialog = useDialog()
+  const runAllDialog = useDialog()
   // Filtering re-orders the timeline, so expansion state keys on stable event/run
   // identity rather than render index.
   const [expandedEvents, setExpandedEvents] = useState(new Set())
@@ -3611,6 +3612,13 @@ const Page = () => {
               <Stack direction="row" spacing={1} sx={{
                 alignItems: "center"
               }}>
+                <Button
+                  variant="outlined"
+                  startIcon={<CippIcons.PlayArrow />}
+                  onClick={runAllDialog.handleOpen}
+                >
+                  Run All Assigned Baselines
+                </Button>
                 <CippQueueTracker
                   queueId={latestBaselineQueueId}
                   queryKey={`ListBaselineAlignment-${currentTenant}`}
@@ -3651,6 +3659,19 @@ const Page = () => {
               ]}
             />
             {dialogs}
+            <CippApiDialog
+              createDialog={runAllDialog}
+              title="Run All Assigned Baselines"
+              api={{
+                url: '/api/ExecBaselineRun',
+                type: 'POST',
+                data: { mode: '!run', tenantFilter: 'tenantFilter' },
+                confirmText:
+                  'Run every baseline assigned to [tenantFilter] now? Stages set to report only will report; stages set to remediate will fix drift, the same as the scheduled run.',
+                relatedQueryKeys,
+              }}
+              row={{ tenantFilter: currentTenant }}
+            />
           </Stack>
         </Container>
       </>

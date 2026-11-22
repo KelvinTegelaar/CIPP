@@ -76,6 +76,11 @@ const sectionOptions = [
     label: 'Rollout Stages',
     description: 'How the remaining waves arrive and when',
   },
+  {
+    key: 'licenseGaps',
+    label: 'Available With Better Licensing',
+    description: 'Protections skipped because the tenant is not licensed for them',
+  },
 ]
 
 // Button + preview dialog in the executive report's shape: an options rail on the left
@@ -93,6 +98,7 @@ export const CippBaselineWhatIfReport = ({
   const [sectionConfig, setSectionConfig] = useState({
     alreadyAligned: true,
     rolloutStages: true,
+    licenseGaps: false,
   })
   // Null until the operator picks one, so the branding setting for this report type keeps
   // applying as it changes. An explicit choice - including "Default" - wins from then on.

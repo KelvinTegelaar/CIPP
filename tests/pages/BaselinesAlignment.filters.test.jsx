@@ -2,7 +2,7 @@ import React from 'react'
 import { describe, it, expect, vi, afterEach } from 'vitest'
 import { screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { renderWithProviders } from '../test-utils'
+import { renderWithProviders, settingsWith } from '../test-utils'
 
 const tablePage = vi.hoisted(() => ({ props: null }))
 vi.mock('../../src/api/ApiCall', async () =>
@@ -17,7 +17,7 @@ vi.mock('../../src/components/CippComponents/CippTablePage.jsx', () => ({
     return <div>{props.tableFilter}</div>
   },
 }))
-import { api, getResult } from '../mocks/api-call'
+import { api, getResult, postResult } from '../mocks/api-call'
 import { ApiGetCall } from '../../src/api/ApiCall'
 import router from 'next/router'
 
@@ -150,5 +150,37 @@ describe('Baseline Alignment tab - by-standard filters', () => {
       })
     )
     expect(screen.queryByText(/scored once per tenant/)).not.toBeInTheDocument()
+  }, 30000)
+  it('runs every assigned baseline for the selected tenant from Tenant View', async () => {
+    const post = postResult()
+    api.post = post
+    const user = userEvent.setup()
+    renderWithProviders(<Page />)
+    await user.click(
+      screen.getByRole('button', { name: 'Run All Assigned Baselines' })
+    )
+    expect(
+      await screen.findByText(
+        /Run every baseline assigned to testdomain.com now/
+      )
+    ).toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: /confirm/i }))
+
+    const payload = post.mutate.mock.calls.at(-1)[0]
+    expect(payload.url).toBe('/api/ExecBaselineRun')
+    expect(payload.data).toEqual({
+      mode: 'run',
+      tenantFilter: 'testdomain.com',
+    })
+    api.post = postResult()
+  }, 30000)
+
+  it('hides Run All Assigned Baselines for All Tenants', async () => {
+    renderWithProviders(<Page />, {
+      settings: settingsWith({ currentTenant: 'AllTenants' }),
+    })
+    expect(
+      screen.queryByRole('button', { name: 'Run All Assigned Baselines' })
+    ).not.toBeInTheDocument()
   }, 30000)
 })
