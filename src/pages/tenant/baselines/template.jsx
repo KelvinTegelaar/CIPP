@@ -104,6 +104,48 @@ const toOptionArray = (value) => {
   return entries.length > 0 ? entries : null
 }
 
+const unwrapValue = (value) =>
+  value && typeof value === 'object' && 'value' in value ? value.value : value
+
+// Multi-select option arrays keep {label, value} so re-editing shows names without
+// an option lookup, but shed everything else (addedFields, rawData) - persisting a
+// full template object into the baseline bloats storage and the expected-value views.
+const cleanVariableValue = (value) =>
+  Array.isArray(value)
+    ? value.map((item) =>
+        item && typeof item === 'object' && 'value' in item
+          ? { label: item.label ?? String(item.value), value: item.value }
+          : item
+      )
+    : unwrapValue(value)
+
+// One standard's saved configuration, built from its live form values. Used by the save and
+// by moving a standard between stages, so a moved standard seeds exactly what a save stores.
+const toStandardConfig = (instanceKey, formValues, standardConfigs) => {
+  const config = formValues ?? {}
+  // A standard the operator never expanded never mounts its settings fields,
+  // so its variables never enter the form - serialize the SAVED variables for
+  // those, or saving a large baseline would silently wipe their configuration.
+  // Unwrapped either way: legacy saves stored option objects ({label, value})
+  // for some variables, and passing them through verbatim keeps that debt alive.
+  const savedVariables = standardConfigs?.[instanceKey]?.variables ?? {}
+  return {
+    standard: instanceKey.split('#')[0],
+    instance: instanceKey,
+    variables: Object.fromEntries(
+      Object.entries(config.variables ?? savedVariables).map(([key, value]) => [
+        key,
+        cleanVariableValue(value),
+      ])
+    ),
+    // Report-only unless the operator explicitly enabled remediation - a
+    // missing value must never fail open into auto-fixing tenants.
+    remediateEnabled: config.remediateEnabled ?? false,
+    alertEnabled: config.alertEnabled ?? true,
+    alertOnRemediate: config.alertOnRemediate ?? false,
+  }
+}
+
 // Stable identity for a stage while it is being edited. Panels (and their forms) are
 // keyed on it rather than on position, so moving a stage up or down carries its
 // configuration along instead of handing it to whichever stage lands in that slot.
@@ -164,6 +206,8 @@ const StagePanel = ({
   onOpenDialog,
   onRemoveStandard,
   onAddStandardInstance,
+  onMoveStandard,
+  moveTargets,
   canRemoveStage,
   canMoveUp,
   canMoveDown,
@@ -252,6 +296,17 @@ const StagePanel = ({
     onRemoveStandard(stageIndex, standardName)
   }
 
+  // The live (possibly unsaved) values travel with the standard; the target stage seeds from them.
+  const handleMoveStandard = (instanceKey, targetIndex) => {
+    const config = toStandardConfig(
+      instanceKey,
+      formControl.getValues(instanceKey),
+      stage.standardConfigs
+    )
+    formControl.unregister(instanceKey)
+    onMoveStandard(stageIndex, targetIndex, instanceKey, config)
+  }
+
   // Quick add for multi-instance standards: the new instance opens immediately so the
   // operator lands in its settings instead of hunting for it in the list.
   const handleAddStandardInstance = (standardName) => {
@@ -327,21 +382,6 @@ const StagePanel = ({
 
   // Registered every render so the save handler always serializes the latest form values.
   useEffect(() => {
-    const unwrapValue = (value) =>
-      value && typeof value === 'object' && 'value' in value
-        ? value.value
-        : value
-    // Multi-select option arrays keep {label, value} so re-editing shows names without
-    // an option lookup, but shed everything else (addedFields, rawData) - persisting a
-    // full template object into the baseline bloats storage and the expected-value views.
-    const cleanVariableValue = (value) =>
-      Array.isArray(value)
-        ? value.map((item) =>
-            item && typeof item === 'object' && 'value' in item
-              ? { label: item.label ?? String(item.value), value: item.value }
-              : item
-          )
-        : unwrapValue(value)
     registerSerializer(stage.key, () => {
       const values = formControl.getValues()
       const [primaryGroup, ...extraGroups] = conditionGroups.map((group) => ({
@@ -366,30 +406,9 @@ const StagePanel = ({
         logic: primaryGroup.logic,
         conditions: primaryGroup.conditions,
         conditionGroups: extraGroups,
-        standards: stage.standards.map((instanceKey) => {
-          const config = values[instanceKey] ?? {}
-          // A standard the operator never expanded never mounts its settings fields,
-          // so its variables never enter the form - serialize the SAVED variables for
-          // those, or saving a large baseline would silently wipe their configuration.
-          // Unwrapped either way: legacy saves stored option objects ({label, value})
-          // for some variables, and passing them through verbatim keeps that debt alive.
-          const savedVariables =
-            stage.standardConfigs?.[instanceKey]?.variables ?? {}
-          return {
-            standard: instanceKey.split('#')[0],
-            instance: instanceKey,
-            variables: Object.fromEntries(
-              Object.entries(config.variables ?? savedVariables).map(
-                ([key, value]) => [key, cleanVariableValue(value)]
-              )
-            ),
-            // Report-only unless the operator explicitly enabled remediation - a
-            // missing value must never fail open into auto-fixing tenants.
-            remediateEnabled: config.remediateEnabled ?? false,
-            alertEnabled: config.alertEnabled ?? true,
-            alertOnRemediate: config.alertOnRemediate ?? false,
-          }
-        }),
+        standards: stage.standards.map((instanceKey) =>
+          toStandardConfig(instanceKey, values[instanceKey], stage.standardConfigs)
+        ),
       }
     })
     return () => registerSerializer(stage.key, null)
@@ -825,6 +844,8 @@ const StagePanel = ({
                 }
                 onRemove={handleRemoveStandard}
                 onAddInstance={handleAddStandardInstance}
+                moveTargets={moveTargets(instanceKey)}
+                onMove={handleMoveStandard}
               />
             </Box>
           ))}
@@ -1109,6 +1130,49 @@ const Page = () => {
           : stage
       )
     )
+
+  const handleMoveStandard = (fromIndex, toIndex, instanceKey, config) =>
+    mutateStages((prev) =>
+      prev.map((stage, index) => {
+        if (index === fromIndex) {
+          return {
+            ...stage,
+            standards: stage.standards.filter((name) => name !== instanceKey),
+          }
+        }
+        if (index === toIndex) {
+          return {
+            ...stage,
+            standards: [...stage.standards, instanceKey],
+            standardConfigs: { ...stage.standardConfigs, [instanceKey]: config },
+          }
+        }
+        return stage
+      })
+    )
+
+  // Other stages a standard can move to. A stage already holding the same single-instance
+  // standard is disabled so a move never overwrites its configuration.
+  const moveTargetsFor = (stageIndex) => (instanceKey) => {
+    if (stages.length < 2) return []
+    const baseName = instanceKey.split('#')[0]
+    const isMultiple = catalogByName[baseName]?.multiple === true
+    return stages.flatMap((stage, index) =>
+      index === stageIndex
+        ? []
+        : [
+            {
+              index,
+              label: `Stage ${index + 1}: ${stage.name}`,
+              disabled: stage.standards.some(
+                (key) =>
+                  key === instanceKey ||
+                  (!isMultiple && key.split('#')[0] === baseName)
+              ),
+            },
+          ]
+    )
+  }
 
   // Quick add from a staged row: appends one more instance of a multi-instance standard
   // to the given stage and returns its key so the panel can expand it straight away.
@@ -1601,6 +1665,8 @@ const Page = () => {
                     onOpenDialog={handleOpenDialog}
                     onRemoveStandard={handleRemoveStandard}
                     onAddStandardInstance={handleAddStandardInstance}
+                    onMoveStandard={handleMoveStandard}
+                    moveTargets={moveTargetsFor(index)}
                     canRemoveStage={index > 0}
                     canMoveUp={index > 1}
                     canMoveDown={index > 0 && index < stages.length - 1}

@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { CippIcons } from '../../utils/icon-registry'
 import {
   Accordion,
@@ -9,6 +9,8 @@ import {
   Chip,
   Divider,
   IconButton,
+  Menu,
+  MenuItem,
   Stack,
   Tooltip,
   Typography,
@@ -71,9 +73,12 @@ export const CippBaselineStandardItem = ({
   onToggle,
   onRemove,
   onAddInstance,
+  onMove,
+  moveTargets = [],
   instanceId,
   savedConfig,
 }) => {
+  const [moveAnchor, setMoveAnchor] = useState(null)
   // Multi-instance standards use 'Name#<id>' keys so each instance keeps its own config.
   // Legacy keys were positional counters; new ones are opaque ids - only number the
   // legacy ones, the id itself means nothing to a user.
@@ -272,6 +277,44 @@ export const CippBaselineStandardItem = ({
                   <CippIcons.Add fontSize="small" />
                 </IconButton>
               </Tooltip>
+            )}
+            {onMove && moveTargets.length > 0 && (
+              <>
+                <Tooltip title="Move to stage...">
+                  <IconButton
+                    size="small"
+                    aria-label="Move to stage"
+                    onClick={(event) => {
+                      event.stopPropagation()
+                      setMoveAnchor(event.currentTarget)
+                    }}
+                  >
+                    <CippIcons.SwapHoriz fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+                {/* The menu portals out but still bubbles through the summary, which would toggle the accordion. */}
+                <Menu
+                  anchorEl={moveAnchor}
+                  open={Boolean(moveAnchor)}
+                  onClose={() => setMoveAnchor(null)}
+                  onClick={(event) => event.stopPropagation()}
+                >
+                  {moveTargets.map((target) => (
+                    <MenuItem
+                      key={target.index}
+                      disabled={target.disabled}
+                      onClick={() => {
+                        setMoveAnchor(null)
+                        onMove(fieldBase, target.index)
+                      }}
+                    >
+                      {target.disabled
+                        ? `${target.label} (already in this stage)`
+                        : target.label}
+                    </MenuItem>
+                  ))}
+                </Menu>
+              </>
             )}
             <Tooltip title="Remove from this stage">
               <IconButton

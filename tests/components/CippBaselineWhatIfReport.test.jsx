@@ -176,6 +176,7 @@ describe('CippBaselineWhatIfReport', () => {
           alreadyAligned: true,
           rolloutStages: true,
           licenseGaps: false,
+          laterWaves: false,
         },
         brandingPresetId: 'preset-security',
       },
@@ -228,6 +229,7 @@ describe('CippBaselineWhatIfReport', () => {
         alreadyAligned: false,
         rolloutStages: true,
         licenseGaps: false,
+        laterWaves: false,
       })
     )
   })
