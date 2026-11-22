@@ -111,7 +111,6 @@ export const CippWizardDevicePrepImport = (props) => {
       reader.onload = (e) => {
         const text = e.target.result
         const lines = text.split('\n')
-        // An unrecognised header row would be imported as a device
 
         const normalize = (header) =>
           header.toLowerCase().replace(/[^a-z0-9]/g, '')
@@ -175,6 +174,11 @@ export const CippWizardDevicePrepImport = (props) => {
         const data = lines
           .slice(hasHeaders ? 1 : 0) // Skip first line only if it has headers
           .filter((line) => line.trim() !== '') // Remove empty lines
+          // Edited templates can carry extra header rows; a row of only column names is never a device
+          .filter(
+            (line) =>
+              !line.split(',').every((value) => headerMapping[normalize(value)])
+          )
           .map((line) => {
             const values = line.split(',')
             const row = fields.reduce((obj, field) => {

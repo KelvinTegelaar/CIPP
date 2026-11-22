@@ -129,6 +129,14 @@ describe('CippWizardDevicePrepImport CSV import', () => {
     expect(await screen.findByText('1-1 of 1', {}, { timeout: 10000 })).toBeInTheDocument()
   }, 30000)
 
+  it('skips a second header row instead of importing it as a device', async () => {
+    await uploadCsv(
+      '﻿manufacturer,model,serialNumber\r\nDevice Make,Device Model,Serial Number\r\nHP,EliteBook,SN001\r\n'
+    )
+
+    expect(await screen.findByText('1-1 of 1', {}, { timeout: 10000 })).toBeInTheDocument()
+  }, 30000)
+
   it('rejects rows with missing values instead of importing them', async () => {
     await uploadCsv('Dell,,SN001\n')
 
