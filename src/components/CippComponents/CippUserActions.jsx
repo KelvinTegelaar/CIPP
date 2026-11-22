@@ -7,6 +7,8 @@ import { Tooltip, Box, Divider, Typography, Alert, Skeleton, Link, IconButton } 
 import CippFormComponent from './CippFormComponent'
 import { MfaVerifyForm } from './CippMfaVerifyForm'
 import { CippSharedMailboxLicenseAlert } from './CippSharedMailboxLicenseAlert'
+import { CippOneDriveCopyLibraryPicker } from './CippOneDriveCopyLibraryPicker'
+import { oneDriveShortcutLocation } from '../../utils/onedrive-copy-fields'
 import { CippFormCondition } from './CippFormCondition'
 import { useWatch } from 'react-hook-form'
 import { ApiGetCall } from '../../api/ApiCall'
@@ -937,21 +939,7 @@ export const useCippUserActions = () => {
         destination: { label: 'Shortcuts folder (Microsoft UI)', value: 'shortcuts' },
       },
       fields: [
-        {
-          type: 'autoComplete',
-          name: 'siteUrl',
-          label: 'Select a Site',
-          multiple: false,
-          creatable: true,
-          validators: { required: 'Please select or enter a SharePoint site URL' },
-          api: {
-            url: '/api/ListSites',
-            data: { type: 'SharePointSiteUsage', URLOnly: true },
-            labelField: 'webUrl',
-            valueField: 'webUrl',
-            queryKey: `sharepointSites-${tenant}`,
-          },
-        },
+        { name: 'location', component: CippOneDriveCopyLibraryPicker, ...oneDriveShortcutLocation },
         {
           type: 'autoComplete',
           name: 'destination',

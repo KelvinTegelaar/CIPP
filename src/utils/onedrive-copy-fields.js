@@ -49,3 +49,12 @@ export const oneDriveCopyFields = [
     label: 'Include version history',
   },
 ]
+
+// Picker settings for a OneDrive shortcut: the site is required, a blank library means the site's default
+// Documents library, and the library carries its URL, which ExecOneDriveShortCut resolves.
+export const oneDriveShortcutLocation = {
+  siteLabel: 'Site',
+  siteRequired: true,
+  libraryRequired: false,
+  libraryValueField: 'WebUrl',
+}

@@ -15,6 +15,8 @@ import { CippCopyToClipBoard } from '../../../../../components/CippComponents/Ci
 import { CippDataTable } from '../../../../../components/CippTable/CippDataTable'
 import { CippApiDialog } from '../../../../../components/CippComponents/CippApiDialog'
 import { CippHead } from '../../../../../components/CippComponents/CippHead'
+import { CippOneDriveCopyLibraryPicker } from '../../../../../components/CippComponents/CippOneDriveCopyLibraryPicker'
+import { oneDriveShortcutLocation } from '../../../../../utils/onedrive-copy-fields'
 import tabOptions from './tabOptions'
 
 const Page = () => {
@@ -149,21 +151,7 @@ const Page = () => {
           relatedQueryKeys={[shortcutsQueryKey]}
           allowResubmit
           fields={[
-            {
-              type: 'autoComplete',
-              name: 'siteUrl',
-              label: 'Select a Site',
-              multiple: false,
-              creatable: true,
-              validators: { required: 'Please select or enter a SharePoint site URL' },
-              api: {
-                url: '/api/ListSites',
-                data: { type: 'SharePointSiteUsage', URLOnly: true },
-                labelField: 'webUrl',
-                valueField: 'webUrl',
-                queryKey: `sharepointSites-${tenant}`,
-              },
-            },
+            { name: 'location', component: CippOneDriveCopyLibraryPicker, ...oneDriveShortcutLocation, tenantFilter: tenant },
             {
               type: 'autoComplete',
               name: 'destination',
