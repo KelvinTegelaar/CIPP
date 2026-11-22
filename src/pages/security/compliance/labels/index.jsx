@@ -4,6 +4,8 @@ import { CippTablePage } from '../../../../components/CippComponents/CippTablePa
 import { CippDeployCompliancePolicyDrawer } from '../../../../components/CippComponents/CippDeployCompliancePolicyDrawer.jsx'
 import { PermissionButton } from '../../../../utils/permissions'
 import { useSettings } from '../../../../hooks/use-settings'
+import { tenantScope } from '../../../../utils/tenant-selection'
+import { getRowTenant } from '../../../../utils/resolve-row-templates'
 
 const Page = () => {
   const pageTitle = 'Sensitivity Labels'
@@ -17,11 +19,19 @@ const Page = () => {
       type: 'POST',
       icon: <CippIcons.Book />,
       url: '/api/AddSensitivityLabelTemplate',
-      dataFunction: (data) => {
-        return { ...data }
+      // One request per label; the source tenantFilter must ride on each so the backend can swap
+      // that tenant's domains for %defaultdomain%.
+      customDataformatter: (row) => {
+        const withTenant = (label) => ({
+          ...tenantScope(getRowTenant(label, tenantFilter)),
+          ...label,
+        })
+        return Array.isArray(row) ? row.map(withTenant) : withTenant(row)
       },
-      confirmText: 'Are you sure you want to create a template based on this sensitivity label?',
-      hideBulk: true,
+      confirmText: (row) =>
+        Array.isArray(row)
+          ? `Are you sure you want to create templates based on these ${row.length} sensitivity labels?`
+          : 'Are you sure you want to create a template based on this sensitivity label?',
     },
     {
       label: 'Set Label Color',

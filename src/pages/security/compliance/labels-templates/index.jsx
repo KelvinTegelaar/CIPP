@@ -76,12 +76,13 @@ const Page = () => {
       "Comment",
       "ContentType",
       "EncryptionEnabled",
+      "Priority",
       "GUID",
     ],
     actions: actions,
   };
 
-  const simpleColumns = ["DisplayName", "Name", "Comment", "ContentType", "EncryptionEnabled", "GUID"];
+  const simpleColumns = ["DisplayName", "Name", "Comment", "ContentType", "EncryptionEnabled", "Priority", "GUID"];
 
   return (
     <CippTablePage
