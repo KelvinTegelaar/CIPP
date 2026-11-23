@@ -665,6 +665,12 @@ export const nativeMenuItems = [
             permissions: ['Endpoint.MEM.*'],
           },
           {
+            title: 'Setting Search',
+            path: '/endpoint/MEM/setting-search',
+            docsPath: 'endpoint/mem/setting-search',
+            permissions: ['Endpoint.MEM.*'],
+          },
+          {
             title: 'Policy Failures',
             path: '/endpoint/MEM/policy-failures',
             docsPath: 'endpoint/mem/policy-failures',
