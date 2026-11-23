@@ -5,6 +5,18 @@
     "icon": "Group"
   },
   {
+    "label": "Team",
+    "path": "/identity/administration/groups/group/team",
+    "icon": "Groups",
+    "teamOnly": true
+  },
+  {
+    "label": "Channels",
+    "path": "/identity/administration/groups/group/channels",
+    "icon": "List",
+    "teamOnly": true
+  },
+  {
     "label": "Intune Assignments",
     "path": "/identity/administration/groups/group/intune-assignments",
     "icon": "Assignment"

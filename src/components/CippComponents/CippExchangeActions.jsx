@@ -274,6 +274,30 @@ export const CippExchangeActions = () => {
         "Are you sure you want to set the global address list state for [UPN]? Changes can take up to 72 hours to take effect.",
     },
     {
+      label: "Set Focused Inbox",
+      type: "POST",
+      url: "/api/ExecSetFocusedInbox",
+      icon: <CippIcons.Inbox />,
+      condition: (row) =>
+        row.recipientTypeDetails === "UserMailbox" || row.recipientTypeDetails === "SharedMailbox",
+      data: {
+        ID: "UPN",
+      },
+      fields: [
+        {
+          type: "radio",
+          name: "FocusedInboxOn",
+          label: "Focused Inbox",
+          options: [
+            { label: "On", value: true },
+            { label: "Off", value: false },
+          ],
+          validators: { required: "Please select a Focused Inbox state" },
+        },
+      ],
+      confirmText: "Are you sure you want to set Focused Inbox for [UPN]?",
+    },
+    {
       label: "Start Managed Folder Assistant",
       type: "POST",
       url: "/api/ExecStartManagedFolderAssistant",

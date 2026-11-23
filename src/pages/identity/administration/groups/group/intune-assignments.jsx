@@ -57,7 +57,10 @@ const Page = () => {
 
   return (
     <HeaderedTabbedLayout
-      tabOptions={tabOptions}
+      tabOptions={tabOptions.filter(
+        (tab) =>
+          !tab.teamOnly || group?.resourceProvisioningOptions?.includes('Team')
+      )}
       title={title}
       titleControl={
         <CippEntitySwitcher

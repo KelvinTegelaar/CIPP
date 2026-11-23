@@ -9,48 +9,8 @@ import { CippIntuneDeploymentStatus } from '../../../../components/CippComponent
 import { useSettings } from '../../../../hooks/use-settings.js'
 import { useDialog } from '../../../../hooks/use-dialog.js'
 import { useCippReportDB } from '../../../../components/CippComponents/CippReportDBControls'
-import { isMultiTenant, tenantScope } from '../../../../utils/tenant-selection'
 import { useTenantLabel } from '../../../../hooks/use-tenant-label'
-
-const assignmentIntentOptions = [
-  { label: 'Required', value: 'Required' },
-  { label: 'Available', value: 'Available' },
-  { label: 'Available without enrollment', value: 'AvailableWithoutEnrollment' },
-  { label: 'Uninstall', value: 'Uninstall' },
-]
-
-const assignmentModeOptions = [
-  { label: 'Replace existing assignments', value: 'replace' },
-  { label: 'Append to existing assignments', value: 'append' },
-]
-
-const assignmentFilterTypeOptions = [
-  { label: 'Include - Apply to devices matching filter', value: 'include' },
-  { label: 'Exclude - Apply to devices NOT matching filter', value: 'exclude' },
-]
-
-const assignmentDirectionOptions = [
-  { label: 'Include these group(s)', value: 'include' },
-  { label: 'Exclude these group(s)', value: 'exclude' },
-]
-
-const getAppAssignmentSettingsType = (odataType) => {
-  if (!odataType || typeof odataType !== 'string') {
-    return undefined
-  }
-
-  return odataType.replace('#microsoft.graph.', '').replace(/App$/i, '');
-}
-
-// Only Office and Edge rebuild from a stored Graph body; win32LobApp (uploaded .intunewin) and
-// winGetApp (no PackageName) cannot be templated, so they return null.
-const mapOdataToAppType = (odataType) => {
-  if (!odataType) return null
-  const type = odataType.toLowerCase()
-  if (type.includes('officesuiteapp')) return 'officeApp'
-  if (type.includes('microsoftedgeapp')) return 'edgeApp'
-  return null
-}
+import { useCippIntuneAppActions } from '../../../../components/CippComponents/CippIntuneAppActions.jsx'
 
 const Page = () => {
   const pageTitle = 'Applications'
@@ -68,286 +28,16 @@ const Page = () => {
     serverPagination: true,
   })
 
-  const getAssignmentFilterFields = () => [
-    {
-      type: 'autoComplete',
-      name: 'assignmentFilter',
-      label: 'Assignment Filter (Optional)',
-      multiple: false,
-      creatable: false,
-      api: {
-        url: '/api/ListAssignmentFilters',
-        queryKey: `ListAssignmentFilters-${tenant}`,
-        labelField: (filter) => filter.displayName,
-        valueField: 'displayName',
-      },
-    },
-    {
-      type: 'radio',
-      name: 'assignmentFilterType',
-      label: 'Assignment Filter Mode',
-      options: assignmentFilterTypeOptions,
-      defaultValue: 'include',
-      helperText: 'Choose whether to include or exclude devices matching the filter.',
-      condition: { field: 'assignmentFilter', compareType: 'hasValue', clearOnHide: false },
-    },
-  ]
-
-  // Builds a customDataformatter that handles both single-row and bulk (array) inputs.
-  const makeAssignFormatter = (getRowData) => (row, action, formData) => {
-    const formatRow = (singleRow) => {
-      const tenantFilterValue =
-        isMultiTenant(tenant) && singleRow?.Tenant ? singleRow.Tenant : tenant
-      return {
-        ...tenantScope(tenantFilterValue),
-        ID: singleRow?.id,
-        AppType: getAppAssignmentSettingsType(singleRow?.['@odata.type']),
-        AssignmentFilterName: formData?.assignmentFilter?.value || null,
-        AssignmentFilterType: formData?.assignmentFilter?.value
-          ? formData?.assignmentFilterType || 'include'
-          : null,
-        ExcludeGroupIds: (formData?.excludeGroupTargets || []).map((g) => g.value).filter(Boolean),
-        ExcludeGroupNames: (formData?.excludeGroupTargets || [])
-          .map((g) => g.label)
-          .filter(Boolean),
-        ...getRowData(singleRow, formData),
-      }
-    }
-    return Array.isArray(row) ? row.map(formatRow) : formatRow(row)
-  }
-
-  // Group picker (by ID) reused for both include and exclude selection
-  const getGroupPickerField = (name, label, required) => ({
-    type: 'autoComplete',
-    name,
-    label,
-    multiple: true,
-    creatable: false,
-    allowResubmit: true,
-    ...(required && { validators: { required: 'Please select at least one group' } }),
-    api: {
-      url: '/api/ListGraphRequest',
-      dataKey: 'Results',
-      queryKey: `ListAppAssignmentGroups-${tenant}`,
-      labelField: (group) => (group.id ? `${group.displayName} (${group.id})` : group.displayName),
-      valueField: 'id',
-      addedField: {
-        description: 'description',
-      },
-      data: {
-        Endpoint: 'groups',
-        manualPagination: true,
-        $select: 'id,displayName,description',
-        $orderby: 'displayName',
-        $top: 999,
-        $count: true,
-      },
-    },
-  })
-
-  const assignmentFields = [
-    { type: 'heading', label: 'Exclude groups (optional)' },
-    getGroupPickerField('excludeGroupTargets', 'Exclude group(s)', false),
-    { type: 'heading', label: 'Assignment options' },
-    {
-      type: 'radio',
-      name: 'Intent',
-      label: 'Assignment intent',
-      options: assignmentIntentOptions,
-      defaultValue: 'Required',
-      validators: { required: 'Select an assignment intent' },
-      helperText:
-        'Available assigns to Company Portal, Required installs automatically, Uninstall removes the app, Available without enrollment exposes it without device enrollment.',
-    },
-    {
-      type: 'radio',
-      name: 'assignmentMode',
-      label: 'Assignment mode',
-      options: assignmentModeOptions,
-      defaultValue: 'append',
-      helperText:
-        'Replace will overwrite existing assignments. Append keeps current assignments and adds/overwrites only for the selected groups/intents.',
-    },
-    { type: 'heading', label: 'Device filter (optional)' },
-    ...getAssignmentFilterFields(),
-  ]
-
+  const appActions = useCippIntuneAppActions()
   const actions = [
     {
-      label: 'Assign to All Users',
-      type: 'POST',
-      url: '/api/ExecAssignApp',
-      allowResubmit: true,
-      fields: assignmentFields,
-      customDataformatter: makeAssignFormatter((_singleRow, formData) => ({
-        AssignTo: 'AllUsers',
-        Intent: formData?.Intent || 'Required',
-        assignmentMode: formData?.assignmentMode || 'append',
-      })),
-      confirmText: 'Are you sure you want to assign "[displayName]" to all users?',
-      icon: <CippIcons.UserIcon />,
+      label: 'View Application',
+      link: '/endpoint/applications/list/app?appId=[id]',
+      icon: <CippIcons.EyeIcon />,
       color: 'info',
+      multiPost: false,
     },
-    {
-      label: 'Assign to All Devices',
-      type: 'POST',
-      url: '/api/ExecAssignApp',
-      allowResubmit: true,
-      fields: assignmentFields,
-      customDataformatter: makeAssignFormatter((_singleRow, formData) => ({
-        AssignTo: 'AllDevices',
-        Intent: formData?.Intent || 'Required',
-        assignmentMode: formData?.assignmentMode || 'append',
-      })),
-      confirmText: 'Are you sure you want to assign "[displayName]" to all devices?',
-      icon: <CippIcons.LaptopMac />,
-      color: 'info',
-    },
-    {
-      label: 'Assign Globally (All Users / All Devices)',
-      type: 'POST',
-      url: '/api/ExecAssignApp',
-      allowResubmit: true,
-      fields: assignmentFields,
-      customDataformatter: makeAssignFormatter((_singleRow, formData) => ({
-        AssignTo: 'AllDevicesAndUsers',
-        Intent: formData?.Intent || 'Required',
-        assignmentMode: formData?.assignmentMode || 'append',
-      })),
-      confirmText: 'Are you sure you want to assign "[displayName]" to all users and devices?',
-      icon: <CippIcons.GlobeAltIcon />,
-      color: 'info',
-    },
-    {
-      label: 'Assign to Custom Group',
-      type: 'POST',
-      url: '/api/ExecAssignApp',
-      allowResubmit: true,
-      icon: <CippIcons.UserGroupIcon />,
-      color: 'info',
-      confirmText: 'Select the target groups and intent for "[displayName]".',
-      fields: [
-        { type: 'heading', label: 'Target groups' },
-        {
-          ...getGroupPickerField('groupTargets', 'Group(s)', false),
-          helperText:
-            'Leave empty with Exclude + Replace to remove all exclusions (keeps includes).',
-          validators: {
-            // Required, except Exclude + Replace where an empty selection clears all exclusions.
-            validate: (value, formValues) => {
-              if (
-                formValues?.assignmentDirection === 'exclude' &&
-                (formValues?.assignmentMode || 'append') === 'replace'
-              ) {
-                return true
-              }
-              return (
-                (Array.isArray(value) && value.length > 0) || 'Please select at least one group'
-              )
-            },
-          },
-        },
-        {
-          type: 'radio',
-          name: 'assignmentDirection',
-          label: 'Assignment direction',
-          options: assignmentDirectionOptions,
-          defaultValue: 'include',
-          // Re-validate the picker so the empty-allowed rule updates when direction changes.
-          validators: { deps: ['groupTargets'] },
-          helperText:
-            'Include assigns to these groups. Exclude excludes these groups.',
-        },
-        { type: 'heading', label: 'Assignment options' },
-        {
-          type: 'radio',
-          name: 'assignmentIntent',
-          label: 'Assignment intent',
-          options: assignmentIntentOptions,
-          defaultValue: 'Required',
-          validators: { required: 'Select an assignment intent' },
-          helperText:
-            'Available assigns to Company Portal, Required installs automatically, Uninstall removes the app, Available without enrollment exposes it without device enrollment.',
-        },
-        {
-          type: 'radio',
-          name: 'assignmentMode',
-          label: 'Assignment mode',
-          options: assignmentModeOptions,
-          defaultValue: 'append',
-          // Re-validate the picker so the empty-allowed rule updates when mode changes.
-          validators: { deps: ['groupTargets'] },
-          helperText:
-            'Replace + Include: these groups become the only assignments, and All Users/All Devices are removed. Exclusions stay. Replace + Exclude: these groups become the only exclusions. Assignments stay. Append: adds these groups and removes nothing.',
-        },
-        { type: 'heading', label: 'Device filter (optional)' },
-        ...getAssignmentFilterFields(),
-      ],
-      customDataformatter: makeAssignFormatter((_singleRow, formData) => {
-        const selectedGroups = Array.isArray(formData?.groupTargets) ? formData.groupTargets : []
-        const isExclude = formData?.assignmentDirection === 'exclude'
-        const ids = selectedGroups.map((group) => group.value).filter(Boolean)
-        const names = selectedGroups.map((group) => group.label).filter(Boolean)
-        return {
-          GroupIds: isExclude ? [] : ids,
-          GroupNames: isExclude ? [] : names,
-          ExcludeGroupIds: isExclude ? ids : [],
-          ExcludeGroupNames: isExclude ? names : [],
-          assignmentDirection: formData?.assignmentDirection || 'include',
-          Intent: formData?.assignmentIntent || 'Required',
-          AssignmentMode: formData?.assignmentMode || 'append',
-        }
-      }),
-    },
-    {
-      label: 'Save as Template',
-      type: 'POST',
-      url: '/api/AddAppTemplate',
-      icon: <CippIcons.BookmarkAdd />,
-      color: 'info',
-      fields: [
-        {
-          type: 'textField',
-          name: 'displayName',
-          label: 'Template Name',
-          validators: { required: 'Template name is required' },
-        },
-        {
-          type: 'textField',
-          name: 'description',
-          label: 'Description',
-        },
-      ],
-      condition: (row) => mapOdataToAppType(row?.['@odata.type']) !== null,
-      customDataformatter: (row, action, formData) => {
-        const rows = Array.isArray(row) ? row : [row]
-        return {
-          displayName: formData?.displayName,
-          description: formData?.description || '',
-          apps: rows.map((r) => ({
-            appType: mapOdataToAppType(r['@odata.type']),
-            appName: r.displayName,
-            config: JSON.stringify({
-              ApplicationName: r.displayName,
-              IntuneBody: r,
-              AssignTo: 'On',
-            }),
-          })),
-        }
-      },
-      confirmText: 'Save selected application(s) as a reusable template?',
-    },
-    {
-      label: 'Delete Application',
-      type: 'POST',
-      url: '/api/RemoveApp',
-      data: {
-        ID: 'id',
-      },
-      confirmText: 'Are you sure you want to delete "[displayName]"?',
-      icon: <CippIcons.Delete />,
-      color: 'danger',
-    },
+    ...appActions,
   ]
 
   const offCanvas = {
@@ -398,11 +88,18 @@ const Page = () => {
         simpleColumns={simpleColumns}
         queryKey={reportDB.resolvedQueryKey}
         cardButton={
-          <Stack direction="row" spacing={1} sx={{
-            alignItems: "center"
-          }}>
+          <Stack
+            direction="row"
+            spacing={1}
+            sx={{
+              alignItems: 'center',
+            }}
+          >
             <CippApplicationDeployDrawer />
-            <Button onClick={vppSyncDialog.handleOpen} startIcon={<CippIcons.Sync />}>
+            <Button
+              onClick={vppSyncDialog.handleOpen}
+              startIcon={<CippIcons.Sync />}
+            >
               Sync VPP
             </Button>
           </Stack>
@@ -421,8 +118,12 @@ const Page = () => {
       />
       {reportDB.syncDialog}
     </>
-  );
+  )
 }
 
-Page.getLayout = (page) => <DashboardLayout tenantGroupSupport={true} allTenantsSupport={true}>{page}</DashboardLayout>
+Page.getLayout = (page) => (
+  <DashboardLayout tenantGroupSupport={true} allTenantsSupport={true}>
+    {page}
+  </DashboardLayout>
+)
 export default Page

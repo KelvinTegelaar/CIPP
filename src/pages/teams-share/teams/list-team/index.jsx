@@ -21,6 +21,13 @@ const Page = () => {
 
   const actions = [
     {
+      label: "View Team",
+      link: "/identity/administration/groups/group/team?groupId=[id]",
+      multiPost: false,
+      color: "info",
+      icon: <CippIcons.EyeIcon />,
+    },
+    {
       label: "Edit Group",
       link: "/identity/administration/groups/edit?groupId=[id]&groupType=Microsoft 365",
       pinned: true,

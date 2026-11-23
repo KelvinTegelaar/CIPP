@@ -120,7 +120,17 @@ export const CippExchangeInfoCard = (props) => {
                     {getCippFormatting(exchangeData?.BlockedForSpam, 'BlockedForSpam')}
                   </Typography>
                 </Grid>
-                <Grid size={{ xs: 12, md: 12 }}>
+                <Grid size={{ xs: 12, md: 4 }}>
+                  <Typography variant="inherit" gutterBottom sx={{
+                    color: "text.primary"
+                  }}>
+                    Focused Inbox:
+                  </Typography>
+                  <Typography variant="inherit">
+                    {getCippFormatting(exchangeData?.FocusedInbox, 'FocusedInbox')}
+                  </Typography>
+                </Grid>
+                <Grid size={{ xs: 12, md: 8 }}>
                   <Typography variant="inherit" gutterBottom sx={{
                     color: "text.primary"
                   }}>

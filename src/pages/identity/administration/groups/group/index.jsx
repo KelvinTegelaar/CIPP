@@ -714,7 +714,9 @@ const Page = () => {
 
   return (
     <HeaderedTabbedLayout
-      tabOptions={tabOptions}
+      tabOptions={tabOptions.filter(
+        (tab) => !tab.teamOnly || groupData?.resourceProvisioningOptions?.includes("Team")
+      )}
       title={title}
       titleControl={
         <CippEntitySwitcher
