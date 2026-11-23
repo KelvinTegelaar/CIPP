@@ -123,6 +123,36 @@ function directorySearchApi(kind) {
   };
 }
 
+/** Tenant lists behind the location, application and role pickers on a live policy; values are IDs. */
+export const CA_TENANT_LOOKUPS = {
+  namedLocations: {
+    url: "/api/ListNamedLocations",
+    queryKey: "CANamedLocations",
+    labelField: "displayName",
+    valueField: "id",
+  },
+  servicePrincipals: {
+    url: "/api/ListGraphRequest",
+    dataKey: "Results",
+    queryKey: "CAServicePrincipals",
+    data: { Endpoint: "servicePrincipals", $select: "appId,displayName", $top: 999 },
+    labelField: "displayName",
+    valueField: "appId",
+  },
+  roleDefinitions: {
+    url: "/api/ListGraphRequest",
+    dataKey: "Results",
+    queryKey: "CARoleDefinitions",
+    data: {
+      Endpoint: "roleManagement/directory/roleDefinitions",
+      $select: "templateId,displayName",
+    },
+    labelField: "displayName",
+    // CA policies reference directory roles by their template ID
+    valueField: "templateId",
+  },
+};
+
 // ---------------------------------------------------------------------------
 // Sub-section renderers
 // ---------------------------------------------------------------------------
@@ -297,6 +327,8 @@ function UsersSection({
     () => (directorySearch ? directorySearchApi("groups") : undefined),
     [directorySearch]
   );
+  // The tenant's role definitions replace the built-in list, so custom roles show by name too
+  const roleApi = directorySearch ? CA_TENANT_LOOKUPS.roleDefinitions : undefined;
 
   const guestTypeOpts = useMemo(() => {
     const prop = guestSchema?.properties?.guestOrExternalUserTypes;
@@ -385,6 +417,7 @@ function UsersSection({
           multiple
           disabled={disabled}
           options={roleOptions}
+          api={roleApi}
           placeholder="Select roles"
         />
       </Grid>
@@ -398,6 +431,7 @@ function UsersSection({
           multiple
           disabled={disabled}
           options={roleOptions}
+          api={roleApi}
           placeholder="Select roles"
         />
       </Grid>
@@ -424,8 +458,12 @@ function UsersSection({
 // ---------------------------------------------------------------------------
 // Applications section
 // ---------------------------------------------------------------------------
-function ApplicationsSection({ formControl, disabled, prefix = "conditions.applications" }) {
+function ApplicationsSection({ formControl, disabled, prefix = "conditions.applications", live }) {
   const schemaDef = resolveRef("#/$defs/conditionalAccessApplications");
+  const appApi = useMemo(
+    () => (live ? { ...CA_TENANT_LOOKUPS.servicePrincipals, mergeOptions: true } : undefined),
+    [live]
+  );
   const includeAppOpts = useMemo(
     () => specialValueOptions(schemaDef?.properties?.includeApplications),
     [schemaDef]
@@ -452,6 +490,7 @@ function ApplicationsSection({ formControl, disabled, prefix = "conditions.appli
           freeSolo
           disabled={disabled}
           options={includeAppOpts}
+          api={appApi}
           placeholder="All, Office365, MicrosoftAdminPortals, or app IDs"
         />
       </Grid>
@@ -464,6 +503,7 @@ function ApplicationsSection({ formControl, disabled, prefix = "conditions.appli
           multiple
           freeSolo
           disabled={disabled}
+          api={appApi}
           placeholder="Application client IDs"
         />
       </Grid>
@@ -535,7 +575,7 @@ function ApplicationsSection({ formControl, disabled, prefix = "conditions.appli
 // ---------------------------------------------------------------------------
 // Conditions (client apps, platforms, locations, risk, etc.)
 // ---------------------------------------------------------------------------
-function ConditionsSection({ formControl, disabled }) {
+function ConditionsSection({ formControl, disabled, live }) {
   const condSchema = resolveRef("#/$defs/conditionalAccessConditionSet");
   const platformSchema = resolveRef("#/$defs/conditionalAccessPlatforms");
   const authFlowSchema = resolveRef("#/$defs/conditionalAccessAuthenticationFlows");
@@ -584,6 +624,10 @@ function ConditionsSection({ formControl, disabled }) {
   const excludeLocOpts = useMemo(
     () => specialValueOptions(locationSchema?.properties?.excludeLocations),
     [locationSchema]
+  );
+  const locationApi = useMemo(
+    () => (live ? { ...CA_TENANT_LOOKUPS.namedLocations, mergeOptions: true } : undefined),
+    [live]
   );
 
   const clientAppsSchema = resolveRef("#/$defs/conditionalAccessClientApplications");
@@ -648,6 +692,7 @@ function ConditionsSection({ formControl, disabled }) {
           freeSolo
           disabled={disabled}
           options={includeLocOpts}
+          api={locationApi}
           placeholder="All, AllTrusted, named location names or %variables%"
         />
       </Grid>
@@ -661,6 +706,7 @@ function ConditionsSection({ formControl, disabled }) {
           freeSolo
           disabled={disabled}
           options={excludeLocOpts}
+          api={locationApi}
           placeholder="AllTrusted, named location names or %variables%"
         />
       </Grid>
@@ -1678,7 +1724,11 @@ const CippCAPolicyBuilder = ({
           </Typography>
         </AccordionSummary>
         <AccordionDetails>
-          <ApplicationsSection formControl={formControl} disabled={disabled} />
+          <ApplicationsSection
+            formControl={formControl}
+            disabled={disabled}
+            live={directorySearch}
+          />
         </AccordionDetails>
       </Accordion>
 
@@ -1692,7 +1742,7 @@ const CippCAPolicyBuilder = ({
           </Typography>
         </AccordionSummary>
         <AccordionDetails>
-          <ConditionsSection formControl={formControl} disabled={disabled} />
+          <ConditionsSection formControl={formControl} disabled={disabled} live={directorySearch} />
         </AccordionDetails>
       </Accordion>
 

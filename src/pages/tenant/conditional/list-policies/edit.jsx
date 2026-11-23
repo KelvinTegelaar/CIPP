@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Alert, Box } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/router";
@@ -7,6 +7,7 @@ import CippFormPage from "../../../../components/CippFormPages/CippFormPage";
 import CippFormSkeleton from "../../../../components/CippFormPages/CippFormSkeleton";
 import { ApiGetCall, ApiPostCall } from "../../../../api/ApiCall";
 import CippCAPolicyBuilder, {
+  CA_TENANT_LOOKUPS,
   directoryObjectLabel,
   extractCAPolicyJSON,
 } from "../../../../components/CippComponents/CippCAPolicyBuilder";
@@ -43,6 +44,55 @@ const labelDirectoryIds = (policy, names) => {
   });
   return { ...policy, conditions: { ...policy.conditions, users: labelled } };
 };
+
+// The other ID-valued conditions, labelled from the tenant lists behind their pickers.
+const LOOKUP_FIELDS = {
+  namedLocations: { block: "locations", fields: ["includeLocations", "excludeLocations"] },
+  servicePrincipals: {
+    block: "applications",
+    fields: ["includeApplications", "excludeApplications"],
+  },
+  roleDefinitions: { block: "users", fields: ["includeRoles", "excludeRoles"] },
+};
+
+const hasLookupIds = (policy, { block, fields }) =>
+  fields.some((field) =>
+    (policy?.conditions?.[block]?.[field] ?? []).some((id) => GUID_PATTERN.test(id))
+  );
+
+// An ID the lookup does not know (deleted, or the lookup failed) stays bare and shows as the ID.
+const labelLookupIds = (policy, { block, fields }, names) => {
+  const conditionBlock = policy?.conditions?.[block];
+  if (!conditionBlock) return policy;
+  const labelled = { ...conditionBlock };
+  fields.forEach((field) => {
+    if (Array.isArray(conditionBlock[field])) {
+      labelled[field] = conditionBlock[field].map((id) =>
+        names[id] ? { label: names[id], value: id } : id
+      );
+    }
+  });
+  return { ...policy, conditions: { ...policy.conditions, [block]: labelled } };
+};
+
+const lookupNames = (query, { dataKey, labelField, valueField }) => {
+  const rows = dataKey ? query.data?.[dataKey] : query.data;
+  const names = {};
+  (Array.isArray(rows) ? rows : []).forEach((row) => {
+    if (row?.[valueField] && row?.[labelField]) names[row[valueField]] = row[labelField];
+  });
+  return names;
+};
+
+// Own key suffix: the builder's pickers cache the same list in a paginated shape under the bare key.
+const useTenantLookup = (lookup, tenantFilter, needed) =>
+  ApiGetCall({
+    url: lookup.url,
+    data: { tenantFilter, ...lookup.data },
+    queryKey: `${lookup.queryKey}-${tenantFilter}-labels`,
+    waiting: !!tenantFilter && needed,
+    retry: 1,
+  });
 
 const EditCAPolicy = () => {
   const router = useRouter();
@@ -103,10 +153,41 @@ const EditCAPolicy = () => {
     };
   }, [policiesQuery.isSuccess, policiesQuery.data, policyId, tenantFilter, lookupDirectoryObjects]);
 
-  const existingPolicy = useMemo(
-    () => (policyData && directoryNames ? labelDirectoryIds(policyData, directoryNames) : null),
-    [policyData, directoryNames]
+  const needsLocations = hasLookupIds(policyData, LOOKUP_FIELDS.namedLocations);
+  const needsApplications = hasLookupIds(policyData, LOOKUP_FIELDS.servicePrincipals);
+  const needsRoles = hasLookupIds(policyData, LOOKUP_FIELDS.roleDefinitions);
+  const lookups = {
+    namedLocations: useTenantLookup(CA_TENANT_LOOKUPS.namedLocations, tenantFilter, needsLocations),
+    servicePrincipals: useTenantLookup(
+      CA_TENANT_LOOKUPS.servicePrincipals,
+      tenantFilter,
+      needsApplications
+    ),
+    roleDefinitions: useTenantLookup(CA_TENANT_LOOKUPS.roleDefinitions, tenantFilter, needsRoles),
+  };
+  const needed = {
+    namedLocations: needsLocations,
+    servicePrincipals: needsApplications,
+    roleDefinitions: needsRoles,
+  };
+  // A failed lookup is not fatal: those fields fall back to showing the raw IDs.
+  const lookupsSettled = Object.keys(needed).every(
+    (key) => !needed[key] || lookups[key].isSuccess || lookups[key].isError
   );
+
+  // Labelled once per policy: a new existingPolicy re-populates the form over the user's edits.
+  const [labelledPolicy, setLabelledPolicy] = useState({ source: null, policy: null });
+  if (policyData && directoryNames && lookupsSettled && labelledPolicy.source !== policyData) {
+    let labelled = labelDirectoryIds(policyData, directoryNames);
+    Object.keys(needed).forEach((key) => {
+      if (needed[key]) {
+        const names = lookupNames(lookups[key], CA_TENANT_LOOKUPS[key]);
+        labelled = labelLookupIds(labelled, LOOKUP_FIELDS[key], names);
+      }
+    });
+    setLabelledPolicy({ source: policyData, policy: labelled });
+  }
+  const existingPolicy = labelledPolicy.source === policyData ? labelledPolicy.policy : null;
 
   const dataFormatter = (values) => {
     const cleaned = extractCAPolicyJSON(values);

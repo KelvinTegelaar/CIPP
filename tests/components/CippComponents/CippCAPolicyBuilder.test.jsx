@@ -305,3 +305,49 @@ describe('CippCAPolicyBuilder session controls', () => {
     )
   })
 })
+
+describe('CippCAPolicyBuilder tenant pickers', () => {
+  const requestsFor = (match) =>
+    ApiGetCallWithPagination.mock.calls
+      .map(([options]) => options)
+      .filter(match)
+
+  it('lists named locations, applications and roles from the tenant when editing a tenant policy', async () => {
+    renderWithProviders(<Harness live />)
+    await waitFor(() =>
+      expect(
+        requestsFor((options) => options?.url === '/api/ListNamedLocations')
+      ).not.toHaveLength(0)
+    )
+    const endpoints = requestsFor(
+      (options) => options?.url === '/api/ListGraphRequest'
+    ).map((options) => options.data.Endpoint)
+    expect(endpoints).toContain('servicePrincipals')
+    expect(endpoints).toContain('roleManagement/directory/roleDefinitions')
+    expect(
+      requestsFor((options) => options?.url === '/api/ListNamedLocations').at(
+        -1
+      ).data
+    ).toHaveProperty('tenantFilter')
+  })
+
+  it('keeps template pickers free of tenant lists', async () => {
+    vi.clearAllMocks()
+    renderWithProviders(<Harness />)
+    await waitFor(() =>
+      expect(
+        requestsFor(
+          (options) => options?.url === '/api/ListGSASecurityProfileTemplates'
+        )
+      ).not.toHaveLength(0)
+    )
+    expect(
+      requestsFor(
+        (options) =>
+          options?.url === '/api/ListNamedLocations' ||
+          options?.data?.Endpoint === 'servicePrincipals' ||
+          options?.data?.Endpoint === 'roleManagement/directory/roleDefinitions'
+      )
+    ).toHaveLength(0)
+  })
+})
