@@ -583,7 +583,7 @@ export const CippWizardOffboarding = (props) => {
                   },
                 }}
               />
-              <Box sx={{ m: 1 }}>
+              <Box sx={{ m: 1, width: '100%' }}>
                 <CippOneDriveCopyLibraryPicker
                   name="OneDriveCopyLibrary"
                   formControl={formControl}
