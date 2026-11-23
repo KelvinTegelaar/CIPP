@@ -94,7 +94,7 @@ describe('Edit Group page - email addresses', () => {
       expect(action.condition(alias)).toBe(true)
       expect(action.condition(primary)).toBe(false)
       // Only the address list may refetch: the page query resets the form's unsaved edits
-      expect(action.relatedQueryKeys).toEqual(['GroupEmailAddresses-group-1'])
+      expect(action.relatedQueryKeys).toEqual(['GroupEmailAddresses-testdomain.com-group-1'])
     }
   })
 

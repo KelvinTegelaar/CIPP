@@ -24,7 +24,7 @@ import { CippIcons } from '../../../../utils/icon-registry'
 // discard whatever else the operator has edited but not yet saved.
 const GroupEmailAddresses = ({ groupId, groupType, groupName, tenantFilter }) => {
   const aliasDialog = useDialog()
-  const queryKey = `GroupEmailAddresses-${groupId}`
+  const queryKey = `GroupEmailAddresses-${tenantFilter}-${groupId}`
   const addresses = ApiGetCall({
     url: `/api/ListGroups?groupID=${groupId}&tenantFilter=${tenantFilter}&groupType=${groupType}`,
     queryKey,
