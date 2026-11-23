@@ -783,11 +783,12 @@ const Page = () => {
           calPermissions.data?.map((permission) => {
             const userIdentifier = permission?.User
             const permissionInfo = getPermissionInfo(permission.User, groupsList)
+            const isExternal = permission?.AccessScope?.startsWith('External')
             return {
-              User: permissionInfo.displayName,
+              User: permission?.ExternalAddress || permissionInfo.displayName,
               AccessRights: permission?.AccessRights?.join(', ') || 'Unknown',
               FolderName: permission?.FolderName || 'Unknown',
-              Type: permissionInfo.type,
+              Type: isExternal ? permission.AccessScope : permissionInfo.type,
               _raw: permission,
             }
           }) || [],
@@ -826,7 +827,6 @@ const Page = () => {
         offCanvas: {
           children: (data) => {
             const originalUser = data._raw ? data._raw.User : data.User
-            const permissionInfo = getPermissionInfo(originalUser, groupsList)
             return (
               <CippPropertyListCard
                 cardSx={{ p: 0, m: -2 }}
@@ -834,11 +834,11 @@ const Page = () => {
                 propertyItems={[
                   {
                     label: 'User/Group',
-                    value: permissionInfo.displayName,
+                    value: data.User,
                   },
                   {
                     label: 'Type',
-                    value: permissionInfo.type,
+                    value: data.Type,
                   },
                   {
                     label: 'Access Rights',

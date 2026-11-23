@@ -120,6 +120,7 @@ const Page = () => {
         ...reportDB.cacheColumns.filter((c) => c === 'Tenant'),
         'User',
         'UserMailboxType',
+        'AccessScope',
         'Permissions',
         ...reportDB.cacheColumns.filter((c) => c !== 'Tenant'),
       ]
@@ -128,8 +129,25 @@ const Page = () => {
         'CalendarUPN',
         'CalendarDisplayName',
         'CalendarType',
+        'SharedExternally',
         'Permissions',
         ...reportDB.cacheColumns.filter((c) => c !== 'Tenant'),
+      ]
+
+  const filters = byUser
+    ? [
+        {
+          filterName: 'External users',
+          value: [{ id: 'AccessScope', value: 'External' }],
+          type: 'column',
+        },
+      ]
+    : [
+        {
+          filterName: 'Shared externally',
+          value: [{ id: 'SharedExternally', value: 'Yes' }],
+          type: 'column',
+        },
       ]
 
   const pageActions = (
@@ -166,6 +184,7 @@ const Page = () => {
         apiData={{ ...reportDB.resolvedApiData, ByUser: byUser }}
         apiDataKey={reportDB.apiDataKey}
         simpleColumns={columns}
+        filters={filters}
         actions={byUser ? byUserActions : byCalendarActions}
         cardButton={pageActions}
         dataSourceControls={reportDB.controls}
