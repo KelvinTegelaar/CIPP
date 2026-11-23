@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Alert, Skeleton } from '@mui/material'
 import { CippIcons } from '../../utils/icon-registry'
+import { usePermissions } from '../../hooks/use-permissions'
 import { ApiGetCall } from '../../api/ApiCall'
 import { CippFormComponent } from './CippFormComponent.jsx'
 import { CertificateCredentialRemovalForm } from './CertificateCredentialRemovalForm.jsx'
@@ -517,3 +518,13 @@ export const getEnterpriseAppDetailHeaderActions = (canWriteApplication, onChang
   ...getEnterpriseAppPostActions(canWriteApplication, onChanged),
   ...getEnterpriseAppSigningActions(canWriteApplication),
 ]
+
+export const actionSearch = {
+  page: '/tenant/administration/applications/enterprise-app',
+  idParam: 'spId',
+  useActions: () =>
+    getEnterpriseAppDetailHeaderActions(
+      usePermissions().checkPermissions(['Tenant.Application.ReadWrite']),
+      () => {}
+    ),
+}

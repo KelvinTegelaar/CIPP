@@ -1,5 +1,6 @@
 
 import { CippIcons } from '../../utils/icon-registry'
+import { useSettings } from '../../hooks/use-settings'
 import { CippIntuneSyncDrawer } from './CippIntuneSyncDrawer'
 import { tenantScope } from '../../utils/tenant-selection'
 
@@ -555,3 +556,9 @@ export const getBecIntuneDeviceActions = ({ tenantFilter } = {}) => [
       'Are you sure you want to factory-wipe [deviceName]? This removes all data and Intune enrollment. This cannot be undone.',
   },
 ]
+
+export const actionSearch = {
+  page: '/endpoint/MEM/devices/device',
+  idParam: 'deviceId',
+  useActions: () => getIntuneDeviceActions({ tenantFilter: useSettings().currentTenant }),
+}

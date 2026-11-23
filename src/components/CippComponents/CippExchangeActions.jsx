@@ -660,3 +660,9 @@ export const CippExchangeActions = () => {
 };
 
 export default CippExchangeActions;
+
+export const actionSearch = {
+  page: "/identity/administration/users/user/exchange",
+  idParam: "userId",
+  useActions: CippExchangeActions,
+};

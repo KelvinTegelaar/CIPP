@@ -53,9 +53,11 @@ vi.mock('../../../src/hooks/use-permissions', () => ({
   usePermissions: () => ({
     userPermissions: ['Identity.User.Read', 'CIPP.Extension.Read'],
     userRoles: ['superadmin'],
+    checkPermissions: () => true,
   }),
 }))
 
+import '../../mocks/action-modules'
 import { CippUniversalSearchV2 } from '../../../src/components/CippCards/CippUniversalSearchV2'
 
 describe('CippUniversalSearchV2 mobile layout', () => {
@@ -78,7 +80,7 @@ describe('CippUniversalSearchV2 mobile layout', () => {
     const user = userEvent.setup()
     renderWithProviders(<CippUniversalSearchV2 defaultSearchType="Pages" />)
 
-    for (const label of ['Tenants', 'Users', 'Groups', 'Applications', 'Licenses', 'BitLocker', 'Pages']) {
+    for (const label of ['Tenants', 'Users', 'Groups', 'Applications', 'Licenses', 'BitLocker', 'Pages', 'Actions']) {
       expect(screen.getByText(label, { selector: '.MuiChip-label' })).toBeInTheDocument()
     }
 
@@ -223,16 +225,16 @@ describe('CippUniversalSearchV2 scope cycling', () => {
     expect(screen.getByPlaceholderText(/search users/i)).toHaveValue('john')
   })
 
-  it('wraps from Pages (last) to Tenants (first) and back', async () => {
+  it('wraps from Actions (last) to Tenants (first) and back', async () => {
     const user = userEvent.setup()
-    renderWithProviders(<CippUniversalSearchV2 defaultSearchType="Pages" />)
+    renderWithProviders(<CippUniversalSearchV2 defaultSearchType="Actions" />)
 
-    await user.click(screen.getByPlaceholderText(/search pages/i))
+    await user.click(screen.getByPlaceholderText(/search actions/i))
     await user.keyboard('{Tab}')
     expect(screen.getByPlaceholderText(/search tenants/i)).toBeInTheDocument()
 
     await user.keyboard('{Shift>}{Tab}{/Shift}')
-    expect(screen.getByPlaceholderText(/search pages/i)).toBeInTheDocument()
+    expect(screen.getByPlaceholderText(/search actions/i)).toBeInTheDocument()
   })
 
   it('shows page results immediately after tabbing into the Pages scope with a term typed', async () => {
@@ -244,6 +246,39 @@ describe('CippUniversalSearchV2 scope cycling', () => {
 
     expect(screen.getByPlaceholderText(/search pages/i)).toHaveValue('vacation')
     expect(await screen.findAllByRole('menuitem')).toHaveLength(1)
+  })
+})
+
+describe('CippUniversalSearchV2 actions scope', () => {
+  beforeEach(() => {
+    layoutState.isMobile = false
+    bookmarkState.bookmarks = []
+    routerState.push = vi.fn()
+  })
+
+  // The user page runs ?action= once a user is picked; no userId in the route means the
+  // page's own picker asks for one, so none is sent. Send MFA Push is on both the User and
+  // Mailbox menus and is listed once, on the parent page.
+  it('opens the user page with the picked action named in the URL', async () => {
+    const user = userEvent.setup()
+    renderWithProviders(<CippUniversalSearchV2 defaultSearchType="Actions" />)
+
+    await user.type(screen.getByPlaceholderText(/search actions/i), 'send mfa push')
+    expect(await screen.findAllByRole('menuitem')).toHaveLength(1)
+    await user.keyboard('{Enter}')
+
+    expect(routerState.push).toHaveBeenCalledWith({
+      pathname: '/identity/administration/users/user',
+      query: { action: 'Send MFA Push' },
+    })
+  })
+
+  it('leaves out device actions when Devices is not in the menu for this role', async () => {
+    const user = userEvent.setup()
+    renderWithProviders(<CippUniversalSearchV2 defaultSearchType="Actions" />)
+
+    await user.type(screen.getByPlaceholderText(/search actions/i), 'view in intune')
+    expect(await screen.findByText('No results found.')).toBeInTheDocument()
   })
 })
 
@@ -342,7 +377,7 @@ describe('CippUniversalSearchV2 tenant scope', () => {
   it('only enables the tenant and group queries while the Tenants scope is active', async () => {
     apiState.calls = []
     const user = userEvent.setup()
-    renderWithProviders(<CippUniversalSearchV2 defaultSearchType="Pages" />)
+    renderWithProviders(<CippUniversalSearchV2 defaultSearchType="Actions" />)
 
     const tenantCalls = () =>
       apiState.calls.filter((c) => c.url === '/api/listTenants' || c.url === '/api/ListTenantGroups')
@@ -350,7 +385,7 @@ describe('CippUniversalSearchV2 tenant scope', () => {
     expect(tenantCalls().every((c) => c.waiting === false)).toBe(true)
 
     apiState.calls = []
-    await user.click(screen.getByPlaceholderText(/search pages/i))
+    await user.click(screen.getByPlaceholderText(/search actions/i))
     await user.keyboard('{Tab}')
     expect(screen.getByPlaceholderText(/search tenants/i)).toBeInTheDocument()
     expect(tenantCalls().some((c) => c.waiting === true)).toBe(true)

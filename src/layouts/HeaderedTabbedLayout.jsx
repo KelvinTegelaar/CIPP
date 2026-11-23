@@ -1,8 +1,9 @@
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/router";
 import PropTypes from "prop-types";
 import {
+  Alert,
   Box,
   Container,
   Divider,
@@ -90,6 +91,30 @@ export const HeaderedTabbedLayout = (props) => {
   // stale-but-present data quite happily; aligning down keeps the two surfaces identical
   // without changing desktop.
   const { visibleActions, isDisabled, dispatch } = actionsDispatch;
+
+  // ?action=<label> (from the Actions scope of universal search) opens that action once the
+  // page's record has loaded. The param is dropped first so a re-render cannot run it twice.
+  // When this record can't take the action, the param stays and a notice says so; picking
+  // another record in the title switcher keeps the param and tries again.
+  const requestedAction = router.query.action;
+  // Some labels have per-platform variants (Wipe Device); take the one this record allows.
+  const requestedMatches =
+    requestedAction && actionsData
+      ? visibleActions.filter((item) => item.label === requestedAction)
+      : [];
+  const requested =
+    requestedMatches.find((item) => !isDisabled(item)) ?? requestedMatches[0];
+  const requestedBlocked = !!requestedAction && !!actionsData && (!requested || isDisabled(requested));
+  const clearRequestedAction = () => {
+    const { action: _drop, ...query } = router.query;
+    router.replace({ pathname: router.pathname, query }, undefined, { shallow: true });
+  };
+  useEffect(() => {
+    if (!requested || isDisabled(requested)) return;
+    clearRequestedAction();
+    dispatch(requested);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [requestedAction, actionsData]);
   const sheetActions = useMemo(
     () =>
       isMobile
@@ -283,6 +308,12 @@ export const HeaderedTabbedLayout = (props) => {
                 }
               }
             >
+              {requestedBlocked && (
+                <Alert severity="info" onClose={clearRequestedAction} sx={{ my: 2 }}>
+                  &quot;{requestedAction}&quot; isn&apos;t available for {title}. Pick someone else
+                  from the name above, or close this message.
+                </Alert>
+              )}
               {children}
             </Box>
           </Stack>

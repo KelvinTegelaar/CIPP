@@ -105,3 +105,11 @@ export const CippGdapActions = () => [
 ];
 
 export default CippGdapActions;
+
+export const actionSearch = {
+  page: '/tenant/gdap-management/relationships/relationship',
+  idParam: 'id',
+  // GDAP relationships belong to the partner tenant, so no customer tenant is needed
+  allTenants: true,
+  useActions: CippGdapActions,
+}

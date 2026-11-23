@@ -32,9 +32,24 @@ import { useSettings } from "../../hooks/use-settings";
 import { useTenantPreferences } from "../../hooks/use-tenant-preferences";
 import { searchLocalLicenseCatalog } from "../../utils/get-cipp-license-catalog";
 import extensions from "../../data/Extensions.json";
+import { isMultiTenant } from "../../utils/tenant-selection";
+
+/**
+ * The Actions scope's sources, found rather than listed: every components/**\/*Actions.jsx
+ * that exports `actionSearch = { page, idParam, useActions, allTenants? }`, where `page` is the
+ * detail page whose Actions menu shows those actions and whose title switcher sets `idParam`.
+ * tests/lint/action-search-coverage.test.js fails when a detail page has no declaration.
+ * Parent pages first, so an action shared with a tab (User and Mailbox) opens on the parent.
+ */
+const actionSearchContext = require.context("../../components", true, /Actions\.jsx$/);
+const ACTION_SEARCH = [
+  ...new Set(actionSearchContext.keys().map((key) => actionSearchContext(key).actionSearch)),
+]
+  .filter(Boolean)
+  .sort((a, b) => a.page.length - b.page.length);
 
 // Scopes that match in memory as the user types; the rest hit the API on Enter / Search.
-const LOCAL_SCOPES = ["Pages", "Licenses", "Tenants"];
+const LOCAL_SCOPES = ["Pages", "Actions", "Licenses", "Tenants"];
 // Group-driven tenant searches can match hundreds of tenants — cap what is rendered.
 const MAX_TENANT_RESULTS = 50;
 
@@ -135,7 +150,7 @@ export const CippUniversalSearchV2 = React.forwardRef(
     const textFieldRef = useRef(null);
     const dropdownRef = useRef(null);
     const router = useRouter();
-    const { userPermissions, userRoles } = usePermissions();
+    const { userPermissions, userRoles, checkPermissions } = usePermissions();
     const isMobile = useIsMobileLayout();
     const { bookmarks } = useUserBookmarks();
     const settings = useSettings();
@@ -187,7 +202,11 @@ export const CippUniversalSearchV2 = React.forwardRef(
     });
 
     const activeSearch =
-      searchType === "BitLocker" ? bitlockerSearch : searchType === "Pages" ? null : universalSearch;
+      searchType === "BitLocker"
+        ? bitlockerSearch
+        : searchType === "Pages" || searchType === "Actions"
+          ? null
+          : universalSearch;
 
     // Same flags the side nav and tab layouts filter by, so a page switched off by a feature
     // flag doesn't resurface as a search result (issue #760).
@@ -315,7 +334,64 @@ export const CippUniversalSearchV2 = React.forwardRef(
       return [...filteredMainMenu, ...integrationItems, ...filteredTabOptions];
     }, [userPermissions, userRoles, tabOptions, hiddenPages]);
 
+    // Every *Actions.jsx module that exports `actionSearch` (see ACTION_SEARCH) — its actions,
+    // as its detail page's Actions menu filters them. A page whose nearest menu entry this role
+    // cannot see drops out, and so does an action gated only on a permission (a condition that
+    // takes no row) this role lacks.
+    const actionSets = [];
+    for (const declaration of ACTION_SEARCH) {
+      // ACTION_SEARCH is fixed at module load, so the hook order never changes.
+      actionSets.push(declaration.useActions());
+    }
     const normalizedSearch = searchValue.trim().toLowerCase();
+    const multiTenant = isMultiTenant(settings?.currentTenant);
+    const actionResults = useMemo(() => {
+      if (searchType !== "Actions" || !normalizedSearch) return [];
+      const leaves = getLeafItems(nativeMenuItems);
+      const visible = new Set(flattenedMenuItems.map((item) => item.path));
+      // User and Mailbox share some actions; the parent page (shorter path) copy wins.
+      const seen = new Set();
+      const results = [];
+      ACTION_SEARCH.forEach((declaration, index) => {
+        const { page, idParam } = declaration;
+        // Nearest menu entry: the closest ancestor path that is, or prefixes, a menu leaf.
+        let menuLeaf;
+        for (let p = page; !menuLeaf && p.includes("/"); p = p.slice(0, p.lastIndexOf("/"))) {
+          menuLeaf =
+            leaves.find((leaf) => leaf.path === p) ??
+            leaves.find((leaf) => leaf.path?.startsWith(`${p}/`));
+        }
+        if (!menuLeaf || !visible.has(menuLeaf.path)) return;
+        const tab = tabOptions.find((option) => option.path === page);
+        const siblings = tab ? tabOptions.filter((option) => option.basePath === tab.basePath) : [];
+        const onRecord =
+          !!router.query[idParam] && siblings.some((option) => option.path === router.pathname);
+        // The record pickers list one tenant's records.
+        if (multiTenant && !declaration.allTenants && !onRecord) return;
+        const breadcrumbs = [menuLeaf.title, tab?.title].filter(Boolean);
+        for (const action of actionSets[index]) {
+          if (!action.label || (action.link && !action.showInActionsMenu)) continue;
+          if (action.condition?.length === 0 && !action.condition()) continue;
+          const key = `${idParam}:${action.label}`;
+          if (seen.has(key)) continue;
+          seen.add(key);
+          const haystack = [action.label, ...breadcrumbs].join(" ").toLowerCase();
+          if (!haystack.includes(normalizedSearch)) continue;
+          results.push({
+            title: action.label,
+            path: page,
+            type: "action",
+            breadcrumbs,
+            idParam: onRecord ? idParam : null,
+          });
+        }
+      });
+      return results;
+      // actionSets is rebuilt every render; what it contains only changes with these.
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [searchType, normalizedSearch, flattenedMenuItems, tabOptions, multiTenant, router.pathname, router.query]);
+    const actionsNeedTenant = searchType === "Actions" && multiTenant;
+
     const pageResults = flattenedMenuItems.filter((leaf) => {
       const inTitle = leaf.title?.toLowerCase().includes(normalizedSearch);
       const inPath = leaf.path?.toLowerCase().includes(normalizedSearch);
@@ -531,6 +607,17 @@ export const CippUniversalSearchV2 = React.forwardRef(
         }
       } else if (searchType === "Pages") {
         router.push(match.path, undefined, { shallow: true });
+      } else if (searchType === "Actions") {
+        // Already on that record: run it against the record. Otherwise the page's picker asks.
+        const { tenantFilter } = router.query;
+        router.push({
+          pathname: match.path,
+          query: {
+            action: match.title,
+            ...(match.idParam && { [match.idParam]: router.query[match.idParam] }),
+            ...(match.idParam && tenantFilter && { tenantFilter }),
+          },
+        });
       } else if (searchType === "Tenants") {
         // The URL is the tenant selector's source of truth: its watcher picks the new
         // tenantFilter up and syncs its own state. Settings are updated here too so the
@@ -621,6 +708,11 @@ export const CippUniversalSearchV2 = React.forwardRef(
         label: "Pages",
         icon: "Public",
         onClick: () => handleTypeChange("Pages"),
+      },
+      {
+        label: "Actions",
+        icon: "Bolt",
+        onClick: () => handleTypeChange("Actions"),
       },
     ];
 
@@ -716,6 +808,8 @@ export const CippUniversalSearchV2 = React.forwardRef(
         ? bitlockerResults
         : searchType === "Pages"
           ? pageResults
+          : searchType === "Actions"
+            ? actionResults
           : searchType === "Tenants"
             ? visibleTenantResults
             : searchType === "Licenses"
@@ -735,6 +829,8 @@ export const CippUniversalSearchV2 = React.forwardRef(
           : "Search BitLocker by Recovery Key ID";
       } else if (searchType === "Pages") {
         return "Search pages, tabs, paths, or scope";
+      } else if (searchType === "Actions") {
+        return "Search actions, e.g. reset password or sync device";
       } else if (searchType === "Tenants") {
         return "Search tenants by name, domain, ID, or tenant group";
       } else if (searchType === "Licenses") {
@@ -773,9 +869,9 @@ export const CippUniversalSearchV2 = React.forwardRef(
                       highlightedIndex={highlightedIndex}
                       setHighlightedIndex={setHighlightedIndex}
                     />
-                  ) : searchType === "Pages" ? (
+                  ) : searchType === "Pages" || searchType === "Actions" ? (
                     <PageResults
-                      items={pageResults}
+                      items={activeResults}
                       searchValue={searchValue}
                       onResultClick={handleResultClick}
                       highlightedIndex={highlightedIndex}
@@ -797,7 +893,9 @@ export const CippUniversalSearchV2 = React.forwardRef(
                   <Typography variant="body2" sx={{
                     color: "text.secondary"
                   }}>
-                    No results found.
+                    {actionsNeedTenant
+                      ? "No matching actions for all tenants. Select a single tenant to find user, mailbox, device and app actions."
+                      : "No results found."}
                   </Typography>
                 </Box>
               )}
@@ -887,7 +985,7 @@ export const CippUniversalSearchV2 = React.forwardRef(
               }
             }}
           />
-          {searchType !== "Pages" && searchType !== "Tenants" && (
+          {searchType !== "Pages" && searchType !== "Tenants" && searchType !== "Actions" && (
             <Button
               variant="contained"
               onClick={handleSearch}
@@ -1277,7 +1375,7 @@ const PageResults = ({
     <>
       {items.map((item, index) => {
         const isGlobal = item.scope === "global";
-        const itemType = item.type === "tab" ? "Tab" : "Page";
+        const itemType = item.type === "tab" ? "Tab" : item.type === "action" ? "Action" : "Page";
 
         return (
           <MenuItem

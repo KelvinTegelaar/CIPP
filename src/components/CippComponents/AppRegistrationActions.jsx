@@ -1,5 +1,6 @@
 
 import { CippIcons } from '../../utils/icon-registry'
+import { usePermissions } from '../../hooks/use-permissions'
 import isEqual from 'lodash/isEqual'
 import { CippFormComponent } from './CippFormComponent.jsx'
 import { CertificateCredentialRemovalForm } from './CertificateCredentialRemovalForm.jsx'
@@ -665,3 +666,13 @@ export const getAppRegistrationDetailHeaderActions = (canWriteApplication, onOwn
   ...getAppRegistrationEditActions(canWriteApplication),
   ...getAppRegistrationPostAndDestructiveActions(canWriteApplication, onOwnersChanged),
 ]
+
+export const actionSearch = {
+  page: '/tenant/administration/applications/app-registration',
+  idParam: 'appId',
+  useActions: () =>
+    getAppRegistrationDetailHeaderActions(
+      usePermissions().checkPermissions(['Tenant.Application.ReadWrite']),
+      () => {}
+    ),
+}

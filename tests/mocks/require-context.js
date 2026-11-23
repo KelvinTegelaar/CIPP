@@ -8,6 +8,15 @@ const ROOTS = [
     modules: import.meta.glob('/src/pages/**/*.json', { eager: true }),
   },
   {
+    // universal search's Actions scope. Loading every actions module adds ~15 s to each test
+    // file, so it stays empty unless the test imports tests/mocks/action-modules.js first
+    suffix: '/components',
+    base: '/src/components',
+    get modules() {
+      return globalThis.__cippActionModules ?? {}
+    },
+  },
+  {
     suffix: '/data/tutorials',
     base: '/src/data/tutorials',
     modules: import.meta.glob('/src/data/tutorials/*.json', { eager: true }),

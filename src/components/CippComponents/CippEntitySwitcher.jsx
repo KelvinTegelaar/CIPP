@@ -46,9 +46,14 @@ export const CippEntitySwitcher = ({
 }) => {
   const router = useRouter();
   const isMobile = useIsMobileLayout();
-  const [open, setOpen] = useState(false);
+  const [manualOpen, setOpen] = useState(false);
+  const [dismissed, setDismissed] = useState(false);
   const [search, setSearch] = useState("");
   const anchorRef = useRef(null);
+
+  // A detail page reached without an id (e.g. from an action in universal search) asks for one.
+  // isReady: the static export's first render has an empty query on every detail page.
+  const open = manualOpen || (router.isReady && !currentId && !dismissed);
 
   const listRequest = ApiGetCall({
     ...api,
@@ -75,6 +80,7 @@ export const CippEntitySwitcher = ({
 
   const handleClose = () => {
     setOpen(false);
+    setDismissed(true);
     setSearch("");
   };
 
@@ -183,7 +189,7 @@ export const CippEntitySwitcher = ({
         {isMobile ? (
           <>
             <Typography variant="h6" noWrap sx={{ minWidth: 0 }}>
-              {title}
+              {currentId ? title : `Select ${entityName}`}
             </Typography>
             {/* Extends the accessible name instead of replacing it, so voice control can
                 still activate the trigger by the visible name (same rule as CippTabPicker). */}
@@ -195,7 +201,7 @@ export const CippEntitySwitcher = ({
         ) : (
           <>
             <Typography variant="h4" sx={{ minWidth: 0 }}>
-              {title}
+              {currentId ? title : `Select ${entityName}`}
               <CippIcons.KeyboardArrowDown
                 sx={{ opacity: 0.7, fontSize: 24, verticalAlign: "middle", ml: 0.75 }}
               />

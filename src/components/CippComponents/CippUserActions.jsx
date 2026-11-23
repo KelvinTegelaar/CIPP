@@ -1258,3 +1258,9 @@ export const CippUserActions = () => {
 }
 
 export default CippUserActions
+
+export const actionSearch = {
+  page: '/identity/administration/users/user',
+  idParam: 'userId',
+  useActions: useCippUserActions,
+}

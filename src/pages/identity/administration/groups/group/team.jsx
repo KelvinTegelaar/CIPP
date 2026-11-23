@@ -10,11 +10,11 @@ import { CippPropertyListCard } from '../../../../../components/CippCards/CippPr
 import {
   CippTeamSwitcher,
   TEAM_SETTING_GROUPS,
-  getTeamHeaderActions,
   getTeamSubtitle,
   teamQueryKey,
   useCippTeam,
 } from '../../../../../components/CippComponents/CippTeamHeader'
+import { getTeamHeaderActions } from '../../../../../components/CippComponents/CippTeamActions'
 import tabOptions from './tabOptions'
 
 const Page = () => {

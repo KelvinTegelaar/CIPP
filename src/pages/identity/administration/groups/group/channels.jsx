@@ -12,11 +12,11 @@ import { CippApiDialog } from '../../../../../components/CippComponents/CippApiD
 import { CippDataTable } from '../../../../../components/CippTable/CippDataTable'
 import {
   CippTeamSwitcher,
-  getTeamHeaderActions,
   getTeamSubtitle,
   teamQueryKey,
   useCippTeam,
 } from '../../../../../components/CippComponents/CippTeamHeader'
+import { getTeamHeaderActions } from '../../../../../components/CippComponents/CippTeamActions'
 import tabOptions from './tabOptions'
 
 const CHANNEL_TYPES = [
