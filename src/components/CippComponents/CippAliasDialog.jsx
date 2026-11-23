@@ -4,7 +4,7 @@ import { Typography, Box, Button, TextField, Chip, Stack } from "@mui/material";
 import { useWatch } from "react-hook-form";
 import { CippFormDomainSelector } from "./CippFormDomainSelector";
 
-const CippAliasDialog = ({ formHook }) => {
+const CippAliasDialog = ({ formHook, target = "user" }) => {
   const [aliasPrefix, setAliasPrefix] = useState("");
 
   // Initialize the form field if it doesn't exist
@@ -80,7 +80,7 @@ const CippAliasDialog = ({ formHook }) => {
         <Typography variant="body2" sx={{
           color: "text.secondary"
         }}>
-          Add proxy addresses (aliases) for this user. Enter a prefix, choose a verified tenant
+          Add proxy addresses (aliases) for this {target}. Enter a prefix, choose a verified tenant
           domain, and click Add or press Enter.
         </Typography>
         <Box

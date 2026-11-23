@@ -14,6 +14,90 @@ import { CippFormContactSelector } from "../../../../components/CippComponents/C
 import { CippDataTable } from "../../../../components/CippTable/CippDataTable";
 import { CippFormLicenseSelector } from '../../../../components/CippComponents/CippFormLicenseSelector'
 import { getCippLicenseTranslation } from '../../../../utils/get-cipp-license-translation'
+import { CippApiDialog } from '../../../../components/CippComponents/CippApiDialog'
+import CippAliasDialog from '../../../../components/CippComponents/CippAliasDialog'
+import { useDialog } from '../../../../hooks/use-dialog'
+import { CippIcons } from '../../../../utils/icon-registry'
+
+// Address changes apply immediately through row actions rather than on Submit, so the list loads
+// under its own query key: refetching the page's ListGroups query resets the form and would
+// discard whatever else the operator has edited but not yet saved.
+const GroupEmailAddresses = ({ groupId, groupType, groupName, tenantFilter }) => {
+  const aliasDialog = useDialog()
+  const queryKey = `GroupEmailAddresses-${groupId}`
+  const addresses = ApiGetCall({
+    url: `/api/ListGroups?groupID=${groupId}&tenantFilter=${tenantFilter}&groupType=${groupType}`,
+    queryKey,
+  })
+  // Exchange marks the primary address with an upper-case SMTP: prefix and aliases with smtp:
+  const rows = (addresses.data?.emailAddresses ?? [])
+    .filter((address) => /^smtp:/i.test(address))
+    .map((address) => ({
+      Address: address.slice(5),
+      Type: address.startsWith('SMTP:') ? 'Primary' : 'Alias',
+    }))
+    .sort((a, b) => (a.Type === b.Type ? 0 : a.Type === 'Primary' ? -1 : 1))
+
+  const group = { groupId, groupType, groupName, tenantFilter }
+  const api = { type: 'POST', url: '/api/EditGroup', multiPost: false, relatedQueryKeys: [queryKey] }
+  const actions = [
+    {
+      ...api,
+      label: 'Make Primary',
+      icon: <CippIcons.Star />,
+      data: { ...group, PrimarySmtpAddress: 'Address' },
+      confirmText:
+        'Make [Address] the primary email address of this group? The current primary address is kept as an alias.',
+      condition: (row) => row?.Type === 'Alias',
+    },
+    {
+      ...api,
+      label: 'Remove Alias',
+      icon: <CippIcons.Delete />,
+      data: { ...group, RemovedAliases: 'Address' },
+      confirmText: 'Remove the alias [Address] from this group?',
+      condition: (row) => row?.Type === 'Alias',
+    },
+  ]
+
+  return (
+    <>
+      <CippDataTable
+        title="Email Addresses"
+        data={rows}
+        isFetching={addresses.isFetching}
+        simpleColumns={['Address', 'Type']}
+        actions={actions}
+        refreshFunction={addresses.refetch}
+        cardButton={
+          <Button
+            startIcon={<CippIcons.AlternateEmail />}
+            onClick={() => aliasDialog.handleOpen()}
+            variant="outlined"
+            size="small"
+          >
+            Add Alias
+          </Button>
+        }
+      />
+      <CippApiDialog
+        createDialog={aliasDialog}
+        title="Add Aliases"
+        row={group}
+        api={{
+          ...api,
+          confirmText: 'Add the specified aliases to this group?',
+          customDataformatter: (row, action, formData) => ({
+            ...group,
+            AddedAliases: formData?.AddedAliases ?? [],
+          }),
+        }}
+      >
+        {({ formHook }) => <CippAliasDialog formHook={formHook} target="group" />}
+      </CippApiDialog>
+    </>
+  )
+}
 
 const EditGroup = () => {
   const router = useRouter()
@@ -547,6 +631,18 @@ const EditGroup = () => {
                     />
                   </Grid>
                 </>
+              )}
+
+              {['Distribution List', 'Mail-Enabled Security', 'Microsoft 365'].includes(groupType) && (
+                <Grid size={{ xs: 12 }}>
+                  <Divider sx={{ my: 2 }} />
+                  <GroupEmailAddresses
+                    groupId={groupId}
+                    groupType={groupType}
+                    groupName={groupInfo.data?.groupInfo?.displayName}
+                    tenantFilter={tenantFilter}
+                  />
+                </Grid>
               )}
 
               <Grid size={{ xs: 12 }}>
