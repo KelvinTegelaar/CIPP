@@ -90,6 +90,11 @@ describe('utilColumnsFromAPI', () => {
     expect(value(named, 'mail')).toBe('contoso.onmicrosoft.com')
     expect(value(utilColumnsFromAPI(data), 'Tenant')).toBe('Contoso.onmicrosoft.com')
 
+    const byId = [{ TenantId: 'AAAA-1111', tenantId: 'unknown-id' }]
+    const idColumns = utilColumnsFromAPI(byId, new Map([['aaaa-1111', 'Contoso Billing']]))
+    expect(idColumns.find((c) => c.id === 'TenantId').accessorFn(byId[0])).toBe('Contoso Billing')
+    expect(idColumns.find((c) => c.id === 'tenantId').accessorFn(byId[0])).toBe('unknown-id')
+
     const picked = [{ Tenant: { label: 'contoso.onmicrosoft.com', value: 'contoso.onmicrosoft.com', type: 'Tenant' } }]
     expect(utilColumnsFromAPI(picked, names)[0].accessorFn(picked[0])).toBe('Contoso Billing')
   })

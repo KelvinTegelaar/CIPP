@@ -145,6 +145,7 @@ describe('CippVariablePreview', () => {
           RowKey: 'partners',
           Value: 'a\nb',
           VariableType: 'collection',
+          JoinInherited: false,
         },
       })
     )

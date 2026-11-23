@@ -5,6 +5,9 @@ const TENANT_COLUMNS = new Set([
   'Tenant',
   'tenantFilter',
   'Tenants',
+  'tenantId',
+  'TenantId',
+  'TenantID',
   'AllowedTenants',
   'BlockedTenants',
 ])

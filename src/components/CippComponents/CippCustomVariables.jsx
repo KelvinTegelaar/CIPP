@@ -98,13 +98,26 @@ export const VALUE_FIELD = {
   required: true,
 }
 
+// Tenant group and tenant lists only: a global list has nothing to inherit.
+export const JOIN_INHERITED_FIELD = {
+  type: 'switch',
+  name: 'JoinInherited',
+  label: 'Add to the inherited list instead of replacing it',
+  condition: {
+    field: 'VariableType',
+    compareType: 'isOneOf',
+    compareValue: ['list', 'collection'],
+    propertyName: 'value',
+  },
+}
+
 const previewCellSx = { fontFamily: 'monospace', wordBreak: 'break-all' }
 
 // The unsaved variable resolved by the server exactly as a deployment would, in each place it can sit.
 export const CippVariablePreview = ({ formControl, previewUrl, tenantId }) => {
-  const [name, value, variableType] = useWatch({
+  const [name, value, variableType, joinInherited] = useWatch({
     control: formControl.control,
-    name: ['RowKey', 'Value', 'VariableType'],
+    name: ['RowKey', 'Value', 'VariableType', 'JoinInherited'],
   })
   const preview = ApiPostCall({})
   const { mutate } = preview
@@ -122,12 +135,22 @@ export const CippVariablePreview = ({ formControl, previewUrl, tenantId }) => {
             RowKey: typeValue(name),
             Value: value,
             VariableType: typeValue(variableType),
+            JoinInherited: joinInherited === true,
           },
         }),
       400
     )
     return () => clearTimeout(timer)
-  }, [hasValue, name, value, variableType, previewUrl, tenantId, mutate])
+  }, [
+    hasValue,
+    name,
+    value,
+    variableType,
+    joinInherited,
+    previewUrl,
+    tenantId,
+    mutate,
+  ])
 
   if (!hasValue) return null
   const error = preview.error?.response?.data?.Results
@@ -255,6 +278,7 @@ const CippCustomVariables = ({ id }) => {
 
   const isGroupView = String(id).startsWith('group:')
   const isTenantView = id !== 'AllTenants' && !isGroupView
+  const joinField = id === 'AllTenants' ? [] : [JOIN_INHERITED_FIELD]
   // The tenant view also lists inherited rows, which are edited where they are defined.
   const isOwnRow = (row) =>
     !isTenantView || row.Scope === 'Tenant' || row.Scope === 'Overridden'
@@ -464,6 +488,7 @@ const CippCustomVariables = ({ id }) => {
         },
         VALUE_FIELD,
         VARIABLE_TYPE_FIELD,
+        ...joinField,
         previewField,
         {
           type: 'textField',
@@ -510,6 +535,7 @@ const CippCustomVariables = ({ id }) => {
           placeholder: 'Enter the value that should apply to this tenant.',
         },
         VARIABLE_TYPE_FIELD,
+        ...joinField,
         previewField,
         {
           type: 'textField',
@@ -616,9 +642,18 @@ const CippCustomVariables = ({ id }) => {
                 'Scope',
                 'Groups',
                 'VariableType',
+                'JoinInherited',
                 'Description',
               ]
-            : ['RowKey', 'Value', 'VariableType', 'Description']
+            : isGroupView
+              ? [
+                  'RowKey',
+                  'Value',
+                  'VariableType',
+                  'JoinInherited',
+                  'Description',
+                ]
+              : ['RowKey', 'Value', 'VariableType', 'Description']
         }
         cardButton={
           <Stack direction="row" spacing={1}>
@@ -752,6 +787,7 @@ const CippCustomVariables = ({ id }) => {
             : []),
           VALUE_FIELD,
           VARIABLE_TYPE_FIELD,
+          ...joinField,
           previewField,
           {
             type: 'textField',
