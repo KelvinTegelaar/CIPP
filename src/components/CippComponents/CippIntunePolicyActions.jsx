@@ -1,6 +1,17 @@
 import { CippIcons } from '../../utils/icon-registry'
 import { isMultiTenant, tenantScope } from '../../utils/tenant-selection'
 
+// Re-capturing a policy updates the template of the same name, keeping the %variables% added to it.
+export const TEMPLATE_CAPTURE_FIELDS = [
+  { type: 'switch', name: 'ReplaceExisting', label: 'Replace the template with the same name' },
+  {
+    type: 'switch',
+    name: 'KeepVariables',
+    label: 'Keep the variables added to that template',
+    condition: { field: 'ReplaceExisting', compareType: 'is', compareValue: true },
+  },
+]
+
 const assignmentModeOptions = [
   { label: 'Replace existing assignments', value: 'replace' },
   { label: 'Append to existing assignments', value: 'append' },
@@ -251,6 +262,7 @@ export const useCippIntunePolicyActions = (tenant, policyType, options = {}) => 
         URLName: policyType === 'URLName' ? 'URLName' : policyType,
       },
       confirmText: 'Are you sure you want to create a template based on this policy?',
+      fields: TEMPLATE_CAPTURE_FIELDS,
       icon: <CippIcons.Book />,
       color: 'info',
       multiPost: false,

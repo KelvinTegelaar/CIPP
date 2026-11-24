@@ -21,6 +21,9 @@ import CippJsonView from '../CippFormPages/CippJSONView'
 import { CippApiResults } from './CippApiResults'
 import { CippFormTenantSelector } from './CippFormTenantSelector'
 import { CippTemplateCatalog } from './CippTemplateCatalog'
+import CippFormComponent from './CippFormComponent'
+import { CippFormCondition } from './CippFormCondition'
+import { TEMPLATE_CAPTURE_FIELDS } from './CippIntunePolicyActions'
 
 const modeConfig = {
   Intune: {
@@ -101,6 +104,14 @@ export const CippPolicyImportDrawer = ({
   const formControl = useForm()
 
   const tenantFilter = useWatch({ control: formControl.control, name: 'tenantFilter' })
+  const [replaceExisting, keepVariables] = useWatch({
+    control: formControl.control,
+    name: ['ReplaceExisting', 'KeepVariables'],
+  })
+  const captureOptions = {
+    ReplaceExisting: replaceExisting === true,
+    KeepVariables: replaceExisting === true && keepVariables === true,
+  }
 
   const tenantPolicies = ApiGetCall({
     url:
@@ -142,6 +153,7 @@ export const CippPolicyImportDrawer = ({
           url: '/api/AddCATemplate',
           data: {
             tenantFilter: tenantFilter?.value,
+            ...captureOptions,
             ...policyData,
           },
         })
@@ -161,6 +173,7 @@ export const CippPolicyImportDrawer = ({
           url: '/api/AddIntuneTemplate',
           data: {
             tenantFilter: tenantFilter?.value,
+            ...captureOptions,
             ID: policy.id,
             URLName: policy.URLName || 'GroupPolicyConfigurations',
           },
@@ -298,6 +311,16 @@ export const CippPolicyImportDrawer = ({
                   allTenants={false}
                   type="single"
                 />
+                {mode !== 'Standards' &&
+                  TEMPLATE_CAPTURE_FIELDS.map(({ condition, ...field }) =>
+                    condition ? (
+                      <CippFormCondition key={field.name} {...condition} formControl={formControl}>
+                        <CippFormComponent {...field} formControl={formControl} />
+                      </CippFormCondition>
+                    ) : (
+                      <CippFormComponent key={field.name} {...field} formControl={formControl} />
+                    )
+                  )}
               </Box>
 
               <TextField

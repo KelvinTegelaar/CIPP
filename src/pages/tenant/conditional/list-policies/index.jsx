@@ -9,6 +9,7 @@ import { CippCAPolicyCoverageDrawer } from "../../../../components/CippComponent
 import { CippCAPolicyImpactDrawer } from "../../../../components/CippComponents/CippCAPolicyImpactDrawer";
 import { PermissionButton } from "../../../../utils/permissions";
 import { useSettings } from "../../../../hooks/use-settings.js";
+import { TEMPLATE_CAPTURE_FIELDS } from "../../../../components/CippComponents/CippIntunePolicyActions";
 
 // Page Component
 const Page = () => {
@@ -77,6 +78,7 @@ const Page = () => {
       },
       hideBulk: true,
       confirmText: `Are you sure you want to create a template based on "[displayName]"?`,
+      fields: TEMPLATE_CAPTURE_FIELDS,
       icon: <CippIcons.Book />,
       color: "info",
     },
