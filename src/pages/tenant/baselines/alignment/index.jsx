@@ -1443,6 +1443,11 @@ const Page = () => {
         <Stack spacing={0}>
           {propertyList(properties)}
           <Stack spacing={2} sx={{ p: 2 }}>
+            {findDefinition(row.standardName)?.helpText && (
+              <Typography variant="body2" color="text.secondary">
+                {findDefinition(row.standardName).helpText}
+              </Typography>
+            )}
             {row.status === 'Conflict' && (
               <Alert severity="error">
                 Two baselines configure this standard at the same assignment

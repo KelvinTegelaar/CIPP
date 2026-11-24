@@ -5,11 +5,15 @@ import userEvent from '@testing-library/user-event'
 import { renderWithProviders, settingsWith } from '../test-utils'
 
 const tablePage = vi.hoisted(() => ({ props: null }))
+const dataTable = vi.hoisted(() => ({ props: null }))
 vi.mock('../../src/api/ApiCall', async () =>
   (await import('../mocks/api-call')).apiCallMock()
 )
 vi.mock('../../src/components/CippTable/CippDataTable', () => ({
-  CippDataTable: () => null,
+  CippDataTable: (props) => {
+    dataTable.props = props
+    return null
+  },
 }))
 vi.mock('../../src/components/CippComponents/CippTablePage.jsx', () => ({
   CippTablePage: (props) => {
@@ -182,5 +186,34 @@ describe('Baseline Alignment tab - by-standard filters', () => {
     expect(
       screen.queryByRole('button', { name: 'Run All Assigned Baselines' })
     ).not.toBeInTheDocument()
+  }, 30000)
+
+  it('shows the standard description in the Standard Details drawer, and tolerates rows without a definition', async () => {
+    const definitions = getResult({
+      data: [{ name: 'standards.Known', helpText: 'Blocks legacy sign-in.' }],
+    })
+    const alignment = getResult({
+      data: {
+        rows: [
+          { standardName: 'standards.Known#1', standardLabel: 'Known' },
+          { standardName: 'standards.Unknown', standardLabel: 'Unknown' },
+        ],
+      },
+    })
+    api.get = (opts) =>
+      opts?.url === '/api/ListBaselineStandards'
+        ? definitions
+        : opts?.url === '/api/ListBaselineAlignment'
+          ? alignment
+          : defaultGet(opts)
+    renderWithProviders(<Page />)
+    const drawer = dataTable.props.offCanvas
+    const [known, unknown] = alignment.data.rows
+
+    renderWithProviders(<>{drawer.children(known)}</>)
+    expect(screen.getByText('Blocks legacy sign-in.')).toBeInTheDocument()
+
+    const { container } = renderWithProviders(<>{drawer.children(unknown)}</>)
+    expect(container.textContent).not.toContain('Blocks legacy sign-in.')
   }, 30000)
 })
