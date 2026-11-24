@@ -19,6 +19,14 @@ import CippAliasDialog from '../../../../components/CippComponents/CippAliasDial
 import { useDialog } from '../../../../hooks/use-dialog'
 import { CippIcons } from '../../../../utils/icon-registry'
 
+const memberTypes = {
+  '#microsoft.graph.group': 'Group',
+  '#microsoft.graph.device': 'Device',
+  '#microsoft.graph.orgContact': 'Contact',
+  '#microsoft.graph.servicePrincipal': 'Service Principal',
+}
+const memberType = (member) => memberTypes[member?.['@odata.type']] ?? 'Member'
+
 // Address changes apply immediately through row actions rather than on Submit, so the list loads
 // under its own query key: refetching the page's ListGroups query resets the form and would
 // discard whatever else the operator has edited but not yet saved.
@@ -132,6 +140,7 @@ const EditGroup = () => {
       AddContact: [],
       RemoveContact: [],
       AddDevice: [],
+      RemoveDevice: [],
       AddLicenses: [],
       RemoveLicenses: [],
       AddSendAs: [],
@@ -154,7 +163,7 @@ const EditGroup = () => {
             displayName: o.displayName,
           })) || []),
           ...(groupInfo.data?.members?.map((m) => ({
-            type: m?.['@odata.type'] === '#microsoft.graph.orgContact' ? 'Contact' : 'Member',
+            type: memberType(m),
             userPrincipalName: m.userPrincipalName ?? m.mail,
             displayName: m.displayName,
           })) || []),
@@ -203,6 +212,7 @@ const EditGroup = () => {
           AddContact: [],
           RemoveContact: [],
           AddDevice: [],
+          RemoveDevice: [],
           AddLicenses: [],
           RemoveLicenses: [],
           AddSendAs: [],
@@ -472,24 +482,25 @@ const EditGroup = () => {
                   disabled={groupInfo.isFetching}
                   options={
                     groupInfo.data?.members
-                      ?.filter((m) => m?.["@odata.type"] !== "#microsoft.graph.orgContact")
+                      ?.filter((m) => !['Contact', 'Device'].includes(memberType(m)))
                       ?.map((m) => {
-                        const groupType = m.mailEnabled && !m.securityEnabled
-                          ? "Distribution Group"
-                          : m.mailEnabled && m.securityEnabled
-                          ? "Mail-Enabled Security Group"
-                          : "Security Group";
+                        const type =
+                          memberType(m) !== 'Group'
+                            ? memberType(m)
+                            : m.mailEnabled && !m.securityEnabled
+                              ? 'Distribution Group'
+                              : m.mailEnabled && m.securityEnabled
+                                ? 'Mail-Enabled Security Group'
+                                : 'Security Group'
                         return {
-                          label: m.userPrincipalName
-                            ? `${m.displayName} (${m.userPrincipalName})`
-                            : `${m.displayName} (${groupType})`,
+                          label: `${m.displayName} (${m.userPrincipalName || type})`,
                           value: m.id,
                           addedFields: {
                             userPrincipalName: m.userPrincipalName,
                             displayName: m.displayName,
                             id: m.id,
                           },
-                        };
+                        }
                       }) || []
                   }
                   sortOptions={true}
@@ -541,6 +552,33 @@ const EditGroup = () => {
                   sortOptions={true}
                 />
               </Grid>
+
+              {groupType !== 'Distribution List' && groupType !== 'Mail-Enabled Security' && (
+                <Grid size={{ xs: 12 }}>
+                  <CippFormComponent
+                    type="autoComplete"
+                    name="RemoveDevice"
+                    label="Remove Devices"
+                    formControl={formControl}
+                    multiple={true}
+                    creatable={false}
+                    isFetching={groupInfo.isFetching}
+                    disabled={groupInfo.isFetching}
+                    options={
+                      groupInfo.data?.members
+                        ?.filter((m) => memberType(m) === 'Device')
+                        ?.map((m) => ({
+                          label: m.operatingSystem
+                            ? `${m.displayName} (${m.operatingSystem})`
+                            : m.displayName,
+                          value: m.id,
+                          addedFields: { displayName: m.displayName },
+                        })) || []
+                    }
+                    sortOptions={true}
+                  />
+                </Grid>
+              )}
 
               {['Distribution List', 'Mail-Enabled Security', 'Microsoft 365'].includes(groupType) && (
                 <>
