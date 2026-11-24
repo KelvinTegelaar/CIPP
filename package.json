@@ -122,11 +122,11 @@
     "yup": "1.7.1"
   },
   "devDependencies": {
-    "@storybook/addon-a11y": "10.6.7",
-    "@storybook/addon-docs": "10.6.7",
-    "@storybook/addon-themes": "10.6.7",
-    "@storybook/addon-vitest": "10.6.7",
-    "@storybook/react-vite": "10.6.7",
+    "@storybook/addon-a11y": "10.6.8",
+    "@storybook/addon-docs": "10.6.8",
+    "@storybook/addon-themes": "10.6.8",
+    "@storybook/addon-vitest": "10.6.8",
+    "@storybook/react-vite": "10.6.8",
     "@svgr/webpack": "8.1.0",
     "@testing-library/dom": "10.4.2",
     "@testing-library/jest-dom": "7.0.1",
@@ -144,7 +144,7 @@
     "msw-storybook-addon": "3.0.3",
     "playwright": "1.63.0",
     "prettier": "^3.9.10",
-    "storybook": "10.6.7",
+    "storybook": "10.6.8",
     "typescript": "5.9.3",
     "vite": "8.2.4",
     "vitest": "4.1.12"
