@@ -28,7 +28,11 @@
   {
     "name": "NewMFADevice",
     "label": "Alert when users register new MFA devices",
-    "recommendedRunInterval": "1h"
+    "recommendedRunInterval": "1h",
+    "requiresInput": true,
+    "inputType": "textField",
+    "inputLabel": "Only alert for UPNs matching (comma separated, wildcards and %variables% supported, e.g. breakglass@*). Leave empty for all users",
+    "inputName": "InputValue"
   },
   {
     "name": "LicenseAssignmentErrors",
