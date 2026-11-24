@@ -201,6 +201,11 @@ export const nativeMenuItems = [
             permissions: ['Tenant.Administration.*'],
           },
           {
+            title: 'Cross-Tenant Access',
+            path: '/tenant/administration/cross-tenant-access',
+            permissions: ['Tenant.Administration.*'],
+          },
+          {
             title: 'Partner Relationships',
             path: '/tenant/administration/partner-relationships',
             permissions: ['Tenant.Relationship.*'],

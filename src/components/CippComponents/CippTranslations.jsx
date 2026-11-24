@@ -119,6 +119,12 @@ export const CippTranslations = {
   showTenantInformation: 'Show Tenant Information',
   refreshTenantList: 'Refresh tenant list',
   tenantId: 'Tenant ID',
+  // Cross-tenant access
+  collaborationInbound: 'B2B Collaboration Inbound',
+  collaborationOutbound: 'B2B Collaboration Outbound',
+  directConnectInbound: 'B2B Direct Connect Inbound',
+  directConnectOutbound: 'B2B Direct Connect Outbound',
+  trustMfa: 'Trust MFA',
   id: 'ID',
   customerId: 'Customer ID',
   street: 'Street',
