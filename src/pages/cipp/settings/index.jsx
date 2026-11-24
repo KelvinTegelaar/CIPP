@@ -15,6 +15,7 @@ import CippLogRetentionSettings from "../../../components/CippSettings/CippLogRe
 import CippJitAdminSettings from "../../../components/CippSettings/CippJitAdminSettings";
 import CippBecRemediationSettings from "../../../components/CippSettings/CippBecRemediationSettings";
 import CippBaselineExpirySettings from "../../../components/CippSettings/CippBaselineExpirySettings";
+import CippAppPackageStorageSettings from "../../../components/CippSettings/CippAppPackageStorageSettings";
 const Page = () => {
   return (
     <Container sx={{ pt: { xs: 0, md: 3 }, px: { xs: 1.5, md: 3 } }} maxWidth="xl">
@@ -60,6 +61,9 @@ const Page = () => {
         </Grid>
         <Grid size={{ lg: 4, md: 6, sm: 12, xs: 12 }}>
           <CippBaselineExpirySettings />
+        </Grid>
+        <Grid size={{ lg: 4, md: 6, sm: 12, xs: 12 }}>
+          <CippAppPackageStorageSettings />
         </Grid>
       </Grid>
     </Container>

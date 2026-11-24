@@ -132,7 +132,7 @@ export const CippAppTemplateDrawer = ({
 
   const saveTemplate = ApiPostCall({
     urlFromData: true,
-    relatedQueryKeys: ['ListAppTemplates'],
+    relatedQueryKeys: ['ListAppTemplates', 'ListAppPackageStorage'],
   })
 
   const searchApp = (searchText, type) => {

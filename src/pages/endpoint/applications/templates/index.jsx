@@ -4,7 +4,8 @@ import { Layout as DashboardLayout } from '../../../../layouts/index'
 import { CippTablePage } from '../../../../components/CippComponents/CippTablePage.jsx'
 import { CippAppTemplateDrawer } from '../../../../components/CippComponents/CippAppTemplateDrawer'
 import CippJsonView from '../../../../components/CippFormPages/CippJSONView'
-import { Box } from '@mui/material'
+import { Box, Card, CardContent } from '@mui/material'
+import { CippAppPackageStorageUsage } from '../../../../components/CippComponents/CippAppPackageStorageUsage'
 import { ApiGetCall } from '../../../../api/ApiCall'
 
 const Page = () => {
@@ -139,6 +140,7 @@ const Page = () => {
       label: 'Delete Template',
       type: 'POST',
       url: '/api/RemoveAppTemplate',
+      relatedQueryKeys: ['ListAppPackageStorage'],
       data: { ID: 'GUID' },
       confirmText: 'Delete the template "[displayName]"?',
       icon: <CippIcons.Delete />,
@@ -159,7 +161,14 @@ const Page = () => {
         apiUrl="/api/ListAppTemplates"
         actions={actions}
         offCanvas={offCanvas}
-        simpleColumns={['displayName', 'description', 'appCount', 'appTypes', 'appNames']}
+        simpleColumns={['displayName', 'description', 'appCount', 'appTypes', 'appNames', 'packageSizeInBytes']}
+        tableFilter={
+          <Card>
+            <CardContent>
+              <CippAppPackageStorageUsage />
+            </CardContent>
+          </Card>
+        }
         queryKey="ListAppTemplates"
         cardButton={
           <Box sx={{ display: 'flex', gap: 1 }}>
