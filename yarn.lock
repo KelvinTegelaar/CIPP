@@ -1850,12 +1850,12 @@
   resolved "https://registry.npmjs.org/@mui/core-downloads-tracker/-/core-downloads-tracker-9.5.0.tgz#42d07b201a43020a579f448549462d60fe03db82"
   integrity sha512-PErEpl3Lp+1ZqWYKI7GQU8XSiciAFmLbUAZ7IoaUL598HLy1UAFuEUMEJu8yAS1v8vkXYzWprMVZzky4UwXoOA==
 
-"@mui/icons-material@9.4.0":
-  version "9.4.0"
-  resolved "https://registry.npmjs.org/@mui/icons-material/-/icons-material-9.4.0.tgz#4bdbce7bd51398053b6b86b665187648b8d8aff6"
-  integrity sha512-5PVgBYtLOXTk6u0YUAjoV9GoTUQDbeZ8g+pus2h0GphLT/rpmftRnB5D/Kw6QCAovB7EyBX7UxKdZqPBBAHUKw==
+"@mui/icons-material@9.5.0":
+  version "9.5.0"
+  resolved "https://registry.npmjs.org/@mui/icons-material/-/icons-material-9.5.0.tgz#06bde090e09dec3219e0b1eef31a0e488bd056f0"
+  integrity sha512-dahtVaqnRUIBgaZ4WC9EdP+LgJ5d2rslASYIX+nDFG6+ssUiM11jQ+Gd1wH8vhUGoNA9ES40MYics5BI8zJFXQ==
   dependencies:
-    "@babel/runtime" "^7.29.7"
+    "@babel/runtime" "^7.29.7 || ^8.0.5"
 
 "@mui/lab@9.0.0-beta.10":
   version "9.0.0-beta.10"
