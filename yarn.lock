@@ -3063,11 +3063,6 @@
   dependencies:
     remove-accents "0.5.0"
 
-"@tanstack/query-core@5.101.2":
-  version "5.101.2"
-  resolved "https://registry.npmjs.org/@tanstack/query-core/-/query-core-5.101.2.tgz#c901fb76b68169ff5e1e44017404e7e2e90ce1af"
-  integrity sha512-hH5MLoJhF7KaIGd7q3xTXGXvslI+GYlM1Z/35aSHHWaCJWB7XvTSHYuV3eM7tw+aE0mT/xMro4M4Q9rCGHT0lw==
-
 "@tanstack/query-core@5.105.2":
   version "5.105.2"
   resolved "https://registry.npmjs.org/@tanstack/query-core/-/query-core-5.105.2.tgz#e02be24b677baf80a23950ad4a9473a1d876faae"
@@ -3090,12 +3085,12 @@
     solid-transition-group "^0.2.3"
     superjson "^2.2.6"
 
-"@tanstack/query-persist-client-core@5.101.2":
-  version "5.101.2"
-  resolved "https://registry.npmjs.org/@tanstack/query-persist-client-core/-/query-persist-client-core-5.101.2.tgz#3bcd02c1ee2090158b4b67c5e4e51cbaa694dc71"
-  integrity sha512-rgMsbvBVpSPDUsprC9FYxojdG0Q1LH6yq1i3DXz2aps4VEqv2l4Msj3YDqIifU3xkl/DrYe9YWntZAJLrM6xTg==
+"@tanstack/query-persist-client-core@5.105.2":
+  version "5.105.2"
+  resolved "https://registry.npmjs.org/@tanstack/query-persist-client-core/-/query-persist-client-core-5.105.2.tgz#02727c7c55da3d3201267505619f9e78bc537327"
+  integrity sha512-qQa9wzw/2J1gWH5aMLJDpMH9iS98tTHzPc45L9NjrwF6KbkC24gC7YfFO66AOE5C5iGKaersjFfr/yMPERhwiQ==
   dependencies:
-    "@tanstack/query-core" "5.101.2"
+    "@tanstack/query-core" "5.105.2"
 
 "@tanstack/react-query-devtools@^5.105.2":
   version "5.105.2"
@@ -3104,12 +3099,12 @@
   dependencies:
     "@tanstack/query-devtools" "5.105.2"
 
-"@tanstack/react-query-persist-client@^5.101.2":
-  version "5.101.2"
-  resolved "https://registry.npmjs.org/@tanstack/react-query-persist-client/-/react-query-persist-client-5.101.2.tgz#673554fe900861b3075f074965d0f63f3f213be9"
-  integrity sha512-19UpaRtf0lvB2QAJ2MoixxtGf3osMOd508g99EsttUj4+3eLs+ulnNgYjB7AkQMHrRlcbVXqpVNqWkB4a7g8Zw==
+"@tanstack/react-query-persist-client@^5.105.2":
+  version "5.105.2"
+  resolved "https://registry.npmjs.org/@tanstack/react-query-persist-client/-/react-query-persist-client-5.105.2.tgz#0ed9f315a3b3b3dadb9977a2a6dc3b00af879610"
+  integrity sha512-PF1ZSc+7xncdXCpwOrOwFMuCBWZTV18TmkEWZnEgLzVt43474YIb6ypZMia7dvfmTQz1G+vDXMrUMJiP4Fdbtg==
   dependencies:
-    "@tanstack/query-persist-client-core" "5.101.2"
+    "@tanstack/query-persist-client-core" "5.105.2"
 
 "@tanstack/react-query@^5.104.5":
   version "5.105.2"
