@@ -1,6 +1,8 @@
+import { useMemo } from 'react'
 import { Stack, Typography } from '@mui/material'
 import { CippApiDialog } from './CippApiDialog'
 import CippFormComponent from './CippFormComponent'
+import { CippFormTenantSelector } from './CippFormTenantSelector'
 import auditLogTemplates from '../../data/AuditLogTemplates.json'
 import alertActions from '../../data/alertActions.json'
 
@@ -30,7 +32,7 @@ export const alertTemplateFor = ({ preset, operation, logbook }) => {
   }
 }
 
-// Creates an audit-log alert for one tenant through the same AddAlert call the alert
+// Creates an audit-log alert for the chosen tenants through the same AddAlert call the alert
 // configuration page makes, with the same action options. Anything beyond the preset's own
 // conditions is edited on that page afterwards.
 export const CippAlertPresetDialog = ({
@@ -42,18 +44,48 @@ export const CippAlertPresetDialog = ({
   relatedQueryKeys = [],
 }) => {
   const template = alertTemplateFor({ preset, operation, logbook })
+  // Stable reference: CippApiDialog resets its form whenever this changes
+  const defaultvalues = useMemo(
+    () => ({
+      tenantFilter: [{ value: tenant, label: tenant, type: 'Tenant' }],
+    }),
+    [tenant]
+  )
 
   return (
     <CippApiDialog
       createDialog={createDialog}
       title="Enable the alert"
+      defaultvalues={defaultvalues}
       children={({ formHook }) => (
         <Stack spacing={2} sx={{ mt: 2 }}>
           <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-            Creates the alert "{template.name}" for {tenant}. Once saved it
-            appears in the alert configuration list like any other alert, where
-            its conditions and actions can be changed.
+            Creates the alert "{template.name}" for the selected tenants. Once
+            saved it appears in the alert configuration list like any other
+            alert, where its conditions and actions can be changed.
           </Typography>
+          <CippFormTenantSelector
+            multiple={true}
+            formControl={formHook}
+            allTenants={true}
+            label="Included Tenants for alert"
+            includeGroups={true}
+            required={true}
+            validators={{
+              validate: (value) =>
+                value?.length > 0 || 'At least one tenant must be selected',
+            }}
+          />
+          <CippFormTenantSelector
+            multiple={true}
+            formControl={formHook}
+            allTenants={false}
+            includeGroups={true}
+            name="excludedTenants"
+            label="Excluded Tenants for alert"
+            required={false}
+            helperText="Optional. Skipped even if they fall within the included tenants or group."
+          />
           <CippFormComponent
             type="autoComplete"
             name="Actions"
@@ -79,11 +111,11 @@ export const CippAlertPresetDialog = ({
       api={{
         url: '/api/AddAlert',
         type: 'POST',
-        confirmText: `Enable this alert for ${tenant}?`,
+        confirmText: 'Enable this alert for the selected tenants?',
         relatedQueryKeys: ['ListAlertsQueue', ...relatedQueryKeys],
         customDataformatter: (row, action, formData) => ({
-          tenantFilter: [{ value: tenant, label: tenant, type: 'Tenant' }],
-          excludedTenants: [],
+          tenantFilter: formData.tenantFilter,
+          excludedTenants: formData.excludedTenants ?? [],
           preset: template.preset,
           logbook: template.logbook,
           conditions: template.conditions,
