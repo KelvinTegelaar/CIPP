@@ -7835,6 +7835,17 @@
         "defaultValue": true
       },
       {
+        "type": "autoComplete",
+        "multiple": true,
+        "creatable": true,
+        "required": false,
+        "freeSolo": true,
+        "name": "standards.DeployCheckChromeExtension.protectedDomains",
+        "label": "Domain squatting protected domains",
+        "placeholder": "e.g. contoso.com",
+        "helperText": "Domains to protect from lookalike sites, such as your own and your clients' domains. When empty, the domains in the URL allowlist are protected instead, so allowlisting a third-party site also protects it."
+      },
+      {
         "type": "textField",
         "name": "standards.DeployCheckChromeExtension.companyName",
         "label": "Company Name",
