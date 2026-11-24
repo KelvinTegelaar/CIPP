@@ -997,8 +997,8 @@
       },
       {
         "type": "switch",
-        "name": "Hudu.HideLicenseFullWarning",
-        "label": "Hide fully assigned license warning in Magic Dash",
+        "name": "Hudu.ShowLicenseFullWarning",
+        "label": "Warn in Magic Dash when a license is fully assigned",
         "condition": {
           "field": "Hudu.Enabled",
           "compareType": "is",
@@ -1008,8 +1008,19 @@
       },
       {
         "type": "switch",
-        "name": "Hudu.HideLicenseNearFullWarning",
-        "label": "Hide nearly full (90% or more) license warning in Magic Dash",
+        "name": "Hudu.ShowLicenseNearFullWarning",
+        "label": "Warn in Magic Dash when a license is nearly full (90% or more)",
+        "condition": {
+          "field": "Hudu.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
+      },
+      {
+        "type": "switch",
+        "name": "Hudu.ShowGlobalAdminCountWarning",
+        "label": "Warn in Magic Dash when 5 or more accounts hold Global Administrator",
         "condition": {
           "field": "Hudu.Enabled",
           "compareType": "is",
