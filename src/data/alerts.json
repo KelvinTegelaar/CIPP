@@ -620,6 +620,16 @@
     "inputName": "DaysUntilExpiry"
   },
   {
+    "name": "DepSyncStatus",
+    "label": "Alert if a DEP token sync fails or has not succeeded in the last X hours",
+    "recommendedRunInterval": "1d",
+    "minimumRunInterval": "4h",
+    "requiresInput": true,
+    "inputType": "number",
+    "inputLabel": "Hours since last successful sync (default: 24)",
+    "inputName": "DepSyncStatusHours"
+  },
+  {
     "name": "IntuneApprovalRequests",
     "label": "Alert on Intune changes waiting for multi-admin approval",
     "recommendedRunInterval": "1d",
