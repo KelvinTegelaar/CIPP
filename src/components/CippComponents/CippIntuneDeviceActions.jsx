@@ -152,7 +152,15 @@ export const getIntuneDeviceActions = ({ tenantFilter } = {}) => [
   },
   {
     label: 'Sync Device',
+    // The row menu opens the sync status drawer; the bulk Actions menu posts this
+    type: 'POST',
     icon: <CippIcons.Sync />,
+    url: '/api/ExecDeviceAction',
+    data: {
+      GUID: 'id',
+      Action: 'syncDevice',
+    },
+    confirmText: 'Are you sure you want to sync [deviceName]?',
     multiPost: false,
     customComponent: (row, { drawerVisible, setDrawerVisible }) => (
       <CippIntuneSyncDrawer

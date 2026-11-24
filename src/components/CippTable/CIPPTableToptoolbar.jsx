@@ -160,9 +160,14 @@ export const CIPPTableToptoolbar = React.memo(
         actions
           // customComponent actions are single-row dialogs; the bulk path renders CippApiDialog
           // unconditionally, so admitting one here produces an empty dialog with no API behind it.
-          ?.filter((action) => !action.link && !action?.hideBulk && !action?.customComponent)
+          // One that also carries a url is posted in bulk, without its component.
+          ?.filter(
+            (action) =>
+              !action.link && !action?.hideBulk && (!action?.customComponent || action.url)
+          )
           ?.map((action) => ({
             ...action,
+            customComponent: undefined,
             // bulkFilterEligible actions run against the eligible subset of the selection:
             // available when ANY selected row qualifies, and dispatch filters the rest out.
             // The default stays all-or-nothing (every selected row must qualify).

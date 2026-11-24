@@ -515,6 +515,49 @@ describe('CIPPTableToptoolbar bulk noConfirm customFunction', () => {
   })
 })
 
+describe('CIPPTableToptoolbar bulk customComponent actions', () => {
+  it('offers a customComponent action in bulk only when it also has a url', async () => {
+    const user = userEvent.setup()
+    const customComponent = vi.fn(() => null)
+
+    renderWithProviders(
+      <CippDataTable
+        viewMode="cards"
+        queryKey="StaticDataUsersCustomComponent"
+        data={rows}
+        simpleColumns={['displayName', 'mail']}
+        title="Users"
+        maxHeightOffset="100px"
+        actions={[
+          {
+            label: 'Sync Device',
+            type: 'POST',
+            url: '/api/ExecDeviceAction',
+            data: { GUID: 'id', Action: 'syncDevice' },
+            confirmText: 'Are you sure you want to sync [displayName]?',
+            customComponent,
+          },
+          { label: 'Drawer Only', customComponent },
+        ]}
+      />
+    )
+    await screen.findByText('Users')
+
+    await user.click(screen.getByRole('button', { name: 'Select' }))
+    await user.click(await screen.findByRole('checkbox', { name: 'Select Alice Smith' }))
+    await user.click(screen.getByRole('checkbox', { name: 'Select Bob Johnson' }))
+    await user.click(screen.getByRole('button', { name: 'Actions' }))
+
+    const syncButton = await screen.findByRole('button', { name: 'Sync Device' })
+    expect(screen.queryByRole('button', { name: 'Drawer Only' })).not.toBeInTheDocument()
+    await user.click(syncButton)
+
+    // The confirm dialog, not the single-row component
+    expect(await screen.findByText(/Are you sure you want to sync/)).toBeInTheDocument()
+    expect(customComponent).not.toHaveBeenCalled()
+  })
+})
+
 describe('CIPPTableToptoolbar - tenant switch', () => {
   function TenantSwitchTable() {
     const [tenant, setTenant] = React.useState('a.com')
