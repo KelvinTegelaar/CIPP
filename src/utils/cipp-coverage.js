@@ -1,7 +1,7 @@
 // Pure helpers for the V2 audit-log coverage views (KPIs, time-series charts, per-tenant heatmap).
 // All aggregation is derived client-side from the rows ListAuditLogCoverage returns.
 
-export const NON_TERMINAL = ["Planned", "Created", "Downloaded"];
+export const NON_TERMINAL = ["Planned", "Created", "Downloaded", "Processing"];
 
 export const STATE_LABELS = {
   Processed: "Processed",

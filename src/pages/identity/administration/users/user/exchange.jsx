@@ -170,15 +170,16 @@ const Page = () => {
       if (!group) return false
 
       return (
-        // Exact match on mail address
-        (group.mail && group.mail === userIdentifier) ||
+        // Exact match on mail address (SMTP addresses are case-insensitive)
+        (typeof group.mail === 'string' &&
+          group.mail.toLowerCase() === userIdentifier.toLowerCase()) ||
         // Exact match on display name
         (group.displayName && group.displayName === userIdentifier) ||
-        // Partial match - permission identifier starts with group display name (handles timestamps)
-        (group.displayName &&
-          typeof group.displayName === 'string' &&
-          typeof userIdentifier === 'string' &&
-          userIdentifier.startsWith(group.displayName))
+        // Display name followed only by a numeric timestamp suffix. Any other suffix is a
+        // different object: "IT Support" is not the group "IT".
+        (typeof group.displayName === 'string' &&
+          userIdentifier.startsWith(group.displayName) &&
+          /^\d+$/.test(userIdentifier.slice(group.displayName.length)))
       )
     })
 
@@ -607,21 +608,24 @@ const Page = () => {
     },
   ]
 
+  const mailboxPermissionsData = userRequest.data?.[0]?.Permissions ?? []
+
   const permissions = [
     {
       id: 1,
       cardLabelBox: {
         cardLabelBoxHeader: userRequest.isFetching ? (
           <CircularProgress size="25px" color="inherit" />
-        ) : userRequest.data?.[0]?.Permissions?.length !== 0 ? (
+        ) : mailboxPermissionsData.length !== 0 ? (
           <CippIcons.Check />
         ) : (
           <CippIcons.Error />
         ),
       },
       text: 'Mailbox Permissions',
-      subtext:
-        userRequest.data?.[0]?.Permissions?.length !== 0
+      subtext: userRequest.isError
+        ? 'Could not load mailbox permissions - refresh to try again'
+        : mailboxPermissionsData.length !== 0
           ? 'Other users or groups have access to this mailbox'
           : 'No other users or groups have access to this mailbox',
       statusColor: 'green.main',
@@ -746,22 +750,24 @@ const Page = () => {
     },
   ]
 
-  // Replace your existing calCard array with this simple version:
+  const calPermissionsData = calPermissions.data ?? []
+
   const calCard = [
     {
       id: 1,
       cardLabelBox: {
         cardLabelBoxHeader: calPermissions.isFetching ? (
           <CircularProgress size="25px" color="inherit" />
-        ) : calPermissions.data?.length !== 0 ? (
+        ) : calPermissionsData.length !== 0 ? (
           <CippIcons.Check />
         ) : (
           <CippIcons.Error />
         ),
       },
       text: 'Calendar permissions',
-      subtext:
-        calPermissions.data?.length !== 0
+      subtext: calPermissions.isError
+        ? 'Could not load calendar permissions - refresh to try again'
+        : calPermissionsData.length !== 0
           ? 'Other users or groups have access to this calendar'
           : 'No other users or groups have access to this calendar',
       statusColor: 'green.main',
@@ -881,21 +887,24 @@ const Page = () => {
     },
   ]
 
+  const contactPermissionsData = contactPermissions.data ?? []
+
   const contactCard = [
     {
       id: 1,
       cardLabelBox: {
         cardLabelBoxHeader: contactPermissions.isFetching ? (
           <CircularProgress size="25px" color="inherit" />
-        ) : contactPermissions.data?.length !== 0 ? (
+        ) : contactPermissionsData.length !== 0 ? (
           <CippIcons.Check />
         ) : (
           <CippIcons.Error />
         ),
       },
       text: 'Contact permissions',
-      subtext:
-        contactPermissions.data?.length !== 0
+      subtext: contactPermissions.isError
+        ? 'Could not load contact permissions - refresh to try again'
+        : contactPermissionsData.length !== 0
           ? 'Other users or groups have access to this contact folder'
           : 'No other users or groups have access to this contact folder',
       statusColor: 'green.main',
@@ -1079,27 +1088,31 @@ const Page = () => {
     },
   ]
 
+  const mailboxRulesData = mailboxRulesRequest.data ?? []
+
   const mailboxRulesCard = [
     {
       id: 1,
       cardLabelBox: {
         cardLabelBoxHeader: mailboxRulesRequest.isFetching ? (
           <CircularProgress size="25px" color="inherit" />
-        ) : mailboxRulesRequest.data?.length !== 0 ? (
+        ) : mailboxRulesData.length !== 0 ? (
           <CippIcons.Check />
         ) : (
           <CippIcons.Error />
         ),
       },
       text: 'Current Mailbox Rules',
-      subtext: mailboxRulesRequest.data?.length
-        ? 'Mailbox rules are configured for this user'
-        : 'No mailbox rules configured for this user',
+      subtext: mailboxRulesRequest.isError
+        ? 'Could not load mailbox rules - refresh to try again'
+        : mailboxRulesData.length !== 0
+          ? 'Mailbox rules are configured for this user'
+          : 'No mailbox rules configured for this user',
       statusColor: 'green.main',
       table: {
         title: 'Mailbox Rules',
         hideTitle: true,
-        data: mailboxRulesRequest.data || [],
+        data: mailboxRulesData,
         refreshFunction: () => mailboxRulesRequest.refetch(),
         isFetching: mailboxRulesRequest.isFetching,
         simpleColumns: ['Enabled', 'Name', 'Description', 'Priority'],
@@ -1199,27 +1212,31 @@ const Page = () => {
     },
   ]
 
+  const junkEmailConfigData = junkEmailConfigRequest.data ?? []
+
   const junkEmailConfigCard = [
     {
       id: 1,
       cardLabelBox: {
         cardLabelBoxHeader: junkEmailConfigRequest.isFetching ? (
           <CircularProgress size="25px" color="inherit" />
-        ) : junkEmailConfigRequest.data?.length !== 0 ? (
+        ) : junkEmailConfigData.length !== 0 ? (
           <CippIcons.Check />
         ) : (
           <CippIcons.Error />
         ),
       },
       text: 'Trusted and Blocked Senders/Domains',
-      subtext: junkEmailConfigRequest.data?.length
-        ? 'Trusted/Blocked senders and domains are configured for this user'
-        : 'No trusted or blocked senders/domains entries for this user',
+      subtext: junkEmailConfigRequest.isError
+        ? 'Could not load trusted and blocked senders - refresh to try again'
+        : junkEmailConfigData.length !== 0
+          ? 'Trusted/Blocked senders and domains are configured for this user'
+          : 'No trusted or blocked senders/domains entries for this user',
       statusColor: 'green.main',
       table: {
         title: 'Trusted and Blocked Senders/Domains',
         hideTitle: true,
-        data: junkEmailConfigRequest.data || [],
+        data: junkEmailConfigData,
         refreshFunction: () => junkEmailConfigRequest.refetch(),
         isFetching: junkEmailConfigRequest.isFetching,
         simpleColumns: ['Type', 'Value'],
