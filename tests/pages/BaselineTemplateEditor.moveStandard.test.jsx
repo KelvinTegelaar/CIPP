@@ -54,7 +54,7 @@ describe('Baseline template editor - move a standard to another stage', () => {
     await waitFor(() => expect(screen.getByText(TIMEOUT)).toBeInTheDocument())
 
     // A stage already holding the same single-instance standard is offered but disabled.
-    await user.click(within(screen.getAllByText(PRONOUNS)[0].closest('.MuiAccordion-root')).getByLabelText('Move to stage'))
+    await user.click(within(screen.getAllByText(PRONOUNS)[0].closest('.MuiAccordion-root')).getByLabelText('Move or copy'))
     expect(await screen.findByRole('menuitem', { name: 'Stage 2: Pilot (already in this stage)' })).toHaveAttribute('aria-disabled', 'true')
     await user.keyboard('{Escape}')
     await waitFor(() => expect(screen.queryByRole('menu')).not.toBeInTheDocument())
@@ -63,7 +63,7 @@ describe('Baseline template editor - move a standard to another stage', () => {
     await user.click(screen.getByText(TIMEOUT))
     await user.click(await screen.findByLabelText(REMEDIATE))
     await waitFor(() => expect(screen.getByText('Auto-remediate')).toBeInTheDocument())
-    await user.click(within(screen.getByText(TIMEOUT).closest('.MuiAccordion-root')).getByLabelText('Move to stage'))
+    await user.click(within(screen.getByText(TIMEOUT).closest('.MuiAccordion-root')).getByLabelText('Move or copy'))
     await user.click(await screen.findByRole('menuitem', { name: 'Stage 2: Pilot' }))
 
     // Gone from stage 1, listed in stage 2.
@@ -80,7 +80,7 @@ describe('Baseline template editor - move a standard to another stage', () => {
     expect(screen.getByDisplayValue('6 Hours')).toBeInTheDocument()
 
     // Moving back is allowed now that stage 1 no longer holds it.
-    await user.click(within(screen.getByText(TIMEOUT).closest('.MuiAccordion-root')).getByLabelText('Move to stage'))
+    await user.click(within(screen.getByText(TIMEOUT).closest('.MuiAccordion-root')).getByLabelText('Move or copy'))
     expect(await screen.findByRole('menuitem', { name: 'Stage 1: Default' })).not.toHaveAttribute('aria-disabled')
   }, 30000)
 })

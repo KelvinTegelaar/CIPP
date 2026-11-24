@@ -75,6 +75,8 @@ export const CippBaselineStandardItem = ({
   onAddInstance,
   onMove,
   moveTargets = [],
+  // { onOpen(instanceKey, mode), blockedReason } when the standard can go to another saved baseline.
+  otherBaseline,
   instanceId,
   savedConfig,
 }) => {
@@ -278,12 +280,12 @@ export const CippBaselineStandardItem = ({
                 </IconButton>
               </Tooltip>
             )}
-            {onMove && moveTargets.length > 0 && (
+            {((onMove && moveTargets.length > 0) || otherBaseline) && (
               <>
-                <Tooltip title="Move to stage...">
+                <Tooltip title="Move or copy...">
                   <IconButton
                     size="small"
-                    aria-label="Move to stage"
+                    aria-label="Move or copy"
                     onClick={(event) => {
                       event.stopPropagation()
                       setMoveAnchor(event.currentTarget)
@@ -299,7 +301,7 @@ export const CippBaselineStandardItem = ({
                   onClose={() => setMoveAnchor(null)}
                   onClick={(event) => event.stopPropagation()}
                 >
-                  {moveTargets.map((target) => (
+                  {(onMove ? moveTargets : []).map((target) => (
                     <MenuItem
                       key={target.index}
                       disabled={target.disabled}
@@ -313,6 +315,27 @@ export const CippBaselineStandardItem = ({
                         : target.label}
                     </MenuItem>
                   ))}
+                  {otherBaseline && onMove && moveTargets.length > 0 && <Divider />}
+                  {otherBaseline &&
+                    [
+                      { mode: 'move', label: 'Move to another baseline...' },
+                      { mode: 'copy', label: 'Copy to another baseline...' },
+                    ].map(({ mode, label }) => (
+                      // A disabled item ignores the pointer, so the span carries the tooltip.
+                      <Tooltip key={mode} title={otherBaseline.blockedReason ?? ''}>
+                        <span>
+                          <MenuItem
+                            disabled={Boolean(otherBaseline.blockedReason)}
+                            onClick={() => {
+                              setMoveAnchor(null)
+                              otherBaseline.onOpen(fieldBase, mode)
+                            }}
+                          >
+                            {label}
+                          </MenuItem>
+                        </span>
+                      </Tooltip>
+                    ))}
                 </Menu>
               </>
             )}

@@ -208,6 +208,7 @@ const StagePanel = ({
   onAddStandardInstance,
   onMoveStandard,
   moveTargets,
+  otherBaseline,
   canRemoveStage,
   canMoveUp,
   canMoveDown,
@@ -238,6 +239,7 @@ const StagePanel = ({
     name: 'conditions',
   })
   const [expandedStandard, setExpandedStandard] = useState(null)
+  const [stageMoveAnchor, setStageMoveAnchor] = useState(null)
   const [conditionGroups, setConditionGroups] = useState(
     stage.conditionGroups
   )
@@ -446,6 +448,41 @@ const StagePanel = ({
             </Tooltip>
           )}
           <Box sx={{ flexGrow: 1 }} />
+          {otherBaseline && (
+            <>
+              <Tooltip title={otherBaseline.blockedReason ?? 'Move or copy this stage to another baseline'}>
+                <span>
+                  <IconButton
+                    aria-label="Move or copy this stage to another baseline"
+                    disabled={Boolean(otherBaseline.blockedReason)}
+                    onClick={(event) => setStageMoveAnchor(event.currentTarget)}
+                  >
+                    <CippIcons.SwapHoriz />
+                  </IconButton>
+                </span>
+              </Tooltip>
+              <Menu
+                anchorEl={stageMoveAnchor}
+                open={Boolean(stageMoveAnchor)}
+                onClose={() => setStageMoveAnchor(null)}
+              >
+                {[
+                  { mode: 'move', label: 'Move stage to another baseline...' },
+                  { mode: 'copy', label: 'Copy stage to another baseline...' },
+                ].map(({ mode, label }) => (
+                  <MenuItem
+                    key={mode}
+                    onClick={() => {
+                      setStageMoveAnchor(null)
+                      otherBaseline.onOpen({ mode, stageIndex })
+                    }}
+                  >
+                    {label}
+                  </MenuItem>
+                ))}
+              </Menu>
+            </>
+          )}
           {stageIndex > 0 && (
             <>
               <Tooltip title="Move this stage up">
@@ -846,6 +883,13 @@ const StagePanel = ({
                 onAddInstance={handleAddStandardInstance}
                 moveTargets={moveTargets(instanceKey)}
                 onMove={handleMoveStandard}
+                otherBaseline={
+                  otherBaseline && {
+                    blockedReason: otherBaseline.blockedReason,
+                    onOpen: (standard, mode) =>
+                      otherBaseline.onOpen({ mode, stageIndex, standard }),
+                  }
+                }
               />
             </Box>
           ))}
@@ -853,6 +897,109 @@ const StagePanel = ({
       </Stack>
     </Box>
   );
+}
+
+// Moves or copies one standard, or a whole stage, into another saved baseline. The server reads and
+// writes both saved baselines, which is why the editor only offers it with no unsaved changes.
+const NEW_STAGE_AT_END = { label: 'New stage at the end', value: 'new:end' }
+
+const MoveToBaselineDialog = ({ createDialog, request, source, baselines, onMoved }) => {
+  const formHook = useForm({ mode: 'onChange' })
+  const targetId = useWatch({ control: formHook.control, name: 'targetBaseline' })?.value
+  const placement = useWatch({ control: formHook.control, name: 'placement' })?.value
+  const isStage = !request?.standard
+  useEffect(() => {
+    // A whole stage always becomes a new stage, so it starts at the end.
+    formHook.setValue('placement', isStage ? NEW_STAGE_AT_END : null)
+  }, [targetId, isStage, formHook])
+  const target = baselines.find((baseline) => baseline.GUID === targetId)
+  const mode = request?.mode ?? 'move'
+  const stageIndex = request?.stageIndex ?? 0
+  const targetStages = target?.stages ?? []
+  const sourceStage = source?.stages?.[stageIndex]
+  // A single standard's new stage, or a copy of a stage without conditions (such as Stage 1), starts with none.
+  const newStageHasConditions =
+    isStage &&
+    [...(sourceStage?.conditions ?? []), ...(sourceStage?.conditionGroups ?? []).flatMap((group) => group.conditions ?? [])]
+      .length > 0
+  const placementOptions = [
+    ...(isStage
+      ? []
+      : targetStages.map((stage, index) => ({
+          label: `Stage ${index + 1}: ${stage.name}`,
+          value: `existing:${index}`,
+        }))),
+    NEW_STAGE_AT_END,
+    // A stage with no conditions mid-baseline would stop every tenant from moving past it, so it only goes at the end.
+    ...(newStageHasConditions ? targetStages : []).map((stage, index) => ({
+      label: `New stage after Stage ${index + 1}: ${stage.name}`,
+      value: `new:${index}`,
+    })),
+  ]
+  const [kind] = (placement ?? '').split(':')
+  const targetName = target?.templateName ?? 'the baseline you pick'
+  const impact = [
+    `Tenants assigned to ${targetName} will get these settings.`,
+    mode === 'move' ? `Tenants assigned to ${source?.templateName} stop getting them on the next run.` : null,
+    kind === 'new' && !newStageHasConditions
+      ? `The new stage has no graduation conditions yet, so no tenant moves into it until you add one. ${targetName} cannot be saved again in the editor until the stage has a condition.`
+      : null,
+  ]
+    .filter(Boolean)
+    .join(' ')
+  if (!request) return null
+  return (
+    <CippApiDialog
+      createDialog={createDialog}
+      title={`${mode === 'move' ? 'Move' : 'Copy'} ${request.label ?? ''} to another baseline`}
+      formHook={formHook}
+      row={{}}
+      relatedQueryKeys={['ListBaseline*']}
+      api={{
+        url: '/api/ExecMoveBaselineStandards',
+        type: 'POST',
+        confirmText: impact,
+        customDataformatter: (row, action, formData) => {
+          const [chosenKind, chosenPosition] = (formData.placement?.value ?? 'new:end').split(':')
+          return {
+            sourceId: source?.GUID,
+            targetId: formData.targetBaseline?.value,
+            mode,
+            ...(isStage
+              ? { stage: stageIndex }
+              : { standard: request.standard, sourceStage: stageIndex }),
+            ...(chosenKind === 'existing'
+              ? { targetStage: Number(chosenPosition) }
+              : { newStage: chosenPosition === 'end' ? 'end' : Number(chosenPosition) }),
+          }
+        },
+        onSuccess: () => mode === 'move' && onMoved(),
+      }}
+      fields={[
+        {
+          type: 'autoComplete',
+          name: 'targetBaseline',
+          label: 'Baseline',
+          options: baselines
+            .filter((baseline) => baseline.GUID !== source?.GUID)
+            .map((baseline) => ({ label: baseline.templateName, value: baseline.GUID })),
+          multiple: false,
+          creatable: false,
+          validators: { required: 'Pick a baseline' },
+        },
+        {
+          type: 'autoComplete',
+          name: 'placement',
+          label: isStage ? 'Place the new stage' : 'Stage',
+          options: placementOptions,
+          multiple: false,
+          creatable: false,
+          disabled: !target,
+          validators: { required: 'Pick where it goes' },
+        },
+      ]}
+    />
+  )
 }
 
 const Page = () => {
@@ -873,6 +1020,8 @@ const Page = () => {
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
   const [addStageAnchor, setAddStageAnchor] = useState(null)
   const stageSerializers = useRef({})
+  // Set by a reload after a move, so the editor stays on the stage it was showing.
+  const [keepActiveStage, setKeepActiveStage] = useState(false)
 
   const definitionsApi = ApiGetCall({
     url: '/api/ListBaselineStandards',
@@ -979,7 +1128,8 @@ const Page = () => {
     setSaveTargetId(router.query.clone ? null : template.GUID)
     setEditorGeneration((generation) => generation + 1)
     setStages(buildEditorStages(template))
-    setActiveStage(0)
+    setActiveStage(keepActiveStage ? Math.min(activeStage, Math.max((template.stages?.length ?? 1) - 1, 0)) : 0)
+    setKeepActiveStage(false)
     setHasUnsavedChanges(false)
     formControl.reset({
       templateName: router.query.clone
@@ -1009,6 +1159,35 @@ const Page = () => {
 
   // Structural changes set the flag explicitly; field edits are tracked by the form itself.
   const unsavedChanges = hasUnsavedChanges || formControl.formState.isDirty
+
+  // Moving to another baseline works on the saved copies, so it needs a saved baseline with no pending edits.
+  const moveDialog = useDialog()
+  const [moveRequest, setMoveRequest] = useState(null)
+  const savedBaseline = saveTargetId
+    ? (baselinesApi.data ?? []).find((entry) => entry.GUID === saveTargetId)
+    : null
+  const otherBaseline =
+    savedBaseline && (baselinesApi.data ?? []).some((entry) => entry.GUID !== saveTargetId)
+      ? {
+          blockedReason: unsavedChanges ? 'Save this baseline first' : null,
+          onOpen: (request) => {
+            setMoveRequest({
+              ...request,
+              label: request.standard
+                ? (catalogByName[request.standard.split('#')[0]]?.label ?? request.standard)
+                : `Stage ${request.stageIndex + 1} (${stages[request.stageIndex]?.name})`,
+            })
+            moveDialog.handleOpen()
+          },
+        }
+      : null
+  // After a move the source changed on the server: reload it into the editor, the same way a different
+  // baseline is loaded, so no stale stage or form state survives.
+  const reloadSavedBaseline = () =>
+    Promise.resolve(baselinesApi.refetch()).then(() => {
+      setKeepActiveStage(true)
+      setLoadedTemplateId(null)
+    })
 
   // Warn before navigating away with unsaved changes (browser close + in-app navigation).
   const handleRouteChange = useCallback(
@@ -1667,6 +1846,7 @@ const Page = () => {
                     onAddStandardInstance={handleAddStandardInstance}
                     onMoveStandard={handleMoveStandard}
                     moveTargets={moveTargetsFor(index)}
+                    otherBaseline={otherBaseline}
                     canRemoveStage={index > 0}
                     canMoveUp={index > 1}
                     canMoveDown={index > 0 && index < stages.length - 1}
@@ -1709,6 +1889,13 @@ const Page = () => {
         })}
         row={{}}
         relatedQueryKeys={['ListBaseline*']}
+      />
+      <MoveToBaselineDialog
+        createDialog={moveDialog}
+        request={moveRequest}
+        source={savedBaseline}
+        baselines={baselinesApi.data ?? []}
+        onMoved={reloadSavedBaseline}
       />
     </Box>
   );
