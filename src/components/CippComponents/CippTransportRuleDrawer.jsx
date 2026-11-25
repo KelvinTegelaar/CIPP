@@ -5,7 +5,6 @@ import { Grid } from "@mui/system";
 import { useForm, useWatch } from "react-hook-form";
 import { CippOffCanvas } from "./CippOffCanvas";
 import CippFormComponent from "./CippFormComponent";
-import { CippFormDomainSelector } from "./CippFormDomainSelector";
 import { CippApiResults } from "./CippApiResults";
 import { useSettings } from "../../hooks/use-settings";
 import { ApiGetCall, ApiPostCall } from "../../api/ApiCall";
@@ -1015,24 +1014,29 @@ export const CippTransportRuleDrawer = ({
       case "RecipientDomainIs":
         return (
           <Grid size={12} key={conditionValue}>
-            {templateMode ? (
-              <CippFormComponent
-                type="autoComplete"
-                label={conditionLabel}
-                name={conditionValue}
-                formControl={formControl}
-                multiple={true}
-                options={[]}
-                {...tenantPicker()}
-              />
-            ) : (
-              <CippFormDomainSelector
-                fullWidth
-                label={conditionLabel}
-                name={conditionValue}
-                formControl={formControl}
-              />
-            )}
+            <CippFormComponent
+              type="autoComplete"
+              label={conditionLabel}
+              name={conditionValue}
+              formControl={formControl}
+              multiple={true}
+              creatable={true}
+              options={[]}
+              placeholder="Select or type a domain (e.g., contoso.com)"
+              {...tenantPicker({
+                url: "/api/ListGraphRequest",
+                queryKey: `Domains-TransportRules-${currentTenant}`,
+                data: {
+                  Endpoint: "domains",
+                  tenantFilter: currentTenant,
+                  $select: "id",
+                  $top: 99,
+                },
+                labelField: "id",
+                valueField: "id",
+                dataKey: "Results",
+              })}
+            />
           </Grid>
         );
 

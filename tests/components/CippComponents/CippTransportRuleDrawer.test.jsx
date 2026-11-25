@@ -149,4 +149,63 @@ describe('CippTransportRuleDrawer', () => {
     expect(data).toMatchObject({ tenantFilter: 'testdomain.com', Name: 'Tenant rule', State: 'Enabled', Quarantine: true })
     expect(data).not.toHaveProperty('PowerShellCommand')
   }, 30000)
+
+  it('edit mode pre-fills external domain lists as removable chips and sends them back', async () => {
+    const user = userEvent.setup()
+    const senderDomains = ['1email.barclaycard.co.uk', '4seeservices.com', '172.99.115.23']
+    const ruleResult = getResult({
+      data: {
+        Results: [
+          {
+            Guid: 'rule-1',
+            Name: 'Quarantine external senders',
+            State: 'Enabled',
+            Mode: 'Enforce',
+            Priority: 3,
+            FromScope: 'NotInOrganization',
+            SenderDomainIs: senderDomains,
+            ExceptIfRecipientDomainIs: ['partner.example', 'supplier.example'],
+            Quarantine: true,
+          },
+        ],
+      },
+    })
+    api.get = (opts) => (opts.url.includes('&id=rule-1') ? ruleResult : noData)
+    render(
+      <CippTransportRuleDrawer isEditMode ruleId="rule-1" rowAction drawerVisible setDrawerVisible={vi.fn()} />
+    )
+
+    expect(screen.getByText('Edit Rule: Quarantine external senders')).toBeInTheDocument()
+    for (const domain of [...senderDomains, 'partner.example', 'supplier.example']) {
+      expect(await screen.findByRole('button', { name: domain })).toBeInTheDocument()
+    }
+    expect(screen.getByRole('combobox', { name: 'Sender domain is...' })).toBeInTheDocument()
+    expect(screen.getByRole('combobox', { name: 'Recipient domain is...' })).toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: 'Update Rule' }))
+    await waitFor(() => expect(api.post.mutate).toHaveBeenCalledTimes(1))
+    expect(api.post.mutate.mock.calls[0][0]).toMatchObject({
+      url: '/api/AddEditTransportRule',
+      data: {
+        ruleId: 'rule-1',
+        FromScope: 'NotInOrganization',
+        SenderDomainIs: senderDomains,
+        ExceptIfRecipientDomainIs: ['partner.example', 'supplier.example'],
+      },
+    })
+    api.post.mutate.mockClear()
+
+    const senderField = screen.getByRole('combobox', { name: 'Sender domain is...' })
+    await user.type(senderField, 'new-sender.example')
+    await user.click(await screen.findByRole('option', { name: /new-sender\.example/ }))
+    await user.click(
+      screen.getByRole('button', { name: '4seeservices.com' }).querySelector('.MuiChip-deleteIcon')
+    )
+    await user.click(screen.getByRole('button', { name: 'Update Rule' }))
+    await waitFor(() => expect(api.post.mutate).toHaveBeenCalledTimes(1))
+    expect(api.post.mutate.mock.calls[0][0].data).toMatchObject({
+      SenderDomainIs: ['1email.barclaycard.co.uk', '172.99.115.23', 'new-sender.example'],
+      ExceptIfRecipientDomainIs: ['partner.example', 'supplier.example'],
+    })
+  }, 30000)
 })
