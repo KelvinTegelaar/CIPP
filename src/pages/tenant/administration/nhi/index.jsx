@@ -8,6 +8,7 @@ import { CippOffCanvas } from '../../../../components/CippComponents/CippOffCanv
 import CippFormComponent from '../../../../components/CippComponents/CippFormComponent'
 import { CippApiResults } from '../../../../components/CippComponents/CippApiResults'
 import { useBecEvidenceDownload } from '../../../../components/CippComponents/CippBecEvidenceDownload'
+import { CippNhiReportDialog } from '../../../../components/CippComponents/CippNhiReportButton'
 import { CippIcons } from '../../../../utils/icon-registry'
 import { ApiPostCall } from '../../../../api/ApiCall'
 import { useSettings } from '../../../../hooks/use-settings'
@@ -151,6 +152,20 @@ const Page = () => {
       icon: <CippIcons.Visibility />,
       link: caseLink,
       multiPost: false,
+    },
+    {
+      label: 'View PDF report',
+      icon: <CippIcons.PictureAsPdf />,
+      multiPost: false,
+      condition: (row) => row.Status === 'Completed',
+      customComponent: (row, { drawerVisible, setDrawerVisible }) => (
+        <CippNhiReportDialog
+          caseData={row}
+          tenantFilter={row.Tenant}
+          open={drawerVisible}
+          onClose={() => setDrawerVisible(false)}
+        />
+      ),
     },
     {
       label: 'Download evidence (ZIP)',

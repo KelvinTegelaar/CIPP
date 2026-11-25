@@ -16,6 +16,7 @@ import { CippDataTable } from '../../../../components/CippTable/CippDataTable'
 import CippFormComponent from '../../../../components/CippComponents/CippFormComponent'
 import { CippApiResults } from '../../../../components/CippComponents/CippApiResults'
 import { useBecEvidenceDownload } from '../../../../components/CippComponents/CippBecEvidenceDownload'
+import { BECReportDialog } from '../../../../components/BECRemediationReportButton'
 import { CippIcons } from '../../../../utils/icon-registry'
 import { ApiGetCall, ApiPostCall } from '../../../../api/ApiCall'
 import { useSettings } from '../../../../hooks/use-settings'
@@ -68,7 +69,8 @@ const StartInvestigationDrawer = ({ tenant }) => {
     mode: 'onChange',
     defaultValues: { users: [], windowDays: BEC_WINDOW_OPTIONS[0] },
   })
-  const selectedUsers = useWatch({ control: formControl.control, name: 'users' }) || []
+  const selectedUsers =
+    useWatch({ control: formControl.control, name: 'users' }) || []
   const selectedCount = selectedUsers.length
   const queue = ApiPostCall({
     relatedQueryKeys: [
@@ -140,7 +142,11 @@ const StartInvestigationDrawer = ({ tenant }) => {
         footer={
           <Stack spacing={2}>
             <CippApiResults apiObject={queue} />
-            <Stack direction="row" spacing={1} sx={{ justifyContent: 'flex-end' }}>
+            <Stack
+              direction="row"
+              spacing={1}
+              sx={{ justifyContent: 'flex-end' }}
+            >
               <Button variant="outlined" onClick={handleClose}>
                 Close
               </Button>
@@ -209,6 +215,17 @@ const Page = () => {
   const isByUser = viewMode === 'byUser'
   // Renders the report PDFs in-memory and exports, without opening the case.
   const { download } = useBecEvidenceDownload()
+  const reportDialog = (row, { drawerVisible, setDrawerVisible }) => (
+    <BECReportDialog
+      tenantFilter={row.Tenant}
+      caseId={row.CaseId}
+      userId={row.UserId}
+      userName={row.UserPrincipalName}
+      userDisplayName={row.DisplayName}
+      open={drawerVisible}
+      onClose={() => setDrawerVisible(false)}
+    />
+  )
 
   // Grouped mode: the same runs reduced to one row per user (their worst recent level, run count and
   // latest run) and fed to the table via `data` with no apiUrl — the Standards page's grouping pattern.
@@ -277,6 +294,13 @@ const Page = () => {
       multiPost: false,
     },
     {
+      label: 'View PDF report',
+      icon: <CippIcons.PictureAsPdf />,
+      multiPost: false,
+      condition: (row) => row.Status === 'Completed',
+      customComponent: reportDialog,
+    },
+    {
       // The server GET path cannot include the PDFs, so this is client-driven.
       label: 'Download evidence (ZIP, with PDFs)',
       icon: <CippIcons.Archive />,
@@ -327,6 +351,13 @@ const Page = () => {
       icon: <CippIcons.Visibility />,
       link: '/identity/administration/bec/case?userId=[UserId]&caseId=[CaseId]&tenantFilter=[Tenant]',
       multiPost: false,
+    },
+    {
+      label: 'View latest PDF report',
+      icon: <CippIcons.PictureAsPdf />,
+      multiPost: false,
+      condition: (row) => row.Status === 'Completed',
+      customComponent: reportDialog,
     },
     {
       label: 'Download latest evidence (ZIP, with PDFs)',
@@ -429,7 +460,9 @@ const Page = () => {
 }
 
 Page.getLayout = (page) => (
-  <DashboardLayout tenantGroupSupport={true} allTenantsSupport={true}>{page}</DashboardLayout>
+  <DashboardLayout tenantGroupSupport={true} allTenantsSupport={true}>
+    {page}
+  </DashboardLayout>
 )
 
 export default Page

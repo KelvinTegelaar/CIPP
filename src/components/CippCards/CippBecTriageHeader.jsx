@@ -197,7 +197,7 @@ export const CippBecTriageHeader = ({
             <BECRemediationReportButton
               userData={userData}
               becData={becData}
-              tenantName={tenantFilter}
+              tenantFilter={tenantFilter}
             />
           )}
           {becData && caseId && (
