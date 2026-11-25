@@ -99,6 +99,31 @@ describe('CippPropertyListCard', () => {
     ).toBeInTheDocument()
   })
 
+  it('pre-fills the action dialog from the action defaultvalues', async () => {
+    const user = userEvent.setup()
+    renderWithProviders(
+      <CippPropertyListCard
+        title="Compose settings"
+        propertyItems={sampleItems}
+        data={{ UPN: 'alice@contoso.com' }}
+        actionItems={[
+          {
+            label: 'Edit',
+            type: 'POST',
+            url: '/api/ExecSetMailboxComposeSettings',
+            confirmText: 'Change settings?',
+            defaultvalues: { Delay: 7 },
+            fields: [{ type: 'number', name: 'Delay', label: 'Delay' }],
+          },
+        ]}
+      />
+    )
+    await user.click(screen.getByText('Edit'))
+
+    const dialog = await screen.findByRole('dialog')
+    expect(within(dialog).getByRole('spinbutton')).toHaveValue(7)
+  })
+
   it('disables action item when condition returns false', () => {
     renderWithProviders(
       <CippPropertyListCard

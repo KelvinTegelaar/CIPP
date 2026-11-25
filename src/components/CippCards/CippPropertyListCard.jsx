@@ -210,6 +210,7 @@ export const CippPropertyListCard = (props) => {
             createDialog={createDialog}
             title="Confirmation"
             fields={actionData.action?.fields}
+            defaultvalues={actionData.action?.defaultvalues}
             api={actionData.action}
             row={actionData.data}
           />

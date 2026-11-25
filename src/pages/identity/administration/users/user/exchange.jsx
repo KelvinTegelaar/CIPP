@@ -69,7 +69,7 @@ const Page = () => {
     waiting: waiting,
   })
   const userRequest = ApiGetCall({
-    url: `/api/ListUserMailboxDetails?UserId=${userId}&tenantFilter=${userSettingsDefaults.currentTenant}&userMail=${graphUserRequest.data?.[0]?.userPrincipalName}`,
+    url: `/api/ListUserMailboxDetails?UserId=${userId}&tenantFilter=${userSettingsDefaults.currentTenant}&userMail=${encodeURIComponent(graphUserRequest.data?.[0]?.userPrincipalName ?? '')}`,
     queryKey: `Mailbox-${userId}`,
     waiting: waiting && !!graphUserRequest.data?.[0]?.userPrincipalName,
   })
@@ -561,6 +561,168 @@ const Page = () => {
     : []
 
   const data = userRequest.data?.[0]
+
+  const compose = data?.MessageConfiguration
+  const onOff = (value, on = 'On', off = 'Off') =>
+    value === true ? on : value === false ? off : 'Unknown'
+  const readReceiptLabels = {
+    DoNotAutomaticallySend: 'Ask the user each time',
+    AlwaysSend: 'Always send a receipt',
+    NeverSend: 'Never send a receipt',
+  }
+  const composeSettingsItems = [
+    {
+      label: 'Undo send',
+      value:
+        compose?.MailSendUndoInterval == null
+          ? 'Unknown'
+          : compose.MailSendUndoInterval > 0
+            ? `${compose.MailSendUndoInterval} seconds`
+            : 'Off',
+    },
+    { label: 'Always show From', value: onOff(compose?.AlwaysShowFrom, 'Yes', 'No') },
+    { label: 'Always show Bcc', value: onOff(compose?.AlwaysShowBcc, 'Yes', 'No') },
+    { label: 'Forgotten attachment reminder', value: onOff(compose?.CheckForForgottenAttachments) },
+    {
+      label: 'Default reply action',
+      value: onOff(compose?.IsReplyAllTheDefaultResponse, 'Reply all', 'Reply'),
+    },
+    {
+      label: 'Message format',
+      value: { Html: 'HTML', PlainText: 'Plain text' }[compose?.DefaultFormat] ?? 'Unknown',
+    },
+    {
+      label: 'Read receipt requests',
+      value: readReceiptLabels[compose?.ReadReceiptResponse] ?? 'Unknown',
+    },
+    { label: 'Link previews', value: onOff(compose?.LinkPreviewEnabled) },
+    {
+      label: 'Default font',
+      value: compose?.DefaultFontName
+        ? `${compose.DefaultFontName}, size ${compose.DefaultFontSize}, ${compose.DefaultFontColor}`
+        : 'Unknown',
+    },
+  ]
+  const formatOptions = [
+    { label: 'HTML', value: 'Html' },
+    { label: 'Plain text', value: 'PlainText' },
+  ]
+  const fontOptions = [
+    'Aptos',
+    'Arial',
+    'Calibri',
+    'Cambria',
+    'Georgia',
+    'Helvetica',
+    'Segoe UI',
+    'Tahoma',
+    'Times New Roman',
+    'Trebuchet MS',
+    'Verdana',
+  ].map((font) => ({ label: font, value: font }))
+  const readReceiptOptions = Object.entries(readReceiptLabels).map(([value, label]) => ({
+    label,
+    value,
+  }))
+  const composeSettingsActions = [
+    {
+      label: 'Edit compose settings',
+      type: 'POST',
+      url: '/api/ExecSetMailboxComposeSettings',
+      icon: <CippIcons.Edit />,
+      // Switches cannot say "unknown", so editing waits until the current settings have been read
+      condition: () => typeof compose?.AlwaysShowFrom === 'boolean',
+      relatedQueryKeys: [`Mailbox-${userId}`],
+      confirmText: 'Change the Outlook compose settings for [UPN]?',
+      defaultvalues: {
+        MailSendUndoInterval: compose?.MailSendUndoInterval ?? 0,
+        AlwaysShowFrom: compose?.AlwaysShowFrom,
+        AlwaysShowBcc: compose?.AlwaysShowBcc,
+        CheckForForgottenAttachments: compose?.CheckForForgottenAttachments,
+        IsReplyAllTheDefaultResponse: compose?.IsReplyAllTheDefaultResponse,
+        LinkPreviewEnabled: compose?.LinkPreviewEnabled,
+        DefaultFormat: formatOptions.find((o) => o.value === compose?.DefaultFormat),
+        ReadReceiptResponse: readReceiptOptions.find((o) => o.value === compose?.ReadReceiptResponse),
+        DefaultFontName: compose?.DefaultFontName
+          ? { label: compose.DefaultFontName, value: compose.DefaultFontName }
+          : undefined,
+        DefaultFontSize: compose?.DefaultFontSize ?? '',
+        DefaultFontColor: compose?.DefaultFontColor ?? '',
+      },
+      customDataformatter: (row, action, formData) => ({
+        ...formData,
+        tenantFilter: userSettingsDefaults.currentTenant,
+        ID: row.UPN,
+        DefaultFormat: formData.DefaultFormat?.value,
+        ReadReceiptResponse: formData.ReadReceiptResponse?.value,
+        DefaultFontName: formData.DefaultFontName?.value,
+      }),
+      fields: [
+        {
+          type: 'number',
+          name: 'MailSendUndoInterval',
+          label: 'Undo send delay (seconds)',
+          helperText: '0 turns undo send off. Up to 10 seconds.',
+          validators: {
+            required: 'Enter a delay from 0 to 10',
+            min: { value: 0, message: 'Minimum value is 0' },
+            max: { value: 10, message: 'Maximum value is 10' },
+          },
+        },
+        { type: 'switch', name: 'AlwaysShowFrom', label: 'Always show From' },
+        { type: 'switch', name: 'AlwaysShowBcc', label: 'Always show Bcc' },
+        {
+          type: 'switch',
+          name: 'CheckForForgottenAttachments',
+          label: 'Forgotten attachment reminder',
+        },
+        {
+          type: 'switch',
+          name: 'IsReplyAllTheDefaultResponse',
+          label: 'Reply all by default',
+        },
+        { type: 'switch', name: 'LinkPreviewEnabled', label: 'Link previews' },
+        {
+          type: 'autoComplete',
+          name: 'DefaultFormat',
+          label: 'Message format',
+          multiple: false,
+          creatable: false,
+          options: formatOptions,
+          validators: { required: 'Choose a message format' },
+        },
+        {
+          type: 'autoComplete',
+          name: 'ReadReceiptResponse',
+          label: 'Read receipt requests',
+          multiple: false,
+          creatable: false,
+          options: readReceiptOptions,
+          validators: { required: 'Choose how read receipts are handled' },
+        },
+        {
+          type: 'autoComplete',
+          name: 'DefaultFontName',
+          label: 'Default font',
+          multiple: false,
+          creatable: true,
+          options: fontOptions,
+          helperText: 'You can type a font that is not in this list.',
+        },
+        {
+          type: 'number',
+          name: 'DefaultFontSize',
+          label: 'Default font size',
+          helperText: '1-7 is the Outlook scale where 3 is 12pt. 8 to 72 is a point size, so 11 gives 11pt.',
+          validators: {
+            min: { value: 1, message: 'Minimum value is 1' },
+            max: { value: 72, message: 'Maximum value is 72' },
+          },
+        },
+        { type: 'colorPicker', name: 'DefaultFontColor', label: 'Default font colour' },
+      ],
+    },
+  ]
 
   const mailboxPermissionActions = [
     {
@@ -1494,12 +1656,22 @@ const Page = () => {
                 {/* Stacked below lg — a 4/8 split at phone widths leaves both columns too
                     narrow to hold a label, breaking the text one word per line. */}
                 <Grid size={{ xs: 12, lg: 4 }}>
-                  <CippExchangeInfoCard
-                    exchangeData={data}
-                    isLoading={userRequest.isLoading}
-                    isFetching={userRequest.isFetching}
-                    handleRefresh={() => userRequest.refetch()}
-                  />
+                  <Stack spacing={3}>
+                    <CippExchangeInfoCard
+                      exchangeData={data}
+                      isLoading={userRequest.isLoading}
+                      isFetching={userRequest.isFetching}
+                      handleRefresh={() => userRequest.refetch()}
+                    />
+                    <CippPropertyListCard
+                      title="Outlook compose settings"
+                      isFetching={userRequest.isLoading}
+                      showDivider={false}
+                      propertyItems={composeSettingsItems}
+                      actionItems={composeSettingsActions}
+                      data={data?.MailboxActionsData}
+                    />
+                  </Stack>
                 </Grid>
                 <Grid size={{ xs: 12, lg: 8 }}>
                   <Stack spacing={3}>
