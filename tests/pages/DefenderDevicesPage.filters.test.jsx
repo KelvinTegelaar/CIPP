@@ -4,6 +4,9 @@ import Page from '../../src/pages/security/defender/devices'
 import { CippTablePage } from '../../src/components/CippComponents/CippTablePage.jsx'
 
 vi.mock('../../src/layouts/index', () => ({ Layout: vi.fn() }))
+vi.mock('../../src/hooks/use-permissions', () => ({
+  usePermissions: () => ({ checkPermissions: () => false }),
+}))
 vi.mock('../../src/components/CippComponents/CippReportDBControls', () => ({
   useCippReportDB: () => ({ cacheColumns: [] }),
 }))
