@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import { renderWithProviders } from '../../test-utils'
-import { api, apiCallMock, getResult, postResult } from '../../mocks/api-call'
+import { api, apiCallMock, getResult, paginatedResult, postResult } from '../../mocks/api-call'
 import { CippTransportRuleDrawer } from '../../../src/components/CippComponents/CippTransportRuleDrawer'
 
 vi.mock('../../../src/api/ApiCall', () => apiCallMock())
@@ -23,6 +23,7 @@ vi.mock('../../../src/components/CippComponents/CippOffCanvas', () => ({
 }))
 
 const noData = getResult({ data: undefined })
+const noPages = paginatedResult()
 const render = (ui) =>
   renderWithProviders(<LocalizationProvider dateAdapter={AdapterDateFns}>{ui}</LocalizationProvider>)
 
@@ -34,6 +35,7 @@ async function pick(user, pickerLabel, option) {
 describe('CippTransportRuleDrawer', () => {
   beforeEach(() => {
     api.get = noData
+    api.paginated = noPages
     api.post = postResult()
   })
 
@@ -170,7 +172,13 @@ describe('CippTransportRuleDrawer', () => {
         ],
       },
     })
+    const domainsResult = paginatedResult([
+      { id: 'contoso.onmicrosoft.com', isVerified: true, isDefault: false },
+      { id: 'unverified.example', isVerified: false, isDefault: false },
+      { id: 'contoso.com', isVerified: true, isDefault: true },
+    ])
     api.get = (opts) => (opts.url.includes('&id=rule-1') ? ruleResult : noData)
+    api.paginated = (opts) => (opts.queryKey?.startsWith('Domains-') ? domainsResult : noPages)
     render(
       <CippTransportRuleDrawer isEditMode ruleId="rule-1" rowAction drawerVisible setDrawerVisible={vi.fn()} />
     )
@@ -181,6 +189,11 @@ describe('CippTransportRuleDrawer', () => {
     }
     expect(screen.getByRole('combobox', { name: 'Sender domain is...' })).toBeInTheDocument()
     expect(screen.getByRole('combobox', { name: 'Recipient domain is...' })).toBeInTheDocument()
+
+    await user.click(screen.getByRole('combobox', { name: 'Sender domain is...' }))
+    const suggestions = await screen.findAllByRole('option')
+    expect(suggestions.map((o) => o.textContent)).toEqual(['contoso.com', 'contoso.onmicrosoft.com'])
+    await user.keyboard('{Escape}')
 
     await user.click(screen.getByRole('button', { name: 'Update Rule' }))
     await waitFor(() => expect(api.post.mutate).toHaveBeenCalledTimes(1))

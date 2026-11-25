@@ -1029,12 +1029,16 @@ export const CippTransportRuleDrawer = ({
                 data: {
                   Endpoint: "domains",
                   tenantFilter: currentTenant,
-                  $select: "id",
+                  $select: "id,isVerified,isDefault",
                   $top: 99,
                 },
                 labelField: "id",
                 valueField: "id",
                 dataKey: "Results",
+                dataFilter: (domains) =>
+                  domains
+                    .filter((domain) => domain.rawData?.isVerified)
+                    .sort((a, b) => Number(Boolean(b.rawData?.isDefault)) - Number(Boolean(a.rawData?.isDefault))),
               })}
             />
           </Grid>

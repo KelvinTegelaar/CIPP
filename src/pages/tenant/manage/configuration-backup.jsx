@@ -179,7 +179,6 @@ const Page = () => {
   }));
 
   // Process existing backup configuration
-  // the tenant's own schedule wins over an AllTenants one, whatever order the tasks come back in
   const backupTasks = Array.isArray(existingBackupConfig.data) ? existingBackupConfig.data : [];
   const currentConfig =
     backupTasks.find((task) => task.Tenant?.value === settings.currentTenant) ??
