@@ -6,6 +6,7 @@ import {
   SAMPLE_BEC,
   SAMPLE_LICENSING,
   SAMPLE_MAIL_FLOW,
+  SAMPLE_NHI,
   SAMPLE_PERMISSIONS,
   SAMPLE_SHARING,
   SAMPLE_STORAGE,
@@ -16,13 +17,21 @@ import {
 // preview renders server-side, not a second set invented here. They used to disagree — the mock
 // named "Jane Doe" while the real preview of the same report named "Sample User" — which makes the
 // two previews look like different reports rather than two views of one.
-const SAMPLE_ANALYSIS_DATE = new Date(SAMPLE_BEC.becData.ExtractedAt).toLocaleString("en-US", {
+const ANALYSIS_DATE_FORMAT = {
   year: "numeric",
   month: "short",
   day: "numeric",
   hour: "2-digit",
   minute: "2-digit",
-});
+};
+const SAMPLE_ANALYSIS_DATE = new Date(SAMPLE_BEC.becData.ExtractedAt).toLocaleString(
+  "en-US",
+  ANALYSIS_DATE_FORMAT
+);
+const SAMPLE_NHI_ANALYSIS_DATE = new Date(SAMPLE_NHI.extractedAt).toLocaleString(
+  "en-US",
+  ANALYSIS_DATE_FORMAT
+);
 
 const SAMPLE_MAIL_FLOW_TOTAL = Object.values(SAMPLE_MAIL_FLOW.totals).reduce((a, b) => a + b, 0);
 
@@ -103,6 +112,20 @@ export const REPORT_COVER_PRESETS = [
     metaPrimary: SAMPLE_BEC.userData.displayName,
     metaSecondary: SAMPLE_BEC.userData.userPrincipalName,
     metaTertiary: `Analysis Date: ${SAMPLE_ANALYSIS_DATE}`,
+    footer: "Confidential & Proprietary - For Internal Use Only",
+  },
+  {
+    // The NHI compromise report: one app or managed identity, named on the cover in place of the tenant.
+    id: "nhi",
+    label: "NHI Compromise Report",
+    reportName: "NHI Compromise Report",
+    coverLabel: "Security Incident Report",
+    title: "App Compromise",
+    accent: "Analysis",
+    subtitle: `Non-Human Identity Investigation Report for ${SAMPLE_TENANT_NAME}`,
+    metaPrimary: SAMPLE_NHI.displayName,
+    metaSecondary: `Application ID ${SAMPLE_NHI.appId}`,
+    metaTertiary: `Analysis Date: ${SAMPLE_NHI_ANALYSIS_DATE}`,
     footer: "Confidential & Proprietary - For Internal Use Only",
   },
   {

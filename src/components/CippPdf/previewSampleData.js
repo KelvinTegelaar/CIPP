@@ -275,6 +275,12 @@ export const SAMPLE_BEC = {
   },
 }
 
+export const SAMPLE_NHI = {
+  displayName: 'Sample Invoice Sync',
+  appId: '00000000-0000-0000-0000-00000000b001',
+  extractedAt: '2026-08-05T09:00:00Z',
+}
+
 export const SAMPLE_SHARING = {
   summary: {
     totalLinks: 24,

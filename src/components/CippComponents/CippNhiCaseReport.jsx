@@ -18,6 +18,7 @@ import CippButtonCard from '../CippCards/CippButtonCard'
 import { CippDataTable } from '../CippTable/CippDataTable'
 import { CippApiResults } from './CippApiResults'
 import { CippNhiContainmentDrawer } from './CippNhiContainmentDrawer'
+import { CippNhiReportButton } from './CippNhiReportButton'
 import { useBecEvidenceDownload } from './CippBecEvidenceDownload'
 import { CippIcons } from '../../utils/icon-registry'
 import { ApiPostCall } from '../../api/ApiCall'
@@ -360,6 +361,10 @@ export const CippNhiCaseReport = ({
                 >
                   {busy ? 'Exporting...' : 'Download evidence'}
                 </Button>
+                <CippNhiReportButton
+                  caseData={caseData}
+                  tenantFilter={tenantFilter}
+                />
               </Stack>
               {lastError && (
                 <Alert severity="error" sx={{ mt: 1 }}>

@@ -48,23 +48,36 @@ const BRANDING_STALE_TIME = 300000
 
 // The endpoint answers 200 with no body when branding cannot be read.
 const normalizeBranding = (data) =>
-  !data || typeof data !== 'object' || Array.isArray(data) ? DEFAULT_BRANDING : data
+  !data || typeof data !== 'object' || Array.isArray(data)
+    ? DEFAULT_BRANDING
+    : data
 
 /**
- * Read the report branding. Replaces `useSettings().customBranding`, which carried inline images
- * on every page load and kept report and settings state in the same mutable blob.
+ * Read the report branding, with `ready` once the read has settled, so a report can wait for its
+ * preset instead of rendering with the defaults and again with the preset.
  */
-export const useBrandingSettings = ({ waiting = true, includeGallery = false } = {}) => {
-  const branding = ApiGetCall({
+export const useBrandingQuery = ({
+  waiting = true,
+  includeGallery = false,
+} = {}) => {
+  const query = ApiGetCall({
     url: '/api/ListBrandingSettings',
     // Only the settings page needs the galleries; the selected logo and cover come back either way.
     data: includeGallery ? { includeGallery: true } : undefined,
     queryKey: includeGallery ? BRANDING_GALLERY_QUERY_KEY : BRANDING_QUERY_KEY,
     waiting,
   })
-
-  return useMemo(() => normalizeBranding(branding.data), [branding.data])
+  const branding = useMemo(() => normalizeBranding(query.data), [query.data])
+  // A failed read still settles: the report renders with the default branding rather than never.
+  return { branding, ready: Boolean(query.isSuccess || query.isError) }
 }
+
+/**
+ * Read the report branding. Replaces `useSettings().customBranding`, which carried inline images
+ * on every page load and kept report and settings state in the same mutable blob.
+ */
+export const useBrandingSettings = (options) =>
+  useBrandingQuery(options).branding
 
 /**
  * Read the branding at the moment an export runs, for the table toolbar's PDF buttons: those sit on

@@ -15,19 +15,23 @@ import {
   IconButton,
 } from '@mui/material'
 import { useSettings } from '../hooks/use-settings'
-import { useBrandingSettings } from './CippPdf/useBrandingSettings'
+import { useBrandingQuery } from './CippPdf/useBrandingSettings'
 import { ServerPdfPane, useServerPdf } from './CippPdf/useServerPdf'
 
 // The report PDF is rendered server-side (ExecGetBecReportPdf) by the shared CIPPSharp component kit,
 // which reads the stored BEC run (BecReports/BecResults) by case id; the button fetches the finished
 // PDF as a blob for preview and download. A run is identified by its caseId - userId is the fallback
 // the server uses to pick the user's newest completed run.
-export const BECRemediationReportButton = ({ userData, becData, tenantName }) => {
+export const BECRemediationReportButton = ({
+  userData,
+  becData,
+  tenantName,
+}) => {
   const [dialogOpen, setDialogOpen] = useState(false)
   // 'full' = the complete report; 'summary' = the executive pages only, for a C-suite reader.
   const [variant, setVariant] = useState('full')
   const tenantFilter = useSettings().currentTenant
-  const branding = useBrandingSettings()
+  const { branding, ready: brandingReady } = useBrandingQuery()
 
   // Only offer the report once the BEC analysis has completed (its result is what the server reads).
   const hasData = userData && becData && !becData.Waiting
@@ -44,7 +48,10 @@ export const BECRemediationReportButton = ({ userData, becData, tenantName }) =>
         variant === 'summary' ? 'becSummary' : 'bec'
       ] ?? '',
   })
-  const pdf = useServerPdf({ url: `/api/ExecGetBecReportPdf?${params}`, enabled: dialogOpen })
+  const pdf = useServerPdf({
+    url: `/api/ExecGetBecReportPdf?${params}`,
+    enabled: dialogOpen && brandingReady,
+  })
   const handleOpenDialog = () => setDialogOpen(true)
   const handleCloseDialog = () => setDialogOpen(false)
   const fileName = `BEC_${variant === 'summary' ? 'Summary' : 'Report'}_${(userData?.userPrincipalName || 'user').replace(/[^a-zA-Z0-9]/g, '_')}_${new Date().toISOString().split('T')[0]}.pdf`
@@ -77,16 +84,17 @@ export const BECRemediationReportButton = ({ userData, becData, tenantName }) =>
             sx: {
               height: '90vh',
             },
-          }
+          },
         }}
       >
         <DialogTitle>
           <Box
             sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center"
-            }}>
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+            }}
+          >
             <Typography variant="h6" component="div">
               BEC Remediation Report Preview
             </Typography>
@@ -109,6 +117,7 @@ export const BECRemediationReportButton = ({ userData, becData, tenantName }) =>
         <DialogContent dividers sx={{ p: 0 }}>
           <ServerPdfPane
             {...pdf}
+            loading={pdf.loading || !brandingReady}
             title={`BEC Remediation Report - ${tenantName}`}
             errorText="The report could not be generated. Ensure the BEC check has completed for this user."
           />
@@ -126,5 +135,5 @@ export const BECRemediationReportButton = ({ userData, becData, tenantName }) =>
         </DialogActions>
       </Dialog>
     </>
-  );
+  )
 }
