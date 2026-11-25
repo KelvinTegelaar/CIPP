@@ -212,4 +212,10 @@ export const CippTranslations = {
   KeepVisible: 'Kept Visible',
   SnoozeUntilResolved: 'Snoozed Until Resolved',
   SnoozeVisible: 'Kept Visible',
+  computerDnsName: 'Device Name',
+  avMode: 'Antivirus Mode',
+  avIsSignatureUpToDate: 'Signatures Up To Date',
+  avIsEngineUpToDate: 'Engine Up To Date',
+  avIsPlatformUpToDate: 'Platform Up To Date',
+  avSignatureUpdateTime: 'Signatures Updated',
 }

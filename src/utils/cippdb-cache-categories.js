@@ -181,7 +181,7 @@ const CACHE_TYPE_COLLECTIONS = {
     "TeamsVoice",
     "TeamsResourceAccounts",
   ],
-  Defender: ["DefenderCVEs"],
+  Defender: ["DefenderMachines", "DefenderCVEs"],
   DefenderForOffice365: [
     "ExoSafeLinksPolicies",
     "ExoSafeAttachmentPolicies",
