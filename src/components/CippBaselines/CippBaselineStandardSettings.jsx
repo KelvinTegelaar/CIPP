@@ -172,7 +172,8 @@ export const CippBaselineStandardSettings = ({
       ? { required: `${definition.label} is required` }
       : {}
     const declared = definition.validators ?? {}
-    ;['min', 'max', 'maxLength'].forEach((rule) => {
+    // validators.required is editor-only, unlike definition.required, so it can sit on a conditionally hidden field.
+    ;['required', 'min', 'max', 'maxLength'].forEach((rule) => {
       if (declared[rule]) rules[rule] = declared[rule]
     })
     if (declared.pattern) {

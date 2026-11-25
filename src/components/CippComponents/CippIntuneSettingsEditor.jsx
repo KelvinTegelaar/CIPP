@@ -60,6 +60,8 @@ const valueRequirementForLeaf = (leaf) => {
     return 'one of the accepted values below, copied exactly'
   }
   if (leaf.valueType === 'integer') return 'a whole number'
+  if (leaf.valueType === 'number') return 'a number'
+  if (leaf.valueType === 'dateTime') return 'a date and time, such as 2026-12-01T09:00:00Z'
   return 'any text'
 }
 
@@ -79,6 +81,25 @@ const acceptedValuesForLeaf = (leaf) => {
   return []
 }
 
+// What a text field typed as a number or date accepts besides a %variable%. Intune rejects the
+// whole policy over one malformed value, so it is caught here rather than at deployment.
+export const VALUE_CHECKS = {
+  integer: {
+    test: (entered) => Number.isInteger(Number(entered)),
+    message: 'Enter a whole number or a %variable%',
+  },
+  number: {
+    test: (entered) => Number.isFinite(Number(entered)),
+    message: 'Enter a number or a %variable%',
+  },
+  dateTime: {
+    test: (entered) =>
+      /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/.test(entered) &&
+      !Number.isNaN(Date.parse(entered)),
+    message: 'Enter a date and time such as 2026-12-01T09:00:00Z, or a %variable%',
+  },
+}
+
 const currentRawValues = (leaf) =>
   (Array.isArray(leaf.value) ? leaf.value : [leaf.value])
     .filter((entry) => entry !== null && entry !== undefined && entry !== '')
@@ -94,7 +115,8 @@ const valueUsesVariable = (value) =>
 // quoted and be rejected.
 const expectedVariableTypeForLeaf = (leaf) => {
   if (leaf.kind === 'boolean') return 'boolean'
-  if (leaf.valueType === 'integer') return 'integer'
+  // There is no decimal variable type; an integer variable is the one written as a bare number.
+  if (leaf.valueType === 'integer' || leaf.valueType === 'number') return 'integer'
   return 'string'
 }
 
@@ -434,7 +456,7 @@ const LeafField = ({ leaf, fieldPrefix, formControl, variableOptions }) => {
   // Numeric settings use a text field rather than a number input: a number input cannot hold
   // %tenantname%, and it is the text field that carries the %-triggered variable picker. The value
   // is converted back to a number on save unless it holds a variable.
-  const isInteger = leaf.valueType === 'integer'
+  const check = VALUE_CHECKS[leaf.valueType]
 
   return (
     <Stack spacing={1}>
@@ -445,7 +467,7 @@ const LeafField = ({ leaf, fieldPrefix, formControl, variableOptions }) => {
         formControl={formControl}
         includeSystemVariables
         validators={
-          isInteger
+          check
             ? {
                 validate: (value) => {
                   const entered = unwrap(value)
@@ -456,10 +478,7 @@ const LeafField = ({ leaf, fieldPrefix, formControl, variableOptions }) => {
                   )
                     return true
                   if (containsVariable(entered)) return true
-                  return (
-                    Number.isFinite(Number(entered)) ||
-                    'Enter a number or a %variable%'
-                  )
+                  return check.test(entered) || check.message
                 },
               }
             : undefined

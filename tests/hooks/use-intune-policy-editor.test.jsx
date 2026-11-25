@@ -11,6 +11,7 @@ import {
   forceListEnabled,
   forceListIdsDefinition,
 } from '../mocks/intune-chrome-forcelist'
+import graphSchema from '../../public/intune-graph-schema.json'
 import {
   adobeExclusionsId,
   adobeRuleId,
@@ -245,6 +246,49 @@ describe('useIntunePolicyEditor', () => {
       settingValueTemplateId: 'value-template',
       useTemplateDefault: false,
     })
+    vi.unstubAllGlobals()
+  })
+})
+
+// The schema is cached for the page once fetched, so the failing fetch runs first.
+describe('useIntunePolicyEditor on a classic policy', () => {
+  const featureUpdate = {
+    displayName: 'Feature update',
+    featureUpdateVersion: 'Windows 11, version 26H2',
+    installFeatureUpdatesOptional: 'false',
+  }
+  const useClassicHarness = () => {
+    const formControl = useForm()
+    const [policy, setPolicy] = useState(featureUpdate)
+    return useIntunePolicyEditor({
+      policy,
+      setPolicy,
+      formControl,
+      templateType: 'windowsFeatureUpdateProfiles',
+    })
+  }
+  const optionalLeaf = (editor) =>
+    editor.leaves.find((leaf) => leaf.definitionId === 'installFeatureUpdatesOptional')
+
+  it('reports a schema that cannot be loaded and keeps the stored types', async () => {
+    vi.stubGlobal('fetch', vi.fn(async () => ({ ok: false, status: 404 })))
+    const { result } = renderHook(useClassicHarness)
+    await waitFor(() => expect(result.current.definitionsError).toBe(true))
+    expect(result.current.definitionsLoading).toBe(false)
+    expect(optionalLeaf(result.current).kind).toBe('simple')
+    vi.unstubAllGlobals()
+  })
+
+  it('types the fields from the Graph schema once it has loaded', async () => {
+    const fetchMock = vi.fn(async () => ({ ok: true, json: async () => graphSchema }))
+    vi.stubGlobal('fetch', fetchMock)
+    const { result } = renderHook(useClassicHarness)
+    expect(result.current.definitionsLoading).toBe(true)
+    expect(result.current.leaves).toEqual([])
+    await waitFor(() => expect(result.current.definitionsLoading).toBe(false))
+    expect(fetchMock).toHaveBeenCalledWith('/intune-graph-schema.json')
+    expect(optionalLeaf(result.current)).toMatchObject({ kind: 'boolean', value: false })
+    expect(result.current.definitionsError).toBe(false)
     vi.unstubAllGlobals()
   })
 })

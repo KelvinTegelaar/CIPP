@@ -78,6 +78,9 @@ const getItemCategoryKey = (item) => {
 
 const IGNORED_CATEGORY_KEYS = new Set();
 
+// Must match the row key Invoke-ExecRestoreBackup builds for SelectedItems
+const getItemKey = (item) => `${item.table}|${item.PartitionKey}|${item.RowKey}`;
+
 // Returns the best human-readable display name for a backup item
 const getItemDisplayName = (item) => {
   // For templates, the name is inside the JSON payload
@@ -133,7 +136,7 @@ export const CippRestoreWizard = ({
 }) => {
   const mdDown = useMediaQuery((theme) => theme.breakpoints.down("md"));
   const [step, setStep] = useState(0);
-  const [selectedCategories, setSelectedCategories] = useState({});
+  const [selection, setSelection] = useState({ source: null, keys: null });
   const [expandedCategories, setExpandedCategories] = useState({});
 
   const handleToggleExpand = (key) =>
@@ -146,15 +149,21 @@ export const CippRestoreWizard = ({
 
   const categories = useMemo(() => {
     if (!Array.isArray(backupData)) return [];
-    const counts = {};
+    const itemsByKey = {};
     backupData.forEach((item) => {
       const key = getItemCategoryKey(item);
-      counts[key] = (counts[key] || 0) + 1;
+      (itemsByKey[key] ||= []).push(item);
     });
-    return Object.entries(counts)
+    return Object.entries(itemsByKey)
       .filter(([key]) => !IGNORED_CATEGORY_KEYS.has(key))
       .sort((a, b) => (TABLE_LABELS[a[0]] || a[0]).localeCompare(TABLE_LABELS[b[0]] || b[0]))
-      .map(([key, count]) => ({ key, label: TABLE_LABELS[key] || key, count }));
+      .map(([key, items]) => ({
+        key,
+        label: TABLE_LABELS[key] || key,
+        count: items.length,
+        items,
+        itemKeys: items.map(getItemKey),
+      }));
   }, [backupData]);
 
   useEffect(() => {
@@ -165,49 +174,69 @@ export const CippRestoreWizard = ({
     }
   }, [open]);
 
-  useEffect(() => {
-    if (categories.length > 0) {
-      const all = {};
-      categories.forEach((c) => {
-        all[c.key] = true;
-      });
-      setSelectedCategories(all);
-    } else {
-      setSelectedCategories({});
-    }
-  }, [categories]);
+  const allKeys = useMemo(() => categories.flatMap((c) => c.itemKeys), [categories]);
+  const allKeySet = useMemo(() => new Set(allKeys), [allKeys]);
+  // A selection made for an earlier backup does not apply: start from everything selected.
+  const selectedKeys = selection.source === allKeys ? selection.keys : allKeySet;
+  const setSelectedKeys = (update) =>
+    setSelection({
+      source: allKeys,
+      keys: typeof update === "function" ? update(selectedKeys) : update,
+    });
 
-  const selectedCount = Object.values(selectedCategories).filter(Boolean).length;
+  // Selected item count per category key
+  const selectedByCategory = useMemo(
+    () =>
+      Object.fromEntries(
+        categories.map((c) => [c.key, c.itemKeys.filter((k) => selectedKeys.has(k)).length]),
+      ),
+    [categories, selectedKeys],
+  );
+
+  const selectedCount = categories.filter((c) => selectedByCategory[c.key] > 0).length;
   const totalCount = categories.length;
 
   const filteredData = useMemo(
     () =>
       Array.isArray(backupData)
-        ? backupData.filter((item) => selectedCategories[getItemCategoryKey(item)])
+        ? backupData.filter((item) => selectedKeys.has(getItemKey(item)))
         : [],
-    [backupData, selectedCategories],
+    [backupData, selectedKeys],
   );
 
-  const handleSelectAll = () => {
-    const all = {};
-    categories.forEach((c) => {
-      all[c.key] = true;
+  const handleSelectAll = () => setSelectedKeys(new Set(allKeys));
+
+  const handleDeselectAll = () => setSelectedKeys(new Set());
+
+  const handleToggleCategory = (cat) =>
+    setSelectedKeys((prev) => {
+      const next = new Set(prev);
+      const allSelected = selectedByCategory[cat.key] === cat.count;
+      cat.itemKeys.forEach((k) => (allSelected ? next.delete(k) : next.add(k)));
+      return next;
     });
-    setSelectedCategories(all);
-  };
 
-  const handleDeselectAll = () => setSelectedCategories({});
-
-  const handleToggleCategory = (key) =>
-    setSelectedCategories((prev) => ({ ...prev, [key]: !prev[key] }));
+  const handleToggleItem = (key) =>
+    setSelectedKeys((prev) => {
+      const next = new Set(prev);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+      return next;
+    });
 
   const handleConfirmRestore = () => {
-    const selectedTypes = Object.keys(selectedCategories).filter((k) => selectedCategories[k]);
     if (backupName) {
-      // Blob backup: let the API fetch and filter server-side
+      // Blob backup: let the API fetch and filter server-side. Whole categories go by name,
+      // partly selected ones by row.
+      const selectedTypes = categories
+        .filter((c) => selectedByCategory[c.key] === c.count)
+        .map((c) => c.key);
+      const selectedItems = categories
+        .filter((c) => selectedByCategory[c.key] > 0 && selectedByCategory[c.key] < c.count)
+        .flatMap((c) => c.itemKeys.filter((k) => selectedKeys.has(k)));
       restoreAction.mutate({
         url: "/api/ExecRestoreBackup",
-        data: { BackupName: backupName, SelectedTypes: selectedTypes },
+        data: { BackupName: backupName, SelectedTypes: selectedTypes, SelectedItems: selectedItems },
       });
     } else {
       // File upload: post the filtered data directly
@@ -300,7 +329,8 @@ export const CippRestoreWizard = ({
         <Typography variant="body2" sx={{
           color: "text.secondary"
         }}>
-          {selectedCount} of {totalCount} categories selected ({filteredData.length} items)
+          {selectedCount} of {totalCount} categories selected ({filteredData.length} of{" "}
+          {allKeys.length} items)
         </Typography>
         <Stack direction="row" spacing={1}>
           <Button
@@ -325,9 +355,8 @@ export const CippRestoreWizard = ({
       <FormGroup sx={{ width: "100%" }}>
         <Stack spacing={0}>
           {categories.map((cat) => {
-            const items = Array.isArray(backupData)
-              ? backupData.filter((item) => getItemCategoryKey(item) === cat.key)
-              : [];
+            const items = cat.items;
+            const selectedInCat = selectedByCategory[cat.key];
             const isExpanded = !!expandedCategories[cat.key];
             return (
               <Box key={cat.key} sx={{ width: "100%", minWidth: 0 }}>
@@ -336,8 +365,9 @@ export const CippRestoreWizard = ({
                     sx={{ flex: 1, mr: 0, minWidth: 0, overflow: "hidden" }}
                     control={
                       <Checkbox
-                        checked={!!selectedCategories[cat.key]}
-                        onChange={() => handleToggleCategory(cat.key)}
+                        checked={selectedInCat === cat.count}
+                        indeterminate={selectedInCat > 0 && selectedInCat < cat.count}
+                        onChange={() => handleToggleCategory(cat)}
                         size="small"
                       />
                     }
@@ -355,7 +385,9 @@ export const CippRestoreWizard = ({
                           {cat.label}
                         </Typography>
                         <Chip
-                          label={cat.count}
+                          label={
+                            selectedInCat === cat.count ? cat.count : `${selectedInCat} / ${cat.count}`
+                          }
                           size="small"
                           variant="outlined"
                           sx={{ flexShrink: 0 }}
@@ -363,7 +395,7 @@ export const CippRestoreWizard = ({
                       </Box>
                     }
                   />
-                  <Tooltip title={isExpanded ? "Hide items" : "Preview items"}>
+                  <Tooltip title={isExpanded ? "Hide items" : "Choose items"}>
                     <IconButton size="small" onClick={() => handleToggleExpand(cat.key)}>
                       {isExpanded ? (
                         <CippIcons.ExpandLess fontSize="small" />
@@ -378,7 +410,7 @@ export const CippRestoreWizard = ({
                     sx={{
                       mr: 0.5,
                       mb: 1,
-                      maxHeight: 200,
+                      maxHeight: 300,
                       overflowY: "auto",
                       overflowX: "hidden",
                       bgcolor: (theme) => (theme.palette.mode === "dark" ? "grey.900" : "grey.50"),
@@ -392,8 +424,20 @@ export const CippRestoreWizard = ({
                         name !== item.RowKey && item.RowKey
                           ? item.RowKey.replace(/\.json$/, "")
                           : null;
+                      const itemKey = cat.itemKeys[i];
                       return (
-                        <Box key={i} sx={{ px: 1, py: 0.25 }}>
+                        <Box
+                          key={itemKey}
+                          sx={{ px: 0.5, display: "flex", alignItems: "center", minWidth: 0 }}
+                        >
+                          <Checkbox
+                            size="small"
+                            sx={{ p: 0.5 }}
+                            checked={selectedKeys.has(itemKey)}
+                            onChange={() => handleToggleItem(itemKey)}
+                            inputProps={{ "aria-label": name }}
+                          />
+                          <Box sx={{ minWidth: 0 }}>
                           <Typography
                             variant="caption"
                             title={name}
@@ -420,6 +464,7 @@ export const CippRestoreWizard = ({
                               {sub}
                             </Typography>
                           )}
+                          </Box>
                         </Box>
                       );
                     })}
@@ -457,11 +502,15 @@ export const CippRestoreWizard = ({
             mt: 1
           }}>
           {categories
-            .filter((c) => selectedCategories[c.key])
+            .filter((c) => selectedByCategory[c.key] > 0)
             .map((c) => (
               <Chip
                 key={c.key}
-                label={`${c.label} (${c.count})`}
+                label={
+                  selectedByCategory[c.key] === c.count
+                    ? `${c.label} (${c.count})`
+                    : `${c.label} (${selectedByCategory[c.key]} of ${c.count})`
+                }
                 color="primary"
                 variant="outlined"
                 size="small"
@@ -474,7 +523,9 @@ export const CippRestoreWizard = ({
   );
 
   const StepComponents = [StepValidation, StepSelectCategories, StepConfirm];
-  const CurrentStep = StepComponents[step];
+  // Called, not mounted as <CurrentStep />: a component defined in render remounts on every
+  // state change, which would reset the item list's scroll position on each checkbox click.
+  const renderStep = StepComponents[step];
 
   const canProceed =
     step === 0 ? validationResult?.isValid : step === 1 ? selectedCount > 0 : false;
@@ -519,7 +570,7 @@ export const CippRestoreWizard = ({
             </Typography>
           </Box>
         ) : (
-          <CurrentStep />
+          renderStep()
         )}
       </DialogContent>
       <DialogActions sx={{ p: 2 }}>

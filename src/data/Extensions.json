@@ -507,6 +507,45 @@
       },
       {
         "type": "switch",
+        "name": "HaloPSA.CloseResolvedTickets",
+        "label": "Close tickets when the alert clears",
+        "helperText": "When an alert stops finding anything on two runs in a row, CIPP adds a note to its open ticket and closes it with the outcome below. Tickets someone already closed are left alone.",
+        "condition": {
+          "field": "HaloPSA.ConsolidateTickets",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "hide"
+        }
+      },
+      {
+        "type": "autoComplete",
+        "name": "HaloPSA.CloseOutcome",
+        "dependsOn": "HaloPSA.TicketType",
+        "label": "HaloPSA Close Outcome",
+        "placeholder": "Select the outcome that closes a ticket",
+        "helperText": "The action CIPP uses to close a ticket when its alert clears. Pick an outcome that sets a closed status and that your HaloPSA API user can run.",
+        "fullRow": true,
+        "multiple": false,
+        "api": {
+          "url": "/api/ExecExtensionMapping",
+          "data": {
+            "List": "HaloPSAFields"
+          },
+          "queryKey": "HaloOutcomes",
+          "dataKey": "Outcomes",
+          "labelField": "buttonname",
+          "valueField": "id",
+          "showRefresh": true
+        },
+        "condition": {
+          "field": "HaloPSA.CloseResolvedTickets",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "hide"
+        }
+      },
+      {
+        "type": "switch",
         "name": "HaloPSA.LinkTicketsToUsers",
         "label": "Link Tickets to affected Users",
         "helperText": "Raises one ticket per affected user and links it to the matching HaloPSA contact (by Azure Object ID, then email/login). No match falls back to the client's General User, with the UPN in the ticket body.",
@@ -873,6 +912,17 @@
         "helperText": "Adds repeat alerts (same title) as a comment on the existing open ticket instead of raising a new one.",
         "condition": {
           "field": "NinjaOne.TicketingEnabled",
+          "compareType": "is",
+          "compareValue": true
+        }
+      },
+      {
+        "type": "switch",
+        "name": "NinjaOne.CloseResolvedTickets",
+        "label": "Close tickets when the alert clears",
+        "helperText": "When an alert stops finding anything on two runs in a row, CIPP adds a comment to its open ticket and sets it to Resolved. Tickets someone already resolved or closed are left alone.",
+        "condition": {
+          "field": "NinjaOne.ConsolidateTickets",
           "compareType": "is",
           "compareValue": true
         }

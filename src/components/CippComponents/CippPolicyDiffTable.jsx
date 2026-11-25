@@ -24,6 +24,19 @@ export const getDiffStatus = (row) => {
   return 'equal'
 }
 
+const valueTypeLabels = {
+  string: 'Stored as text',
+  boolean: 'Stored as true/false',
+  number: 'Stored as a number',
+}
+
+// Text "false" and true/false false look identical but compare as different, so name each side's type.
+export const hasTypeMismatch = (row) =>
+  hasValue(row.ExpectedValue) &&
+  hasValue(row.ReceivedValue) &&
+  typeof row.ExpectedValue !== typeof row.ReceivedValue &&
+  Boolean(valueTypeLabels[typeof row.ExpectedValue] && valueTypeLabels[typeof row.ReceivedValue])
+
 const diffStatusColors = {
   different: 'error',
   onlyA: 'warning',
@@ -91,14 +104,27 @@ export const CippPolicyDiffTable = ({ rows = [], labelA = 'Source A', labelB = '
         <TableBody>
           {rows.map((row, index) => {
             const status = getDiffStatus(row)
+            const typeMismatch = hasTypeMismatch(row)
+            const typeCaption = (val) =>
+              typeMismatch && (
+                <Typography variant="caption" color="text.secondary" display="block">
+                  {valueTypeLabels[typeof val]}
+                </Typography>
+              )
             return (
               <TableRow key={index} sx={(theme) => ({ backgroundColor: getRowColor(row, theme) })}>
                 <TableCell sx={{ fontWeight: 500 }}>{row.Property}</TableCell>
-                <TableCell>{formatDiffValue(row.ExpectedValue)}</TableCell>
-                <TableCell>{formatDiffValue(row.ReceivedValue)}</TableCell>
+                <TableCell>
+                  {formatDiffValue(row.ExpectedValue)}
+                  {typeCaption(row.ExpectedValue)}
+                </TableCell>
+                <TableCell>
+                  {formatDiffValue(row.ReceivedValue)}
+                  {typeCaption(row.ReceivedValue)}
+                </TableCell>
                 <TableCell>
                   <Chip
-                    label={diffChipLabels[status]}
+                    label={typeMismatch ? 'Different type' : diffChipLabels[status]}
                     size="small"
                     color={diffStatusColors[status]}
                     variant="outlined"

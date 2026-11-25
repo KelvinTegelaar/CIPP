@@ -8,8 +8,11 @@ import { Box, Typography, Divider } from "@mui/material";
 import { Stack } from "@mui/system";
 import { CippPropertyList } from "../../../../components/CippComponents/CippPropertyList";
 import { getCippFormatting } from "../../../../utils/get-cipp-formatting";
+import { usePermissions } from "../../../../hooks/use-permissions.js";
 
 const Page = () => {
+  const { checkPermissions } = usePermissions();
+  const canMigrate = checkPermissions(["Tenant.DomainMigration.ReadWrite"]);
   const pageTitle = "Domains";
   const apiUrl = "/api/ListGraphRequest";
 
@@ -100,6 +103,12 @@ const Page = () => {
           confirmText: "Are you sure you want to set [id] as the default domain?",
           multiPost: false,
           hideBulk: true,
+        },
+        {
+          label: "Move users to this domain",
+          link: "/tenant/tools/domain-migration?targetDomain=[id]",
+          icon: <CippIcons.SwapHoriz />,
+          condition: (row) => canMigrate && row.isVerified,
         },
         {
           label: "Delete Domain",

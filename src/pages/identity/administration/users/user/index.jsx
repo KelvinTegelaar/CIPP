@@ -287,6 +287,10 @@ const Page = () => {
   const userBulkRequest = ApiPostCall({
     urlFromData: true,
   })
+  // The sign-in log query alone takes 2-25 s, so it gets its own call and the other cards do not wait for it
+  const signInRequest = ApiPostCall({
+    urlFromData: true,
+  })
   const bulkFetchedForId = useRef(null)
 
   const roleAssignments = ApiGetCall({
@@ -313,53 +317,47 @@ const Page = () => {
         method: 'GET',
       },
       {
-        id: 'signInLogs',
-        url: `/auditLogs/signIns?$filter=(userId eq '${userId}')&$top=1`,
-        method: 'GET',
-      },
-      {
         id: 'signInPreferences',
         url: `/users/${userId}/authentication/signInPreferences`,
         method: 'GET',
       },
+      {
+        id: 'managedDevices',
+        url: `/users/${userId}/managedDevices`,
+        method: 'GET',
+      },
     ]
 
-    // Only add managedDevices request if we have the userPrincipalName
-    if (userPrincipalName) {
-      requests.push({
-        id: 'managedDevices',
-        url: `/deviceManagement/managedDevices?$filter=userPrincipalName eq '${userPrincipalName}'`,
-        method: 'GET',
-      })
-    }
-
     bulkFetchedForId.current = userId
+    const tenantFilter = router.query.tenantFilter ?? userSettingsDefaults.currentTenant
     userBulkRequest.mutate({
       url: '/api/ListGraphBulkRequest',
+      data: { Requests: requests, tenantFilter, noPaginateIds: ['signInPreferences'] },
+    })
+    signInRequest.mutate({
+      url: '/api/ListGraphBulkRequest',
       data: {
-        Requests: requests,
-        tenantFilter: router.query.tenantFilter ?? userSettingsDefaults.currentTenant,
-        noPaginateIds: ['signInLogs', 'signInPreferences'],
+        Requests: [
+          {
+            id: 'signInLogs',
+            url: `/auditLogs/signIns?$filter=(userId eq '${userId}')&$top=1`,
+            method: 'GET',
+          },
+        ],
+        tenantFilter,
+        noPaginateIds: ['signInLogs'],
       },
     })
   }
 
   useEffect(() => {
-    if (
-      userId &&
-      userSettingsDefaults.currentTenant &&
-      userRequest.isSuccess &&
-      bulkFetchedForId.current !== userId
-    ) {
+    // Every request is keyed by the user id, so it starts with the page instead of after ListUsers
+    if (userId && userSettingsDefaults.currentTenant && bulkFetchedForId.current !== userId) {
       refreshFunction()
     }
-  }, [
-    userId,
-    userSettingsDefaults.currentTenant,
-    userRequest.isSuccess,
-  ])
+  }, [userId, userSettingsDefaults.currentTenant])
 
-  const bulkData = userBulkRequest?.data?.data ?? []
+  const bulkData = [...(userBulkRequest?.data?.data ?? []), ...(signInRequest?.data?.data ?? [])]
   const signInLogsData = bulkData?.find((item) => item.id === 'signInLogs')
   const userMemberOfData = bulkData?.find((item) => item.id === 'userMemberOf')
   const mfaDevicesData = bulkData?.find((item) => item.id === 'mfaDevices')
@@ -1107,7 +1105,7 @@ const Page = () => {
               <Stack spacing={3}>
                 <Typography variant="h6">Latest Logon</Typography>
                 <CippBannerListCard
-                  isFetching={userBulkRequest.isPending}
+                  isFetching={signInRequest.isPending}
                   items={signInLogItem ? [signInLogItem] : []}
                   isCollapsible={signInLogItem ? true : false}
                 />
@@ -1115,7 +1113,7 @@ const Page = () => {
                   Applied Conditional Access Policies
                 </Typography>
                 <CippBannerListCard
-                  isFetching={userBulkRequest.isPending}
+                  isFetching={signInRequest.isPending}
                   items={conditionalAccessPoliciesItems}
                   isCollapsible={
                     conditionalAccessPoliciesItems.length > 0 ? true : false

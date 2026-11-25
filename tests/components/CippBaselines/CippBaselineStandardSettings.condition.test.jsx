@@ -43,9 +43,39 @@ const safeAttachmentStandard = {
   },
 }
 
+const sharingDomainStandard = {
+  name: 'sharingDomainRestriction',
+  variables: {
+    Mode: {
+      label: 'Restriction Mode',
+      type: 'autoComplete',
+      required: true,
+      options: [
+        { value: 'none', label: 'Off (no restriction)' },
+        { value: 'allowList', label: 'Allow specific domains' },
+        { value: 'blockList', label: 'Block specific domains' },
+      ],
+    },
+    Domains: {
+      type: 'textField',
+      label: 'Domains, comma separated',
+      omitWhenBlank: true,
+      validators: {
+        required: 'Enter at least one domain for the allow or block list',
+      },
+      condition: {
+        field: 'Mode',
+        compareType: 'contains',
+        compareValue: 'List',
+      },
+    },
+  },
+}
+
 const Harness = ({ standard, initialValues, valuesRef }) => {
   const formControl = useForm({ mode: 'onBlur' })
   React.useEffect(() => {
+    valuesRef.form = formControl
     valuesRef.current = () => formControl.getValues(`settings.${standard.name}`)
   })
   return (
@@ -114,5 +144,27 @@ describe('CippBaselineStandardSettings conditional variables', () => {
       expect(textboxValue('Redirect Address')).toBeUndefined()
     )
     expect(valuesRef.current().RedirectAddress).toBeNull()
+  })
+
+  it.each([
+    ['none', true],
+    ['allowList', false],
+    ['blockList', false],
+  ])('requires Domains only when Mode %s shows it', async (mode, valid) => {
+    const valuesRef = {}
+    renderWithProviders(
+      <Harness
+        standard={sharingDomainStandard}
+        initialValues={{ Mode: mode }}
+        valuesRef={valuesRef}
+      />
+    )
+    await waitFor(() =>
+      expect(textboxValue('Domains, comma separated') !== undefined).toBe(
+        !valid
+      )
+    )
+
+    expect(await valuesRef.form.trigger()).toBe(valid)
   })
 })

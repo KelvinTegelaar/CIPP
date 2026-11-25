@@ -223,8 +223,9 @@ export const buildIntuneSettingLeaves = (policy, getDefinition) => {
 
   if (Array.isArray(policy.omaSettings)) {
     policy.omaSettings.forEach((omaSetting, index) => {
+      const isBoolean = omaSetting?.[ODATA]?.includes('Boolean')
       pushLeaf({
-        kind: 'oma',
+        kind: isBoolean ? 'boolean' : 'oma',
         label:
           omaSetting?.displayName ||
           omaSetting?.omaUri ||
@@ -237,10 +238,12 @@ export const buildIntuneSettingLeaves = (policy, getDefinition) => {
         helpText: omaSetting?.description || null,
         infoUrls: [],
         path: ['omaSettings', index, 'value'],
-        valueType: omaSetting?.[ODATA]?.includes('Integer')
-          ? 'integer'
-          : 'string',
-        value: omaSetting?.value,
+        valueType: isBoolean
+          ? 'boolean'
+          : omaSetting?.[ODATA]?.includes('Integer')
+            ? 'integer'
+            : 'string',
+        value: isBoolean ? booleanFromStored(omaSetting?.value) : omaSetting?.value,
       })
     })
   }
@@ -278,7 +281,33 @@ const IDENTITY_PROPERTIES = ['name', 'displayName', 'description']
 // Classic device configuration policies are a flat object of typed properties rather than a setting
 // tree. They get the same leaf treatment for the same reason: patching by path is what keeps their
 // root @odata.type - the property that decides which Graph endpoint they deploy to - intact.
-export const buildIntunePropertyLeaves = (policy, translate = (key) => key) => {
+//
+// With the Graph schema (public/intune-graph-schema.json) each property is typed by what Graph declares
+// rather than by the JSON it happens to be stored as, so a boolean stored as the text "false" is still
+// edited, and saved, as a boolean. Properties the schema does not describe fall back to the stored type.
+const EDM_VALUE_TYPES = {
+  'Edm.Int16': 'integer',
+  'Edm.Int32': 'integer',
+  'Edm.Int64': 'integer',
+  'Edm.Byte': 'integer',
+  'Edm.Double': 'number',
+  'Edm.Single': 'number',
+  'Edm.Decimal': 'number',
+  'Edm.DateTimeOffset': 'dateTime',
+}
+
+const booleanFromStored = (value) => {
+  if (value === 'true' || value === 'True') return true
+  if (value === 'false' || value === 'False') return false
+  return value
+}
+
+export const buildIntunePropertyLeaves = (
+  policy,
+  translate = (key) => key,
+  schema = null,
+  rootType = null
+) => {
   const leaves = []
   if (!policy || typeof policy !== 'object') return leaves
 
@@ -286,7 +315,12 @@ export const buildIntunePropertyLeaves = (policy, translate = (key) => key) => {
     leaves.push({ ...leaf, index: leaves.length })
   }
 
-  const walk = (node, path, depth, groupLabel) => {
+  const walk = (node, path, depth, groupLabel, typeName) => {
+    // A node's own @odata.type wins: a payload can carry a subtype where its parent declares the base.
+    const ownType =
+      typeof node[ODATA] === 'string' ? node[ODATA].replace(/^#/, '') : null
+    const declared = schema?.types?.[ownType ?? typeName]
+
     Object.entries(node).forEach(([key, value]) => {
       if (key.includes(ODATA) || key.includes('@odata') || key.startsWith('#'))
         return
@@ -307,6 +341,40 @@ export const buildIntunePropertyLeaves = (policy, translate = (key) => key) => {
         helpText: null,
         infoUrls: [],
         path: nextPath,
+      }
+
+      const declaredType = declared?.[key]
+      const innerType = declaredType?.startsWith('Collection(')
+        ? declaredType.slice(11, -1)
+        : declaredType
+      const enumType = schema?.enums?.[innerType]
+      const enumOptions =
+        enumType && !enumType.flags
+          ? enumType.members.map((member) => ({
+              label: translate(member),
+              value: member,
+            }))
+          : undefined
+
+      if (declaredType && typeof value !== 'object') {
+        if (innerType === 'Edm.Boolean') {
+          pushLeaf({
+            ...common,
+            kind: 'boolean',
+            valueType: 'boolean',
+            value: booleanFromStored(value),
+          })
+        } else if (enumOptions) {
+          pushLeaf({ ...common, kind: 'choice', options: enumOptions, value })
+        } else {
+          pushLeaf({
+            ...common,
+            kind: 'simple',
+            valueType: EDM_VALUE_TYPES[innerType] ?? 'string',
+            value,
+          })
+        }
+        return
       }
 
       if (typeof value === 'boolean') {
@@ -333,9 +401,12 @@ export const buildIntunePropertyLeaves = (policy, translate = (key) => key) => {
           pushLeaf({
             ...common,
             kind: 'primitiveArray',
-            valueType: value.every((item) => typeof item === 'number')
-              ? 'integer'
-              : 'string',
+            valueType: declaredType
+              ? EDM_VALUE_TYPES[innerType] ?? 'string'
+              : value.every((item) => typeof item === 'number')
+                ? 'integer'
+                : 'string',
+            options: enumOptions,
             value,
           })
           return
@@ -346,7 +417,8 @@ export const buildIntunePropertyLeaves = (policy, translate = (key) => key) => {
               item,
               [...nextPath, itemIndex],
               depth + 1,
-              `${translate(key)} ${itemIndex + 1}`
+              `${translate(key)} ${itemIndex + 1}`,
+              innerType
             )
           }
         })
@@ -354,12 +426,12 @@ export const buildIntunePropertyLeaves = (policy, translate = (key) => key) => {
       }
 
       if (typeof value === 'object') {
-        walk(value, nextPath, depth + 1, translate(key))
+        walk(value, nextPath, depth + 1, translate(key), innerType)
       }
     })
   }
 
-  walk(policy, [], 0, null)
+  walk(policy, [], 0, null, rootType)
   return leaves
 }
 
@@ -387,7 +459,10 @@ export const defaultValueForLeaf = (leaf) => {
         value,
       }))
     case 'boolean':
-      return { label: leaf.value ? 'True' : 'False', value: leaf.value }
+      // A variable, or text the schema says should be a boolean but is not one, is shown as stored.
+      return typeof leaf.value === 'boolean'
+        ? { label: leaf.value ? 'True' : 'False', value: leaf.value }
+        : { label: String(leaf.value ?? ''), value: leaf.value }
     case 'unsupported':
       return undefined
     default:
@@ -427,7 +502,7 @@ const coerceScalar = (raw, valueType, fallback) => {
     if (value === 'false' || value === 'False') return false
     return fallback
   }
-  if (valueType !== 'integer') return value ?? ''
+  if (valueType !== 'integer' && valueType !== 'number') return value ?? ''
   if (value === '' || value === null || value === undefined) return fallback
   const asNumber = Number(value)
   // An unparseable number would deploy as NaN, so the stored value wins instead.

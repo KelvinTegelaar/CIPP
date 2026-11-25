@@ -1185,6 +1185,12 @@ export const nativeMenuItems = [
             permissions: ['Tenant.ConditionalAccess.*'],
             scope: 'global',
           },
+          {
+            title: 'Domain Migration',
+            path: '/tenant/tools/domain-migration',
+            docsPath: 'tools/tenant-tools/domain-migration',
+            permissions: ['Tenant.DomainMigration.*'],
+          },
         ],
       },
       {

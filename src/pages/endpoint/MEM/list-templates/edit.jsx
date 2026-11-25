@@ -58,7 +58,12 @@ const EditIntuneTemplate = () => {
   }, [originalPolicy]);
   const policy = workingPolicy ?? originalPolicy;
 
-  const editor = useIntunePolicyEditor({ policy, setPolicy: setWorkingPolicy, formControl });
+  const editor = useIntunePolicyEditor({
+    policy,
+    setPolicy: setWorkingPolicy,
+    formControl,
+    templateType: templateData?.Type,
+  });
   const {
     structureRevision,
     definitionsLoading,
@@ -232,9 +237,9 @@ const EditIntuneTemplate = () => {
                   <>
                     {definitionsError && (
                       <Alert severity="warning" sx={{ mb: 2 }}>
-                        The Intune setting catalog could not be loaded, so settings are shown by
-                        their definition ID and choices cannot be picked from a list. Values you
-                        change are still saved correctly.
+                        The Intune setting details could not be loaded, so settings may be shown by
+                        their ID, choices cannot be picked from a list, and values keep the type they
+                        were stored with. Reload the page to try again.
                       </Alert>
                     )}
                     <CippIntuneSettingsEditor

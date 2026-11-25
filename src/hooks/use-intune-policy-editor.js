@@ -22,10 +22,31 @@ import {
   mergeSettingInstance,
 } from '../utils/intune-setting-builder'
 
+// Generated from the vendored Graph metadata by build/tools/Update-IntuneGraphSchema.ps1. Fetched once
+// per page load; a failed fetch is dropped so the next editor opened tries again.
+let graphSchemaRequest = null
+const loadGraphSchema = () => {
+  graphSchemaRequest ??= fetch('/intune-graph-schema.json')
+    .then((response) => {
+      if (!response.ok) throw new Error(`HTTP ${response.status}`)
+      return response.json()
+    })
+    .catch((error) => {
+      graphSchemaRequest = null
+      throw error
+    })
+  return graphSchemaRequest
+}
+
 // Shared by the add and edit screens so both produce identical JSON. Values live in form state,
 // addressed by position in the leaf list; structure lives in the policy object. Adding or removing a
 // setting shifts every later field, so each structural change folds the form values in first.
-export const useIntunePolicyEditor = ({ policy, setPolicy, formControl }) => {
+export const useIntunePolicyEditor = ({
+  policy,
+  setPolicy,
+  formControl,
+  templateType,
+}) => {
   // Structural edits change no field (and the rebuild resets the form), so pages use this to enable Submit.
   const [structureRevision, setStructureRevision] = useState(0)
   const noteStructuralChange = useCallback(
@@ -78,17 +99,47 @@ export const useIntunePolicyEditor = ({ policy, setPolicy, formControl }) => {
     }
   }, [templateId])
 
+  // Classic policies are typed from the Graph schema; settings catalog policies by their definitions.
+  const needsSchema = Boolean(policy) && !isAdminTemplate && !isSettingTree
+  const [graphSchema, setGraphSchema] = useState(null)
+  const [schemaError, setSchemaError] = useState(false)
+  useEffect(() => {
+    if (!needsSchema || graphSchema) return undefined
+    let cancelled = false
+    loadGraphSchema()
+      .then((schema) => {
+        if (!cancelled) setGraphSchema(schema)
+      })
+      .catch(() => {
+        if (!cancelled) setSchemaError(true)
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [needsSchema, graphSchema])
+  const schemaLoading = needsSchema && !graphSchema && !schemaError
+  const rootType = graphSchema?.templateTypes?.[templateType] ?? null
+
   const leaves = useMemo(() => {
-    if (!policy || isAdminTemplate || definitionsLoading) return []
+    if (!policy || isAdminTemplate || definitionsLoading || schemaLoading)
+      return []
     return isSettingTree
       ? buildIntuneSettingLeaves(policy, getDefinition)
-      : buildIntunePropertyLeaves(policy, getCippTranslation)
+      : buildIntunePropertyLeaves(
+          policy,
+          getCippTranslation,
+          graphSchema,
+          rootType
+        )
   }, [
     policy,
     getDefinition,
     isAdminTemplate,
     isSettingTree,
     definitionsLoading,
+    schemaLoading,
+    graphSchema,
+    rootType,
   ])
 
   const foldValuesIntoPolicy = useCallback(() => {
@@ -328,8 +379,8 @@ export const useIntunePolicyEditor = ({ policy, setPolicy, formControl }) => {
   return {
     structureRevision,
     getDefinition,
-    definitionsLoading,
-    definitionsError,
+    definitionsLoading: definitionsLoading || schemaLoading,
+    definitionsError: definitionsError || schemaError,
     leaves,
     isAdminTemplate,
     isSettingTree,

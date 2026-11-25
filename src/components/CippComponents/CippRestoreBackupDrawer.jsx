@@ -1,16 +1,290 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { CippIcons } from '../../utils/icon-registry'
-import { Button, Box, Typography, Alert, AlertTitle, Divider, Chip, Stack } from '@mui/material'
+import {
+  Button,
+  Box,
+  Typography,
+  Alert,
+  Chip,
+  Stack,
+  Checkbox,
+  Collapse,
+  FormControlLabel,
+  IconButton,
+  InputAdornment,
+  TextField,
+  CircularProgress,
+} from '@mui/material'
 import { Grid } from '@mui/system'
-import { useForm, useFormState } from 'react-hook-form'
+import { useForm, useFormState, useWatch } from 'react-hook-form'
 import { CippOffCanvas } from './CippOffCanvas'
 import CippFormComponent from './CippFormComponent'
 import { CippFormCondition } from './CippFormCondition'
 import { CippApiResults } from './CippApiResults'
 import { useSettings } from '../../hooks/use-settings'
-import { ApiPostCall } from '../../api/ApiCall'
+import { ApiGetCall, ApiPostCall } from '../../api/ApiCall'
 import { isMultiTenant } from '../../utils/tenant-selection'
 import { useTenantLabel } from '../../hooks/use-tenant-label'
+
+const parseJson = (value) => {
+  if (typeof value !== 'string') return value
+  try {
+    return JSON.parse(value)
+  } catch {
+    return null
+  }
+}
+const asArray = (value) =>
+  value == null ? [] : Array.isArray(value) ? value : [value]
+const policyItems = (value) =>
+  asArray(parseJson(parseJson(value))?.policies).map((p) => ({
+    key: p.Identity,
+    label: p.Name || p.Identity,
+  }))
+const intuneItems = (value) =>
+  asArray(parseJson(value)).map((t) => ({
+    key: `${t.Type}|${t.DisplayName}`,
+    label: t.DisplayName,
+    sub: t.Type,
+  }))
+const rowItems = (value) =>
+  asArray(parseJson(value)).map((r) => ({
+    key: r.RowKey,
+    label: r.Name || r.RowKey,
+    sub: r.Description,
+  }))
+
+// Item keys must match the filter in New-CIPPRestoreTask
+const RESTORE_CATEGORIES = [
+  {
+    name: 'users',
+    label: 'Users',
+    read: (value) =>
+      asArray(parseJson(value)).map((u) => ({
+        key: u.id,
+        label: u.displayName || u.userPrincipalName,
+        sub: u.userPrincipalName,
+      })),
+  },
+  {
+    name: 'groups',
+    label: 'Groups',
+    read: (value) =>
+      asArray(parseJson(value)).map((g) => ({
+        key: g.id,
+        label: g.displayName,
+        sub: g.mail,
+      })),
+  },
+  {
+    name: 'ca',
+    label: 'Conditional Access Policies',
+    read: (value) =>
+      asArray(parseJson(value)).map((t) => {
+        const name = parseJson(t)?.displayName
+        return { key: name, label: name }
+      }),
+  },
+  {
+    name: 'intuneconfig',
+    label: 'Intune Configuration Policies',
+    read: intuneItems,
+  },
+  {
+    name: 'intunecompliance',
+    label: 'Intune Compliance Policies',
+    read: intuneItems,
+  },
+  {
+    name: 'intuneprotection',
+    label: 'Intune Protection Policies',
+    read: intuneItems,
+  },
+  { name: 'antispam', label: 'Anti-Spam Policies', read: policyItems },
+  { name: 'antiphishing', label: 'Anti-Phishing Policies', read: policyItems },
+  {
+    name: 'teamsvoice',
+    label: 'Teams Phone Number Assignments',
+    read: (value) =>
+      asArray(parseJson(value)).map((n) => ({
+        key: n.telephoneNumber,
+        label: n.telephoneNumber,
+        sub:
+          n.assignmentStatus === 'voiceApplicationAssigned'
+            ? 'Resource account'
+            : 'User',
+      })),
+  },
+  { name: 'CippWebhookAlerts', label: 'Webhook Alerts', read: rowItems },
+  { name: 'CippScriptedAlerts', label: 'Scripted Alerts', read: rowItems },
+  { name: 'CippCustomVariables', label: 'Custom Variables', read: rowItems },
+]
+
+const MAX_SHOWN_ITEMS = 200
+
+const RestoreItemPicker = ({ label, items, selected, onChange }) => {
+  const [open, setOpen] = useState(false)
+  const [search, setSearch] = useState('')
+  const term = search.trim().toLowerCase()
+  const shown = term
+    ? items.filter((i) =>
+        `${i.label ?? ''} ${i.sub ?? ''}`.toLowerCase().includes(term)
+      )
+    : items
+  const allSelected = selected.size === items.length
+  const setKeys = (keys, on) => {
+    const next = new Set(selected)
+    keys.forEach((k) => (on ? next.add(k) : next.delete(k)))
+    onChange(next)
+  }
+
+  return (
+    <Box>
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+        <FormControlLabel
+          sx={{ flex: 1, mr: 0 }}
+          control={
+            <Checkbox
+              size="small"
+              checked={allSelected}
+              indeterminate={selected.size > 0 && !allSelected}
+              onChange={() =>
+                setKeys(
+                  items.map((i) => i.key),
+                  !allSelected
+                )
+              }
+            />
+          }
+          label={<Typography variant="body2">{label}</Typography>}
+        />
+        <Chip
+          size="small"
+          variant="outlined"
+          color={selected.size === 0 ? 'warning' : 'default'}
+          label={
+            allSelected
+              ? `All ${items.length}`
+              : selected.size === 0
+                ? 'None, skipped'
+                : `${selected.size} of ${items.length}`
+          }
+        />
+        <IconButton
+          size="small"
+          onClick={() => setOpen((o) => !o)}
+          aria-label={`Choose ${label}`}
+        >
+          {open ? (
+            <CippIcons.ExpandLess fontSize="small" />
+          ) : (
+            <CippIcons.ExpandMore fontSize="small" />
+          )}
+        </IconButton>
+      </Box>
+      <Collapse in={open} unmountOnExit>
+        <Stack spacing={1} sx={{ pl: 4, pr: 1, pb: 1 }}>
+          <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+            <TextField
+              size="small"
+              fullWidth
+              placeholder={`Search ${label.toLowerCase()}`}
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              slotProps={{
+                input: {
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <CippIcons.Search fontSize="small" />
+                    </InputAdornment>
+                  ),
+                },
+              }}
+            />
+            <Button
+              size="small"
+              onClick={() =>
+                setKeys(
+                  shown.map((i) => i.key),
+                  true
+                )
+              }
+            >
+              {term ? 'Select matches' : 'All'}
+            </Button>
+            <Button
+              size="small"
+              onClick={() =>
+                setKeys(
+                  shown.map((i) => i.key),
+                  false
+                )
+              }
+            >
+              {term ? 'Clear matches' : 'None'}
+            </Button>
+          </Stack>
+          <Box
+            sx={{
+              maxHeight: 300,
+              overflowY: 'auto',
+              borderRadius: 1,
+              border: (theme) => `1px solid ${theme.palette.divider}`,
+            }}
+          >
+            {shown.slice(0, MAX_SHOWN_ITEMS).map((item) => (
+              <Box
+                key={item.key}
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  px: 0.5,
+                  minWidth: 0,
+                }}
+              >
+                <Checkbox
+                  size="small"
+                  sx={{ p: 0.5 }}
+                  checked={selected.has(item.key)}
+                  onChange={() => setKeys([item.key], !selected.has(item.key))}
+                  inputProps={{ 'aria-label': item.label }}
+                />
+                <Box sx={{ minWidth: 0 }}>
+                  <Typography variant="body2" noWrap title={item.label}>
+                    {item.label}
+                  </Typography>
+                  {item.sub && (
+                    <Typography
+                      variant="caption"
+                      noWrap
+                      sx={{ color: 'text.secondary', display: 'block' }}
+                    >
+                      {item.sub}
+                    </Typography>
+                  )}
+                </Box>
+              </Box>
+            ))}
+            {shown.length === 0 && (
+              <Typography
+                variant="body2"
+                sx={{ p: 1, color: 'text.secondary' }}
+              >
+                Nothing matches your search.
+              </Typography>
+            )}
+          </Box>
+          {shown.length > MAX_SHOWN_ITEMS && (
+            <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+              Showing the first {MAX_SHOWN_ITEMS} of {shown.length}. Search to
+              find the rest.
+            </Typography>
+          )}
+        </Stack>
+      </Collapse>
+    </Box>
+  )
+}
 
 export const CippRestoreBackupDrawer = ({
   buttonText = 'Restore Backup',
@@ -57,6 +331,65 @@ export const CippRestoreBackupDrawer = ({
 
   const { isValid, isDirty } = useFormState({ control: formControl.control })
 
+  // If in AllTenants context, use the tenant from the backup data
+  const restoreTenant =
+    isMultiTenant(tenantFilter) && backupData?.tenantSource
+      ? backupData.tenantSource
+      : tenantFilter
+  const watched = useWatch({ control: formControl.control })
+  const selectedBackupName = watched.backup?.value || watched.backup
+
+  const backupContent = ApiGetCall({
+    url: '/api/ExecListBackup',
+    data: {
+      BackupName: selectedBackupName,
+      Type: 'Scheduled',
+      tenantFilter: restoreTenant,
+    },
+    queryKey: `BackupContent-${restoreTenant}-${selectedBackupName}`,
+    waiting: drawerVisible && !!selectedBackupName,
+  })
+
+  const content = useMemo(() => {
+    const row = Array.isArray(backupContent.data) ? backupContent.data[0] : null
+    if (!row) return null
+    return row.Backup ? parseJson(row.Backup) : row
+  }, [backupContent.data])
+
+  // Only items with a key can be picked; same-key entries restore together, so list them once.
+  const itemsByCategory = useMemo(() => {
+    const result = {}
+    for (const cat of RESTORE_CATEGORIES) {
+      const seen = new Set()
+      result[cat.name] = content
+        ? cat
+            .read(content[cat.name])
+            .filter((i) => i.key && !seen.has(i.key) && seen.add(i.key))
+        : []
+    }
+    return result
+  }, [content])
+
+  // Selection made for another backup does not apply; every category starts fully selected.
+  const [selection, setSelection] = useState({ source: null, sets: {} })
+  const allSelected = useMemo(
+    () =>
+      Object.fromEntries(
+        Object.entries(itemsByCategory).map(([name, items]) => [
+          name,
+          new Set(items.map((i) => i.key)),
+        ])
+      ),
+    [itemsByCategory]
+  )
+  const selectedFor = (name) =>
+    (selection.source === content && selection.sets[name]) || allSelected[name]
+  const setSelectedFor = (name, keys) =>
+    setSelection((prev) => ({
+      source: content,
+      sets: { ...(prev.source === content ? prev.sets : {}), [name]: keys },
+    }))
+
   useEffect(() => {
     if (restoreBackup.isSuccess) {
       formControl.reset({
@@ -92,10 +425,17 @@ export const CippRestoreBackupDrawer = ({
     const startDate = new Date()
     const unixTime = Math.floor(startDate.getTime() / 1000) - 45
 
-    // If in AllTenants context, use the tenant from the backup data
-    let tenantFilterValue = tenantFilter
-    if (isMultiTenant(tenantFilter) && backupData?.tenantSource) {
-      tenantFilterValue = backupData.tenantSource
+    const tenantFilterValue = restoreTenant
+
+    // A partly selected category sends its item keys; one with nothing selected is skipped.
+    const items = {}
+    const skipped = {}
+    for (const cat of RESTORE_CATEGORIES) {
+      const all = itemsByCategory[cat.name]
+      if (!values[cat.name] || all.length === 0) continue
+      const keys = selectedFor(cat.name)
+      if (keys.size === 0) skipped[cat.name] = false
+      else if (keys.size < all.length) items[cat.name] = [...keys]
     }
 
     const shippedValues = {
@@ -118,7 +458,9 @@ export const CippRestoreBackupDrawer = ({
           CippWebhookAlerts: values.CippWebhookAlerts,
           CippScriptedAlerts: values.CippScriptedAlerts,
           CippCustomVariables: values.CippCustomVariables,
+          ...skipped,
           overwrite: values.overwrite,
+          ...(Object.keys(items).length > 0 && { items }),
         },
       },
       ScheduledTime: unixTime,
@@ -138,6 +480,7 @@ export const CippRestoreBackupDrawer = ({
 
   const handleCloseDrawer = () => {
     setDrawerVisible(false)
+    setSelection({ source: null, sets: {} })
     formControl.reset({
       tenantFilter: tenantFilter,
       users: true,
@@ -179,7 +522,13 @@ export const CippRestoreBackupDrawer = ({
         footer={
           <Stack spacing={2}>
             <CippApiResults apiObject={restoreBackup} />
-            <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-start' }}>
+            <div
+              style={{
+                display: 'flex',
+                gap: '8px',
+                justifyContent: 'flex-start',
+              }}
+            >
               <Button
                 variant="contained"
                 color="primary"
@@ -201,8 +550,8 @@ export const CippRestoreBackupDrawer = ({
       >
         <Box sx={{ my: 2 }}>
           <Typography variant="body1" sx={{ mb: 2 }}>
-            Use this form to restore a backup for a tenant. Please select the backup and restore
-            options.
+            Use this form to restore a backup for a tenant. Please select the
+            backup and restore options.
           </Typography>
 
           <Grid container spacing={2}>
@@ -217,12 +566,15 @@ export const CippRestoreBackupDrawer = ({
                   url: '/api/ExecListBackup',
                   queryKey: `BackupList-${tenantFilter}-autocomplete`,
                   labelField: (option) => {
-                    const match = option.BackupName.match(/.*_(\d{4}-\d{2}-\d{2})-(\d{2})(\d{2})/)
+                    const match = option.BackupName.match(
+                      /.*_(\d{4}-\d{2}-\d{2})-(\d{2})(\d{2})/
+                    )
                     const dateTime = match
                       ? `${match[1]} @ ${match[2]}:${match[3]}`
                       : option.BackupName
-                    const tenantDisplay =
-                      isMultiTenant(tenantFilter) ? ` (${option.TenantFilter})` : ''
+                    const tenantDisplay = isMultiTenant(tenantFilter)
+                      ? ` (${option.TenantFilter})`
+                      : ''
                     return `${dateTime}${tenantDisplay}`
                   },
                   valueField: 'BackupName',
@@ -347,6 +699,51 @@ export const CippRestoreBackupDrawer = ({
               />
             </Grid>
 
+            {/* Individual items */}
+            {selectedBackupName && (
+              <Grid size={{ xs: 12 }}>
+                <Typography variant="h6">Choose Items</Typography>
+                <Typography
+                  variant="body2"
+                  sx={{ color: 'text.secondary', mb: 1 }}
+                >
+                  Everything in the backup is restored by default. Open a
+                  category to restore only some of its items.
+                </Typography>
+                {backupContent.isFetching ? (
+                  <Stack
+                    direction="row"
+                    spacing={1}
+                    sx={{ alignItems: 'center' }}
+                  >
+                    <CircularProgress size={16} />
+                    <Typography variant="body2">
+                      Loading backup contents&hellip;
+                    </Typography>
+                  </Stack>
+                ) : backupContent.isError ? (
+                  <Alert severity="error">
+                    The backup contents could not be loaded, so items cannot be
+                    chosen. The restore will include everything in the selected
+                    categories.
+                  </Alert>
+                ) : (
+                  RESTORE_CATEGORIES.filter(
+                    (cat) =>
+                      watched[cat.name] && itemsByCategory[cat.name].length > 0
+                  ).map((cat) => (
+                    <RestoreItemPicker
+                      key={cat.name}
+                      label={cat.label}
+                      items={itemsByCategory[cat.name]}
+                      selected={selectedFor(cat.name)}
+                      onChange={(keys) => setSelectedFor(cat.name, keys)}
+                    />
+                  ))
+                )}
+              </Grid>
+            )}
+
             {/* Overwrite Existing Entries */}
             <Grid size={{ xs: 12 }}>
               <CippFormComponent
@@ -363,11 +760,12 @@ export const CippRestoreBackupDrawer = ({
               >
                 <Grid size={{ xs: 12 }}>
                   <Alert severity="warning">
-                    <strong>Warning:</strong> Overwriting existing entries will remove the current
-                    settings and replace them with the backup settings. If you have selected to
-                    restore users, all properties will be overwritten with the backup settings. To
-                    prevent and skip already existing entries, deselect the setting from the list
-                    above, or disable overwrite.
+                    <strong>Warning:</strong> Overwriting existing entries will
+                    remove the current settings and replace them with the backup
+                    settings. If you have selected to restore users, all
+                    properties will be overwritten with the backup settings. To
+                    prevent and skip already existing entries, deselect the
+                    setting from the list above, or disable overwrite.
                   </Alert>
                 </Grid>
               </CippFormCondition>
@@ -375,7 +773,9 @@ export const CippRestoreBackupDrawer = ({
 
             {/* Send Results To */}
             <Grid size={{ xs: 12 }}>
-              <Typography variant="subtitle1">Send Restore results to:</Typography>
+              <Typography variant="subtitle1">
+                Send Restore results to:
+              </Typography>
             </Grid>
             <Grid size={{ md: 4, xs: 12 }}>
               <CippFormComponent
@@ -394,11 +794,16 @@ export const CippRestoreBackupDrawer = ({
               />
             </Grid>
             <Grid size={{ md: 4, xs: 12 }}>
-              <CippFormComponent type="switch" label="PSA" name="psa" formControl={formControl} />
+              <CippFormComponent
+                type="switch"
+                label="PSA"
+                name="psa"
+                formControl={formControl}
+              />
             </Grid>
           </Grid>
         </Box>
       </CippOffCanvas>
     </>
-  );
+  )
 }
