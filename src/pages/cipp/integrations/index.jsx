@@ -7,7 +7,9 @@ import {
   CardActionArea,
   CardActions,
   CardContent,
+  CardHeader,
   Container,
+  Divider,
   Skeleton,
   Stack,
   Typography,
@@ -122,6 +124,15 @@ const Page = () => {
                   {extension.comingSoon ? 'Coming Soon' : 'Beta'}
                 </Box>
               )}
+              <CardHeader
+                title={extension.name}
+                sx={{
+                  textAlign: 'left',
+                  // Keep the name clear of the corner ribbon.
+                  ...((extension.comingSoon || extension.beta) && { pr: 10 }),
+                }}
+              />
+              <Divider />
               <CardContent>
                 <Box
                   sx={{
