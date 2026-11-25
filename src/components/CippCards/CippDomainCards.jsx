@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { CippIcons } from "../../utils/icon-registry";
+import { useEffect, useState } from 'react'
+import { CippIcons } from '../../utils/icon-registry'
 import {
   Button,
   Collapse,
@@ -12,16 +12,16 @@ import {
   Stack,
   Divider,
   FormControlLabel,
-} from "@mui/material";
-import { Grid } from "@mui/system";
-import { Controller, useForm } from "react-hook-form";
-import { ApiGetCall } from "../../api/ApiCall";
-import CippButtonCard from "./CippButtonCard";
-import { CippCodeBlock } from "../CippComponents/CippCodeBlock";
-import { CippOffCanvas } from "../CippComponents/CippOffCanvas";
-import { CippPropertyListCard } from "./CippPropertyListCard";
-import { getCippFormatting } from "../../utils/get-cipp-formatting";
-import punycode from "punycode";
+} from '@mui/material'
+import { Grid } from '@mui/system'
+import { Controller, useForm } from 'react-hook-form'
+import { ApiGetCall } from '../../api/ApiCall'
+import CippButtonCard from './CippButtonCard'
+import { CippCodeBlock } from '../CippComponents/CippCodeBlock'
+import { CippOffCanvas } from '../CippComponents/CippOffCanvas'
+import { CippPropertyListCard } from './CippPropertyListCard'
+import { getCippFormatting } from '../../utils/get-cipp-formatting'
+import punycode from 'punycode'
 
 const ResultList = ({ passes = [], warns = [], fails = [] }) => (
   <Stack direction="column" sx={{ mt: 1 }}>
@@ -29,9 +29,9 @@ const ResultList = ({ passes = [], warns = [], fails = [] }) => (
       <Typography
         variant="body2"
         key={index}
-        sx={{ display: "flex", alignItems: "center", marginBottom: "8px" }}
+        sx={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}
       >
-        <CippIcons.CheckCircle style={{ color: "green", marginRight: "4px" }} />
+        <CippIcons.CheckCircle style={{ color: 'green', marginRight: '4px' }} />
         {pass}
       </Typography>
     ))}
@@ -39,9 +39,9 @@ const ResultList = ({ passes = [], warns = [], fails = [] }) => (
       <Typography
         variant="body2"
         key={index}
-        sx={{ display: "flex", alignItems: "center", marginBottom: "8px" }}
+        sx={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}
       >
-        <CippIcons.Warning style={{ color: "orange", marginRight: "4px" }} />
+        <CippIcons.Warning style={{ color: 'orange', marginRight: '4px' }} />
         {warn}
       </Typography>
     ))}
@@ -49,40 +49,44 @@ const ResultList = ({ passes = [], warns = [], fails = [] }) => (
       <Typography
         variant="body2"
         key={index}
-        sx={{ display: "flex", alignItems: "center", marginBottom: "8px" }}
+        sx={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}
       >
-        <CippIcons.Error style={{ color: "red", marginRight: "4px" }} />
+        <CippIcons.Error style={{ color: 'red', marginRight: '4px' }} />
         {fail}
       </Typography>
     ))}
   </Stack>
-);
+)
 
 // Custom MX Results Card component
 const MXResultsCard = ({ domain, mxData, isFetching }) => {
-  const [visible, setVisible] = useState(false);
+  const [visible, setVisible] = useState(false)
 
   const handleDetailsClick = () => {
-    setVisible(true);
-  };
+    setVisible(true)
+  }
 
-  const providerName = mxData?.MailProvider?.Name || "Unknown";
-  const validationPasses = mxData?.ValidationPasses || [];
-  const validationWarns = mxData?.ValidationWarns || [];
-  const validationFails = mxData?.ValidationFails || [];
+  const providerName = mxData?.MailProvider?.Name || 'Unknown'
+  const validationPasses = mxData?.ValidationPasses || []
+  const validationWarns = mxData?.ValidationWarns || []
+  const validationFails = mxData?.ValidationFails || []
 
-  const allPassed = validationFails.length === 0 && validationWarns.length === 0;
+  const allPassed = validationFails.length === 0 && validationWarns.length === 0
 
-  const helpUrl = mxData?.MailProvider?._MxComment || "";
+  const helpUrl = mxData?.MailProvider?._MxComment || ''
   return (
     <CippButtonCard
       title={
-        <div style={{ display: "flex", alignItems: "center" }}>
-          {allPassed && <CippIcons.CheckCircle style={{ color: "green", marginRight: "8px" }} />}
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          {allPassed && (
+            <CippIcons.CheckCircle
+              style={{ color: 'green', marginRight: '8px' }}
+            />
+          )}
           MX Records
         </div>
       }
-      cardSx={{ display: "flex", flexDirection: "column", height: "100%" }}
+      cardSx={{ display: 'flex', flexDirection: 'column', height: '100%' }}
       cardActions={
         <>
           {helpUrl && (
@@ -112,230 +116,279 @@ const MXResultsCard = ({ domain, mxData, isFetching }) => {
             Mail Provider:
           </Typography>
           <Chip color="info" className="mb-2" label={`${providerName}`} />
-          <ResultList passes={validationPasses} warns={validationWarns} fails={validationFails} />
+          <ResultList
+            passes={validationPasses}
+            warns={validationWarns}
+            fails={validationFails}
+          />
         </>
       )}
     </CippButtonCard>
-  );
-};
+  )
+}
 
 // DomainResultCard to reuse for other result types
 function DomainResultCard({ title, data, isFetching, info, type }) {
-  const [visible, setVisible] = useState(false);
+  const [visible, setVisible] = useState(false)
 
   const offCanvasData =
     //switch case for different types of data
-    type === "whois"
+    type === 'whois'
       ? {
           extendedInfoFields: [
-            "Domain Name",
-            "Creation Date",
-            "Updated Date",
-            "Registrar Registration Expiration Date",
-            "Registrar",
-            "Registrar URL",
-            "Registrar Abuse Contact Email",
-            "Domain Status",
-            "Name Server",
-            "DNSSEC",
+            'Domain Name',
+            'Creation Date',
+            'Updated Date',
+            'Registrar Registration Expiration Date',
+            'Registrar',
+            'Registrar URL',
+            'Registrar Abuse Contact Email',
+            'Domain Status',
+            'Name Server',
+            'DNSSEC',
           ],
           extendedData: data,
         }
-      : type === "MTA-STS"
-      ? {
-          children: (
-            <Grid container spacing={2}>
-              <Grid size={{ xs: 12, md: 8 }}>
-                {info}
+      : type === 'MTA-STS'
+        ? {
+            children: (
+              <Grid container spacing={2}>
+                <Grid size={{ xs: 12, md: 8 }}>{info}</Grid>
               </Grid>
-            </Grid>
-          ),
-        }
-      : type === "DNSSEC"
-      ? {
-          children: <CippCodeBlock language="JSON" code={JSON.stringify(data)} />,
-        }
-      : type === "DKIM"
-      ? {
-          children: data?.Records?.map((record, index) => (
-            <div key={index}>
-              <Typography variant="h6" gutterBottom>
-                Selector: {record?.Selector}
-              </Typography>
-              <CippCodeBlock code={record?.Record} />
-              <ResultList
-                passes={record?.ValidationPasses}
-                warns={record?.ValidationWarns}
-                fails={record?.ValidationFails}
-              />
-            </div>
-          )),
-        }
-      : type === "DMARC"
-      ? {
-          children: (
-            //4 headers, "Record" and then  <CippCodeBlock code={record?.Record} /> under it.
-            <>
-              <Typography variant="h6" gutterBottom>
-                Record:
-              </Typography>
-              <CippCodeBlock code={data?.Record} />
-              <CippPropertyListCard
-                title="Settings"
-                copyItems={true}
-                propertyItems={[
-                  {
-                    label: "Version",
-                    value: data?.Version,
-                  },
-                  {
-                    label: "Policy",
-                    value: getCippFormatting(data?.Policy, "DMARCPolicy", "text"),
-                  },
-                  {
-                    label: "Subdomain Policy",
-                    value: getCippFormatting(data?.SubdomainPolicy, "DMARCPolicy", "text"),
-                  },
-                  {
-                    label: "Percentage",
-                    value: data?.Percentage,
-                  },
-                  {
-                    label: "SPF Alignment",
-                    value: getCippFormatting(data?.SpfAlignment, "DMARCPolicy", "text"),
-                  },
-                  {
-                    label: "Report Interval",
-                    value: getCippFormatting(data?.ReportInterval, "ReportInterval", "text"),
-                  },
-                  {
-                    label: "Report Format",
-                    value: getCippFormatting(data?.ReportFormat, "DMARCPolicy", "text"),
-                  },
-                ]}
-              />
-              <CippPropertyListCard
-                title="Reporting Emails"
-                copyItems={true}
-                propertyItems={data?.ReportingEmails.map((email) => ({
-                  label: "Reporting Email(s)",
-                  value: email,
-                }))}
-              />
-              <CippPropertyListCard
-                title="Forensic Emails"
-                copyItems={true}
-                propertyItems={data?.ForensicEmails.map((email) => ({
-                  label: "Forensic Email(s)",
-                  value: email,
-                }))}
-              />
-            </>
-          ),
-        }
-      : type === "SPF"
-      ? {
-          children: (
-            <>
-              <Typography variant="h6" gutterBottom>
-                Record:
-              </Typography>
-              <CippCodeBlock code={data?.Record} />
-              {data?.Recommendations && (
-                <>
-                  <CippPropertyListCard
-                    title="Recommendations"
-                    copyItems={true}
-                    propertyItems={data?.Recommendations.map((rec) => ({
-                      label: "Recommendation",
-                      value: rec.Message,
-                    }))}
-                  />
-                </>
-              )}
+            ),
+          }
+        : type === 'DNSSEC'
+          ? {
+              children: (
+                <CippCodeBlock language="JSON" code={JSON.stringify(data)} />
+              ),
+            }
+          : type === 'DKIM'
+            ? {
+                children: data?.Records?.map((record, index) => (
+                  <div key={index}>
+                    <Typography variant="h6" gutterBottom>
+                      Selector: {record?.Selector}
+                    </Typography>
+                    <CippCodeBlock code={record?.Record} />
+                    <ResultList
+                      passes={record?.ValidationPasses}
+                      warns={record?.ValidationWarns}
+                      fails={record?.ValidationFails}
+                    />
+                  </div>
+                )),
+              }
+            : type === 'DMARC'
+              ? {
+                  children: (
+                    //4 headers, "Record" and then  <CippCodeBlock code={record?.Record} /> under it.
+                    <>
+                      <Typography variant="h6" gutterBottom>
+                        Record:
+                      </Typography>
+                      <CippCodeBlock code={data?.Record} />
+                      <CippPropertyListCard
+                        title="Settings"
+                        copyItems={true}
+                        propertyItems={[
+                          {
+                            label: 'Version',
+                            value: data?.Version,
+                          },
+                          {
+                            label: 'Policy',
+                            value: getCippFormatting(
+                              data?.Policy,
+                              'DMARCPolicy',
+                              'text'
+                            ),
+                          },
+                          {
+                            label: 'Subdomain Policy',
+                            value: getCippFormatting(
+                              data?.SubdomainPolicy,
+                              'DMARCPolicy',
+                              'text'
+                            ),
+                          },
+                          {
+                            label: 'Percentage',
+                            value: data?.Percentage,
+                          },
+                          {
+                            label: 'SPF Alignment',
+                            value: getCippFormatting(
+                              data?.SpfAlignment,
+                              'DMARCPolicy',
+                              'text'
+                            ),
+                          },
+                          {
+                            label: 'Report Interval',
+                            value: getCippFormatting(
+                              data?.ReportInterval,
+                              'ReportInterval',
+                              'text'
+                            ),
+                          },
+                          {
+                            label: 'Report Format',
+                            value: getCippFormatting(
+                              data?.ReportFormat,
+                              'DMARCPolicy',
+                              'text'
+                            ),
+                          },
+                        ]}
+                      />
+                      <CippPropertyListCard
+                        title="Reporting Emails"
+                        copyItems={true}
+                        propertyItems={data?.ReportingEmails.map((email) => ({
+                          label: 'Reporting Email(s)',
+                          value: email,
+                        }))}
+                      />
+                      <CippPropertyListCard
+                        title="Forensic Emails"
+                        copyItems={true}
+                        propertyItems={data?.ForensicEmails.map((email) => ({
+                          label: 'Forensic Email(s)',
+                          value: email,
+                        }))}
+                      />
+                    </>
+                  ),
+                }
+              : type === 'SPF'
+                ? {
+                    children: (
+                      <>
+                        <Typography variant="h6" gutterBottom>
+                          Record:
+                        </Typography>
+                        <CippCodeBlock code={data?.Record} />
+                        {data?.Recommendations && (
+                          <>
+                            <CippPropertyListCard
+                              title="Recommendations"
+                              copyItems={true}
+                              propertyItems={data?.Recommendations.map(
+                                (rec) => ({
+                                  label: 'Recommendation',
+                                  value: rec.Message,
+                                })
+                              )}
+                            />
+                          </>
+                        )}
 
-              <Typography variant="h6" gutterBottom>
-                IP Addresses
-              </Typography>
-              <CippCodeBlock
-                code={data?.RecordList.map((record) => record.IPAddresses).join("\n")}
-              />
-            </>
-          ),
-        }
-      : type === "HTTPS"
-      ? {
-          children: (
-            <>
-              {data?.Tests?.map((test, index) => (
-                <>
-                  <CippPropertyListCard
-                    key={index}
-                    title={`Certificate info for ${test.Hostname}`}
-                    copyItems={true}
-                    showDivider={false}
-                    propertyItems={[
-                      {
-                        label: "Issuer",
-                        value:
-                          test.Certificate.Issuer.match(/O=([^,]+)/)?.[1] ||
-                          test.Certificate.Issuer,
-                      },
-                      {
-                        label: "Subject",
-                        value:
-                          test.Certificate.Subject.match(/CN=([^,]+)/)?.[1] ||
-                          test.Certificate.Subject,
-                      },
-                      {
-                        label: "Created",
-                        value: getCippFormatting(test.Certificate.NotBefore, "NotBefore"),
-                      },
-                      {
-                        label: "Expires",
-                        value: getCippFormatting(test.Certificate.NotAfter, "NotAfter"),
-                      },
-                      { label: "Serial Number", value: test.Certificate.SerialNumber },
-                      { label: "Thumbprint", value: test.Certificate.Thumbprint },
-                      {
-                        label: "DNS Names",
-                        value: getCippFormatting(
-                          test.Certificate.DnsNameList.map((dns) => dns.Unicode),
-                          "DNSName"
-                        ),
-                      },
-                    ]}
-                  />
-                  <ResultList
-                    passes={test.ValidationPasses}
-                    warns={test.ValidationWarns}
-                    fails={test.ValidationFails}
-                  />
-                  <Divider />
-                </>
-              ))}
-            </>
-          ),
-        }
-      : {};
+                        <Typography variant="h6" gutterBottom>
+                          IP Addresses
+                        </Typography>
+                        <CippCodeBlock
+                          code={data?.RecordList.map(
+                            (record) => record.IPAddresses
+                          ).join('\n')}
+                        />
+                      </>
+                    ),
+                  }
+                : type === 'HTTPS'
+                  ? {
+                      children: (
+                        <>
+                          {data?.Tests?.map((test, index) => (
+                            <>
+                              <CippPropertyListCard
+                                key={index}
+                                title={`Certificate info for ${test.Hostname}`}
+                                copyItems={true}
+                                showDivider={false}
+                                propertyItems={[
+                                  {
+                                    label: 'Issuer',
+                                    value:
+                                      test.Certificate.Issuer.match(
+                                        /O=([^,]+)/
+                                      )?.[1] || test.Certificate.Issuer,
+                                  },
+                                  {
+                                    label: 'Subject',
+                                    value:
+                                      test.Certificate.Subject.match(
+                                        /CN=([^,]+)/
+                                      )?.[1] || test.Certificate.Subject,
+                                  },
+                                  {
+                                    label: 'Created',
+                                    value: getCippFormatting(
+                                      test.Certificate.NotBefore,
+                                      'NotBefore'
+                                    ),
+                                  },
+                                  {
+                                    label: 'Expires',
+                                    value: getCippFormatting(
+                                      test.Certificate.NotAfter,
+                                      'NotAfter'
+                                    ),
+                                  },
+                                  {
+                                    label: 'Serial Number',
+                                    value: test.Certificate.SerialNumber,
+                                  },
+                                  {
+                                    label: 'Thumbprint',
+                                    value: test.Certificate.Thumbprint,
+                                  },
+                                  {
+                                    label: 'DNS Names',
+                                    value: getCippFormatting(
+                                      test.Certificate.DnsNameList.map(
+                                        (dns) => dns.Unicode
+                                      ),
+                                      'DNSName'
+                                    ),
+                                  },
+                                ]}
+                              />
+                              <ResultList
+                                passes={test.ValidationPasses}
+                                warns={test.ValidationWarns}
+                                fails={test.ValidationFails}
+                              />
+                              <Divider />
+                            </>
+                          ))}
+                        </>
+                      ),
+                    }
+                  : {}
 
   return (
     <CippButtonCard
       title={
-        <div style={{ display: "flex", alignItems: "center" }}>
-          {data?.ValidationFails?.length === 0 && data?.ValidationWarns?.length === 0 && (
-            <CippIcons.CheckCircle style={{ color: "green", marginRight: "8px" }} />
-          )}
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          {data?.ValidationFails?.length === 0 &&
+            data?.ValidationWarns?.length === 0 && (
+              <CippIcons.CheckCircle
+                style={{ color: 'green', marginRight: '8px' }}
+              />
+            )}
           {data?.ValidationFails?.length > 0 && (
-            <CippIcons.Error style={{ color: "red", marginRight: "8px" }} />
+            <CippIcons.Error style={{ color: 'red', marginRight: '8px' }} />
           )}
           {data?.ValidationWarns?.length > 0 && (
-            <CippIcons.Warning style={{ color: "orange", marginRight: "8px" }} />
+            <CippIcons.Warning
+              style={{ color: 'orange', marginRight: '8px' }}
+            />
           )}
           {title}
         </div>
       }
-      cardSx={{ display: "flex", flexDirection: "column", height: "100%" }}
+      cardSx={{ display: 'flex', flexDirection: 'column', height: '100%' }}
       cardActions={
         <>
           {data?._Comment && (
@@ -354,131 +407,141 @@ function DomainResultCard({ title, data, isFetching, info, type }) {
       }
       isFetching={isFetching}
     >
-      <Grid size={{ xs: 12 }}>
-        {info}
-      </Grid>
-      <CippOffCanvas visible={visible} onClose={() => setVisible(false)} {...offCanvasData} />
+      <Grid size={{ xs: 12 }}>{info}</Grid>
+      <CippOffCanvas
+        visible={visible}
+        onClose={() => setVisible(false)}
+        {...offCanvasData}
+      />
     </CippButtonCard>
-  );
+  )
 }
 
 // The main CippDomainCards component with new props
-export const CippDomainCards = ({ domain: propDomain = "", fullwidth = false }) => {
+export const CippDomainCards = ({
+  domain: propDomain = '',
+  fullwidth = false,
+}) => {
   const { control, handleSubmit, watch, setValue } = useForm({
     defaultValues: {
       domain: propDomain,
-      spfRecord: "",
-      dkimSelector: "",
-      subdomains: "",
+      spfRecord: '',
+      dkimSelector: '',
+      subdomains: '',
       enableHttps: false,
     },
-  });
-  const [optionsVisible, setOptionsVisible] = useState(false);
-  const [domain, setDomain] = useState(propDomain);
-  const [selector, setSelector] = useState("");
-  const [spfRecord, setSpfRecord] = useState("");
-  const [subdomains, setSubdomains] = useState("");
-  const enableHttps = watch("enableHttps");
+  })
+  const [optionsVisible, setOptionsVisible] = useState(false)
+  const [domain, setDomain] = useState(propDomain)
+  const [selector, setSelector] = useState('')
+  const [spfRecord, setSpfRecord] = useState('')
+  const [subdomains, setSubdomains] = useState('')
+  const enableHttps = watch('enableHttps')
 
   useEffect(() => {
     if (propDomain) {
-      setValue("domain", propDomain);
-      setDomain(propDomain);
+      setValue('domain', propDomain)
+      setDomain(propDomain)
     }
-  }, [propDomain, setValue]);
+  }, [propDomain, setValue])
 
   const onSubmit = (values) => {
-    const punycodedDomain = punycode.toASCII(values.domain);
-    setDomain(punycodedDomain);
-    setSelector(values.dkimSelector);
-    setSpfRecord(values.spfRecord);
-    setSubdomains(values.subdomains);
-  };
+    const punycodedDomain = punycode.toASCII(values.domain)
+    setDomain(punycodedDomain)
+    setSelector(values.dkimSelector)
+    setSpfRecord(values.spfRecord)
+    setSubdomains(values.subdomains)
+  }
 
   const handleClear = () => {
-    setValue("domain", "");
-    setValue("spfRecord", "");
-    setValue("dkimSelector", "");
-    setValue("subdomains", "");
-    setDomain("");
-    setSelector("");
-    setSpfRecord("");
-    setSubdomains("");
-  };
+    setValue('domain', '')
+    setValue('spfRecord', '')
+    setValue('dkimSelector', '')
+    setValue('subdomains', '')
+    setDomain('')
+    setSelector('')
+    setSpfRecord('')
+    setSubdomains('')
+  }
 
   // API calls with dynamic queryKey using domain
   const { data: whoisData, isFetching: whoisLoading } = ApiGetCall({
-    url: "/api/ListDomainHealth",
+    url: '/api/ListDomainHealth',
     queryKey: `whois-${domain}`,
-    data: { Domain: domain, Action: "ReadWhoisRecord" },
+    data: { Domain: domain, Action: 'ReadWhoisRecord' },
     waiting: !!domain,
-  });
+  })
 
   const { data: nsData, isFetching: nsLoading } = ApiGetCall({
-    url: "/api/ListDomainHealth",
+    url: '/api/ListDomainHealth',
     queryKey: `ns-${domain}`,
-    data: { Domain: domain, Action: "ReadNSRecord" },
+    data: { Domain: domain, Action: 'ReadNSRecord' },
     waiting: !!domain,
-  });
+  })
 
   const { data: mxData, isFetching: mxLoading } = ApiGetCall({
-    url: "/api/ListDomainHealth",
+    url: '/api/ListDomainHealth',
     queryKey: `mx-${domain}`,
-    data: { Domain: domain, Action: "ReadMxRecord" },
+    data: { Domain: domain, Action: 'ReadMxRecord' },
     waiting: !!domain,
-  });
+  })
 
   const { data: spfData, isFetching: spfLoading } = ApiGetCall({
-    url: "/api/ListDomainHealth",
+    url: '/api/ListDomainHealth',
     queryKey: `spf-${domain}-${spfRecord}`,
-    data: { Domain: domain, Action: "ReadSPFRecord", Record: spfRecord },
+    data: { Domain: domain, Action: 'ReadSPFRecord', Record: spfRecord },
     waiting: !!domain,
-  });
+  })
 
   const { data: dmarcData, isFetching: dmarcLoading } = ApiGetCall({
-    url: "/api/ListDomainHealth",
+    url: '/api/ListDomainHealth',
     queryKey: `dmarc-${domain}`,
-    data: { Domain: domain, Action: "ReadDmarcPolicy" },
+    data: { Domain: domain, Action: 'ReadDmarcPolicy' },
     waiting: !!domain,
-  });
+  })
 
   const { data: dkimData, isFetching: dkimLoading } = ApiGetCall({
-    url: "/api/ListDomainHealth",
+    url: '/api/ListDomainHealth',
     queryKey: `dkim-${domain}-${selector}`,
-    data: { Domain: domain, Action: "ReadDkimRecord", Selector: selector },
+    data: { Domain: domain, Action: 'ReadDkimRecord', Selector: selector },
     waiting: !!domain,
-  });
+  })
 
   const { data: dnssecData, isFetching: dnssecLoading } = ApiGetCall({
-    url: "/api/ListDomainHealth",
+    url: '/api/ListDomainHealth',
     queryKey: `dnssec-${domain}`,
-    data: { Domain: domain, Action: "TestDNSSEC" },
+    data: { Domain: domain, Action: 'TestDNSSEC' },
     waiting: !!domain,
-  });
+  })
 
   const { data: mtastsData, isFetching: mtastsLoading } = ApiGetCall({
-    url: "/api/ListDomainHealth",
+    url: '/api/ListDomainHealth',
     queryKey: `mtasts-${domain}`,
-    data: { Domain: domain, Action: "TestMtaSts" },
+    data: { Domain: domain, Action: 'TestMtaSts' },
     waiting: !!domain,
-  });
+  })
 
-  const { data: autoDiscoverData, isFetching: autoDiscoverLoading } = ApiGetCall({
-    url: "/api/ListDomainHealth",
-    queryKey: `autodiscover-${domain}`,
-    data: { Domain: domain, Action: "ReadAutoDiscover" },
-    waiting: !!domain,
-  });
+  const { data: autoDiscoverData, isFetching: autoDiscoverLoading } =
+    ApiGetCall({
+      url: '/api/ListDomainHealth',
+      queryKey: `autodiscover-${domain}`,
+      data: { Domain: domain, Action: 'ReadAutoDiscover' },
+      waiting: !!domain,
+    })
 
   const { data: httpsData, isFetching: httpsLoading } = ApiGetCall({
-    url: "/api/ListDomainHealth",
+    url: '/api/ListDomainHealth',
     queryKey: `https-${domain}-${subdomains}`,
-    data: { Domain: domain, Action: "TestHttpsCertificate", Subdomains: subdomains },
+    data: {
+      Domain: domain,
+      Action: 'TestHttpsCertificate',
+      Subdomains: subdomains,
+    },
     waiting: !!domain && enableHttps,
-  });
+  })
 
   // Adjust Grid size based on fullwidth prop
-  const gridItemSize = fullwidth ? 12 : 4;
+  const gridItemSize = fullwidth ? 12 : 4
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -486,7 +549,11 @@ export const CippDomainCards = ({ domain: propDomain = "", fullwidth = false }) 
         <Grid size={{ xs: 12, md: gridItemSize }}>
           <CippButtonCard
             title="Domain Check"
-            cardSx={{ display: "flex", flexDirection: "column", height: "100%" }}
+            cardSx={{
+              display: 'flex',
+              flexDirection: 'column',
+              height: '100%',
+            }}
             cardActions={
               <Tooltip title="Settings">
                 <IconButton onClick={() => setOptionsVisible(!optionsVisible)}>
@@ -496,7 +563,7 @@ export const CippDomainCards = ({ domain: propDomain = "", fullwidth = false }) 
             }
           >
             <Grid container spacing={2}>
-              <Grid size={{ xs: 12, md: 4 }}>
+              <Grid size={{ xs: 12, md: fullwidth ? 4 : 12 }}>
                 <Controller
                   name="domain"
                   control={control}
@@ -506,7 +573,11 @@ export const CippDomainCards = ({ domain: propDomain = "", fullwidth = false }) 
                 />
               </Grid>
               <Grid size={{ xs: 12 }}>
-                <Button type="submit" variant="contained" startIcon={<CippIcons.Search />}>
+                <Button
+                  type="submit"
+                  variant="contained"
+                  startIcon={<CippIcons.Search />}
+                >
                   Check
                 </Button>
               </Grid>
@@ -517,14 +588,24 @@ export const CippDomainCards = ({ domain: propDomain = "", fullwidth = false }) 
                   name="spfRecord"
                   control={control}
                   render={({ field }) => (
-                    <TextField {...field} fullWidth label="SPF Record" className="mt-2" />
+                    <TextField
+                      {...field}
+                      fullWidth
+                      label="SPF Record"
+                      className="mt-2"
+                    />
                   )}
                 />
                 <Controller
                   name="dkimSelector"
                   control={control}
                   render={({ field }) => (
-                    <TextField {...field} fullWidth label="DKIM Selector" className="mt-2" />
+                    <TextField
+                      {...field}
+                      fullWidth
+                      label="DKIM Selector"
+                      className="mt-2"
+                    />
                   )}
                 />
                 <Controller
@@ -542,7 +623,12 @@ export const CippDomainCards = ({ domain: propDomain = "", fullwidth = false }) 
                     name="subdomains"
                     control={control}
                     render={({ field }) => (
-                      <TextField {...field} fullWidth label="HTTPS Subdomains" className="mt-2" />
+                      <TextField
+                        {...field}
+                        fullWidth
+                        label="HTTPS Subdomains"
+                        className="mt-2"
+                      />
                     )}
                   />
                 )}
@@ -570,7 +656,9 @@ export const CippDomainCards = ({ domain: propDomain = "", fullwidth = false }) 
                 isFetching={whoisLoading}
                 info={
                   <div>
-                    <Typography variant="body2">Registrar: {whoisData?.Registrar}</Typography>
+                    <Typography variant="body2">
+                      Registrar: {whoisData?.Registrar}
+                    </Typography>
                   </div>
                 }
               />
@@ -583,13 +671,17 @@ export const CippDomainCards = ({ domain: propDomain = "", fullwidth = false }) 
                 info={
                   <div>
                     <p>Nameservers:</p>
-                    <pre>{nsData?.Records.join("\n")}</pre>
+                    <pre>{nsData?.Records.join('\n')}</pre>
                   </div>
                 }
               />
             </Grid>
             <Grid size={{ md: gridItemSize, xs: 12 }}>
-              <MXResultsCard domain={domain} mxData={mxData} isFetching={mxLoading} />
+              <MXResultsCard
+                domain={domain}
+                mxData={mxData}
+                isFetching={mxLoading}
+              />
             </Grid>
             <Grid size={{ md: gridItemSize, xs: 12 }}>
               <DomainResultCard
@@ -633,7 +725,7 @@ export const CippDomainCards = ({ domain: propDomain = "", fullwidth = false }) 
               <DomainResultCard
                 title="DKIM Record"
                 data={dkimData}
-                type={"DKIM"}
+                type={'DKIM'}
                 isFetching={dkimLoading}
                 info={
                   <div>
@@ -651,7 +743,7 @@ export const CippDomainCards = ({ domain: propDomain = "", fullwidth = false }) 
             <Grid size={{ md: gridItemSize, xs: 12 }}>
               <DomainResultCard
                 title="DNSSEC"
-                type={"DNSSEC"}
+                type={'DNSSEC'}
                 data={dnssecData}
                 isFetching={dnssecLoading}
                 info={
@@ -674,7 +766,9 @@ export const CippDomainCards = ({ domain: propDomain = "", fullwidth = false }) 
                 info={
                   <div>
                     <p>MTA-STS Mode:</p>
-                    <CippCodeBlock code={mtastsData?.StsPolicy?.Mode || "No record found"} />
+                    <CippCodeBlock
+                      code={mtastsData?.StsPolicy?.Mode || 'No record found'}
+                    />
                     <ResultList
                       passes={mtastsData?.ValidationPasses}
                       warns={mtastsData?.ValidationWarns}
@@ -692,9 +786,11 @@ export const CippDomainCards = ({ domain: propDomain = "", fullwidth = false }) 
                 info={
                   <div>
                     <p>
-                      AutoDiscover ({autoDiscoverData?.RecordType || "None"}):
+                      AutoDiscover ({autoDiscoverData?.RecordType || 'None'}):
                     </p>
-                    <CippCodeBlock code={autoDiscoverData?.Record || "No record found"} />
+                    <CippCodeBlock
+                      code={autoDiscoverData?.Record || 'No record found'}
+                    />
                     <ResultList
                       passes={autoDiscoverData?.ValidationPasses}
                       warns={autoDiscoverData?.ValidationWarns}
@@ -727,5 +823,5 @@ export const CippDomainCards = ({ domain: propDomain = "", fullwidth = false }) 
         )}
       </Grid>
     </form>
-  );
-};
+  )
+}
