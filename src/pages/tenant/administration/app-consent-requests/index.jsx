@@ -67,6 +67,26 @@ const Page = () => {
 
   const actions = [
     {
+      label: "Approve",
+      type: "POST",
+      url: "/api/ExecApproveAppConsentRequest",
+      data: {
+        tenantFilter: tenantFilter,
+        appId: "appId",
+      },
+      confirmText: (row) =>
+        Array.isArray(row) && row.length !== 1
+          ? "Are you sure you want to approve the selected requests? This grants the requested permissions for all users in the tenant."
+          : `Are you sure you want to approve [appDisplayName]? This grants the following permissions for all users in the tenant: ${[
+              (Array.isArray(row) ? row[0] : row)?.scopes ?? [],
+            ]
+              .flat()
+              .join(", ")}`,
+      condition: (row) => row.requestStatus === "InProgress",
+      color: "info",
+      icon: <CippIcons.CheckCircle />,
+    },
+    {
       label: "Review in Entra",
       link: `https://entra.microsoft.com/${tenantFilter}/#view/Microsoft_AAD_IAM/StartboardApplicationsMenuBlade/~/AccessRequests`,
       pinned: true,
