@@ -18,6 +18,43 @@
     "mappingRequired": false
   },
   {
+    "name": "CyberDrain Managed Baselines",
+    "id": "CyberDrainManagedBaselines",
+    "type": "ManagedBaselines",
+    "cat": "Baselines",
+    "logo": "/assets/integrations/cipp-api.png",
+    "description": "Enable the Managed Baselines integration to use baselines published and maintained by CyberDrain, and to request a custom baseline for your MSP.",
+    "helpText": "Enter the API key from your Managed Baselines subscription. Once enabled, the Managed tab under Baselines lists CyberDrain's published baselines and lets you request a custom baseline for your MSP. CIPP only contacts the service while this integration is enabled.",
+    "upgradeUrl": "",
+    "links": [
+      {
+        "name": "Managed Baselines Documentation",
+        "url": "https://docs.cipp.app/user-documentation/cipp/integrations/managed-baselines"
+      }
+    ],
+    "SettingOptions": [
+      {
+        "type": "switch",
+        "name": "CyberDrainManagedBaselines.Enabled",
+        "label": "Enable Integration"
+      },
+      {
+        "type": "password",
+        "name": "CyberDrainManagedBaselines.APIKey",
+        "label": "Managed Baselines API Key",
+        "placeholder": "Enter your API key. Leave blank to keep your current key.",
+        "required": true,
+        "condition": {
+          "field": "CyberDrainManagedBaselines.Enabled",
+          "compareType": "is",
+          "compareValue": true,
+          "action": "disable"
+        }
+      }
+    ],
+    "mappingRequired": false
+  },
+  {
     "name": "Sherweb",
     "id": "Sherweb",
     "type": "Sherweb",

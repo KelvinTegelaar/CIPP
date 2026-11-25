@@ -43,6 +43,7 @@ import { switchVariableProblem } from '../../../components/CippBaselines/CippBas
 import { useCustomVariableOptions } from '../../../hooks/use-custom-variables'
 import { PermissionButton } from '../../../utils/permissions'
 import { ApiGetCall, ApiPostCall } from '../../../api/ApiCall'
+import { getCippError } from '../../../utils/get-cipp-error'
 import { parseCippDate } from '../../../utils/parse-cipp-date'
 import { CippApiResults } from '../../../components/CippComponents/CippApiResults'
 
@@ -1031,6 +1032,25 @@ const Page = () => {
     url: '/api/ListBaselines',
     queryKey: 'ListBaselines',
   })
+  // The baseline CyberDrain delivered for a custom managed baseline request loads like a
+  // clone: its content, with no save target, so the first save creates it.
+  const managedRequestId = router.query.managedRequest
+  const deliveredApi = ApiGetCall({
+    url: '/api/ListManagedBaselineRequests',
+    data: { requestId: managedRequestId, includeBaseline: true },
+    queryKey: `ManagedBaselineDelivery-${managedRequestId}`,
+    waiting: !!managedRequestId,
+  })
+  // The baseline Generate prepared from a tenant's recommendations loads the same way.
+  const recommendationTenant = router.query.recommendation
+  const recommendationApi = ApiGetCall({
+    url: '/api/ListManagedBaselineRecommendations',
+    data: { tenantFilter: recommendationTenant, draft: true },
+    queryKey: `ManagedBaselineRecommendationDraft-${recommendationTenant}`,
+    waiting: !!recommendationTenant,
+  })
+  const draftKey = managedRequestId ?? recommendationTenant
+  const draftApi = managedRequestId ? deliveredApi : recommendationApi
   // Saving a baseline invalidates every baseline-related query: the baselines list (direct
   // and table), all alignment views for every tenant, and the standards catalog.
   // The save runs inside a confirm dialog so its result (including the GitHub push
@@ -1055,7 +1075,11 @@ const Page = () => {
     setHasUnsavedChanges(false)
     // Re-baseline the form so isDirty clears after the save.
     formControl.reset(formControl.getValues())
-    if (router.query.id !== savedId || router.query.clone) {
+    if (
+      router.query.id !== savedId ||
+      router.query.clone ||
+      router.query.recommendation
+    ) {
       router.replace(
         { pathname: router.pathname, query: { id: savedId } },
         undefined,
@@ -1091,9 +1115,15 @@ const Page = () => {
   const catalogByName = Object.fromEntries(
     catalog.map((standard) => [standard.name, standard])
   )
-  const template = (baselinesApi.data ?? []).find(
-    (entry) => entry.GUID === router.query.id
-  )
+  // Once the delivery is saved the editor follows the saved baseline, even before the
+  // address has caught up with its id.
+  const template =
+    draftKey && !saveTargetId
+      ? draftApi.data?.Results
+      : (baselinesApi.data ?? []).find(
+          (entry) => entry.GUID === (draftKey ? saveTargetId : router.query.id)
+        )
+  const isDelivery = !!template && template === draftApi.data?.Results
   // A clone isn't pushed to the source repo yet, so it drops the synced badge/option.
   const templateSource = !router.query.clone && template?.source ? template.source : null
   const templateSourceUrl = !router.query.clone ? template?.sourceUrl : null
@@ -1125,7 +1155,7 @@ const Page = () => {
   // Render-phase reset (not an effect) so the switch happens before anything paints.
   if (template && template.GUID !== loadedTemplateId) {
     setLoadedTemplateId(template.GUID)
-    setSaveTargetId(router.query.clone ? null : template.GUID)
+    setSaveTargetId(router.query.clone || isDelivery ? null : template.GUID)
     setEditorGeneration((generation) => generation + 1)
     setStages(buildEditorStages(template))
     setActiveStage(keepActiveStage ? Math.min(activeStage, Math.max((template.stages?.length ?? 1) - 1, 0)) : 0)
@@ -1495,6 +1525,13 @@ const Page = () => {
         ...(dialogValues.saveToGitHub && templateSource
           ? { GitHub: { FullName: templateSource, Message: dialogValues.GitHubMessage } }
           : {}),
+        // The first save of a delivery says which request it came from and which version was reviewed.
+        ...(isDelivery
+          ? {
+              managedRequestId: template.managedRequestId,
+              managedVersion: template.managedVersion,
+            }
+          : {}),
     }
   }
   // Save reads the stage forms without validating them, and collapsed standards never mount their
@@ -1523,12 +1560,21 @@ const Page = () => {
     if (problems.length === 0) saveDialog.handleOpen()
   }
 
-  const pageTitle = template ? 'Edit Baseline' : 'Add Baseline'
+  const pageTitle = isDelivery
+    ? managedRequestId
+      ? 'Review Managed Baseline'
+      : 'Review Recommended Baseline'
+    : template
+      ? 'Edit Baseline'
+      : 'Add Baseline'
 
   return (
     <Box sx={{ flexGrow: 1, px: 3, maxWidth: '1900px' }}>
       <CippHead title={pageTitle} />
       <Stack spacing={2}>
+        {draftKey && draftApi.isError && (
+          <Alert severity="error">{getCippError(draftApi.error)}</Alert>
+        )}
         <Stack
           direction={{ xs: 'column', sm: 'row' }}
           spacing={{ xs: 2, sm: 4 }}

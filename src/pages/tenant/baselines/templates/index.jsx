@@ -30,6 +30,8 @@ import { describeStageConditions } from '../../../../components/CippBaselines/Ci
 import { parseCippDate } from '../../../../utils/parse-cipp-date'
 import { ApiGetCall, ApiPostCall } from '../../../../api/ApiCall'
 import { CippApiResults } from '../../../../components/CippComponents/CippApiResults'
+import { CippManagedBaselineSyncPreview } from '../../../../components/CippBaselines/CippManagedBaselineSyncPreview'
+import { CippManagedBaselineGuideTabs } from '../../../../components/CippBaselines/CippManagedBaselineGuide'
 
 // The API serializes single-element arrays as a bare object; the selector needs a real array.
 const asOptionArray = (value) =>
@@ -48,6 +50,9 @@ const Page = () => {
     url: '/api/ListExtensionsConfig',
     queryKey: 'Integrations',
   })
+  const managedEnabled =
+    integrations.isSuccess &&
+    integrations?.data?.CyberDrainManagedBaselines?.Enabled === true
   const migratePreview = ApiPostCall({
     onResult: (result) => {
       // Pre-select everything migratable; skipped/up-to-date rows stay untouched.
@@ -160,8 +165,52 @@ const Page = () => {
       ],
       confirmText:
         'Save [templateName] to the selected repository? This uploads the baseline AND every CA/Intune template it references as separate files. Template packages are expanded to their current members, and tenant assignments are replaced with a placeholder.',
-      condition: () =>
-        integrations.isSuccess && integrations?.data?.GitHub?.Enabled,
+      condition: (row) =>
+        integrations.isSuccess &&
+        integrations?.data?.GitHub?.Enabled &&
+        !row?.isManaged,
+    },
+    {
+      label: 'Align with CyberDrain baseline',
+      type: 'POST',
+      url: '/api/ExecManagedBaseline',
+      icon: <CippIcons.Sync />,
+      color: 'info',
+      data: { Action: '!Align', GUID: 'GUID' },
+      children: ({ formHook, row }) => (
+        <CippManagedBaselineSyncPreview
+          formHook={formHook}
+          row={row}
+          action="Align"
+        />
+      ),
+      confirmText:
+        "Align [templateName] with CyberDrain's baseline? Every standard and the stage layout are replaced with CyberDrain's, and standards only you have are removed. The name, tenants, exclusions and alerting stay as they are.",
+      multiPost: false,
+      hideBulk: true,
+      relatedQueryKeys: ['ListBaseline*', 'ListManagedBaseline*'],
+      condition: (row) => managedEnabled && row?.isManaged === true,
+    },
+    {
+      label: 'Merge with CyberDrain baseline',
+      type: 'POST',
+      url: '/api/ExecManagedBaseline',
+      icon: <CippIcons.CompareArrows />,
+      color: 'info',
+      data: { Action: '!Merge', GUID: 'GUID' },
+      children: ({ formHook, row }) => (
+        <CippManagedBaselineSyncPreview
+          formHook={formHook}
+          row={row}
+          action="Merge"
+        />
+      ),
+      confirmText:
+        "Merge CyberDrain's baseline into [templateName]? Standards you both have are overwritten with CyberDrain's settings. Standards only you have stay as they are.",
+      multiPost: false,
+      hideBulk: true,
+      relatedQueryKeys: ['ListBaseline*', 'ListManagedBaseline*'],
+      condition: (row) => managedEnabled && row?.isManaged === true,
     },
     {
       label: 'Delete Baseline',
@@ -187,7 +236,7 @@ const Page = () => {
         (acc, stage) => acc + stage.tenants.length,
         0
       )
-      return (
+      const details = (
         <Stack spacing={0}>
           <Stack
             spacing={0}
@@ -210,6 +259,12 @@ const Page = () => {
                   : 'N/A',
               },
               { label: 'Updated By', value: row.updatedBy },
+              ...(row.isManaged
+                ? [
+                    { label: 'Managed By', value: 'CyberDrain' },
+                    { label: 'CyberDrain Version', value: row.managedVersion },
+                  ]
+                : []),
             ].map(({ label, value }) => (
               <Box
                 key={label}
@@ -355,6 +410,13 @@ const Page = () => {
           </Stack>
         </Stack>
       );
+      return row.isManaged && managedEnabled ? (
+        <CippManagedBaselineGuideTabs key={row.GUID} guid={row.GUID}>
+          {details}
+        </CippManagedBaselineGuideTabs>
+      ) : (
+        details
+      )
     },
   }
 
@@ -372,6 +434,11 @@ const Page = () => {
     {
       filterName: 'Not synced',
       value: [{ id: 'isSynced', value: 'No' }],
+      type: 'column',
+    },
+    {
+      filterName: 'Managed by CyberDrain',
+      value: [{ id: 'isManaged', value: 'Yes' }],
       type: 'column',
     },
   ]

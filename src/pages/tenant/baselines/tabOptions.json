@@ -13,5 +13,10 @@
     "label": "Baselines",
     "path": "/tenant/baselines/templates",
     "icon": "Description"
+  },
+  {
+    "label": "Managed",
+    "path": "/tenant/baselines/managed",
+    "icon": "VerifiedUser"
   }
 ]
