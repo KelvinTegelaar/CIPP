@@ -338,6 +338,16 @@
             "value": "Add service principal.",
             "label": "Add service principal."
           }
+        },
+        {
+          "Property": { "value": "String", "label": "CIPPMicrosoftApp" },
+          "Operator": { "value": "ne", "label": "Not Equals to" },
+          "Input": { "value": "true" }
+        },
+        {
+          "Property": { "value": "String", "label": "ResultStatus" },
+          "Operator": { "value": "ne", "label": "Not Equals to" },
+          "Input": { "value": "Failure" }
         }
       ]
     }
