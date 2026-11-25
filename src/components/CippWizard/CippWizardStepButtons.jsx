@@ -21,6 +21,7 @@ export const CippWizardStepButtons = (props) => {
     queryKeys,
     jobProgress,
     onSubmit,
+    onSuccess,
     ...other
   } = props;
   const { isValid, isSubmitted, isSubmitting } = useFormState({ control: formControl.control });
@@ -47,7 +48,11 @@ export const CippWizardStepButtons = (props) => {
       }
     });
     onSubmit?.();
-    sendForm.mutate({ url: postUrl, data: newData });
+    // onSuccess gets the response and the data that was posted, for a step that queues a follow-up.
+    sendForm.mutate(
+      { url: postUrl, data: newData },
+      onSuccess ? { onSuccess: (response) => onSuccess(response, newData) } : undefined
+    );
   };
 
   const buttonStack = (

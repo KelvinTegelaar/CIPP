@@ -480,6 +480,12 @@ export const createComponents = () => {
           padding: 0,
           width: 44,
         },
+        sizeSmall: {
+          // The track is the same width at both sizes, so the small thumb travels as far as the standard one.
+          [`& .${switchClasses.switchBase}.${switchClasses.checked}`]: {
+            transform: "translateX(20px)",
+          },
+        },
         switchBase: {
           padding: 4,
           "&:hover": {

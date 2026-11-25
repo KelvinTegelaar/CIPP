@@ -40,6 +40,19 @@ export const OFFBOARDING_PROGRESS_ACTIONS = {
   },
 }
 
+// The onboarding job takes the same re-run requests on its own endpoint.
+export const ONBOARDING_PROGRESS_ACTIONS = {
+  ...OFFBOARDING_PROGRESS_ACTIONS,
+  rerun: {
+    ...OFFBOARDING_PROGRESS_ACTIONS.rerun,
+    url: '/api/ExecOnboardUser?Action=Rerun',
+  },
+  rerunStep: {
+    ...OFFBOARDING_PROGRESS_ACTIONS.rerunStep,
+    url: '/api/ExecOnboardUser?Action=RerunStep',
+  },
+}
+
 const capitalize = (text) =>
   typeof text === 'string' && text.length > 0
     ? text.charAt(0).toUpperCase() + text.slice(1)
@@ -223,6 +236,7 @@ export const CippJobProgress = ({ rows, onRerun, actions }) => {
           row={pending.row}
           relatedQueryKeys={[
             'OffboardingJobs*',
+            'OnboardingJobs*',
             'ListScheduledItems*',
             'ListScheduledItemDetails*',
           ]}

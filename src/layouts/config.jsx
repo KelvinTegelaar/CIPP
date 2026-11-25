@@ -83,6 +83,11 @@ export const nativeMenuItems = [
             permissions: ['Identity.User.*'],
           },
           {
+            title: 'Onboarding Wizard',
+            path: '/identity/administration/onboarding-wizard',
+            permissions: ['Identity.User.*'],
+          },
+          {
             title: 'Offboarding Wizard',
             path: '/identity/administration/offboarding-wizard',
             permissions: ['Identity.User.*'],

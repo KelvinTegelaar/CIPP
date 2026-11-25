@@ -35,6 +35,7 @@ const CippWizardPage = (props) => {
     dialogIcon,
     relatedQueryKeys,
     completionButton,
+    initialStep,
     ...other
   } = props;
 
@@ -48,6 +49,7 @@ const CippWizardPage = (props) => {
       initialState={initialState}
       orientation={wizardOrientation}
       steps={steps}
+      initialStep={initialStep}
     />
   );
 

@@ -12,8 +12,12 @@ export const CippWizardOptionsList = (props) => {
     currentStep,
     onPreviousStep,
     name = "selectedOption",
+    // Keep the rest of the wizard's form (and show its current choice) instead of resetting it.
+    keepFormValues = false,
   } = props;
-  const [selectedOption, setSelectedOption] = useState(null);
+  const [selectedOption, setSelectedOption] = useState(
+    keepFormValues ? (formControl.getValues(name) ?? null) : null
+  );
   // Register the name field in react-hook-form
   formControl.register(name, {
     required: true,
@@ -26,10 +30,12 @@ export const CippWizardOptionsList = (props) => {
     const formEntries = Object.entries(formValues);
     const formKeys = formEntries.map(([key]) => key);
     const hasMoreThanSelectedOption = formKeys.length > 1;
-    if (hasMoreThanSelectedOption) {
+    if (keepFormValues) {
+      formControl.trigger(name);
+    } else if (hasMoreThanSelectedOption) {
       formControl.reset({ selectedOption: "" });
     }
-  }, [formControl]);
+  }, [formControl, keepFormValues]);
 
   const handleOptionClick = (value) => {
     setSelectedOption(value); // Visually select the option

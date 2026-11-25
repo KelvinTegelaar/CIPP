@@ -10,6 +10,7 @@ export const CippWizard = (props) => {
     orientation = "horizontal", 
     steps,
     contentMaxWidth = "md",
+    initialStep = 0,
   } = props;
   
   const formControl = useForm({ mode: "onChange", defaultValues: props.initialState });
@@ -29,7 +30,7 @@ export const CippWizard = (props) => {
     });
   }, [steps, formWatcher]);
 
-  const [activeStep, setActiveStep] = useState(0);
+  const [activeStep, setActiveStep] = useState(initialStep);
   const handleBack = useCallback(() => {
     setActiveStep((prevState) => (prevState > 0 ? prevState - 1 : prevState));
   }, []);

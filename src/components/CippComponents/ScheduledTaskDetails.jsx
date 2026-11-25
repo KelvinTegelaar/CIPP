@@ -24,7 +24,12 @@ import { CippTimeAgo } from "./CippTimeAgo";
 import { ActionsMenu } from "../actions-menu";
 import { CippScheduledTaskActions } from "./CippScheduledTaskActions";
 import { CippApiLogsDrawer } from "./CippApiLogsDrawer";
-import { CippJobProgress, formatJobProgressText, OFFBOARDING_PROGRESS_ACTIONS } from "./CippJobProgress";
+import {
+  CippJobProgress,
+  formatJobProgressText,
+  OFFBOARDING_PROGRESS_ACTIONS,
+  ONBOARDING_PROGRESS_ACTIONS,
+} from "./CippJobProgress";
 import { CippCopyToClipBoard } from "./CippCopyToClipboard";
 import { mergeRow, useCraftJobEvents } from "../../hooks/use-craft-events";
 import { useQueryClient } from "@tanstack/react-query";
@@ -196,9 +201,10 @@ const ScheduledTaskDetails = ({ data, showActions = true, showTitle = true }) =>
                   rows={progressRows}
                   onRerun={() => taskDetailResults.refetch()}
                   actions={
-                    taskDetails?.Task?.Command === "Invoke-CIPPOffboardingJob"
-                      ? OFFBOARDING_PROGRESS_ACTIONS
-                      : undefined
+                    {
+                      "Invoke-CIPPOffboardingJob": OFFBOARDING_PROGRESS_ACTIONS,
+                      "Invoke-CIPPOnboardingJob": ONBOARDING_PROGRESS_ACTIONS,
+                    }[taskDetails?.Task?.Command]
                   }
                 />
               )}
