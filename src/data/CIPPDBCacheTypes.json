@@ -473,6 +473,11 @@
     "description": "Devices in Microsoft Defender for Endpoint with their health and antivirus status"
   },
   {
+    "type": "DefenderIndicators",
+    "friendlyName": "Defender Indicators",
+    "description": "Custom file, certificate, IP, URL and domain indicators in Microsoft Defender for Endpoint"
+  },
+  {
     "type": "IntuneAppInstallStatus",
     "friendlyName": "Intune App Install Status",
     "description": "Per-application install status rollup (failed/installed/pending device counts) from the AppInstallStatusAggregate report"
