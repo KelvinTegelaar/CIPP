@@ -419,6 +419,12 @@ export const getAppRegistrationPostAndDestructiveActions = (canWriteApplication,
         'passwordCredentials',
         'Tenant',
         'CippStatus',
+        'signInActivity',
+        'lastSignInDateTime',
+        'daysSinceLastSignIn',
+        'lastCredentialSignInDateTime',
+        'unusedCredentialCount',
+        'credentialUse',
       ]
 
       const cleanManifest = { ...row }
