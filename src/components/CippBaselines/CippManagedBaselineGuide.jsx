@@ -143,6 +143,7 @@ export const CippManagedBaselineGuide = ({ id, requestId, guid }) => {
                     <Stack
                       direction="row"
                       spacing={1}
+                      useFlexGap
                       sx={{ alignItems: 'center', flexWrap: 'wrap' }}
                     >
                       <Typography variant="subtitle2">
