@@ -13,18 +13,18 @@ import {
 } from '@mui/material'
 import { useSettings } from '../../hooks/use-settings'
 import { ServerPdfPane, useServerPdf } from './useServerPdf'
-import { useBrandingSettings } from './useBrandingSettings'
+import { useBrandingQuery } from './useBrandingSettings'
 
 // The report PDF is rendered server-side (ExecGetSharingReportPdf) by the shared CIPPSharp component
 // kit; the button fetches the finished PDF as a blob for preview and download.
 export const SharingReportButton = ({ sharingData, tenantName }) => {
   const [dialogOpen, setDialogOpen] = useState(false)
   const tenantFilter = useSettings().currentTenant
-  const branding = useBrandingSettings()
+  const { branding, ready: brandingReady } = useBrandingQuery()
   const hasData = !!sharingData?.summary
   const pdf = useServerPdf({
     url: `/api/ExecGetSharingReportPdf?tenantFilter=${encodeURIComponent(tenantFilter)}&brandingPresetId=${encodeURIComponent(branding?.reportDefaults?.sharing ?? '')}`,
-    enabled: dialogOpen,
+    enabled: dialogOpen && brandingReady,
   })
   const handleOpen = () => setDialogOpen(true)
   const handleClose = () => setDialogOpen(false)
@@ -73,6 +73,7 @@ export const SharingReportButton = ({ sharingData, tenantName }) => {
         <DialogContent dividers sx={{ p: 0 }}>
           <ServerPdfPane
             {...pdf}
+            loading={pdf.loading || !brandingReady}
             title={`Sharing Report - ${tenantName}`}
             errorText="The report could not be generated. Ensure the sharing data has been synced for this tenant."
           />

@@ -13,7 +13,7 @@ import {
 } from '@mui/material'
 import { useSettings } from '../../hooks/use-settings'
 import { ServerPdfPane, useServerPdf } from './useServerPdf'
-import { useBrandingSettings } from './useBrandingSettings'
+import { useBrandingQuery } from './useBrandingSettings'
 
 // The report PDF is rendered server-side (ExecGetMailFlowReportPdf) by the shared CIPPSharp component
 // kit, which re-gathers and aggregates the mail flow data; the button fetches the finished PDF as a
@@ -21,12 +21,12 @@ import { useBrandingSettings } from './useBrandingSettings'
 export const MailFlowReportButton = ({ mailFlowData, tenantName, disabled = false }) => {
   const [dialogOpen, setDialogOpen] = useState(false)
   const tenantFilter = useSettings().currentTenant
-  const branding = useBrandingSettings()
+  const { branding, ready: brandingReady } = useBrandingQuery()
   const days = Number(mailFlowData?.days) || 14
   const hasData = Object.keys(mailFlowData?.totals ?? {}).length > 0
   const pdf = useServerPdf({
     url: `/api/ExecGetMailFlowReportPdf?tenantFilter=${encodeURIComponent(tenantFilter)}&days=${days}&brandingPresetId=${encodeURIComponent(branding?.reportDefaults?.mailFlow ?? '')}`,
-    enabled: dialogOpen,
+    enabled: dialogOpen && brandingReady,
   })
   const handleOpen = () => setDialogOpen(true)
   const handleClose = () => setDialogOpen(false)
@@ -75,6 +75,7 @@ export const MailFlowReportButton = ({ mailFlowData, tenantName, disabled = fals
         <DialogContent dividers sx={{ p: 0 }}>
           <ServerPdfPane
             {...pdf}
+            loading={pdf.loading || !brandingReady}
             title={`Mail Flow Report - ${tenantName}`}
             errorText="The report could not be generated. Mail flow data is read live from Exchange Online for this tenant."
           />

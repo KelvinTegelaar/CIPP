@@ -17,7 +17,7 @@ import {
 import { CippAutoComplete } from '../CippComponents/CippAutocomplete'
 import { CippOffCanvas } from '../CippComponents/CippOffCanvas'
 import { ServerPdfPane, useServerPdf } from '../CippPdf/useServerPdf'
-import { useBrandingSettings } from '../CippPdf/useBrandingSettings'
+import { useBrandingQuery } from '../CippPdf/useBrandingSettings'
 import { DEFAULT_BRANDING_OPTION } from '../ReportBuilder/reportSettings'
 import { ApiGetCall } from '../../api/ApiCall'
 
@@ -109,7 +109,7 @@ export const CippBaselineWhatIfReport = ({
   // Null until the operator picks one, so the branding setting for this report type keeps
   // applying as it changes. An explicit choice - including "Default" - wins from then on.
   const [presetOverride, setPresetOverride] = useState(null)
-  const defaultBranding = useBrandingSettings()
+  const { branding: defaultBranding, ready: brandingReady } = useBrandingQuery()
   const brandingPresetId =
     presetOverride ?? defaultBranding?.reportDefaults?.baseline ?? ''
 
@@ -147,7 +147,7 @@ export const CippBaselineWhatIfReport = ({
       sectionConfig,
       brandingPresetId,
     },
-    enabled: open,
+    enabled: open && brandingReady,
   })
 
   const fileName = `Baseline_Report_${tenantLabel.replace(/[^a-zA-Z0-9]/g, '_')}_${
@@ -348,6 +348,7 @@ export const CippBaselineWhatIfReport = ({
           <Box sx={{ flex: 1, height: '100%', minWidth: 0 }}>
             <ServerPdfPane
               {...pdf}
+              loading={pdf.loading || !brandingReady}
               title={`Baseline Report - ${tenantLabel}`}
               errorText="The report could not be generated. Run the baseline for this tenant and try again."
             />

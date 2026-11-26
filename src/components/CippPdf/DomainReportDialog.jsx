@@ -13,17 +13,18 @@ import {
 } from '@mui/material'
 import { CippIcons } from '../../utils/icon-registry'
 import { ServerPdfPane, useServerPdf } from './useServerPdf'
-import { useBrandingSettings } from './useBrandingSettings'
+import { useBrandingQuery } from './useBrandingSettings'
 import { isMultiTenant } from '../../utils/tenant-selection'
 
 // Rendered server-side (ExecGetDomainReportPdf) from the stored Domain Analyser results for every domain
 // in the tenant; no DNS lookups run, so the report is as current as the last analysis.
 export const DomainReportDialog = ({ tenantFilter, open, onClose }) => {
   const [includeDetails, setIncludeDetails] = useState(true)
-  const branding = useBrandingSettings({ waiting: open })
+  const { branding, ready: brandingReady } = useBrandingQuery({ waiting: open })
   const pdf = useServerPdf({
     url: `/api/ExecGetDomainReportPdf?tenantFilter=${encodeURIComponent(tenantFilter ?? '')}&includeDetails=${includeDetails}&brandingPresetId=${encodeURIComponent(branding?.reportDefaults?.domain ?? '')}`,
-    enabled: open && !!tenantFilter && !isMultiTenant(tenantFilter),
+    enabled:
+      open && brandingReady && !!tenantFilter && !isMultiTenant(tenantFilter),
   })
   const fileName = `Domain_Security_Assessment_${(tenantFilter || 'tenant').replace(/[^a-zA-Z0-9]/g, '_')}_${new Date().toISOString().split('T')[0]}.pdf`
 
@@ -54,6 +55,7 @@ export const DomainReportDialog = ({ tenantFilter, open, onClose }) => {
       <DialogContent dividers sx={{ p: 0 }}>
         <ServerPdfPane
           {...pdf}
+          loading={pdf.loading || (open && !brandingReady)}
           title={`Domain Security Report - ${tenantFilter}`}
           errorText={
             pdf.error === 404

@@ -18,7 +18,7 @@ import {
 import { CippOffCanvas } from './CippComponents/CippOffCanvas'
 import { useSettings } from '../hooks/use-settings'
 import { ServerPdfPane, useServerPdf } from './CippPdf/useServerPdf'
-import { useBrandingSettings } from './CippPdf/useBrandingSettings'
+import { useBrandingQuery } from './CippPdf/useBrandingSettings'
 
 const sectionOptions = [
   {
@@ -70,7 +70,7 @@ const sectionOptions = [
 
 export const ShadowAIReportButton = ({ data, tenantName, disabled }) => {
   const tenantFilter = useSettings().currentTenant
-  const branding = useBrandingSettings()
+  const { branding, ready: brandingReady } = useBrandingQuery()
   const [previewOpen, setPreviewOpen] = useState(false)
   // Below md the 320px config rail would leave the preview about 70px wide, so it moves into
   // a drawer and the preview takes the whole dialog. Same treatment as the executive report.
@@ -107,7 +107,7 @@ export const ShadowAIReportButton = ({ data, tenantName, disabled }) => {
       sectionConfig,
       brandingPresetId: branding?.reportDefaults?.shadowAI ?? '',
     },
-    enabled: previewOpen,
+    enabled: previewOpen && brandingReady,
   })
 
   const fileName = `Shadow_AI_Report_${String(tenantName).replace(/[^a-zA-Z0-9]/g, '_')}_${
@@ -284,6 +284,7 @@ export const ShadowAIReportButton = ({ data, tenantName, disabled }) => {
           <Box sx={{ flex: 1, height: '100%', minWidth: 0 }}>
             <ServerPdfPane
               {...pdf}
+              loading={pdf.loading || !brandingReady}
               title={`Shadow AI Report - ${tenantName}`}
               errorText="The report could not be generated. Ensure the Shadow AI data has been synced for this tenant."
             />

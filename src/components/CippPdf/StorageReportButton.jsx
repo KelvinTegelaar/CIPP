@@ -13,16 +13,16 @@ import {
 } from '@mui/material'
 import { useSettings } from '../../hooks/use-settings'
 import { ServerPdfPane, useServerPdf } from './useServerPdf'
-import { useBrandingSettings } from './useBrandingSettings'
+import { useBrandingQuery } from './useBrandingSettings'
 
 // Rendered server-side by ExecGetStorageReportPdf from the cached usage sync and cleanup scan.
 export const StorageReportButton = ({ tenantName, disabled = false }) => {
   const [dialogOpen, setDialogOpen] = useState(false)
   const tenantFilter = useSettings().currentTenant
-  const branding = useBrandingSettings()
+  const { branding, ready: brandingReady } = useBrandingQuery()
   const pdf = useServerPdf({
     url: `/api/ExecGetStorageReportPdf?tenantFilter=${encodeURIComponent(tenantFilter)}&brandingPresetId=${encodeURIComponent(branding?.reportDefaults?.storage ?? '')}`,
-    enabled: dialogOpen,
+    enabled: dialogOpen && brandingReady,
   })
   const handleClose = () => setDialogOpen(false)
   const fileName = `Storage_Report_${(tenantName || 'report').replace(/[^a-zA-Z0-9]/g, '_')}_${new Date().toISOString().split('T')[0]}.pdf`
@@ -69,6 +69,7 @@ export const StorageReportButton = ({ tenantName, disabled = false }) => {
         <DialogContent dividers sx={{ p: 0 }}>
           <ServerPdfPane
             {...pdf}
+            loading={pdf.loading || !brandingReady}
             title={`Storage Report - ${tenantName}`}
             errorText="The report could not be generated. Ensure the storage usage has been synced for this tenant."
           />

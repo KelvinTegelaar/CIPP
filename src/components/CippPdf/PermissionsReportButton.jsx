@@ -13,18 +13,18 @@ import {
 } from '@mui/material'
 import { useSettings } from '../../hooks/use-settings'
 import { ServerPdfPane, useServerPdf } from './useServerPdf'
-import { useBrandingSettings } from './useBrandingSettings'
+import { useBrandingQuery } from './useBrandingSettings'
 
 // The report PDF is rendered server-side (ExecGetPermissionsReportPdf) by the shared CIPPSharp
 // component kit; the button fetches the finished PDF as a blob for preview and download.
 export const PermissionsReportButton = ({ permissionsData, tenantName }) => {
   const [dialogOpen, setDialogOpen] = useState(false)
   const tenantFilter = useSettings().currentTenant
-  const branding = useBrandingSettings()
+  const { branding, ready: brandingReady } = useBrandingQuery()
   const hasData = !!permissionsData?.summary
   const pdf = useServerPdf({
     url: `/api/ExecGetPermissionsReportPdf?tenantFilter=${encodeURIComponent(tenantFilter)}&brandingPresetId=${encodeURIComponent(branding?.reportDefaults?.permissions ?? '')}`,
-    enabled: dialogOpen,
+    enabled: dialogOpen && brandingReady,
   })
   const handleOpen = () => setDialogOpen(true)
   const handleClose = () => setDialogOpen(false)
@@ -73,6 +73,7 @@ export const PermissionsReportButton = ({ permissionsData, tenantName }) => {
         <DialogContent dividers sx={{ p: 0 }}>
           <ServerPdfPane
             {...pdf}
+            loading={pdf.loading || !brandingReady}
             title={`Permissions Report - ${tenantName}`}
             errorText="The report could not be generated. Ensure the permissions data has been synced for this tenant."
           />
