@@ -8,8 +8,15 @@ import { useCustomVariableOptions } from '../../hooks/use-custom-variables'
 
 // Map an effective expected value back onto the standard's variables, so forms can be
 // pre-filled with what is currently applied (e.g. when creating a tenant override).
-export const variableValuesFromExpected = (standard, expectedValue) => {
+export const variableValuesFromExpected = (standard, expectedValue, tierValue) => {
   const values = {}
+  // A standard without an expected template keeps its configured settings on the tier itself.
+  if (!standard?.expected) {
+    Object.keys(standard?.variables ?? {}).forEach((key) => {
+      if (tierValue?.[key] !== undefined) values[key] = tierValue[key]
+    })
+    return values
+  }
   Object.entries(standard?.expected ?? {}).forEach(([key, template]) => {
     if (typeof template === 'string') {
       const match = template.match(/^%(\w+)%$/)

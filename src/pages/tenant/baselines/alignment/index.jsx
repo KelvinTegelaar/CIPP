@@ -1168,7 +1168,8 @@ const Page = () => {
               namePrefix="variables"
               initialValues={variableValuesFromExpected(
                 standard,
-                row.expectedValue
+                row.expectedValue,
+                (row.inheritance ?? []).find((tier) => tier.effective)?.value
               )}
             />
             <CippFormComponent
