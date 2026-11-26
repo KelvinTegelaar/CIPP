@@ -665,7 +665,7 @@ export const useCippUserActions = () => {
       //tested
       label: 'Create Temporary Access Pass',
       type: 'POST',
-      icon: <CippIcons.Password />,
+      icon: <CippIcons.Key />,
       url: '/api/ExecCreateTAP',
       data: { ID: 'userPrincipalName' },
       children: ({ formHook, row }) => <TemporaryAccessPassForm formControl={formHook} row={row} />,
@@ -701,7 +701,7 @@ export const useCippUserActions = () => {
       //tested
       label: 'Set Per-User MFA',
       type: 'POST',
-      icon: <CippIcons.LockPerson />,
+      icon: <CippIcons.Fingerprint />,
       url: '/api/ExecPerUserMFA',
       data: { userId: 'id', userPrincipalName: 'userPrincipalName' },
       fields: [
@@ -727,7 +727,7 @@ export const useCippUserActions = () => {
       //tested
       label: 'Convert Mailbox',
       type: 'POST',
-      icon: <CippIcons.Email />,
+      icon: <CippIcons.SwapHoriz />,
       url: '/api/ExecConvertMailbox',
       data: { ID: 'userPrincipalName' },
       fields: [
@@ -857,7 +857,7 @@ export const useCippUserActions = () => {
       label: 'Manage Licenses',
       type: 'POST',
       url: '/api/ExecBulkLicense',
-      icon: <CippIcons.CloudDone />,
+      icon: <CippIcons.CardMembership />,
       data: { userIds: 'id' },
       multiPost: true,
       allowResubmit: true,
@@ -979,7 +979,7 @@ export const useCippUserActions = () => {
     {
       label: 'Migrate OneDrive Shortcuts',
       type: 'POST',
-      icon: <CippIcons.Shortcut />,
+      icon: <CippIcons.FolderOpen />,
       url: '/api/ExecMigrateOneDriveShortCuts',
       data: {
         username: 'userPrincipalName',
@@ -1195,7 +1195,7 @@ export const useCippUserActions = () => {
     {
       label: 'Reprocess License Assignments',
       type: 'POST',
-      icon: <CippIcons.CloudDone />,
+      icon: <CippIcons.Autorenew />,
       url: '/api/ExecReprocessUserLicenses',
       data: { ID: 'id', userPrincipalName: 'userPrincipalName' },
       confirmText:
