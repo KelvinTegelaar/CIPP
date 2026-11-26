@@ -31,12 +31,14 @@ export const CippExchangeInfoCard = (props) => {
     {
       // SMTP client auth is inverted: true = disabled (secure), false = enabled (risk),
       // null = unknown. Label spells out the state so a green chip isn't misread as "on".
+      // The backend fills an unset mailbox value from the tenant default and flags it inherited.
       name:
         exchangeData?.SmtpClientAuthenticationDisabled == null
           ? 'SMTP Unknown'
-          : exchangeData?.SmtpClientAuthenticationDisabled === false
-            ? 'SMTP Enabled'
-            : 'SMTP Disabled',
+          : (exchangeData?.SmtpClientAuthenticationDisabled === false
+              ? 'SMTP Enabled'
+              : 'SMTP Disabled') +
+            (exchangeData?.SmtpClientAuthenticationInherited ? ' (tenant default)' : ''),
       enabled: exchangeData?.SmtpClientAuthenticationDisabled === false,
       unknown: exchangeData?.SmtpClientAuthenticationDisabled == null,
       riskWhenEnabled: true,

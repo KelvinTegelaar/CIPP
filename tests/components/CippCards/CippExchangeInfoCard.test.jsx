@@ -23,6 +23,25 @@ const externalForward = {
   },
 }
 
+describe('CippExchangeInfoCard SMTP client auth chip', () => {
+  it.each([
+    [{ SmtpClientAuthenticationDisabled: true }, 'SMTP Disabled'],
+    [{ SmtpClientAuthenticationDisabled: false }, 'SMTP Enabled'],
+    [
+      { SmtpClientAuthenticationDisabled: true, SmtpClientAuthenticationInherited: true },
+      'SMTP Disabled (tenant default)',
+    ],
+    [
+      { SmtpClientAuthenticationDisabled: false, SmtpClientAuthenticationInherited: true },
+      'SMTP Enabled (tenant default)',
+    ],
+    [{ SmtpClientAuthenticationDisabled: null }, 'SMTP Unknown'],
+  ])('renders %o as "%s"', (exchangeData, label) => {
+    renderWithTheme(<CippExchangeInfoCard exchangeData={exchangeData} />)
+    expect(screen.getByText(label)).toBeInTheDocument()
+  })
+})
+
 describe('CippExchangeInfoCard forwarding status', () => {
   it('labels an internal forward resolved to a UPN as internal', () => {
     renderWithTheme(<CippExchangeInfoCard exchangeData={internalForward} />)
