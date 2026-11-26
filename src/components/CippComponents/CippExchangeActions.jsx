@@ -14,6 +14,22 @@ const timezoneOptions = timezoneList.map((tz) => ({
   value: tz.standardTime,
 }));
 
+const calendarPermissionLevels = [
+  { value: "Author", label: "Author" },
+  { value: "Contributor", label: "Contributor" },
+  { value: "Editor", label: "Editor" },
+  { value: "Owner", label: "Owner" },
+  { value: "NonEditingAuthor", label: "Non Editing Author" },
+  { value: "PublishingAuthor", label: "Publishing Author" },
+  { value: "PublishingEditor", label: "Publishing Editor" },
+  { value: "Reviewer", label: "Reviewer" },
+  { value: "LimitedDetails", label: "Limited Details" },
+  { value: "AvailabilityOnly", label: "Availability Only" },
+];
+
+// Exchange only sends a sharing notification for these levels
+const notifyLevels = ["AvailabilityOnly", "LimitedDetails", "Reviewer", "Editor"];
+
 export const CippExchangeActions = () => {
   const tenant = useSettings().currentTenant;
 
@@ -132,6 +148,66 @@ export const CippExchangeActions = () => {
 
         return {
           mailboxRequests: bulkRequestData,
+          ...tenantScope(tenant),
+        };
+      },
+      color: "primary",
+    },
+    {
+      label: "Bulk Add Calendar Permissions",
+      type: "POST",
+      url: "/api/ExecModifyCalPerms",
+      icon: <CippIcons.CalendarMonth />,
+      confirmText: "Add the specified calendar permissions to the selected mailboxes?",
+      multiPost: false,
+      fields: [
+        {
+          type: "autoComplete",
+          name: "calendarUsers",
+          label: "Users to give access",
+          multiple: true,
+          creatable: false,
+          api: userApiConfig,
+          validators: { required: "Select at least one user" },
+        },
+        {
+          type: "autoComplete",
+          name: "permissionLevel",
+          label: "Permission Level",
+          multiple: false,
+          creatable: false,
+          validators: { required: "Select a permission level" },
+          options: calendarPermissionLevels,
+        },
+        {
+          type: "switch",
+          name: "canViewPrivateItems",
+          label: "Delegate with private item access",
+          condition: { field: "permissionLevel", compareType: "valueEq", compareValue: "Editor" },
+        },
+        {
+          type: "switch",
+          name: "sendNotification",
+          label:
+            "Send notification (Availability Only, Limited Details, Reviewer and Editor only)",
+        },
+      ],
+      customDataformatter: (rows, action, formData) => {
+        const mailboxArray = Array.isArray(rows) ? rows : [rows];
+        const level = formData.permissionLevel?.value;
+        const permission = {
+          UserID: formData.calendarUsers,
+          PermissionLevel: level,
+          Modification: "Add",
+          CanViewPrivateItems: level === "Editor" && !!formData.canViewPrivateItems,
+          SendNotificationToUser: notifyLevels.includes(level) && !!formData.sendNotification,
+        };
+        return {
+          mailboxRequests: mailboxArray.map((mailbox) => ({
+            // The object id skips a lookup and is never ambiguous
+            userID: mailbox.ExternalDirectoryObjectId || mailbox.UPN,
+            permissions: [permission],
+          })),
           ...tenantScope(tenant),
         };
       },
