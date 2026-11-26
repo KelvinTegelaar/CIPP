@@ -19,6 +19,7 @@ import {
   Typography,
 } from '@mui/material'
 import { getStandards } from '../../../../utils/standards-data'
+import { CippStandardsBaselineAlert } from '../../../../components/CippStandards/CippStandardsBaselineAlert.jsx'
 
 const complianceColors = {
   compliant: 'success',
@@ -937,6 +938,7 @@ const Page = () => {
       data={isByStandard ? byStandardData : undefined}
       isFetching={isByStandard && byStandardIsFetching}
       tenantInTitle={false}
+      tableFilter={<CippStandardsBaselineAlert />}
       actions={isGranular ? granularActions : isSummary ? summaryActions : undefined}
       filters={
         isGranular ? granularFilterList : isByStandard ? byStandardFilterList : summaryFilterList

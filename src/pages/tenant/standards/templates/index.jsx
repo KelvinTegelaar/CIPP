@@ -11,6 +11,7 @@ import tabOptions from '../tabOptions.json'
 import { CippPolicyImportDrawer } from '../../../../components/CippComponents/CippPolicyImportDrawer.jsx'
 import { PermissionButton } from '../../../../utils/permissions'
 import { CippFormTemplateTenantSelector } from '../../../../components/CippComponents/CippFormTemplateTenantSelector.jsx'
+import { CippStandardsBaselineAlert } from '../../../../components/CippStandards/CippStandardsBaselineAlert.jsx'
 
 const Page = () => {
   const oldStandards = ApiGetCall({ url: '/api/ListStandards', queryKey: 'ListStandards-legacy' })
@@ -195,6 +196,7 @@ const Page = () => {
 
   const tableFilter = (
     <div>
+      <CippStandardsBaselineAlert />
       {oldStandards.isSuccess && oldStandards.data.length !== 0 && (
         <Grid container spacing={2}>
           <Grid container spacing={2}>
