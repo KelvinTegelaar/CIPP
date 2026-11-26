@@ -118,6 +118,14 @@ const Page = () => {
     waiting: waiting,
   })
 
+  const mobileDevicesRequest = ApiGetCall({
+    url: `/api/ListMailboxMobileDevices?tenantFilter=${userSettingsDefaults.currentTenant}&Mailbox=${encodeURIComponent(
+      graphUserRequest.data?.[0]?.userPrincipalName ?? ''
+    )}`,
+    queryKey: `MobileDevices-${userSettingsDefaults.currentTenant}-${userId}`,
+    waiting: waiting && !!graphUserRequest.data?.[0]?.userPrincipalName,
+  })
+
   const junkEmailConfigRequest = ApiGetCall({
     url: `/api/ListUserTrustedBlockedSenders?UserId=${userId}&userPrincipalName=${graphUserRequest.data?.[0]?.userPrincipalName}&tenantFilter=${userSettingsDefaults.currentTenant}`,
     queryKey: `TrustedBlockedSenders-${userId}`,
@@ -1355,6 +1363,135 @@ const Page = () => {
     },
   ]
 
+  const mobileDeviceWipePending = (row) =>
+    !!row?.accountOnlyWipeRequestTime &&
+    (!row.accountOnlyWipeAckTime || row.accountOnlyWipeAckTime < row.accountOnlyWipeRequestTime)
+
+  const mobileDeviceAction = (label, icon, flags, confirmText, extra = {}) => ({
+    label,
+    type: 'POST',
+    icon,
+    url: '/api/ExecMailboxMobileDevices',
+    customDataformatter: (row) => {
+      const result = (Array.isArray(row) ? row : [row]).map((r) => ({
+        Userid: graphUserRequest.data?.[0]?.userPrincipalName,
+        deviceid: r?.deviceID,
+        guid: r?.Guid,
+        tenantFilter: userSettingsDefaults.currentTenant,
+        ...flags,
+      }))
+      return Array.isArray(row) ? result : result[0]
+    },
+    confirmText,
+    multiPost: false,
+    relatedQueryKeys: `MobileDevices-${userSettingsDefaults.currentTenant}-${userId}`,
+    ...extra,
+  })
+
+  const mobileDeviceActions = [
+    mobileDeviceAction(
+      'Allow Device',
+      <CippIcons.CheckCircle />,
+      { Quarantine: false, Delete: false },
+      'Are you sure you want to allow the device [deviceFriendlyName] ([deviceModel])?',
+      { condition: (row) => row?.deviceAccessState !== 'Allowed' }
+    ),
+    mobileDeviceAction(
+      'Block Device',
+      <CippIcons.Block />,
+      { Quarantine: true, Delete: false },
+      'Are you sure you want to block the device [deviceFriendlyName] ([deviceModel])?',
+      { condition: (row) => row?.deviceAccessState !== 'Blocked' }
+    ),
+    mobileDeviceAction(
+      'Account-only Wipe',
+      <CippIcons.CleaningServices />,
+      { Wipe: true },
+      'Are you sure you want to wipe the mailbox data from the device [deviceFriendlyName] ([deviceModel])? Only the email, calendar and contacts of this account are removed; the rest of the device is left alone. The wipe runs the next time the device connects.',
+      {
+        condition: (row) => !mobileDeviceWipePending(row),
+        hideCondition: (row) => mobileDeviceWipePending(row),
+      }
+    ),
+    mobileDeviceAction(
+      'Cancel Wipe',
+      <CippIcons.Undo />,
+      { CancelWipe: true },
+      'Are you sure you want to cancel the pending wipe for the device [deviceFriendlyName] ([deviceModel])?',
+      {
+        condition: (row) => mobileDeviceWipePending(row),
+        hideCondition: (row) => !mobileDeviceWipePending(row),
+      }
+    ),
+    mobileDeviceAction(
+      'Delete Device',
+      <CippIcons.Delete />,
+      { Quarantine: false, Delete: true },
+      'Are you sure you want to delete the device [deviceFriendlyName] ([deviceModel])? This action cannot be undone.'
+    ),
+  ]
+
+  const mobileDevicesData = mobileDevicesRequest.data ?? []
+
+  const mobileDevicesCard = [
+    {
+      id: 1,
+      cardLabelBox: {
+        cardLabelBoxHeader: mobileDevicesRequest.isFetching ? (
+          <CircularProgress size="25px" color="inherit" />
+        ) : mobileDevicesData.length !== 0 ? (
+          <CippIcons.Check />
+        ) : (
+          <CippIcons.Error />
+        ),
+      },
+      text: 'Mobile Devices',
+      subtext: mobileDevicesRequest.isError
+        ? 'Could not load mobile devices - refresh to try again'
+        : mobileDevicesData.length !== 0
+          ? `${mobileDevicesData.length} mobile device${mobileDevicesData.length === 1 ? ' is' : 's are'} connected to this mailbox`
+          : 'No mobile devices are connected to this mailbox',
+      statusColor: 'green.main',
+      table: {
+        title: 'Mobile Devices',
+        hideTitle: true,
+        data: mobileDevicesData,
+        refreshFunction: () => mobileDevicesRequest.refetch(),
+        isFetching: mobileDevicesRequest.isFetching,
+        simpleColumns: [
+          'deviceFriendlyName',
+          'deviceModel',
+          'deviceOS',
+          'clientType',
+          'deviceAccessState',
+          'lastSuccessSync',
+          'status',
+        ],
+        actions: mobileDeviceActions,
+        offCanvas: {
+          extendedInfoFields: [
+            'deviceFriendlyName',
+            'deviceModel',
+            'deviceOS',
+            'deviceType',
+            'clientType',
+            'clientVersion',
+            'deviceAccessState',
+            'deviceAccessStateReason',
+            'status',
+            'firstSync',
+            'lastSyncAttempt',
+            'lastSuccessSync',
+            'accountOnlyWipeRequestTime',
+            'accountOnlyWipeAckTime',
+            'deviceID',
+          ],
+          actions: mobileDeviceActions,
+        },
+      },
+    },
+  ]
+
   const junkEmailConfigActions = [
     {
       label: 'Remove Entry',
@@ -1703,6 +1840,11 @@ const Page = () => {
                     <CippBannerListCard
                       isFetching={mailboxRulesRequest.isLoading}
                       items={mailboxRulesCard}
+                      isCollapsible={true}
+                    />
+                    <CippBannerListCard
+                      isFetching={mobileDevicesRequest.isLoading}
+                      items={mobileDevicesCard}
                       isCollapsible={true}
                     />
                     <CippBannerListCard
