@@ -10,11 +10,20 @@ const CreateCATemplate = () => {
     mode: "onChange",
     defaultValues: {
       state: { label: "Report-only", value: "enabledForReportingButNotEnforced" },
+      conditions: { clientAppTypes: [{ label: "All", value: "all" }] },
+      grantControls: {
+        operator: { label: "Require one of the selected controls", value: "OR" },
+      },
     },
   });
 
   const customDataFormatter = (values) => {
-    return extractCAPolicyJSON(values);
+    const policy = extractCAPolicyJSON(values);
+    // The default operator on its own is not a grant control
+    if (Object.keys(policy.grantControls ?? {}).join() === "operator") {
+      delete policy.grantControls;
+    }
+    return policy;
   };
 
   return (
