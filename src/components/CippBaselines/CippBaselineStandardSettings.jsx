@@ -260,7 +260,18 @@ export const CippBaselineStandardSettings = ({
                 options={definition.options}
                 // Definitions may source options from an API instead of a static list
                 // (e.g. the CA template picker) - CippFormComponent handles the fetch.
-                api={definition.api}
+                api={
+                  definition.api?.excludeValuePrefix
+                    ? {
+                        ...definition.api,
+                        dataFilter: (options) =>
+                          options.filter(
+                            (option) =>
+                              !`${option.value}`.startsWith(definition.api.excludeValuePrefix)
+                          ),
+                      }
+                    : definition.api
+                }
                 // Identity pickers are always single-select (the catalog tests enforce it);
                 // list-shaped variables (allowed domains, IP ranges) declare multiple:true.
                 multiple={definition.multiple === true}
