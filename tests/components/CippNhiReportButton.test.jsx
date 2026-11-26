@@ -10,10 +10,13 @@ vi.mock('../../src/api/ApiCall', async () =>
 )
 
 const TENANT = 'contoso.onmicrosoft.com'
+const branding = getResult({
+  data: { reportDefaults: { nhi: 'preset-nhi', nhiSummary: 'preset-summary' } },
+})
 let fetchMock
 
 beforeEach(() => {
-  api.get = () => getResult({ data: { reportDefaults: { nhi: 'preset-nhi' } } })
+  api.get = () => branding
   fetchMock = vi.fn(() =>
     Promise.resolve({
       ok: true,
@@ -53,6 +56,26 @@ describe('CippNhiReportButton', () => {
     await waitFor(() =>
       expect(screen.getByRole('button', { name: 'Download PDF' })).toBeEnabled()
     )
+  })
+
+  it('switches to the C-suite summary with its own preset', async () => {
+    const user = userEvent.setup()
+    renderWithProviders(
+      <CippNhiReportButton
+        caseData={{ CaseId: 'NHI-1', DisplayName: 'Sample App' }}
+        tenantFilter={TENANT}
+      />,
+      { settings: settingsWith({ currentTenant: TENANT }) }
+    )
+    await user.click(screen.getByRole('button', { name: 'PDF report' }))
+    await screen.findByRole('dialog')
+    await waitFor(() => expect(fetchMock).toHaveBeenCalled())
+    await user.click(screen.getByRole('button', { name: 'C-suite summary' }))
+    await waitFor(() => {
+      const url = new URL(fetchMock.mock.calls.at(-1)[0], 'https://example.com')
+      expect(url.searchParams.get('variant')).toBe('summary')
+      expect(url.searchParams.get('brandingPresetId')).toBe('preset-summary')
+    })
   })
 
   it('waits for the branding before rendering, so the preset is applied the first time', async () => {

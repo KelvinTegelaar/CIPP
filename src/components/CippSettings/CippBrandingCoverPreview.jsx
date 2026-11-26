@@ -129,6 +129,20 @@ export const REPORT_COVER_PRESETS = [
     footer: "Confidential & Proprietary - For Internal Use Only",
   },
   {
+    // The C-suite summary of the same NHI case: the cover and executive summary only.
+    id: "nhiSummary",
+    label: "NHI C-Suite Summary",
+    reportName: "NHI Executive Summary",
+    coverLabel: "Security Incident Report",
+    title: "App Compromise",
+    accent: "Summary",
+    subtitle: `Executive summary of the non-human identity investigation for ${SAMPLE_TENANT_NAME}`,
+    metaPrimary: SAMPLE_NHI.displayName,
+    metaSecondary: `Application ID ${SAMPLE_NHI.appId}`,
+    metaTertiary: `Analysis Date: ${SAMPLE_NHI_ANALYSIS_DATE}`,
+    footer: "Confidential & Proprietary - For Internal Use Only",
+  },
+  {
     id: "sharing",
     label: "Sharing Report",
     reportName: "Sharing Report",

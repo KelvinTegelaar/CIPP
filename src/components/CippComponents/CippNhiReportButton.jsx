@@ -7,6 +7,9 @@ import {
   DialogContent,
   DialogTitle,
   IconButton,
+  Stack,
+  ToggleButton,
+  ToggleButtonGroup,
   Typography,
 } from '@mui/material'
 import { CippIcons } from '../../utils/icon-registry'
@@ -20,17 +23,22 @@ export const CippNhiReportDialog = ({
   open,
   onClose,
 }) => {
+  const [variant, setVariant] = useState('full')
   const { branding, ready: brandingReady } = useBrandingQuery()
   const params = new URLSearchParams({
     tenantFilter: tenantFilter ?? '',
     caseId: caseData?.CaseId ?? '',
-    brandingPresetId: branding?.reportDefaults?.nhi ?? '',
+    variant,
+    brandingPresetId:
+      branding?.reportDefaults?.[
+        variant === 'summary' ? 'nhiSummary' : 'nhi'
+      ] ?? '',
   })
   const pdf = useServerPdf({
     url: `/api/ExecGetNhiReportPdf?${params}`,
     enabled: open && brandingReady,
   })
-  const fileName = `NHI_Report_${(caseData?.DisplayName || 'app').replace(/[^a-zA-Z0-9]/g, '_')}_${new Date().toISOString().split('T')[0]}.pdf`
+  const fileName = `NHI_${variant === 'summary' ? 'Summary' : 'Report'}_${(caseData?.DisplayName || 'app').replace(/[^a-zA-Z0-9]/g, '_')}_${new Date().toISOString().split('T')[0]}.pdf`
 
   return (
     <Dialog
@@ -51,9 +59,20 @@ export const CippNhiReportDialog = ({
           <Typography variant="h6" component="div">
             NHI Compromise Report: {caseData?.DisplayName}
           </Typography>
-          <IconButton onClick={onClose} size="small">
-            <CippIcons.Close />
-          </IconButton>
+          <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+            <ToggleButtonGroup
+              size="small"
+              exclusive
+              value={variant}
+              onChange={(event, value) => value && setVariant(value)}
+            >
+              <ToggleButton value="summary">C-suite summary</ToggleButton>
+              <ToggleButton value="full">Full report</ToggleButton>
+            </ToggleButtonGroup>
+            <IconButton onClick={onClose} size="small">
+              <CippIcons.Close />
+            </IconButton>
+          </Stack>
         </Box>
       </DialogTitle>
       <DialogContent dividers sx={{ p: 0 }}>

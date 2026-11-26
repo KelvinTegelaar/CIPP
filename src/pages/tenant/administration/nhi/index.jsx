@@ -168,7 +168,7 @@ const Page = () => {
       ),
     },
     {
-      label: 'Download evidence (ZIP)',
+      label: 'Download evidence (ZIP, with PDFs)',
       icon: <CippIcons.Archive />,
       noConfirm: true,
       customFunction: (row) => download(row),
