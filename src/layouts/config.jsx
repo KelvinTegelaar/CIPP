@@ -335,6 +335,11 @@ export const nativeMenuItems = [
             path: '/tenant/reports/custom-test-report',
             permissions: ['Tenant.Reports.*'],
           },
+          {
+            title: 'Cyber Insurance Report',
+            path: '/tenant/reports/cyber-insurance',
+            permissions: ['Tenant.Reports.*'],
+          },
         ],
       },
       {

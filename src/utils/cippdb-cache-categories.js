@@ -124,6 +124,7 @@ const CACHE_TYPE_COLLECTIONS = {
     "IntuneApplications",
     "IntuneAssignmentFilters",
     "ManagedDeviceEncryptionStates",
+    "ManagedDeviceProtectionStates",
     "IntuneAppProtectionPolicies",
     "IntuneScripts",
     "IntuneReusableSettings",
