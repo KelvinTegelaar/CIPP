@@ -1137,7 +1137,14 @@ const Page = () => {
       color: 'info',
       // Overrides configure ONE tenant's settings in a dialog - meaningless as a bulk action.
       hideBulk: true,
-      defaultvalues: expiryDefaults,
+      defaultvalues: (row) => {
+        const effectiveTier = (row?.inheritance ?? []).find((tier) => tier.effective)
+        return {
+          ...expiryDefaults(),
+          remediateEnabled: effectiveTier?.remediateEnabled === true,
+          alertEnabled: effectiveTier?.alertEnabled ?? true,
+        }
+      },
       data: {
         action: '!createOverride',
         tenantFilter: 'tenantFilter',
@@ -1163,6 +1170,18 @@ const Page = () => {
                 standard,
                 row.expectedValue
               )}
+            />
+            <CippFormComponent
+              type="switch"
+              name="remediateEnabled"
+              label="Automatically fix this when the setting drifts"
+              formControl={formHook}
+            />
+            <CippFormComponent
+              type="switch"
+              name="alertEnabled"
+              label="Alert on new deviation"
+              formControl={formHook}
             />
             <CippFormComponent
               type="textField"
