@@ -185,7 +185,7 @@ const Page = () => {
       label: 'Set Global Address List Visibility',
       type: 'POST',
       url: '/api/ExecGroupsHideFromGAL',
-      icon: <CippIcons.EyeIcon />,
+      icon: <CippIcons.VisibilityOff />,
       data: {
         ID: 'mail',
         GroupType: 'groupType',
@@ -210,7 +210,7 @@ const Page = () => {
       label: 'Set Group Visibility',
       type: 'POST',
       url: '/api/EditGroup',
-      icon: <CippIcons.Visibility />,
+      icon: <CippIcons.Public />,
       data: {
         groupId: 'id',
         groupType: 'groupType',

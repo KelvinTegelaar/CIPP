@@ -22,7 +22,7 @@ const entraLinkActions = (forHeaderMenu) => {
       ...extra,
     },
     {
-      icon: <CippIcons.Launch />,
+      icon: <CippIcons.VerifiedUser />,
       label: 'View API Permissions',
       link: `https://entra.microsoft.com/[Tenant]/#view/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/~/CallAnAPI/appId/[appId]/isMSAApp/`,
       pinned: true,
@@ -387,7 +387,7 @@ export const getAppRegistrationPostAndDestructiveActions = (canWriteApplication,
         row?.signInAudience === 'AzureADandPersonalMicrosoftAccount'),
   },
   {
-    icon: <CippIcons.ContentCopy />,
+    icon: <CippIcons.DataObject />,
     label: 'Create Manifest Template (Single-Tenant)',
     type: 'POST',
     color: 'success',
@@ -460,7 +460,7 @@ export const getAppRegistrationPostAndDestructiveActions = (canWriteApplication,
     condition: () => canWriteApplication,
   },
   {
-    icon: <CippIcons.Key />,
+    icon: <CippIcons.KeyOff />,
     label: 'Remove Password Credentials',
     type: 'POST',
     color: 'warning',
@@ -554,7 +554,7 @@ const redirectUrisFromForm = (value) =>
 // must include tenantFilter from the detail page's actionsData.Tenant.
 export const getAppRegistrationEditActions = (canWriteApplication) => [
   {
-    icon: <CippIcons.Edit />,
+    icon: <CippIcons.Login />,
     label: 'Edit Authentication',
     type: 'POST',
     color: 'info',

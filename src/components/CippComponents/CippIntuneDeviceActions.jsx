@@ -22,7 +22,7 @@ export const getIntuneDeviceActions = ({ tenantFilter } = {}) => [
     link: `https://intune.microsoft.com/${tenantFilter}/#view/Microsoft_Intune_Devices/DeviceSettingsMenuBlade/~/overview/mdmDeviceId/[id]`,
     pinned: true,
     color: 'info',
-    icon: <CippIcons.EyeIcon />,
+    icon: <CippIcons.Launch />,
     target: '_blank',
     multiPost: false,
     external: true,
@@ -219,7 +219,7 @@ export const getIntuneDeviceActions = ({ tenantFilter } = {}) => [
   {
     label: 'Rotate Local Admin Password',
     type: 'POST',
-    icon: <CippIcons.PasswordOutlined />,
+    icon: <CippIcons.LockReset />,
     url: '/api/ExecDeviceAction',
     data: {
       GUID: 'id',
@@ -292,7 +292,7 @@ export const getIntuneDeviceActions = ({ tenantFilter } = {}) => [
   {
     label: 'Retrieve FileVault Key',
     type: 'POST',
-    icon: <CippIcons.Security />,
+    icon: <CippIcons.VpnKey />,
     url: '/api/ExecGetRecoveryKey',
     data: {
       GUID: 'id',
@@ -304,7 +304,7 @@ export const getIntuneDeviceActions = ({ tenantFilter } = {}) => [
   {
     label: 'Reset Passcode',
     type: 'POST',
-    icon: <CippIcons.PasswordOutlined />,
+    icon: <CippIcons.PhonelinkLock />,
     url: '/api/ExecDevicePasscodeAction',
     data: {
       GUID: 'id',
@@ -317,7 +317,7 @@ export const getIntuneDeviceActions = ({ tenantFilter } = {}) => [
   {
     label: 'Remove Passcode',
     type: 'POST',
-    icon: <CippIcons.Password />,
+    icon: <CippIcons.LockOpen />,
     url: '/api/ExecDevicePasscodeAction',
     data: {
       GUID: 'id',
@@ -393,7 +393,7 @@ export const getIntuneDeviceActions = ({ tenantFilter } = {}) => [
   {
     label: 'Fresh Start',
     type: 'POST',
-    icon: <CippIcons.RestartAlt />,
+    icon: <CippIcons.CleaningServices />,
     url: '/api/ExecDeviceAction',
     data: {
       GUID: 'id',
@@ -417,7 +417,7 @@ export const getIntuneDeviceActions = ({ tenantFilter } = {}) => [
   {
     label: 'Wipe Device',
     type: 'POST',
-    icon: <CippIcons.RestartAlt />,
+    icon: <CippIcons.PhonelinkErase />,
     url: '/api/ExecDeviceAction',
     data: {
       GUID: 'id',
@@ -461,7 +461,7 @@ export const getIntuneDeviceActions = ({ tenantFilter } = {}) => [
   {
     label: 'Wipe Device',
     type: 'POST',
-    icon: <CippIcons.RestartAlt />,
+    icon: <CippIcons.PhonelinkErase />,
     url: '/api/ExecDeviceAction',
     data: {
       GUID: 'id',
@@ -496,7 +496,7 @@ export const getIntuneDeviceActions = ({ tenantFilter } = {}) => [
   {
     label: 'Delete Device',
     type: 'POST',
-    icon: <CippIcons.Recycling />,
+    icon: <CippIcons.Delete />,
     url: '/api/ExecDeviceAction',
     data: {
       GUID: 'id',
@@ -533,7 +533,7 @@ export const getBecIntuneDeviceActions = ({ tenantFilter } = {}) => [
     link: `https://intune.microsoft.com/${tenantFilter}/#view/Microsoft_Intune_Devices/DeviceSettingsMenuBlade/~/overview/mdmDeviceId/[id]`,
     pinned: true,
     color: 'info',
-    icon: <CippIcons.EyeIcon />,
+    icon: <CippIcons.Launch />,
     target: '_blank',
     multiPost: false,
     external: true,
@@ -552,7 +552,7 @@ export const getBecIntuneDeviceActions = ({ tenantFilter } = {}) => [
   {
     label: 'Wipe device (remove enrollment)',
     type: 'POST',
-    icon: <CippIcons.RestartAlt />,
+    icon: <CippIcons.PhonelinkErase />,
     url: '/api/ExecDeviceAction',
     data: {
       GUID: 'id',
