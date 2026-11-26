@@ -44,6 +44,7 @@ export const CippIntunePolicyFailureDetails = ({ row, tenant }) => {
   }))
   const devices = (results.devices ?? []).map((device) => ({ ...device, id: device.IntuneDeviceId }))
   const errors = Object.values(results.errors ?? {})
+  const deletedPolicies = results.deletedPolicies ?? []
 
   const deviceActions = [
     {
@@ -71,6 +72,12 @@ export const CippIntunePolicyFailureDetails = ({ row, tenant }) => {
           {message}
         </Alert>
       ))}
+      {deletedPolicies.length > 0 && (
+        <Alert severity="info">
+          These devices still report policies that have been deleted: {deletedPolicies.join(', ')}.
+          A conflict with no conflicting policy listed can come from one of them.
+        </Alert>
+      )}
       {/* noCard drops the card header, so the section titles sit above each table */}
       <Typography variant="subtitle1">Failing Settings</Typography>
       <CippDataTable
