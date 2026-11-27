@@ -14,6 +14,7 @@ import { useSettings } from '../../../../hooks/use-settings'
 import { CippIcons } from '../../../../utils/icon-registry'
 
 const apiUrl = '/api/ExecEmailDomainMigration'
+const maxPerRequest = 500
 const defaultValues = {
   Action: 'Move',
   SourceDomain: null,
@@ -88,11 +89,19 @@ const EmailDomainMigration = ({ tenantFilter }) => {
     relatedQueryKeys: ['ListUsers*', 'groups-*'],
     onSuccess: () => runPreview(),
   }
-  const withAction = (Action) => (selected) => ({
-    ...request,
-    Action,
-    Users: [selected].flat().map((row) => row.id),
-  })
+  // The endpoint changes up to 500 objects per request; an array is sent as one request per chunk.
+  const withAction = (Action) => (selected) => {
+    const ids = [selected].flat().map((row) => row.id)
+    const chunks = []
+    for (let i = 0; i < ids.length; i += maxPerRequest) {
+      chunks.push({
+        ...request,
+        Action,
+        Users: ids.slice(i, i + maxPerRequest),
+      })
+    }
+    return chunks.length > 1 ? chunks : { ...request, Action, Users: ids }
+  }
   const aliasActions = [
     {
       ...postAction,
