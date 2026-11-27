@@ -31,9 +31,12 @@ import { CippIcons } from '../../../../utils/icon-registry'
 const Page = () => {
   const settings = useSettings()
   const router = useRouter()
-  const { servicePrincipalId, caseId: caseIdParam } = router.query
+  const { caseId: caseIdParam } = router.query
+  const [caseServicePrincipalId, setCaseServicePrincipalId] = useState(null)
+  const servicePrincipalId =
+    router.query.servicePrincipalId || caseServicePrincipalId
   const tenant = router.query.tenantFilter || settings.currentTenant
-  const ready = !!servicePrincipalId
+  const ready = !!(servicePrincipalId || caseIdParam)
   const [selectedCaseId, setSelectedCaseId] = useState(caseIdParam || null)
   const [startedCaseId, setStartedCaseId] = useState(null)
   const [pollActive, setPollActive] = useState(false)
@@ -49,7 +52,7 @@ const Page = () => {
     url: '/api/ListNHIReports',
     data: { tenantFilter: tenant, servicePrincipalId },
     queryKey: runsKey,
-    waiting: ready,
+    waiting: !!servicePrincipalId,
   })
   const runRows = useMemo(
     () => (Array.isArray(runsCall.data) ? runsCall.data : []),
@@ -98,6 +101,8 @@ const Page = () => {
     if (activeCaseId) setPollActive(true)
   }, [activeCaseId])
   useEffect(() => {
+    if (poll?.ServicePrincipalId)
+      setCaseServicePrincipalId(poll.ServicePrincipalId)
     if (!poll || !activeCaseId) return
     if (poll.Waiting) {
       setPollActive(true)
@@ -132,7 +137,7 @@ const Page = () => {
   useEffect(() => {
     if (
       router.query.start === 'true' &&
-      ready &&
+      servicePrincipalId &&
       !autoStartedRef.current &&
       !startCall.isPending
     ) {
@@ -144,11 +149,11 @@ const Page = () => {
       })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [router.query.start, ready])
+  }, [router.query.start, servicePrincipalId])
 
   const caseData = poll && !poll.Waiting && !poll.Error ? poll : null
   const state =
-    !ready || runsCall.isLoading
+    !ready || (!activeCaseId && runsCall.isLoading)
       ? 'loading'
       : !activeCaseId
         ? 'none'
@@ -273,6 +278,7 @@ const Page = () => {
                 disabled={
                   state === 'waiting' ||
                   state === 'loading' ||
+                  !servicePrincipalId ||
                   startCall.isPending
                 }
                 startIcon={<CippIcons.TravelExplore />}
