@@ -14,6 +14,7 @@ const Page = () => {
       url: "/api/ExecSetMdoAlert",
       data: {
         GUID: "id",
+        AssignToSelf: true,
       },
       confirmText: "Are you sure you want to assign this incident to yourself?",
     },
@@ -25,7 +26,6 @@ const Page = () => {
       data: {
         GUID: "id",
         Status: "!active",
-        Assigned: "assignedTo",
       },
       confirmText: "Are you sure you want to set the status to active?",
     },
@@ -37,7 +37,6 @@ const Page = () => {
       data: {
         GUID: "id",
         Status: "!inProgress",
-        Assigned: "assignedTo",
       },
       confirmText: "Are you sure you want to set the status to in progress?",
     },
@@ -49,7 +48,6 @@ const Page = () => {
       data: {
         GUID: "id",
         Status: "!resolved",
-        Assigned: "assignedTo",
       },
       confirmText: "Are you sure you want to set the status to resolved?",
     },
