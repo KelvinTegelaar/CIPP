@@ -104,3 +104,19 @@ describe('tenants.js page - Reassign Owning Partner action (MultiPartner)', () =
     expect(tableProps.current.offCanvas.extendedInfoFields).not.toContain('knownPartners')
   })
 })
+
+describe('tenants.js page - CPV actions on partner tenant rows', () => {
+  const action = (label) => tableProps.current.actions.find((a) => a.label === label)
+
+  beforeEach(() => {
+    api.get = () => flagsOnResult
+  })
+
+  it('offers Refresh CPV Permissions on a partner tenant row but never Reset CPV Permissions', () => {
+    renderWithProviders(<Page />)
+
+    expect(action('Refresh CPV Permissions').condition(partnerTenantRow)).toBe(true)
+    expect(action('Refresh CPV Permissions').condition(directTenantRow)).toBe(false)
+    expect(action('Reset CPV Permissions').condition(partnerTenantRow)).toBe(false)
+  })
+})
