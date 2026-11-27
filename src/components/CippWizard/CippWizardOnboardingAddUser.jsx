@@ -3,7 +3,10 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 import { ApiPostCall } from '../../api/ApiCall'
 import { useSettings } from '../../hooks/use-settings'
-import { getSetupFixes } from '../../utils/get-onboarding-fixes'
+import {
+  getSetupFixes,
+  isCalendarLevelMissing,
+} from '../../utils/get-onboarding-fixes'
 import { CippApiResults } from '../CippComponents/CippApiResults'
 import CippAddEditUser from '../CippFormPages/CippAddEditUser'
 import {
@@ -34,6 +37,7 @@ export const CippWizardOnboardingAddUser = (props) => {
     },
   })
   const copied = useWatch({ control: addForm.control, name: 'userProperties' })
+  const setup = useWatch({ control: formControl.control, name: SETUP_FIELD })
 
   // Copy properties from another user, as the Add User drawer does.
   useEffect(() => {
@@ -124,6 +128,7 @@ export const CippWizardOnboardingAddUser = (props) => {
         onNextStep={onNextStep}
         formControl={submitControl}
         noSubmitButton={!tenantMatches}
+        submitButtonDisabled={isCalendarLevelMissing(setup)}
         onSuccess={queueSetupAfterCreate}
       />
       {queueSetup.isSuccess && queuedFor && (

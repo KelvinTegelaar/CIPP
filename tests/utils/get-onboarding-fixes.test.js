@@ -4,6 +4,7 @@ import {
   getScanSelection,
   getSetupFixes,
   getSnapshotDefaults,
+  isCalendarLevelMissing,
 } from '../../src/utils/get-onboarding-fixes'
 
 const delegate = {
@@ -222,5 +223,23 @@ describe('getOnboardingFixes', () => {
         reentitle: { mode: 'template' },
       })
     ).toEqual([])
+  })
+})
+
+describe('isCalendarLevelMissing', () => {
+  it('flags people picked for calendar access without a permission level', () => {
+    const people = [{ value: 'tom@contoso.com' }]
+    expect(isCalendarLevelMissing({ calendarUsers: people })).toBe(true)
+    expect(
+      isCalendarLevelMissing({ calendarUsers: people, calendarLevel: null })
+    ).toBe(true)
+    expect(
+      isCalendarLevelMissing({
+        calendarUsers: people,
+        calendarLevel: { value: 'Reviewer' },
+      })
+    ).toBe(false)
+    expect(isCalendarLevelMissing({ calendarUsers: [] })).toBe(false)
+    expect(isCalendarLevelMissing(undefined)).toBe(false)
   })
 })

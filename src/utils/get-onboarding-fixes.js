@@ -52,6 +52,11 @@ const pickValues = (list) =>
     .map((option) => option?.value ?? option)
     .filter(Boolean)
 
+// getSetupFixes only grants calendar access with a level, so people picked without one would be dropped.
+export const isCalendarLevelMissing = (setup) =>
+  pickValues(setup?.calendarUsers).length > 0 &&
+  pickValues(setup?.calendarLevel).length === 0
+
 // Mailbox and OneDrive setup options (HIDDEN_setup) as job fixes; only what was chosen is sent.
 export const getSetupFixes = (setup) => {
   const fixes = []

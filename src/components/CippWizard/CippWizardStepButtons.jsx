@@ -17,6 +17,7 @@ export const CippWizardStepButtons = (props) => {
     noNextButton = false,
     noSubmitButton = false,
     nextButtonDisabled = false,
+    submitButtonDisabled = false,
     replacementBehaviour,
     queryKeys,
     jobProgress,
@@ -86,7 +87,7 @@ export const CippWizardStepButtons = (props) => {
       )}
       {!noSubmitButton && currentStep === lastStep && (
         <form onSubmit={formControl.handleSubmit(handleSubmit)}>
-          <Button size="large" type="submit" variant="contained" disabled={sendForm.isPending}>
+          <Button size="large" type="submit" variant="contained" disabled={sendForm.isPending || submitButtonDisabled}>
             {isSubmitted ? "Resubmit" : "Submit"}
           </Button>
         </form>

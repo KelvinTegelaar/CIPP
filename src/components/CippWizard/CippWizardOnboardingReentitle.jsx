@@ -18,6 +18,7 @@ import { getCippLicenseTranslation } from '../../utils/get-cipp-license-translat
 import {
   getOnboardingFixes,
   getSnapshotDefaults,
+  isCalendarLevelMissing,
   templateGroupsToOptions,
 } from '../../utils/get-onboarding-fixes'
 import CippFormComponent from '../CippComponents/CippFormComponent'
@@ -449,7 +450,7 @@ export const CippWizardOnboardingReentitle = (props) => {
         onPreviousStep={onPreviousStep}
         onNextStep={onNextStep}
         formControl={formControl}
-        nextButtonDisabled={fixes.length === 0}
+        nextButtonDisabled={fixes.length === 0 || isCalendarLevelMissing(setup)}
       />
     </Stack>
   )

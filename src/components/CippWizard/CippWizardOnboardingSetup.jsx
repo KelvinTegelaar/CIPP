@@ -11,6 +11,7 @@ import { Grid } from '@mui/system'
 import { useWatch } from 'react-hook-form'
 import languageList from '../../data/languageList.json'
 import timezoneList from '../../data/timezoneList.json'
+import { isCalendarLevelMissing } from '../../utils/get-onboarding-fixes'
 import CippFormComponent from '../CippComponents/CippFormComponent'
 import { CippFormUserSelector } from '../CippComponents/CippFormUserSelector'
 
@@ -162,6 +163,11 @@ export const CippWizardOnboardingSetup = ({ formControl, tenant, note }) => {
               type="autoComplete"
               name={`${SETUP_FIELD}.calendarLevel`}
               label="Permission Level"
+              helperText={
+                isCalendarLevelMissing(setup)
+                  ? 'Choose a permission level to give the selected people access to the calendar.'
+                  : undefined
+              }
               formControl={formControl}
               multiple={false}
               creatable={false}
