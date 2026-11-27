@@ -17,6 +17,7 @@ import { useEffect, useRef } from 'react'
 import { useWatch } from 'react-hook-form'
 import { ApiGetCall } from '../../api/ApiCall'
 import { useDialog } from '../../hooks/use-dialog'
+import { usePermissions } from '../../hooks/use-permissions'
 import { CippIcons } from '../../utils/icon-registry'
 import { getScanSelection } from '../../utils/get-onboarding-fixes'
 import { CippApiDialog } from '../CippComponents/CippApiDialog'
@@ -49,6 +50,10 @@ export const CippWizardOnboardingScan = (props) => {
     name: 'HIDDEN_scanSelection',
   })
   const restoreDialog = useDialog()
+  // ExecRestoreDeleted needs this permission; without it the restore would only return 403.
+  const canRestore = usePermissions().checkPermissions([
+    'Tenant.Directory.ReadWrite',
+  ])
 
   const userId = user?.addedFields?.id ?? user?.value
   const scan = ApiGetCall({
@@ -200,16 +205,20 @@ export const CippWizardOnboardingScan = (props) => {
             <Alert
               severity="info"
               action={
-                <Button
-                  color="inherit"
-                  startIcon={<CippIcons.RestoreFromTrash />}
-                  onClick={restoreDialog.handleOpen}
-                >
-                  Restore and rescan
-                </Button>
+                canRestore && (
+                  <Button
+                    color="inherit"
+                    startIcon={<CippIcons.RestoreFromTrash />}
+                    onClick={restoreDialog.handleOpen}
+                  >
+                    Restore and rescan
+                  </Button>
+                )
               }
             >
               {findings[0].Title}. {findings[0].Detail}
+              {!canRestore &&
+                ' Restoring it needs the Tenant.Directory.ReadWrite permission. Ask someone who has it to restore the account, then scan again.'}
             </Alert>
           ) : (
             <Grid container spacing={2}>
