@@ -16,6 +16,11 @@ import {
   appSignInActivityColumns,
   appSignInActivityFilters,
 } from '../../../../hooks/use-app-sign-in-activity'
+import vendorTenantList from '../../../../data/vendorTenantList.json'
+
+const microsoftTenantIds = vendorTenantList
+  .filter((vendor) => vendor.vendorType === 'Microsoft')
+  .map((vendor) => vendor.vendorTenantId)
 
 const Page = () => {
   const pageTitle = 'Enterprise Applications'
@@ -80,9 +85,9 @@ const Page = () => {
     Endpoint: 'servicePrincipals',
     $select:
       'id,appId,displayName,createdDateTime,accountEnabled,homepage,publisherName,signInAudience,replyUrls,verifiedPublisher,info,applicationTemplateId,appOwnerOrganizationId,tags,passwordCredentials,keyCredentials',
-    // Entra's default 'Enterprise Applications' view; Microsoft first-party apps are most of every tenant's SPs.
+    // By owner, not Entra's integrated-app tag: service principals created through Graph, as CIPP deploys apps, lack it.
     ...(!showMicrosoftApps && {
-      $filter: "tags/any(t:t eq 'WindowsAzureActiveDirectoryIntegratedApp')",
+      $filter: `not(appOwnerOrganizationId in (${microsoftTenantIds.join(', ')}))`,
     }),
     $count: true,
     $top: 999,
