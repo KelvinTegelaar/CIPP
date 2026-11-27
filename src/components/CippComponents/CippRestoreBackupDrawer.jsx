@@ -22,7 +22,7 @@ import CippFormComponent from './CippFormComponent'
 import { CippFormCondition } from './CippFormCondition'
 import { CippApiResults } from './CippApiResults'
 import { useSettings } from '../../hooks/use-settings'
-import { ApiGetCall, ApiPostCall } from '../../api/ApiCall'
+import { ApiPostCall } from '../../api/ApiCall'
 import { isMultiTenant } from '../../utils/tenant-selection'
 import { useTenantLabel } from '../../hooks/use-tenant-label'
 
@@ -41,11 +41,12 @@ const policyItems = (value) =>
     key: p.Identity,
     label: p.Name || p.Identity,
   }))
+// A failed capture is stored as a plain message string and has no name to pick by.
 const intuneItems = (value) =>
   asArray(parseJson(value)).map((t) => ({
-    key: `${t.Type}|${t.DisplayName}`,
-    label: t.DisplayName,
-    sub: t.Type,
+    key: t?.DisplayName ? `${t.Type ?? ''}|${t.DisplayName}` : null,
+    label: t?.DisplayName,
+    sub: t?.Type,
   }))
 const rowItems = (value) =>
   asArray(parseJson(value)).map((r) => ({
@@ -339,22 +340,30 @@ export const CippRestoreBackupDrawer = ({
   const watched = useWatch({ control: formControl.control })
   const selectedBackupName = watched.backup?.value || watched.backup
 
-  const backupContent = ApiGetCall({
-    url: '/api/ExecListBackup',
-    data: {
-      BackupName: selectedBackupName,
-      Type: 'Scheduled',
-      tenantFilter: restoreTenant,
-    },
-    queryKey: `BackupContent-${restoreTenant}-${selectedBackupName}`,
-    waiting: drawerVisible && !!selectedBackupName,
-  })
+  // Fetched only when items are picked, and as a POST so the full backup is not held in the server's response cache.
+  const backupContent = ApiPostCall({})
+  const contentUrl = selectedBackupName
+    ? `/api/ExecListBackup?BackupName=${encodeURIComponent(selectedBackupName)}&Type=Scheduled`
+    : null
+  const isCurrentContent =
+    !!contentUrl && backupContent.variables?.url === contentUrl
+  const loadContent = () =>
+    backupContent.mutate({
+      url: contentUrl,
+      data: { tenantFilter: restoreTenant },
+    })
 
   const content = useMemo(() => {
-    const row = Array.isArray(backupContent.data) ? backupContent.data[0] : null
+    if (!isCurrentContent || !backupContent.isSuccess) return null
+    const rows = backupContent.data?.data
+    const row = Array.isArray(rows) ? rows[0] : null
     if (!row) return null
     return row.Backup ? parseJson(row.Backup) : row
-  }, [backupContent.data])
+  }, [isCurrentContent, backupContent.isSuccess, backupContent.data])
+  // A missing backup or a blob the server could not read still returns 200.
+  const contentFailed =
+    isCurrentContent &&
+    (backupContent.isError || (backupContent.isSuccess && !content))
 
   // Only items with a key can be picked; same-key entries restore together, so list them once.
   const itemsByCategory = useMemo(() => {
@@ -481,6 +490,7 @@ export const CippRestoreBackupDrawer = ({
   const handleCloseDrawer = () => {
     setDrawerVisible(false)
     setSelection({ source: null, sets: {} })
+    backupContent.reset()
     formControl.reset({
       tenantFilter: tenantFilter,
       users: true,
@@ -533,7 +543,9 @@ export const CippRestoreBackupDrawer = ({
                 variant="contained"
                 color="primary"
                 onClick={formControl.handleSubmit(handleSubmit)}
-                disabled={restoreBackup.isPending || !isValid}
+                disabled={
+                  restoreBackup.isPending || !isValid || backupContent.isPending
+                }
               >
                 {restoreBackup.isPending
                   ? 'Creating Restore Task...'
@@ -707,10 +719,10 @@ export const CippRestoreBackupDrawer = ({
                   variant="body2"
                   sx={{ color: 'text.secondary', mb: 1 }}
                 >
-                  Everything in the backup is restored by default. Open a
-                  category to restore only some of its items.
+                  Everything in the selected categories is restored by default.
+                  To restore only some items, choose them from the backup.
                 </Typography>
-                {backupContent.isFetching ? (
+                {isCurrentContent && backupContent.isPending ? (
                   <Stack
                     direction="row"
                     spacing={1}
@@ -721,12 +733,23 @@ export const CippRestoreBackupDrawer = ({
                       Loading backup contents&hellip;
                     </Typography>
                   </Stack>
-                ) : backupContent.isError ? (
-                  <Alert severity="error">
-                    The backup contents could not be loaded, so items cannot be
-                    chosen. The restore will include everything in the selected
-                    categories.
-                  </Alert>
+                ) : !content ? (
+                  <Stack spacing={1} sx={{ alignItems: 'flex-start' }}>
+                    {contentFailed && (
+                      <Alert severity="error">
+                        The backup contents could not be loaded, so items cannot
+                        be chosen. The restore will include everything in the
+                        selected categories.
+                      </Alert>
+                    )}
+                    <Button
+                      size="small"
+                      variant="outlined"
+                      onClick={loadContent}
+                    >
+                      Choose individual items
+                    </Button>
+                  </Stack>
                 ) : (
                   RESTORE_CATEGORIES.filter(
                     (cat) =>
